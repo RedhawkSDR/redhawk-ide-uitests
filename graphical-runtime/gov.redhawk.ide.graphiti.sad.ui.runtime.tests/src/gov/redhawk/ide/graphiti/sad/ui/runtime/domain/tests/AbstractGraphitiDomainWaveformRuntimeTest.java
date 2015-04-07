@@ -50,7 +50,7 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 
 		// Wait until the editor opens and the waveform appears in the SCA Explorer view
 		bot.waitUntil(new WaitForEditorCondition());
-		ScaExplorerTestUtils.waitUntilWaveformAppearsInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
 
 		// Record the waveform's full name
 		waveFormFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
@@ -66,18 +66,14 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 			ScaExplorerTestUtils.releaseFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
 
 			// wait until waveform no longer exists!!!!
-			ScaExplorerTestUtils.waitUntilScaExplorerWaveformDisappears(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
+			ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
 		}
 
 		// delete domain instance from sca explorer
 		ScaExplorerTestUtils.deleteDomainInstance(bot, DOMAIN);
 
-		// Stop domain manager and device manager
-		// TODO: Noticed that the first time this runs everything works great. After the second test however the
-		// console's drop down menu
-		// for switching between processes throws exceptions. I think this may actually be an Eclipse bug.
-		ConsoleUtils.terminateProcess(bot, DEVICE_MANAGER_PROCESS);
-		ConsoleUtils.terminateProcess(bot, DOMAIN_MANAGER_PROCESS);
+		// Stop all processes that may have been started
+		ConsoleUtils.terminateAllProcesses(gefBot);
 	}
 
 	public String getWaveFormFullName() {

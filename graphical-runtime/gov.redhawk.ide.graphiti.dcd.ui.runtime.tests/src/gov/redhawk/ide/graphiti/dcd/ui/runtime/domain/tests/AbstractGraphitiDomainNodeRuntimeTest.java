@@ -29,6 +29,7 @@ public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTes
 	static final String DOMAIN_MANAGER_PROCESS = "Domain Manager";
 	static final String DEVICE_MANAGER_PROCESS = "Device Manager";
 	static final String DEVICE_MANAGER = "DevMgr";
+	static final String DEVICE_MANAGER_W_BULKIO = "DevMgr_with_bulkio"; // For tests that need a device with a Bulkio port
 	static final String NAMESPACE_DEVICE_MANAGER = "namespaceNode";
 	protected SWTGefBot gefBot; // SUPPRESS CHECKSTYLE VisibilityModifier
 	private String nodeFullName; //full name of device node that is launched
@@ -55,11 +56,8 @@ public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTes
 		//delete domain instance from sca explorer
 		ScaExplorerTestUtils.deleteDomainInstance(bot, DOMAIN);
 		
-		//Stop domain manager and device manager
-		//TODO: Noticed that the first time this runs everything works great.  After the second test however the console's drop down menu
-		//for switching between processes throws exceptions.  I think this may actually be an Eclipse bug.
-		ConsoleUtils.terminateProcess(bot, DEVICE_MANAGER_PROCESS);
-		ConsoleUtils.terminateProcess(bot, DOMAIN_MANAGER_PROCESS);
+		//Stop all processes that may have been started
+		ConsoleUtils.terminateAllProcesses(gefBot);
 	}
 	
 	public String getNodeFullName() {
