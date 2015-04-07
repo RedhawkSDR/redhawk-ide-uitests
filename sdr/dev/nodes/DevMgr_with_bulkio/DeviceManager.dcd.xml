@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE deviceconfiguration PUBLIC "-//JTRS//DTD SCA V2.2.2 DCD//EN" "deviceconfiguration.dtd">
+<deviceconfiguration id="DCE:3680f98b-7b1d-476c-9a80-5e0a2fb66f8f" name="DevMgr_with_bulkio">
+  <devicemanagersoftpkg>
+    <localfile name="/mgr/DeviceManager.spd.xml"/>
+  </devicemanagersoftpkg>
+  <componentfiles>
+    <componentfile id="DeviceStub_22093e96-f6ac-4c4b-a181-ff7d78e5cb9b" type="SPD">
+      <localfile name="/devices/DeviceStub/DeviceStub.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="DeviceStub_22093e96-f6ac-4c4b-a181-ff7d78e5cb9b"/>
+      <componentinstantiation id="DCE:fd6406de-f9d9-4e46-a61b-c459a7912906">
+        <usagename>DeviceStub_1</usagename>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <domainmanager>
+    <namingservice name="REDHAWK_DEV/REDHAWK_DEV"/>
+  </domainmanager>
+</deviceconfiguration>
