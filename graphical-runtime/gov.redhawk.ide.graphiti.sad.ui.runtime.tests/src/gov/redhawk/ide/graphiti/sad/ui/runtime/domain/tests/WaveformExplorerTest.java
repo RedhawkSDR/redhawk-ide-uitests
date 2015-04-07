@@ -13,7 +13,7 @@ package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.tests;
 
 import static org.junit.Assert.assertEquals;
 import gov.redhawk.ide.swtbot.ViewUtils;
-import gov.redhawk.ide.swtbot.WaitForEditorCondition;
+import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.logging.ui.LogLevels;

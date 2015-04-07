@@ -12,7 +12,7 @@ package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.tests;
 
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
-import gov.redhawk.ide.swtbot.WaitForEditorCondition;
+import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 import gov.redhawk.ide.swtbot.diagram.RHTestBot;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
