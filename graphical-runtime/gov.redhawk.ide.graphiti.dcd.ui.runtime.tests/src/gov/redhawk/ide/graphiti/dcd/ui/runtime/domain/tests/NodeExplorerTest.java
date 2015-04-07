@@ -12,15 +12,18 @@
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.domain.tests;
 
 import static org.junit.Assert.assertEquals;
+import gov.redhawk.ide.swtbot.NodeUtils;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
-//import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -87,5 +90,54 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
 		// Confirm that .dcd.xml is visible
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
+	}
+
+	@Test
+	public void nodeExplorerContextMenuTest() {
+
+		bot.closeAllEditors();
+		NodeUtils.launchNodeInDomain(bot, DOMAIN, DEVICE_MANAGER_W_BULKIO);
+		setNodeFullName(ScaExplorerTestUtils.getFullNameFromScaExplorer(gefBot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER_W_BULKIO));
+		SWTBotGefEditor editor = gefBot.gefEditor(getNodeFullName());
+
+		// Start device stub
+		DiagramTestUtils.startComponentFromDiagram(editor, DEVICE_STUB);
+
+		// Test plot context menu
+		editor.setFocus();
+		DiagramTestUtils.plotPortDataOnComponentPort(editor, DEVICE_STUB, null);
+		SWTBotView plotView = ViewUtils.getPlotView(bot);
+		plotView.close();
+
+		// Test data list context menu
+		DiagramTestUtils.displayDataListViewOnComponentPort(editor, DEVICE_STUB, null);
+		ViewUtils.waitUntilDataListViewDisplays(bot);
+		SWTBotView dataListView = ViewUtils.getDataListView(bot);
+		dataListView.close();
+
+		// Test monitor ports context menu
+		DiagramTestUtils.displayPortMonitorViewOnComponentPort(editor, DEVICE_STUB, null);
+		ViewUtils.waitUntilPortMonitorViewPopulates(bot, DEVICE_STUB);
+		SWTBotView monitorView = ViewUtils.getPortMonitorView(bot);
+		monitorView.close();
+
+		// Test SRI view context menu
+		DiagramTestUtils.displaySRIDataOnComponentPort(editor, DEVICE_STUB, null);
+		SWTBotView sriView = ViewUtils.getSRIView(bot);
+		sriView.close();
+
+		// Test audio/play port context menu
+		DiagramTestUtils.playPortDataOnComponentPort(editor, DEVICE_STUB, null);
+		ViewUtils.waitUntilAudioViewPopulates(bot);
+		SWTBotView audioView = ViewUtils.getAudioView(bot);
+		audioView.close();
+
+		// Test snapshot context menu
+		DiagramTestUtils.displaySnapshotDialogOnComponentPort(editor, DEVICE_STUB, null);
+		ViewUtils.waitUntilSnapshotDialogDisplays(bot);
+		SWTBotShell snapshotDialog = ViewUtils.getSnapshotDialog(bot);
+		Assert.assertNotNull(snapshotDialog);
+		snapshotDialog.close();
+
 	}
 }
