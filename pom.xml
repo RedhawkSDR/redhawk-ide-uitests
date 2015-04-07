@@ -30,6 +30,7 @@
     <gov.redhawk.core>http://download.redhawksdr.org/gov.redhawk.core/releases/2.0</gov.redhawk.core>
     <gov.redhawk.ide>http://download.redhawksdr.org/gov.redhawk.ide/releases/2.0</gov.redhawk.ide>
     <gov.redhawk.codegen>http://download.redhawksdr.org/gov.redhawk.codegen/releases/2.0</gov.redhawk.codegen>
+    <gov.redhawk.ide.product>http://download.redhawksdr.org/gov.redhawk.ide.product/releases/2.0</gov.redhawk.ide.product>
     <swt-bot>http://download.eclipse.org/technology/swtbot/releases/latest/</swt-bot>
     <jacorb>http://download.redhawksdr.org/jacorb/updates/stable</jacorb>
     <logback>http://download.redhawksdr.org/logback/latest</logback>
@@ -100,6 +101,12 @@
       <id>gov.redhawk.codegen</id>
       <layout>p2</layout>
       <url>${gov.redhawk.codegen}</url>
+    </repository>
+
+    <repository>
+      <id>gov.redhawk.ide.product</id>
+      <layout>p2</layout>
+      <url>${gov.redhawk.ide.product}</url>
     </repository>
 
     <repository>
