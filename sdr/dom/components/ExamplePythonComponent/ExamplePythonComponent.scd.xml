@@ -22,9 +22,12 @@
     <supportsinterface repid="IDL:CF/TestableObject:1.0" supportsname="TestableObject"/>
     <ports>
       <provides repid="IDL:BULKIO/dataDouble:1.0" providesname="dataDouble">
+        <description>Example description of a provides/input Port</description>
         <porttype type="data"/>
       </provides>
-      <uses repid="IDL:BULKIO/dataFloat:1.0" usesname="dataFloat"/>
+      <uses repid="IDL:BULKIO/dataFloat:1.0" usesname="dataFloat">
+        <description>Example description of a uses/output Port</description>
+      </uses>
     </ports>
   </componentfeatures>
   <interfaces>
