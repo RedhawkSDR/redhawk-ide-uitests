@@ -20,7 +20,7 @@
   </parent>
 
   <properties>
-    <SDRROOT>${basedir}/../../sdr</SDRROOT>
+    <SDRROOT>${basedir}/../sdr</SDRROOT>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <tycho.scmUrl>scm:git:https://github.com/RedhawkSDR/redhawk-ide-uitests.git</tycho.scmUrl>
     <orbit>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository</orbit>

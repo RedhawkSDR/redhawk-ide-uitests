@@ -17,7 +17,7 @@
     <groupId>redhawk-ide-uitests</groupId>
     <artifactId>releng-swtbot-runtime</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../..</relativePath>
+    <relativePath>..</relativePath>
   </parent>
   <groupId>redhawk-ide-uitests</groupId>
   <artifactId>gov.redhawk.ide.graphiti.sad.ui.runtime.tests</artifactId>
