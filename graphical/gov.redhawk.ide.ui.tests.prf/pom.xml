@@ -15,9 +15,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>redhawk-ide-uitests</groupId>
-    <artifactId>releng-swtbot-runtime</artifactId>
+    <artifactId>releng-swtbot-design</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../..</relativePath>
+    <relativePath>..</relativePath>
   </parent>
   <groupId>redhawk-ide-uitests</groupId>
   <artifactId>gov.redhawk.ide.ui.tests.prf</artifactId>
