@@ -112,41 +112,41 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
 		
 		//verify hard limit stopped
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
 
 		//start hard limit
 		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
 		
 		//verify hardlimit started but siggen did not
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
 		
 		//start SigGen
 		DiagramTestUtils.startComponentFromDiagram(editor, SIG_GEN);
 		
 		//verify SigGen started
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
 		
 		//stop hard limit
 		DiagramTestUtils.stopComponentFromDiagram(editor, HARD_LIMIT);
 		
 		//verify hardlimit stopped, SigGen started
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
 		
 		//stop SigGen
 		DiagramTestUtils.stopComponentFromDiagram(editor, SIG_GEN);
 		
 		//verify SigGen stopped
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
 		
 		//start both components
 		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
 		DiagramTestUtils.startComponentFromDiagram(editor, SIG_GEN);
 		
 		//verify both started
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
 	}
 	
 	/**

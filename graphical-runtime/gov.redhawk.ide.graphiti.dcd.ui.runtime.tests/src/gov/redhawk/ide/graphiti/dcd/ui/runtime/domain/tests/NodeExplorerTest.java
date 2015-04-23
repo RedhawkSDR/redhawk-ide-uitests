@@ -69,12 +69,12 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
 		// check that start/stop works
 		DiagramTestUtils.stopComponentFromDiagram(editor, gppFullName);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, getNodeFullName(), gppFullName);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, getNodeFullName(), gppFullName);
 		Assert.assertFalse("IDE-1038 No Undo Stop Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, gppFullName, "Undo Stop Command"));
 		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, gppFullName, "Undo Do Command"));
 
 		DiagramTestUtils.startComponentFromDiagram(editor, gppFullName);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, getNodeFullName(), gppFullName);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, getNodeFullName(), gppFullName);
 		Assert.assertFalse("IDE-1038 No Undo Start Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, gppFullName, "Undo Start Command"));
 		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, gppFullName, "Undo Do Command"));
 

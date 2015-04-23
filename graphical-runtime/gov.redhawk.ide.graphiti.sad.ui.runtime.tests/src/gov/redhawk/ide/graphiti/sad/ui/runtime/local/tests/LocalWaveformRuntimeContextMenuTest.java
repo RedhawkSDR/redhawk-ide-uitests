@@ -49,7 +49,7 @@ public class LocalWaveformRuntimeContextMenuTest extends AbstractGraphitiLocalWa
 
 		// Start the component
 		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1);
 
 		// Test Log Levels
 		DiagramTestUtils.changeLogLevelFromDiagram(editor, SIGGEN, LogLevels.TRACE);
@@ -116,7 +116,7 @@ public class LocalWaveformRuntimeContextMenuTest extends AbstractGraphitiLocalWa
 
 		//stop component
 		DiagramTestUtils.stopComponentFromDiagram(editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1);
 	}
 
 	/**

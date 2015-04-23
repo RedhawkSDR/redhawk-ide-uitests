@@ -33,6 +33,10 @@ public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTes
 	static final String NAMESPACE_DEVICE_MANAGER = "namespaceNode";
 	protected SWTGefBot gefBot; // SUPPRESS CHECKSTYLE VisibilityModifier
 	private String nodeFullName; //full name of device node that is launched
+	
+	// Common Test Component Names
+	static final String GPP = "GPP";
+	static final String DEVICE_STUB = "DeviceStub";
 
 	@Before
 	public void beforeTest() throws Exception {

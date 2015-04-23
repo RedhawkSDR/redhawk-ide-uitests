@@ -112,45 +112,45 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 
 		// verify GPP stopped
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
 
 		// start GPP
 		DiagramTestUtils.startComponentFromDiagram(editor, GPP_1);
 
 		// verify GPP started but DeviceStub did not
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, GPP_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 
 		// start DeviceStub
 		DiagramTestUtils.startComponentFromDiagram(editor, DEVICE_STUB_1);
 
 		// verify DeviceStub started
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, DEVICE_STUB_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 
 		// stop GPP
 		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_1);
 
 		// verify GPP stopped, DeviceStub started
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, GPP_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 
 		// stop DeviceStub
 		DiagramTestUtils.stopComponentFromDiagram(editor, DEVICE_STUB_1);
 
 		// verify DeviceStub stopped
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, DEVICE_STUB_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 
 		// start both devices
 		DiagramTestUtils.startComponentFromDiagram(editor, GPP_1);
 		DiagramTestUtils.startComponentFromDiagram(editor, DEVICE_STUB_1);
 
 		// verify both started
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 
 	}
 
@@ -246,7 +246,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 
 		// verify hardlimit started but siggen did not
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, DEVICE_STUB);
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, GPP);
 
@@ -254,7 +254,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
 
 		// verify SigGen started but siggen did not
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, GPP);
 
 		// stop hard limit from sca explorer

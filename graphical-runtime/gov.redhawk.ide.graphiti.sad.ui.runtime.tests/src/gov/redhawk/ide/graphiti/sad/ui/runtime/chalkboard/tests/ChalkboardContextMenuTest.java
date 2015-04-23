@@ -44,7 +44,7 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 
 		// Start the component
 		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
 
 		// Check that we can't undo certain actions
 		Assert.assertFalse("IDE-1038 No Undo Start Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Start Command"));
@@ -114,7 +114,7 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 
 		//stop component
 		DiagramTestUtils.stopComponentFromDiagram(editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
 		
 		Assert.assertFalse("IDE-1038 No Undo Stop Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Stop Command"));
 		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Do Command"));

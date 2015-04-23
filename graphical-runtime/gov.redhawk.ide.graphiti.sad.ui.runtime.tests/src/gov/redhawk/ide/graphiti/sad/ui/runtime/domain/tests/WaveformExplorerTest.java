@@ -64,7 +64,7 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 
 		// check that start/plot/stop works
 		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
 
 		editor.setFocus();
 		DiagramTestUtils.plotPortDataOnComponentPort(editor, HARD_LIMIT, null);
@@ -72,7 +72,7 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 		plotView.close();
 
 		DiagramTestUtils.stopComponentFromDiagram(editor, HARD_LIMIT);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
 
 		// check that DnD does not work - From Target SDR
 		DiagramTestUtils.dragComponentFromTargetSDRToDiagram(gefBot, editor, DATA_READER);
@@ -121,7 +121,7 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 
 		// Start the component
 		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIGGEN_1);
 
 		// Check that we can't undo certain actions
 		Assert.assertFalse("IDE-1038 No Undo Start Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Start Command"));
@@ -195,7 +195,7 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 
 		// stop component
 		DiagramTestUtils.stopComponentFromDiagram(editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIGGEN_1);
 
 		Assert.assertFalse("IDE-1038 No Undo Stop Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Stop Command"));
 		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Do Command"));

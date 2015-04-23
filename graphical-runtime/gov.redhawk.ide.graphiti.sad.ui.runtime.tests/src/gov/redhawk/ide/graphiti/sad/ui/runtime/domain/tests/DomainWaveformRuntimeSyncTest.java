@@ -39,41 +39,41 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		editor.setFocus();
 
 		// verify hard limit stopped
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, HARD_LIMIT_1);
 
 		// start hard limit
 		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
 
 		// verify hardlimit started but siggen did not
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, SIG_GEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, SIG_GEN_1);
 
 		// start SigGen
 		DiagramTestUtils.startComponentFromDiagram(editor, SIG_GEN);
 
 		// verify SigGen started but siggen did not
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, SIG_GEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, SIG_GEN_1);
 
 		// stop hard limit
 		DiagramTestUtils.stopComponentFromDiagram(editor, HARD_LIMIT);
 
 		// verify hardlimit stopped, SigGen started
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, SIG_GEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, SIG_GEN_1);
 
 		// stop SigGen
 		DiagramTestUtils.stopComponentFromDiagram(editor, SIG_GEN);
 
 		// verify SigGen stopped
-		ScaExplorerTestUtils.waitUntilComponentAppearsStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, SIG_GEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, SIG_GEN_1);
 
 		// start both components
 		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
 		DiagramTestUtils.startComponentFromDiagram(editor, SIG_GEN);
 
 		// verify both started
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilComponentAppearsStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, SIG_GEN_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, SIG_GEN_1);
 	}
 
 	/**
