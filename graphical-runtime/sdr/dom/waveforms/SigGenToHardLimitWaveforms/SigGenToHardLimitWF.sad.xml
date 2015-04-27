@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softwareassembly PUBLIC "-//JTRS//DTD SCA V2.2.2 SAD//EN" "softwareassembly.dtd">
+<softwareassembly id="DCE:90aed3f3-637d-482d-a431-3d9c9d857736" name="SigGenToHardLimitWF">
+  <description>Test Waveform with overridden values in SAD. Contains SigGen to HardLimit.</description>
+  <componentfiles>
+    <componentfile id="SigGen_26706ce2-9117-432a-aa1b-01f138f313dd" type="SPD">
+      <localfile name="/components/SigGen/SigGen.spd.xml"/>
+    </componentfile>
+    <componentfile id="HardLimit_e3eae791-9761-4a88-89de-5cf8ba5b3aa1" type="SPD">
+      <localfile name="/components/HardLimit/HardLimit.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="SigGen_26706ce2-9117-432a-aa1b-01f138f313dd"/>
+      <componentinstantiation id="SigGen_1">
+        <usagename>SigGen_1</usagename>
+        <componentproperties>
+          <simpleref refid="frequency" value="400.0"/>
+          <simpleref refid="stream_id" value="SigGenStreamFromWF"/>
+          <simpleref refid="magnitude" value="120.0"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="SigGen_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="HardLimit_e3eae791-9761-4a88-89de-5cf8ba5b3aa1"/>
+      <componentinstantiation id="HardLimit_1" startorder="1">
+        <usagename>HardLimit_1</usagename>
+        <componentproperties>
+          <structref refid="limits">
+            <simpleref refid="limits::upper_limit" value="90.0"/>
+            <simpleref refid="limits::lower_limit" value="-30.0"/>
+          </structref>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="HardLimit_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <assemblycontroller>
+    <componentinstantiationref refid="SigGen_1"/>
+  </assemblycontroller>
+  <connections>
+    <connectinterface id="connection_1">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="SigGen_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="HardLimit_1"/>
+      </providesport>
+    </connectinterface>
+  </connections>
+  <externalports>
+    <port>
+      <usesidentifier>dataFloat_out</usesidentifier>
+      <componentinstantiationref refid="HardLimit_1"/>
+    </port>
+    <port>
+      <usesidentifier>dataShort_out</usesidentifier>
+      <componentinstantiationref refid="SigGen_1"/>
+    </port>
+  </externalports>
+</softwareassembly>
