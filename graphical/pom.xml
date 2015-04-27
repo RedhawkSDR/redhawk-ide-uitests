@@ -4,14 +4,8 @@
   All rights reserved. This program and the accompanying materials are made 
   available under the terms of the Eclipse Public License v1.0 which accompanies 
   this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html. -->
-<project
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>redhawk-ide-uitests</groupId>
-  <artifactId>releng-swtbot-design</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
 
   <parent>
     <groupId>gov.redhawk.development.configuration</groupId>
@@ -19,8 +13,12 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
+  <groupId>redhawk-ide-uitests</groupId>
+  <artifactId>releng-swtbot-design</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
   <properties>
-    <SDRROOT>${basedir}/../sdr</SDRROOT>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <tycho.scmUrl>scm:git:https://github.com/RedhawkSDR/redhawk-ide-uitests.git</tycho.scmUrl>
     <orbit>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository</orbit>
@@ -207,12 +205,8 @@
           <environmentVariables>
             <DISPLAY>${env.DISPLAY}</DISPLAY>
             <PATH>${env.PATH}</PATH>
-            <PYTHONPATH>${env.PYTHONPATH}</PYTHONPATH>
-            <LD_LIBRARY_PATH>${env.LD_LIBRARY_PATH}</LD_LIBRARY_PATH>
-            <CLASSPATH>${env.LD_LIBRARY_PATH}</CLASSPATH>
-            <JAVA_HOME>${java.home}</JAVA_HOME>
-            <SDRROOT>${SDRROOT}</SDRROOT>
-            <OSSIEHOME>${env.OSSIEHOME}</OSSIEHOME>
+            <SDRROOT>${basedir}/../sdr</SDRROOT>
+            <OSSIEHOME>${basedir}/../ossie</OSSIEHOME>
           </environmentVariables>
           <argLine>${test-argLine}</argLine>
           <appArgLine>-nl en</appArgLine>
