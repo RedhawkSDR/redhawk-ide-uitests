@@ -50,13 +50,12 @@ public class WaveformTest extends UIRuntimeTest {
 //		super.after(); 
 //		StandardTestActions.cleanup(bot);          // from super.after()
 		StandardTestActions.assertNoOpenDialogs(); // from super.after()
-//		bot = null;                                // from super.after()
+		bot = null;                                // from super.after()
 	}
 	
 	@AfterClass
-	public void afterClass() throws Exception {
-		StandardTestActions.cleanup(bot);
-		bot = null;
+	public static void afterClass() throws Exception {
+		StandardTestActions.cleanup(new SWTWorkbenchBot());
 	}
 
 	/**
