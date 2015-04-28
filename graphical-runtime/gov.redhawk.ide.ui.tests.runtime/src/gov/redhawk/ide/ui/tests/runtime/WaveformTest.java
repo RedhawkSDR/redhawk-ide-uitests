@@ -13,9 +13,11 @@ package gov.redhawk.ide.ui.tests.runtime;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.ICondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
@@ -105,7 +107,8 @@ public class WaveformTest extends UIRuntimeTest {
 		}
 
 		// Release waveform
-		waveformTreeItem.contextMenu("Release").click();
+		waveformTreeItem.setFocus();
+		releaseWaveform(waveformTreeItem);
 	}
 
 	/**
@@ -156,7 +159,15 @@ public class WaveformTest extends UIRuntimeTest {
 		}
 
 		// Release waveform
-		waveformTreeItem.contextMenu("Release").click();
+		releaseWaveform(waveformTreeItem);
+	}
+
+	private void releaseWaveform(SWTBotTreeItem waveformTreeItem) {
+		try {
+			waveformTreeItem.contextMenu("Release").click();
+		} catch (TimeoutException te) {
+			waveformTreeItem.pressShortcut(Keystrokes.DELETE);
+		}
 	}
 
 	/**
