@@ -23,8 +23,10 @@ import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
+import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
@@ -50,18 +52,15 @@ public class NamespaceTests extends UIRuntimeTest {
 
 		String projectName = PREFIX_DOTS + "cpp." + componentBaseName;
 		ComponentUtils.createComponentProject(bot, projectName, "C++");
-		generateProject(projectName, componentBaseName + ".cpp");
-		bot.waitUntil(new WaitForBuild(), 30000);
+		generateProjectAndBuild(projectName, componentBaseName + ".cpp");
 
 		projectName = PREFIX_DOTS + "java." + componentBaseName;
 		ComponentUtils.createComponentProject(bot, projectName, "Java");
-		generateProject(projectName, componentBaseName + ".java");
-		bot.waitUntil(new WaitForBuild(), 30000);
+		generateProjectAndBuild(projectName, componentBaseName + ".java");
 
 		projectName = PREFIX_DOTS + "python." + componentBaseName;
 		ComponentUtils.createComponentProject(bot, projectName, "Python");
-		generateProject(projectName, componentBaseName);
-		bot.waitUntil(new WaitForBuild(), 30000);
+		generateProjectAndBuild(projectName, componentBaseName);
 
 		exportProject(PREFIX_DOTS + "cpp." + componentBaseName);
 		exportProject(PREFIX_DOTS + "java." + componentBaseName);
@@ -86,18 +85,15 @@ public class NamespaceTests extends UIRuntimeTest {
 
 		String projectName = PREFIX_DOTS + "cpp." + deviceBaseName;
 		DeviceUtils.createDeviceProject(bot, projectName, "C++");
-		generateProject(projectName, deviceBaseName + ".cpp");
-		bot.waitUntil(new WaitForBuild(), 30000);
+		generateProjectAndBuild(projectName, deviceBaseName + ".cpp");
 
 		projectName = PREFIX_DOTS + "java." + deviceBaseName;
 		DeviceUtils.createDeviceProject(bot, projectName, "Java");
-		generateProject(projectName, deviceBaseName + ".java");
-		bot.waitUntil(new WaitForBuild(), 30000);
+		generateProjectAndBuild(projectName, deviceBaseName + ".java");
 
 		projectName = PREFIX_DOTS + "python." + deviceBaseName;
 		DeviceUtils.createDeviceProject(bot, projectName, "Python");
-		generateProject(projectName, deviceBaseName);
-		bot.waitUntil(new WaitForBuild(), 30000);
+		generateProjectAndBuild(projectName, deviceBaseName);
 
 		exportProject(PREFIX_DOTS + "cpp." + deviceBaseName);
 		exportProject(PREFIX_DOTS + "java." + deviceBaseName);
@@ -117,22 +113,19 @@ public class NamespaceTests extends UIRuntimeTest {
 	@Test
 	public void namespaceBehaviorServices() {
 		final String serviceBaseName = "service";
-		final String serviceInterface = "IDL:BULKIO/dataDouble:1.0";
+		final String serviceInterface = "IDL:CF/LogEventConsumer:1.0";
 
 		String projectName = PREFIX_DOTS + "cpp." + serviceBaseName;
 		ServiceUtils.createServiceProject(bot, projectName, serviceInterface, "C++");
-		generateProject(projectName, serviceBaseName + ".cpp");
-		bot.waitUntil(new WaitForBuild(), 30000);
+		generateProjectAndBuild(projectName, serviceBaseName + ".cpp");
 
 		projectName = PREFIX_DOTS + "java." + serviceBaseName;
 		ServiceUtils.createServiceProject(bot, projectName, serviceInterface, "Java");
-		generateProject(projectName, serviceBaseName + ".java");
-		bot.waitUntil(new WaitForBuild(), 30000);
+		generateProjectAndBuild(projectName, serviceBaseName + ".java");
 
 		projectName = PREFIX_DOTS + "python." + serviceBaseName;
 		ServiceUtils.createServiceProject(bot, projectName, serviceInterface, "Python");
-		generateProject(projectName, serviceBaseName);
-		bot.waitUntil(new WaitForBuild(), 30000);
+		generateProjectAndBuild(projectName, serviceBaseName);
 
 		exportProject(PREFIX_DOTS + "cpp." + serviceBaseName);
 		exportProject(PREFIX_DOTS + "java." + serviceBaseName);
@@ -199,6 +192,16 @@ public class NamespaceTests extends UIRuntimeTest {
 		Assert.assertTrue("DCD XML for node doesn't exist in SDRROOT", nodeDir.append("DeviceManager.dcd.xml").toFile().exists());
 
 		checkExistsInScaAndRemove(scaPath, nodeBaseName);
+
+		try {
+			namespaceBehaviorDevices();
+		} catch (OperationCanceledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -212,8 +215,7 @@ public class NamespaceTests extends UIRuntimeTest {
 		final String sharedLibraryType = "C++ Library";
 
 		SharedLibraryUtils.createSharedLibraryProject(bot, PREFIX_DOTS + sharedLibraryBaseName, sharedLibraryType);
-		generateProject(PREFIX_DOTS + sharedLibraryBaseName, sharedLibraryBaseName + ".cpp");
-		bot.waitUntil(new WaitForBuild(), 30000);
+		generateProjectAndBuild(PREFIX_DOTS + sharedLibraryBaseName, sharedLibraryBaseName + ".cpp");
 
 		exportProject(PREFIX_DOTS + sharedLibraryBaseName);
 		bot.waitUntil(new WaitForLaunchTermination(), 30000);
@@ -221,7 +223,7 @@ public class NamespaceTests extends UIRuntimeTest {
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Shared Libraries", "runtime", "test" }, sharedLibraryBaseName);
 	}
 
-	private void generateProject(String projectName, String editorTabName) {
+	private void generateProjectAndBuild(String projectName, String editorTabName) {
 		// Generate
 		editor = bot.editorByTitle(projectName);
 		StandardTestActions.generateProject(bot, editor);
@@ -229,6 +231,9 @@ public class NamespaceTests extends UIRuntimeTest {
 		// Default file editor should open
 		bot.editorByTitle(editorTabName);
 
+		// Wait for the build to finish and any error markers to go away, then close editors
+		bot.waitUntil(new WaitForBuild(), 30000);
+		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), 1200000);
 		bot.closeAllEditors();
 	}
 
@@ -240,6 +245,7 @@ public class NamespaceTests extends UIRuntimeTest {
 	private void checkExistsInScaAndRemove(String[] scaPath, String projectName) {
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, projectName);
 		SWTBotTreeItem scaNode = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, scaPath, projectName);
+		scaNode.select();
 		SWTBotMenu deleteContext = scaNode.contextMenu("Delete");
 		deleteContext.click();
 		bot.button("Yes").click();
