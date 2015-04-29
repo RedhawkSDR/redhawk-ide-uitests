@@ -10,7 +10,6 @@
  */
 package gov.redhawk.ide.ui.tests.runtime;
 
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
@@ -18,12 +17,10 @@ import org.eclipse.swtbot.swt.finder.waits.ICondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.MenuUtils;
-import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
@@ -46,20 +43,9 @@ public class WaveformTest extends UIRuntimeTest {
 	public void after() throws Exception {
 		this.scaExplorerViewBot = null;
 
-		// super calls StandardTestActions.cleanup(bot), which closes the active shell (dialog).
-		// super.before() already does this step, so we only have to cleanup one last time in the afterClass().
-		// This should allow us to get a better screenshot of when the test fails.
-//		super.after(); 
-//		StandardTestActions.cleanup(bot);          // from super.after()
-		StandardTestActions.assertNoOpenDialogs(); // from super.after()
-		bot = null;                                // from super.after()
+		super.after();
 	}
 	
-	@AfterClass
-	public static void afterClass() throws Exception {
-		StandardTestActions.cleanup(new SWTWorkbenchBot());
-	}
-
 	/**
 	 * IDE-1222 Launching (default) a Waveform with overloaded property values in Sandbox.
 	 */
@@ -106,8 +92,7 @@ public class WaveformTest extends UIRuntimeTest {
 			}
 		}
 
-		// Release waveform
-		waveformTreeItem.setFocus();
+		// cleanup
 		releaseWaveform(waveformTreeItem);
 	}
 
@@ -158,14 +143,16 @@ public class WaveformTest extends UIRuntimeTest {
 			}
 		}
 
-		// Release waveform
+		// cleanup
 		releaseWaveform(waveformTreeItem);
 	}
 
 	private void releaseWaveform(SWTBotTreeItem waveformTreeItem) {
 		try {
+			waveformTreeItem.select();
 			waveformTreeItem.contextMenu("Release").click();
 		} catch (TimeoutException te) {
+			waveformTreeItem.select();
 			waveformTreeItem.pressShortcut(Keystrokes.DELETE);
 		}
 	}
