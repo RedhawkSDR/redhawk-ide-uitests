@@ -19,6 +19,7 @@ import gov.redhawk.ide.swtbot.ServiceUtils;
 import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.junit.BeforeClass;
@@ -33,7 +34,7 @@ public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 	@BeforeClass
 	public static void beforeClassSetup() {
 		// PyDev needs to be configured before running New SCA * Project Wizards in some of the test cases
-		StandardTestActions.configurePyDev();
+		StandardTestActions.configurePyDev(new SWTWorkbenchBot());
 	}
 
 	/**

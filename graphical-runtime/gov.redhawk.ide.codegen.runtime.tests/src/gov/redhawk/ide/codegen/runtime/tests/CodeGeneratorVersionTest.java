@@ -18,6 +18,7 @@ import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -40,7 +41,7 @@ public class CodeGeneratorVersionTest extends UITest {
 
 	@BeforeClass
 	public static void beforeClassSetup() {
-		StandardTestActions.configurePyDev();
+		StandardTestActions.configurePyDev(new SWTWorkbenchBot());
 	}
 
 	@Test

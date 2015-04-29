@@ -11,21 +11,18 @@
  */
 package gov.redhawk.ide.sharedlibrary.ui.runtime.tests;
 
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
-import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-
-import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Shared Library projects should display many fewer options in the editor pages
@@ -37,8 +34,8 @@ public class SharedLibraryGenerateTest extends UIRuntimeTest {
 
 	@BeforeClass
 	public static void beforeClassSetup() {
-		// PyDev needs to be configured before running New SCA Softpackage Project Wizards
-		StandardTestActions.configurePyDev();
+		// PyDev needs to be configured before running New SCA Shared Library (formerly Softpackage) Project Wizards
+		StandardTestActions.configurePyDev(new SWTWorkbenchBot());
 	}
 
 	// TODO: Do we need to include Octave project type for this test?
