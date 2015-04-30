@@ -21,7 +21,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class ExplorerChalkboardTests extends UIRuntimeTest {
+public class ExplorerChalkboardTest extends UIRuntimeTest {
 	private static final String COMPONENT_NAME = "ExamplePythonComponent";
 	private static final String COMPONENT_IMPL = "python";
 	private static final String COMPONENT_PROVIDES_IN_PORT = "dataDouble";

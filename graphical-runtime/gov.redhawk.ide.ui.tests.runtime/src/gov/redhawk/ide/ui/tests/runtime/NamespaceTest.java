@@ -35,7 +35,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class NamespaceTests extends UIRuntimeTest {
+public class NamespaceTest extends UIRuntimeTest {
 
 	private static final String PREFIX_DOTS = "runtime.test.";
 
