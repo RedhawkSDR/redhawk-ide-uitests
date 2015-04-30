@@ -10,22 +10,27 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.runtime;
 
-import gov.redhawk.ide.swtbot.StandardTestActions;
-
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.ICondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 /**
  * 
  */
 public class DomainInteractionTest extends AbstractDomainRuntimeTest {
-
+	static final String DOMAIN_NAME = "REDHAWK_DEV";
+	static final String DEVICE_MANAGER = "DevMgr_"; // start of Device Manager name
+	static final String DOMAIN_NAME_CONNECTED = DOMAIN_NAME + " CONNECTED";
+	
 	private SWTBot viewBot;
 	private SWTBotView explorerView;
 
@@ -42,10 +47,16 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		explorerView.setFocus();
 		viewBot = explorerView.bot();
 	}
+	
+	@AfterClass
+	public static void afterClassCleanup() throws Exception {
+		StandardTestActions.cleanUpLaunches();
+		StandardTestActions.cleanUpConnections();
+	}
 
 	@Test
 	public void testConnect() {
-		launchDomainManager("REDHAWK_DEV");
+		launchDomainManager(DOMAIN_NAME);
 
 		StandardTestActions.viewToolbarWithToolTip(explorerView, "New Domain Connection").click();
 
@@ -65,13 +76,13 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		Assert.assertEquals("REDHAWK_DOMAIN_TEST01", wizardBot.textWithLabel("Domain Name:").getText());
 		Assert.assertTrue(wizardBot.button("Finish").isEnabled());
 
-		wizardBot.textWithLabel("Display Name:").setText("REDHAWK_DEV");
-		Assert.assertEquals("REDHAWK_DEV", wizardBot.textWithLabel("Domain Name:").getText());
+		wizardBot.textWithLabel("Display Name:").setText(DOMAIN_NAME);
+		Assert.assertEquals(DOMAIN_NAME, wizardBot.textWithLabel("Domain Name:").getText());
 		Assert.assertTrue(wizardBot.button("Finish").isEnabled());
 
 		bot.button("Finish").click();
 
-		waitForConnect("REDHAWK_DEV");
+		waitForConnect(DOMAIN_NAME);
 		viewBot.tree().getTreeItem("REDHAWK_DEV CONNECTED").expand();
 		viewBot.tree().getTreeItem("REDHAWK_DEV CONNECTED").select();
 	}
@@ -309,19 +320,13 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 
 	@Test
 	public void testLaunch08() {
-		viewBot.tree().getTreeItem("Target SDR").select();
-		viewBot.tree().getTreeItem("Target SDR").contextMenu("Launch Domain ...").click();
-		bot.textWithLabel("Domain Name: ").setText("REDHAWK_DEV");
-		bot.tree().getTreeItem("DevMgr_localhost (/nodes/DevMgr_localhost/)").select();
-		bot.tree().getTreeItem("DevMgr_localhost (/nodes/DevMgr_localhost/)").check();
-		bot.button("OK").click();
+		ScaExplorerTestUtils.launchDomain(bot, DOMAIN_NAME, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN_NAME);
 
-		waitForConnect("REDHAWK_DEV");
-		viewBot.tree().getTreeItem("REDHAWK_DEV CONNECTED").expand();
-		viewBot.tree().getTreeItem("REDHAWK_DEV CONNECTED").getNode("Device Managers").expand();
-		viewBot.tree().getTreeItem("REDHAWK_DEV CONNECTED").getNode("Device Managers").getNode("DevMgr_localhost").expand();
+		SWTBotTreeItem deviceMangersTreeItem = viewBot.tree().expandNode(DOMAIN_NAME_CONNECTED, "Device Managers").expand();
+		deviceMangersTreeItem.getNode(0).expand();
+		
 		viewBot.tree().getTreeItem("Target SDR").select();
-
 		viewBot.tree().getTreeItem("Target SDR").contextMenu("Launch Domain ...").click();
 
 		// Choose an acceptable domain name. The OK button should enable.
@@ -344,7 +349,7 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		}, 5000, 1000);
 
 		// Choose an unacceptable domain name. The OK button should disable.
-		bot.textWithLabel("Domain Name: ").setText("REDHAWK_DEV");
+		bot.textWithLabel("Domain Name: ").setText(DOMAIN_NAME);
 		bot.waitWhile(new ICondition() {
 
 			@Override
@@ -370,22 +375,30 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		viewBot.tree().getTreeItem("Target SDR").select();
 		viewBot.tree().getTreeItem("Target SDR").contextMenu("Launch Domain ...").click();
 		bot.textWithLabel("Domain Name: ").setText("REDHAWK_DEV_ports");
-		bot.button("OK").click();
+		bot.button("OK").click(); // launch Domain without Device Manager
 
 		waitForConnect("REDHAWK_DEV_ports");
-
 		viewBot.tree().getTreeItem("REDHAWK_DEV_ports CONNECTED").expand();
-		viewBot.tree().expandNode("Target SDR", "Nodes", "DevMgr_localhost").select();
-		viewBot.tree().expandNode("Target SDR", "Nodes", "DevMgr_localhost").contextMenu("Launch Device Manager").click();
+		
+		// Launch Device Manager from Target SDR using defaults
+		SWTBotTreeItem nodesTreeItem = viewBot.tree().expandNode("Target SDR", "Nodes").select().expand();
+		SWTBotTreeItem firstNode = nodesTreeItem.getNode(0); // get first node vs hard coding to DevMgr_localhost
+		firstNode.select();
+		final String firstNodeName = firstNode.getText(); 
+		firstNode.contextMenu("Launch Device Manager").click();
 		bot.button("OK").click();
 
 		explorerView.show();
+		String[] nodePath = { "REDHAWK_DEV_ports CONNECTED", "Device Managers" };
+		final SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodePath, firstNodeName);
 		bot.waitUntil(new ICondition() {
 
 			@Override
 			public boolean test() throws Exception {
-				viewBot.tree().expandNode("REDHAWK_DEV_ports CONNECTED", "Device Managers", "DevMgr_localhost", "GPP_1 STARTED").expand();
-				return true;
+				SWTBotTreeItem item = treeItem.expand().getNode(0);
+				item.expand();
+				final String name = item.getText();
+				return name.startsWith("GPP_") && name.endsWith("STARTED");
 			}
 
 			@Override
@@ -394,7 +407,7 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 
 			@Override
 			public String getFailureMessage() {
-				return "Couldn't find some element in the tree leading up to 'GPP_1 STARTED'";
+				return "Couldn't find some element in the tree leading up to 'GPP_* STARTED'";
 			}
 		}, 10000, 1000);
 		viewBot.tree().getTreeItem("REDHAWK_DEV_ports CONNECTED").select();
@@ -426,13 +439,13 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		}, 30000, 1000);
 
 		explorerView.setFocus();
-		StandardTestActions.getTreeItemMatches(viewBot.tree(), "REDHAWK_DEV_ports CONNECTED", "Waveforms", "ExampleWaveform05.*", "SigGen_1").select();
-		StandardTestActions.getTreeItemMatches(viewBot.tree(), "REDHAWK_DEV_ports CONNECTED", "Waveforms", "ExampleWaveform05.*", "SigGen_1").contextMenu(
-			"Start").click();
-		SWTBotTreeItem item = StandardTestActions.getTreeItemMatches(viewBot.tree(), "REDHAWK_DEV_ports CONNECTED", "Waveforms", "ExampleWaveform05.*", "SigGen_1", "out");
-		item.select();
-		Assert.assertEquals(0, item.getItems().length);
-		item.contextMenu("Plot Port Data").click();
+		SWTBotTreeItem sigGenTreeItem = StandardTestActions.getTreeItemMatches(viewBot.tree(), "REDHAWK_DEV_ports CONNECTED", "Waveforms", "ExampleWaveform05.*", "SigGen_1");
+		sigGenTreeItem.select();
+		sigGenTreeItem.contextMenu("Start").click();
+		SWTBotTreeItem outPortTreeItem = sigGenTreeItem.expandNode("dataFloat_out");
+		outPortTreeItem.select();
+		Assert.assertEquals("Port connections", 0, outPortTreeItem.getItems().length);
+		outPortTreeItem.contextMenu("Plot Port Data").click();
 
 		bot.waitUntil(new ICondition() {
 
@@ -441,7 +454,7 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 				SWTBotView view = bot.activeView();
 				String viewTitle = view.getViewReference().getTitle();
 				String viewId = view.getViewReference().getId();
-				if ("out".equals(viewTitle) && "gov.redhawk.ui.port.nxmplot.PlotView2".equals(viewId)) {
+				if ("dataFloat_out".equals(viewTitle) && "gov.redhawk.ui.port.nxmplot.PlotView2".equals(viewId)) {
 					return true;
 				}
 				return false;
@@ -458,6 +471,6 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		}, 30000, 1000);
 
 		explorerView.show();
-		Assert.assertEquals(1, item.getItems().length);
+		Assert.assertEquals("Port connections", 1, outPortTreeItem.getItems().length);
 	}
 }
