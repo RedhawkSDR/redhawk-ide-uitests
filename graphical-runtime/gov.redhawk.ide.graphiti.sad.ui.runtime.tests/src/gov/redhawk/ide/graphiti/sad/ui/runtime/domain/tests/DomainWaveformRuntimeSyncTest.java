@@ -10,11 +10,16 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.tests;
 
+import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWaveformRuntimeTest {
@@ -140,5 +145,73 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		// verify both components started
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIG_GEN);
+	}
+
+	/**
+	 * IDE-1205 Make sure properties match whether component is selected in diagram or SCA Explorer.
+	 */
+	@Test
+	public void changePropertiesInScaExplorer() {
+		bot.closeAllEditors();
+		final String[] waveformPath = ScaExplorerTestUtils.joinPaths(DOMAIN_WAVEFORM_PARENT_PATH, new String[] {DOMAIN_WAVEFORM});
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, DiagramType.GRAPHITI_CHALKBOARD);
+		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
+		SWTBotTree propTable;
+		editor.setFocus();
+		
+		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
+		
+		// Select component in SCA tree first
+		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, waveformPath, SIG_GEN_1).select().click();
+		
+		propTable = ViewUtils.activateFirstPropertiesTab(gefBot);
+
+		SWTBotTreeItem magItem = propTable.getTreeItem("magnitude");
+		Assert.assertEquals(magItem.cell(1), "100.0");
+		magItem.select().click(1);
+		gefBot.viewByTitle("Properties").bot().text().setText("50");
+		
+		// Click in diagram outside of component first
+		// Workaround for issue where diagram component does not populate 
+		// properties view if selected right after creation
+		editor.rootEditPart().click();
+		editor.click(SIG_GEN);
+		propTable = gefBot.viewByTitle("Properties").bot().tree();
+		magItem = propTable.getTreeItem("magnitude");
+		Assert.assertEquals("Property has wrong value", "50.0", magItem.cell(1));
+	}
+
+	/**
+	 * IDE-1205 Make sure properties match whether component is selected in diagram or SCA Explorer.
+	 */
+	@Test
+	public void changePropertiesInChalkboardDiagram() {
+		bot.closeAllEditors();
+		final String[] waveformPath = ScaExplorerTestUtils.joinPaths(DOMAIN_WAVEFORM_PARENT_PATH, new String[] {DOMAIN_WAVEFORM});
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM, DiagramType.GRAPHITI_CHALKBOARD);
+		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
+		SWTBotTree propTable;
+		editor.setFocus();
+		
+		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
+		
+		// Click in diagram outside of component first
+		// Workaround for issue where diagram component does not populate 
+		// properties view if selected right after creation
+		editor.rootEditPart().click();
+		editor.click(SIG_GEN);
+
+		propTable = ViewUtils.activateFirstPropertiesTab(gefBot);
+
+		SWTBotTreeItem magItem = propTable.getTreeItem("magnitude");
+		Assert.assertEquals(magItem.cell(1), "100.0");
+		magItem.select().click(1);
+		gefBot.viewByTitle("Properties").bot().text().setText("50");
+		
+		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, waveformPath, SIG_GEN_1).select().click();
+		propTable = gefBot.viewByTitle("Properties").bot().tree();
+		magItem = propTable.getTreeItem("magnitude");
+		Assert.assertEquals("Property has wrong value", "50.0", magItem.cell(1));
+		
 	}
 }
