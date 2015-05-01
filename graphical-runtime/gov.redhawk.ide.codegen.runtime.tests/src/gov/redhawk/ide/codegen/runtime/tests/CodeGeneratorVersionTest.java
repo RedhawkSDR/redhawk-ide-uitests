@@ -39,11 +39,6 @@ public class CodeGeneratorVersionTest extends UITest {
 	private SWTBotEditor editor;
 	private SWTBotText typeText;
 
-	@BeforeClass
-	public static void beforeClassSetup() {
-		StandardTestActions.configurePyDev(new SWTWorkbenchBot());
-	}
-
 	@Test
 	public void generatorVersionTest() {
 
