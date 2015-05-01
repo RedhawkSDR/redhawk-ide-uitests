@@ -22,18 +22,19 @@ import org.junit.After;
 import org.junit.Before;
 
 /**
- * Before: Starts a domain, dev mgr, launches a waveform, and opens the waveform's Graphiti runtime editor.
+ * Before: Starts a domain, device manager, launches a waveform, and opens the waveform's Graphiti runtime editor.
  * After: Releases the waveform if it's still running and ensures it shuts down.
  */
 public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntimeTest {
 
-	public static final String[] DOMAIN_WAVEFORM_PARENT_PATH = { "REDHAWK_DEV CONNECTED", "Waveforms" };
 	public static final String DOMAIN_WAVEFORM = "ExampleWaveform06";
 	public static final String NAMESPACE_DOMAIN_WAVEFORM = "namespaceWF"; // Contains namespaced components
-	public static final String DOMAIN = "REDHAWK_DEV";
 	public static final String DOMAIN_MANAGER_PROCESS = "Domain Manager";
 	public static final String DEVICE_MANAGER_PROCESS = "Device Manager";
 	public static final String DEVICE_MANAGER = "DevMgr";
+	
+	final String DOMAIN = "SWTBOT_SAD_TEST_" + (int) (1000.0 * Math.random()); // SUPPRESS CHECKSTYLE VisibilityModifier
+	final String[] DOMAIN_WAVEFORM_PARENT_PATH = { DOMAIN + " CONNECTED", "Waveforms" }; // SUPPRESS CHECKSTYLE VisibilityModifier
 	protected SWTGefBot gefBot = new RHTestBot(); // SUPPRESS CHECKSTYLE VisibilityModifier
 	private String waveFormFullName; // full name of waveform that is launched
 
