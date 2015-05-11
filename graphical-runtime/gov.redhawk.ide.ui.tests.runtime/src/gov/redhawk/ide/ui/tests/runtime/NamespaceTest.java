@@ -233,7 +233,7 @@ public class NamespaceTest extends UIRuntimeTest {
 
 		// Wait for the build to finish and any error markers to go away, then close editors
 		bot.waitUntil(new WaitForBuild(), 30000);
-		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), 1200000);
+		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), 120000);
 		bot.closeAllEditors();
 	}
 
