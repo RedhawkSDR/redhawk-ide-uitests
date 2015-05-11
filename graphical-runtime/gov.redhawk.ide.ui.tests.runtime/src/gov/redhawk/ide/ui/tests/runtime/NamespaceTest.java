@@ -25,8 +25,11 @@ import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.model.sca.util.ModelUtil;
+import mil.jpeojtrs.sca.spd.SoftPkg;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
@@ -215,6 +218,11 @@ public class NamespaceTest extends UIRuntimeTest {
 		final String sharedLibraryType = "C++ Library";
 
 		SharedLibraryUtils.createSharedLibraryProject(bot, PREFIX_DOTS + sharedLibraryBaseName, sharedLibraryType);
+
+		// IDE-1239 Double-check the localfile element
+		SoftPkg spd = ModelUtil.getSoftPkg(ResourcesPlugin.getWorkspace().getRoot().getProject(PREFIX_DOTS + sharedLibraryBaseName));
+		Assert.assertEquals("localfile element isn't correct", "cpp/lib", spd.getImplementation("cpp").getCode().getLocalFile().getName());
+
 		generateProjectAndBuild(PREFIX_DOTS + sharedLibraryBaseName, sharedLibraryBaseName + ".cpp");
 
 		exportProject(PREFIX_DOTS + sharedLibraryBaseName);
