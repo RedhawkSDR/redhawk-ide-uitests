@@ -11,6 +11,8 @@
  */
 package gov.redhawk.ide.ui.tests.runtime;
 
+import java.io.File;
+
 import gov.redhawk.ide.sdr.ui.SdrUiPlugin;
 import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.DeviceUtils;
@@ -35,14 +37,41 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * These tests create projects that use a namespace, build them, and install them to SDRROOT. Their presence in the
+ * explorer view is verified, and then they're deleted.
+ */
 public class NamespaceTest extends UIRuntimeTest {
 
 	private static final String PREFIX_DOTS = "runtime.test.";
 
 	SWTBotEditor editor;
+
+	@After
+	public void after() {
+		// Cleanup anything left in the SDRROOT that we installed
+		IPath domPath = SdrUiPlugin.getDefault().getTargetSdrDomPath();
+		final String[] domSubdirs = new String[] { "components/runtime", "waveforms/runtime", "deps/runtime" };
+		for (String subdir : domSubdirs) {
+			File dir = domPath.append(subdir).toFile();
+			if (dir.isDirectory()) {
+				dir.delete();
+			}
+		}
+
+		IPath devPath = SdrUiPlugin.getDefault().getTargetSdrDevPath();
+		final String[] devSubdirs = new String[] { "devices/runtime", "services/runtime", "nodes/runtime" };
+		for (String subdir: devSubdirs) {
+			File dir = devPath.append(subdir).toFile();
+			if (dir.isDirectory()) {
+				dir.delete();
+			}
+		}
+	}
 
 	/**
 	 * IDE-1122, IDE-1182, IDE-1183, IDE-1185
