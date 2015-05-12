@@ -21,6 +21,7 @@ import mil.jpeojtrs.sca.spd.SoftPkg;
 
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
@@ -36,6 +37,7 @@ public class PortsTabTest extends UITest {
 	static final String PROG_LANG_CPP  = "C++";
 	static final String FIELD_NAME        = "Name*:";
 	static final String FIELD_DESCRIPTION = "Description:";
+	static final String COMBO_DIRECTION   = "Direction:";
 	static final String BUTTON_ADD     = "Add";
 	static final String BUTTON_REMOVE  = "Remove";
 	static final String IDL_MODULE     = "IDETEST";
@@ -81,6 +83,8 @@ public class PortsTabTest extends UITest {
 		ComponentEditor spdEditor = (ComponentEditor) editor.getReference().getEditor(false);
 		this.spd = SoftPkg.Util.getSoftPkg(spdEditor.getMainResource());
 		this.page = spdEditor.getPortsPage();
+		
+		checkNoPortDetails();
 	}
 
 	protected void assertFormValid() {
@@ -98,7 +102,7 @@ public class PortsTabTest extends UITest {
 		editorBot.button(BUTTON_ADD).click();
 
 		editorBot.textWithLabel(FIELD_NAME).setText("inTestPort");
-		editorBot.comboBoxWithLabel("Direction:").setSelection("in <provides>");
+		editorBot.comboBoxWithLabel(COMBO_DIRECTION).setSelection("in <provides>");
 		bot.waitUntil(selectTestIDLCondition);
 
 		// Check type table
@@ -152,13 +156,15 @@ public class PortsTabTest extends UITest {
 			xmlText.matches("(?s).* <provides repid=\"" + EXPECTED_IDL_SAMPLE1 + "\" providesname=\"bidirTestPort\">" + ".*"));
 		Assert.assertTrue("bidir Port (bidirTestPort) created uses Port in XML",
 			xmlText.matches("(?s).* <uses repid=\"" + EXPECTED_IDL_SAMPLE1 + "\" usesname=\"bidirTestPort\">" + ".*"));
+		
+		checkNoPortDetails();
 	}
 
 	@Test
 	public void testEditPort() {
 		editorBot.button(BUTTON_ADD).click();
 		editorBot.textWithLabel(FIELD_NAME).setText("inTestPort");
-		editorBot.comboBoxWithLabel("Direction:").setSelection("in <provides>");
+		editorBot.comboBoxWithLabel(COMBO_DIRECTION).setSelection("in <provides>");
 		bot.waitUntil(selectTestIDLCondition);
 
 		// Test double-clicking on the port in the table, then bailing out
@@ -197,16 +203,43 @@ public class PortsTabTest extends UITest {
 		Assert.assertFalse("Remove button should be disabled", editorBot.button(BUTTON_REMOVE).isEnabled());
 
 		editorBot.button(BUTTON_ADD).click();
+		editorBot.label("Port Details"); // make sure this does not cause a WidgetNotFoundException
+
 		// fill in required Port details
 		editorBot.textWithLabel(FIELD_NAME).setText("inTestPortToRemove");
-		editorBot.comboBoxWithLabel("Direction:").setSelection("in <provides>");
+		editorBot.comboBoxWithLabel(COMBO_DIRECTION).setSelection("in <provides>");
 
 		bot.table().select(0);
 		editorBot.button(BUTTON_REMOVE).click();
 
 		Assert.assertEquals("Removed Port", 0, bot.table().rowCount());
-		
+		Assert.assertFalse("Remove button should be disabled #2", editorBot.button(BUTTON_REMOVE).isEnabled());
+
 		assertFormValid();
+		checkNoPortDetails();
 	}
 
+	private void checkNoPortDetails() {
+		final long origTimeout = SWTBotPreferences.TIMEOUT;
+		SWTBotPreferences.TIMEOUT = 500; // reduce time to find widget from 5s default
+		try {
+			try {
+				editorBot.label("Port Details");
+				Assert.fail("Found Port Details section - label");
+			} catch (WidgetNotFoundException ex) {
+				// PASS
+			}
+	
+			try {
+				editorBot.textWithLabel(FIELD_NAME);
+				Assert.fail("Found Port Details section - name field");
+			} catch (WidgetNotFoundException ex) {
+				// PASS
+			}
+	
+			Assert.assertTrue("No Port Details section", true);
+		} finally {
+			SWTBotPreferences.TIMEOUT = origTimeout; // restore original timeout
+		}
+	}
 }
