@@ -22,7 +22,7 @@ import org.junit.Test;
  * IDE-980. Ensures that if a service implements an interface that derives from CF/PortSupplier then the button to add a
  * port in the component editor will be enabled.
  */
-public class ServiceAddPort extends UITest {
+public class ServiceAddPortTest extends UITest {
 	
 	static final String PORTS_TAB_NAME = "Ports";
 
