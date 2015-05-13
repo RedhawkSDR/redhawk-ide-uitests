@@ -16,6 +16,7 @@ import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -55,6 +56,7 @@ public class ServiceAddPortTest extends UITest {
 	 * CF/PortSupplier.
 	 */
 	@Test
+	@Ignore("IDE-1272 known issue")
 	public void testAddForNonPortSupplier() {
 		ServiceUtils.createServiceProject(bot, "TestProject", "IDL:CF/LifeCycle:1.0", "Java");
 		bot.waitUntil(new WaitForEditorCondition());
