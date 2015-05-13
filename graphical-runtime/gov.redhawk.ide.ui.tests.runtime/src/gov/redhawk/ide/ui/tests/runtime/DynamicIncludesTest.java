@@ -37,7 +37,7 @@ import org.junit.Test;
 public class DynamicIncludesTest extends UIRuntimeTest {
 	
 	@Test
-	public void testProj() {
+	public void componentWithSharedLibDep() {
 		String sharedLibraryName = "dsp";
 		String headerToInclude = "RealFIRFilter.h";
 		
@@ -48,12 +48,28 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 		editor = bot.editorByTitle(componentProjectName);
 		setSpdDependency(editor.bot(), editor, sharedLibraryName);
 		generateProjectAndBuild(componentProjectName, sharedLibraryName, headerToInclude);
+	}
+	
+	@Test
+	public void deviceWithSharedLibDep() {
+		String sharedLibraryName = "dsp";
+		String headerToInclude = "RealFIRFilter.h";
+		
+		SWTBotEditor editor = null;
 		
 		String deviceProjectName = "TestDevice";
 		DeviceUtils.createDeviceProject(bot, deviceProjectName, "C++");
 		editor = bot.editorByTitle(deviceProjectName);
 		setSpdDependency(editor.bot(), editor, sharedLibraryName);
 		generateProjectAndBuild(deviceProjectName, sharedLibraryName, headerToInclude);
+	}
+	
+	@Test
+	public void sharedLibWithSharedLibDep() {
+		String sharedLibraryName = "dsp";
+		String headerToInclude = "RealFIRFilter.h";
+		
+		SWTBotEditor editor = null;
 		
 		String sharedLibraryProjectName = "TestSharedLibrary";
 		SharedLibraryUtils.createSharedLibraryProject(bot, sharedLibraryProjectName, "C++ Library");
