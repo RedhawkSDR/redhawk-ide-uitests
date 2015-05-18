@@ -44,7 +44,7 @@ public class PortsTabTest extends UITest {
 	static final String EXPECTED_IDL_SAMPLE1 = "IDL:IDETEST/SampleInterface:1.0";
 	static final String EXPECTED_IDL_SAMPLE2 = "IDL:IDETEST/SampleInterface2:1.0";
 	
-	static final String projectName = "TestCppComponent";
+	static final String PROJECT_NAME = "TestCppComponent";
 
 	private SWTBot editorBot;
 
@@ -72,7 +72,7 @@ public class PortsTabTest extends UITest {
 	public void before() throws Exception {
 		super.before();
 
-		ComponentUtils.createComponentProject(bot, projectName, PROG_LANG_CPP);
+		ComponentUtils.createComponentProject(bot, PROJECT_NAME, PROG_LANG_CPP);
 		bot.waitUntil(new WaitForEditorCondition());
 
 		SWTBotEditor editor = bot.activeEditor();
@@ -142,7 +142,7 @@ public class PortsTabTest extends UITest {
 		Assert.assertEquals("Description of inTestPort", expectedDescriptionText, editorBot.styledTextWithLabel(FIELD_DESCRIPTION).getText());
 		
 		// Check that valid XML was generated in SCD file
-		this.editorBot.cTabItem(projectName + ".scd.xml").activate();
+		this.editorBot.cTabItem(PROJECT_NAME + ".scd.xml").activate();
 		String xmlText = editorBot.styledText().getText();
 		Assert.assertTrue("provides Port (inTestPort) in XML",
 			xmlText.matches("(?s).* <provides repid=\"" + EXPECTED_IDL_SAMPLE1 + "\" providesname=\"inTestPort\">" + ".*"));
