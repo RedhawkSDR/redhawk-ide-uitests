@@ -85,6 +85,12 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 
 		// Default file editor should open
 		SWTBotEditor textEditor = bot.editorByTitle(projectName+".cpp");
+		
+		// Sometimes the comment block does not collapse fast enough and the include gets put in the wrong spot.
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+		}
 		textEditor.toTextEditor().insertText(3, 0, "#include \"" + headerToInclude + "\"");
 		textEditor.save();
 		
@@ -92,17 +98,26 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 		StandardTestActions.buildAll();
 		
 		// Wait for the build to finish and any error markers to go away, then close editors
+		// One second sleep to make sure the error markers have shown up
 		try {
+			Thread.sleep(1000);
 			textEditor.bot().waitUntil(new WaitForBuild(), 30000);
 		} catch (TimeoutException e) {
 			Assert.fail("Failed while waiting for the build to complete for: " + projectName);
+		} catch (InterruptedException e) {
+			Assert.fail("Failed while waiting for the build to complete for: " + projectName);
 		}
-		
+
+		// One second sleep to make sure the error markers have shown up		
 		try {
+			Thread.sleep(1000);
 			textEditor.bot().waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), 120000);
 		} catch (TimeoutException e) {
 			Assert.fail("Failed due severity markers being present on: " + projectName);
+		} catch (InterruptedException e) {
+			Assert.fail("Failed due severity markers being present on: " + projectName);
 		}
+		
 		
 		bot.closeAllEditors();
 	}
