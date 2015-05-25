@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This file is protected by Copyright. Please refer to the COPYRIGHT file 
-  distributed with this source distribution. This file is part of REDHAWK IDE. 
-  All rights reserved. This program and the accompanying materials are made 
-  available under the terms of the Eclipse Public License v1.0 which accompanies 
+<!-- This file is protected by Copyright. Please refer to the COPYRIGHT file
+  distributed with this source distribution. This file is part of REDHAWK IDE.
+  All rights reserved. This program and the accompanying materials are made
+  available under the terms of the Eclipse Public License v1.0 which accompanies
   this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html. -->
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
@@ -32,7 +32,6 @@
     <gov.redhawk.ide.product>http://download.redhawksdr.org/gov.redhawk.ide.product/releases/2.0</gov.redhawk.ide.product>
     <swt-bot>http://download.eclipse.org/technology/swtbot/releases/latest/</swt-bot>
     <jacorb>http://download.redhawksdr.org/jacorb/updates/stable</jacorb>
-    <logback>http://download.redhawksdr.org/logback/latest</logback>
     <pydev>http://pydev.org/updates/</pydev>
     <nebula>http://download.eclipse.org/technology/nebula/archives/Q32014/release</nebula>
     <idl-editor>http://download.redhawksdr.org/idl-editor</idl-editor>
@@ -118,12 +117,6 @@
       <id>org.omg.jacorb</id>
       <layout>p2</layout>
       <url>${jacorb}</url>
-    </repository>
-
-    <repository>
-      <id>logback</id>
-      <layout>p2</layout>
-      <url>${logback}</url>
     </repository>
 
     <repository>
