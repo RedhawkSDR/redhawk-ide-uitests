@@ -42,7 +42,7 @@ public class PortMonitorViewTest extends UIRuntimeTest {
 	public void beforeTest() {
 		gefBot = new SWTGefBot();
 		ScaExplorerTestUtils.launchWaveformFromTargetSDR(gefBot, WAVEFORM_NAME);
-		ScaExplorerTestUtils.waitUntilWaveformAppearsInScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
 		waveFormFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
 	}
 
@@ -78,7 +78,7 @@ public class PortMonitorViewTest extends UIRuntimeTest {
 			ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
 
 			// wait until waveform no longer exists
-			ScaExplorerTestUtils.waitUntilScaExplorerWaveformDisappears(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
+			ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
 		}
 	}
 
