@@ -15,7 +15,7 @@ import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
-import gov.redhawk.ide.swtbot.diagram.RHTestBotEditor;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
@@ -91,7 +91,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 
 		// Add namespaced component to the chalkboard
 		String nameSpaceComp = "name.space.comp";
-		DiagramTestUtils.addFromPaletteToDiagramWithNameSpace((RHTestBotEditor) editor, nameSpaceComp, 200, 300);
+		DiagramTestUtils.addFromPaletteToDiagramWithNameSpace((RHBotGefEditor) editor, nameSpaceComp, 200, 300);
 		Assert.assertNotNull(editor.getEditPart(nameSpaceComp));
 	}
 

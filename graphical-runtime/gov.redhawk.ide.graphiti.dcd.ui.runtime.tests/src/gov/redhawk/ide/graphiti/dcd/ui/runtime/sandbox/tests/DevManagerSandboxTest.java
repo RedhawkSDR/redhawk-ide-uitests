@@ -14,7 +14,7 @@ package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 import gov.redhawk.ide.graphiti.dcd.ext.impl.DeviceShapeImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.diagram.RHTestBotEditor;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
@@ -45,7 +45,7 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 
 		// Add namespaced component to the chalkboard
 		String nameSpaceDevice = "name.space.device";
-		DiagramTestUtils.addFromPaletteToDiagramWithNameSpace((RHTestBotEditor) editor, nameSpaceDevice, 200, 300);
+		DiagramTestUtils.addFromPaletteToDiagramWithNameSpace((RHBotGefEditor) editor, nameSpaceDevice, 200, 300);
 		Assert.assertNotNull(editor.getEditPart(nameSpaceDevice));
 	}
 
