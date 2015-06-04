@@ -180,7 +180,7 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		propTable = gefBot.viewByTitle("Properties").bot().tree();
 		final SWTBotTreeItem magItemDiagram = propTable.getTreeItem("magnitude");
 
-		// Wait for the property to update - there's a delay since we're going explorer -> chalkboard
+		// Wait for the property to update - there's a delay since we're going chalkboard -> explorer for a component in a domain
 		bot.waitUntil(new WaitForCellValue(magItemDiagram, 1, "50.0"), 15000);
 	}
 
@@ -215,7 +215,7 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		propTable = gefBot.viewByTitle("Properties").bot().tree();
 		final SWTBotTreeItem magItemExplorer = propTable.getTreeItem("magnitude");
 		
-		// Wait for the property to update - there's a delay since we're going chalkboard -> explorer
+		// Wait for the property to update - there's a delay since we're going chalkboard -> explorer for a component in a domain
 		bot.waitUntil(new WaitForCellValue(magItemExplorer, 1, "50.0"), 15000);
 	}
 }
