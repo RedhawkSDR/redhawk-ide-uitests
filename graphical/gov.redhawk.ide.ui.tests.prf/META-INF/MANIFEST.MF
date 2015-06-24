@@ -3,9 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Prf
 Bundle-SymbolicName: gov.redhawk.ide.ui.tests.prf
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: gov.redhawk.ide.ui.tests.prf.PrfTestsActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  gov.redhawk.ide.swtbot
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ActivationPolicy: lazy
