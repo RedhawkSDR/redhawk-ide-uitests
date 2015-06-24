@@ -39,9 +39,7 @@ public class CodeGeneratorVersionTest extends UITest {
 
 	@Test
 	public void generatorVersionTest() {
-
 		ComponentUtils.createComponentProject(bot, compName, compLanguage);
-		ProjectExplorerUtils.openProjectInEditor(bot, compName, compSpd);
 
 		typeText = bot.textWithLabel("Type:");
 		Assert.assertEquals("Type is not set to default value", defaultTypeText, typeText.getText());
@@ -64,7 +62,7 @@ public class CodeGeneratorVersionTest extends UITest {
 
 		// Generate using Project > Generate Component menu
 		openProjectAndConfirmDefault();
-		bot.menu("Project").menu("Generate Component").click();
+		bot.menu("Generate Component", true).click();
 		completeGenerateWizard();
 		assertCodegenVersionUpdated();
 		resetTypeToDefault();
@@ -90,6 +88,7 @@ public class CodeGeneratorVersionTest extends UITest {
 	private void openProjectAndConfirmDefault() {
 		ProjectExplorerUtils.openProjectInEditor(bot, compName, compSpd);
 		editor = bot.editorByTitle(compName);
+		editor.setFocus();
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.OVERVIEW_TAB);
 		typeText = bot.textWithLabel("Type:");
 		Assert.assertEquals("Type was not reset to default value", defaultTypeText, typeText.getText());
