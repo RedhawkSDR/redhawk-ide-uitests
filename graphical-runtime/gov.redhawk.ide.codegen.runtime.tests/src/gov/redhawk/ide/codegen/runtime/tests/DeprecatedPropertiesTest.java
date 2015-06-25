@@ -28,7 +28,7 @@ public class DeprecatedPropertiesTest extends UITest {
 
 	private final String compName = "DeprecatedPropertiesTest";
 	private final String compLanguage = "Python";
-	private String compPrf = compName + ".prf.xml";
+	private final String compPrf = compName + ".prf.xml";
 
 	/**
 	 * IDE-1235. Tests upgrading a project with 'configure' and 'execparam' properties.
