@@ -1,11 +1,11 @@
 /*******************************************************************************
- * This file is protected by Copyright. 
+ * This file is protected by Copyright.
  * Please refer to the COPYRIGHT file distributed with this source distribution.
  *
  * This file is part of REDHAWK IDE.
  *
- * All rights reserved.  This program and the accompanying materials are made available under 
- * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at 
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
@@ -47,7 +47,7 @@ public class PortPropertiesTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart part;
 		SWTBotTree tree;
 		String description;
-		
+
 		part = getAnchorPart(DiagramTestUtils.getDiagramProvidesPort(editor, onlyComponent));
 		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
 		editor.select(part);
@@ -58,7 +58,7 @@ public class PortPropertiesTest extends AbstractGraphitiTest {
 		tree = gefBot.viewByTitle("Properties").bot().tree();
 		tree.expandNode("dataFloat");
 		Assert.assertTrue("Properties view tree should have multiple nodes", tree.visibleRowCount() > 1);
-		
+
 		part = getAnchorPart(DiagramTestUtils.getDiagramUsesPort(editor, onlyComponent));
 		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
 		editor.select(part);
@@ -70,8 +70,8 @@ public class PortPropertiesTest extends AbstractGraphitiTest {
 		tree.expandNode("dataFloat");
 		Assert.assertTrue("Properties view tree should have multiple nodes", tree.visibleRowCount() > 1);
 	}
-	
-	
+
+
 	private SWTBotGefEditPart getAnchorPart(SWTBotGefEditPart parent) {
 		if (parent.part().getModel() instanceof Anchor) {
 			return parent;
@@ -84,7 +84,7 @@ public class PortPropertiesTest extends AbstractGraphitiTest {
 		}
 		return null;
 	}
-	
+
 	private void selectPropertiesTab(String label) {
 		Matcher<TabbedPropertyList> matcher = new BaseMatcher<TabbedPropertyList>() {
 
@@ -99,7 +99,7 @@ public class PortPropertiesTest extends AbstractGraphitiTest {
 			@Override
 			public void describeTo(Description description) {
 			}
-			
+
 		};
 		TabbedPropertyList list = (TabbedPropertyList) gefBot.viewByTitle("Properties").bot().widget(matcher);
 		int numElements = list.getNumberOfElements();
@@ -107,7 +107,7 @@ public class PortPropertiesTest extends AbstractGraphitiTest {
 			final TabbedPropertyList.ListElement element = (ListElement) list.getElementAt(index);
 			if (label.equals(element.getTabItem().getText())) {
 				Display.getDefault().syncExec(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						element.setSelected(true);
