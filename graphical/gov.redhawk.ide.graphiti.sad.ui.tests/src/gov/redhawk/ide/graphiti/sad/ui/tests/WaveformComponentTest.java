@@ -55,7 +55,8 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	private SWTBotGefEditor editor;
 	private String waveformName;
 	private static final String HARD_LIMIT = "HardLimit";
-	private static final String[] COMPONENTS = { "DataConverter", "HardLimit", "SigGen" };
+	private static final String SIG_GEN = "SigGen";
+	private static final String[] COMPONENTS = { "DataConverter", HARD_LIMIT, SIG_GEN };
 
 	private static final String[] TARGET_SDR_ITEMS_NOT_IN_PALETTE = { "fftlib", "RedhawkDevUtils" };
 
@@ -145,7 +146,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 
 		// Check pictogram elements
 		SWTBotGefEditPart hostCoEditPart = editor.getEditPart(HOST_CO_NAME);
-		Assert.assertNotNull(HOST_CO_NAME + "edit part not found", hostCoEditPart);
+		Assert.assertNotNull(HOST_CO_NAME + " edit part not found", hostCoEditPart);
 		ContainerShape hostCollocationContainerShape = (ContainerShape) hostCoEditPart.part().getModel();
 		String shapeType = Graphiti.getPeService().getPropertyValue(hostCollocationContainerShape, DUtil.SHAPE_TYPE);
 		Assert.assertTrue("Host Collocation property is missing or wrong", shapeType.equals(HostCollocationPattern.HOST_COLLOCATION_OUTER_CONTAINER_SHAPE));
@@ -184,11 +185,12 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void checkChangesToPropertiesReflectedInSad() {
+		final String componentName = SIG_GEN;
 		waveformName = "IDE-728-Test";
 
-		WaveformUtils.createNewWaveformWithAssemblyController(gefBot, waveformName, HARD_LIMIT);
+		WaveformUtils.createNewWaveformWithAssemblyController(gefBot, waveformName, componentName);
 		editor = gefBot.gefEditor(waveformName);
-		editor.getEditPart(HARD_LIMIT).click();
+		editor.getEditPart(componentName).click();
 		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
 		String propertyname = gefBot.viewByTitle("Properties").bot().tree().cell(0, "Property").toString();
 		String newValue = "0.0";
@@ -198,7 +200,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 				break;
 			}
 		}
-		editor.getEditPart(HARD_LIMIT).click();
+		editor.getEditPart(componentName).click();
 		MenuUtils.save(editor);
 		String regex = DiagramTestUtils.regexStringForProperty(propertyname, newValue);
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -559,7 +561,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	 * @param gefEditPart
 	 */
 	private static void assertHardLimit(SWTBotGefEditPart gefEditPart) {
-		Assert.assertNotNull(gefEditPart);
+		Assert.assertNotNull("gefEditPart is not null for HardLimit", gefEditPart);
 		// Drill down to graphiti component shape
 		ComponentShapeImpl componentShape = (ComponentShapeImpl) gefEditPart.part().getModel();
 
@@ -578,9 +580,9 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		// HardLimit only has the two ports
 		Assert.assertTrue(componentShape.getUsesPortStubs().size() == 1 && componentShape.getProvidesPortStubs().size() == 1);
 
-		// Both ports are of type dataDouble
-		Assert.assertEquals(componentShape.getUsesPortStubs().get(0).getUses().getInterface().getName(), "dataDouble");
-		Assert.assertEquals(componentShape.getProvidesPortStubs().get(0).getProvides().getInterface().getName(), "dataDouble");
+		// Both ports are of type dataFloat
+		Assert.assertEquals("dataFloat", componentShape.getUsesPortStubs().get(0).getUses().getInterface().getName());
+		Assert.assertEquals("dataFloat", componentShape.getProvidesPortStubs().get(0).getProvides().getInterface().getName());
 	}
 
 }
