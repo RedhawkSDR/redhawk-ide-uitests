@@ -1,11 +1,11 @@
 /*******************************************************************************
- * This file is protected by Copyright. 
+ * This file is protected by Copyright.
  * Please refer to the COPYRIGHT file distributed with this source distribution.
  *
  * This file is part of REDHAWK IDE.
  *
- * All rights reserved.  This program and the accompanying materials are made available under 
- * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at 
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
@@ -115,9 +115,8 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		editor = gefBot.gefEditor(waveformName);
 
 		// Add additional components to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, componentOne, 100, 100);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, componentTwo, 100, 250);
-
+		DiagramTestUtils.addFromPaletteToDiagram(editor, componentOne, 10,  150);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, componentTwo, 200, 10);
 		// Get component objects
 		SadComponentInstantiation compNoStartOrderObj = DiagramTestUtils.getComponentObject(editor, compNoStartOrder);
 		SadComponentInstantiation componentOneObj = DiagramTestUtils.getComponentObject(editor, componentOne);
@@ -127,6 +126,8 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		MenuUtils.save(editor);
 		Assert.assertNull("Start Order should be null", compNoStartOrderObj.getStartOrder());
 		Assert.assertTrue("Assembly controller was not updated correctly", ComponentUtils.isAssemblyController(gefBot, editor, compNoStartOrder));
+		Assert.assertNotNull(componentOne + " exists on diagram", componentOneObj);
+		Assert.assertNotNull(componentTwo + " exists on diagram", componentTwoObj);
 		Assert.assertEquals("Start order is incorrect", BigInteger.ONE, componentOneObj.getStartOrder());
 		Assert.assertEquals("Start order is incorrect", 2, componentTwoObj.getStartOrder().intValue());
 
@@ -205,7 +206,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 
 	/**
 	 * IDE-695
-	 * When using the Overview Tab to change the assembly controller, the start order icons 
+	 * When using the Overview Tab to change the assembly controller, the start order icons
 	 * for all components should update the next time the diagram is viewed
 	 */
 	@Test
