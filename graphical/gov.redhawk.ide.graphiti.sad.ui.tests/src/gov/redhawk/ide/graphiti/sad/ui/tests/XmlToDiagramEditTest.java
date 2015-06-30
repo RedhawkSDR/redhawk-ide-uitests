@@ -112,15 +112,16 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		editor = gefBot.gefEditor(waveformName);
 
 		// Add components to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 0);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 0, 100);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 10);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 10);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 0, 150);
 
 		// Get port edit parts
 		SWTBotGefEditPart sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN);
 		SWTBotGefEditPart hardLimitProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, sigGenUsesEditPart, hardLimitProvidesEditPart);
 		MenuUtils.save(editor);
+bot.sleep(5000);
 		Assert.assertEquals("Wrong number of connections before edit", 1, DiagramTestUtils.getSourceConnectionsFromPort(editor, DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN)).size());
 
 		// Edit content of sad.xml
@@ -171,7 +172,7 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		UsesPortStub usesPort = (UsesPortStub) DUtil.getBusinessObject(connection.getStart());
 		Assert.assertEquals("Connection uses port not correct", usesPort, DUtil.getBusinessObject((ContainerShape) sigGenUsesEditPart.part().getModel()));
 
-		final SWTBotGefEditPart dataConverterProvidesPort = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER, "dataDouble");
+		final SWTBotGefEditPart dataConverterProvidesPort = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER, "dataFloat");
 		ProvidesPortStub providesPort = (ProvidesPortStub) DUtil.getBusinessObject(connection.getEnd());
 		Assert.assertEquals("Connect provides port not correct", DUtil.getBusinessObject((ContainerShape) dataConverterProvidesPort.part().getModel()),
 			providesPort);
