@@ -1,11 +1,11 @@
 /*******************************************************************************
- * This file is protected by Copyright. 
+ * This file is protected by Copyright.
  * Please refer to the COPYRIGHT file distributed with this source distribution.
  *
  * This file is part of REDHAWK IDE.
  *
- * All rights reserved.  This program and the accompanying materials are made available under 
- * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at 
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
@@ -429,7 +429,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		// Test how many components are contained in the host collocation bounds
 		Assert.assertTrue(UNEXPECTED_NUM_COMPONENTS, hostCo.getComponentPlacement().size() == numContainedShapes);
 	}
-	
+
 	/**
 	 * IDE-698
 	 * Host Collocation resize should not execute if a Find By object would end up inside the contained
