@@ -57,6 +57,7 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 
 		// Add components to diagram from palette
 		editor = gefBot.gefEditor(waveformName);
+		DiagramTestUtils.maximizeActiveWindow(gefBot);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_READER, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 150);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 300, 150);
