@@ -1,11 +1,11 @@
 /*******************************************************************************
- * This file is protected by Copyright. 
+ * This file is protected by Copyright.
  * Please refer to the COPYRIGHT file distributed with this source distribution.
  *
  * This file is part of REDHAWK IDE.
  *
- * All rights reserved.  This program and the accompanying materials are made available under 
- * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at 
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
@@ -131,9 +131,9 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		String editorText = editor.toTextEditor().getText();
 
 		String newConnection = "</assemblycontroller> <connections> <connectinterface id=\"connection_1\"> "
-			+ "<usesport> <usesidentifier>out</usesidentifier> <componentinstantiationref refid=\"SigGen_1\"/>"
-			+ "</usesport> <providesport> <providesidentifier>dataDouble_in</providesidentifier> "
-			+ "<componentinstantiationref refid=\"HardLimit_1\"/> </providesport> </connectinterface> </connections>";
+			+ "<usesport> <usesidentifier>dataFloat_out</usesidentifier> <componentinstantiationref refid=\"SigGen_1\"/> </usesport> "
+			+ "<providesport> <providesidentifier>dataFloat_in</providesidentifier> "
+			+ " <componentinstantiationref refid=\"HardLimit_1\"/> </providesport> </connectinterface> </connections>";
 		editorText = editorText.replace("</assemblycontroller>", newConnection);
 		editor.toTextEditor().setText(editorText);
 		MenuUtils.save(editor);
@@ -145,7 +145,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart hardLimitProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARDLIMIT);
 
 		sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, sigGenUsesEditPart);
-		Assert.assertFalse("Connection should exist", sourceConnections.isEmpty());
+		Assert.assertFalse("Connection should exist size=" + sourceConnections.size(), sourceConnections.isEmpty());
 
 		Connection connection = (Connection) sourceConnections.get(0).part().getModel();
 		UsesPortStub usesPort = (UsesPortStub) DUtil.getBusinessObject(connection.getStart());
@@ -217,7 +217,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		waveformName = "Add_FindBy_Xml";
 		final String SIGGEN_NAME = "SigGen";
 		final String SIGGEN_REF = SIGGEN_NAME + "_1";
-		final String SIGGEN_PORT = "out";
+		final String SIGGEN_PORT = "dataFloat_out";
 		final String FIND_BY_NAME = "FindByName";
 		final String FBN_PORT_NAME = "NamePort";
 		final String FIND_BY_SERVICE = "FindByService";
@@ -331,17 +331,17 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		// Confirm that no external ports exist in diagram
 		SWTBotGefEditPart hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARDLIMIT);
 		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, false);
-		
+
 		//switch to overview tab and verify there are no external ports
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
 		Assert.assertEquals("There are external ports", 0, bot.table(0).rowCount());
-		
+
 		// Edit content of sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
 		String editorText = editor.toTextEditor().getText();
 
 		String externalports = "</assemblycontroller> <externalports><port>"
-			+ "<usesidentifier>dataDouble_out</usesidentifier>"
+			+ "<usesidentifier>dataFloat_out</usesidentifier>"
 			+ "<componentinstantiationref refid=\"HardLimit_1\"/>"
 			+ "</port> </externalports>";
 		editorText = editorText.replace("</assemblycontroller>", externalports);
@@ -354,12 +354,12 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		//assert port set to external in diagram
 		hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARDLIMIT);
 		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, true);
-		
+
 		//switch to overview tab and verify there are external ports
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
 		Assert.assertEquals("There are no external ports", 1, bot.table(0).rowCount());
 	}
-	
+
 	/**
 	 * IDE-124
 	 * Add use device to the diagram via the sad.xml
