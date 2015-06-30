@@ -17,8 +17,10 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("This is a runtime test (not design time). TODO: move under graphical-runtime")
 public class UnknownPortTest extends AbstractGraphitiTest {
 
 	private static final String COMP_NAME = "testIDE1095"; 
@@ -39,7 +41,7 @@ public class UnknownPortTest extends AbstractGraphitiTest {
 	@Test
 	public void confirmPortsAreDisplayed() {
 		
-		// Launch device from TargetSDR
+		// Launch from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, COMP_NAME, "python");
 		final String[] chalkboardPath = ScaExplorerTestUtils.joinPaths(CHALKBOARD_PARENT_PATH, new String[] {CHALKBOARD});
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, chalkboardPath, COMP_NAME);
