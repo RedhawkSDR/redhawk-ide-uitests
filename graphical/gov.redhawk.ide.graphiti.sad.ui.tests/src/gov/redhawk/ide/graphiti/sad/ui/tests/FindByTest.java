@@ -50,8 +50,8 @@ public class FindByTest extends AbstractGraphitiTest {
 		waveformName = "FindBy_Pictogram";
 		final String SIGGEN = "SigGen";
 		final String findByName = "FindBy";
-		final String[] provides = { "dataDouble_in" };
-		final String[] uses = { "dataDouble_out" };
+		final String[] provides = { "dataFloat_in" };
+		final String[] uses = { "dataFloat_out" };
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
@@ -185,7 +185,7 @@ public class FindByTest extends AbstractGraphitiTest {
 		final String newFindByName = "NewFindByName";
 		final String[] provides = { "data_in" };
 		final String[] uses = { "data_out" };
-		final String NEW_USES_PORT = "dataDouble_out";
+		final String NEW_USES_PORT = "dataFloat_out";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
@@ -252,7 +252,7 @@ public class FindByTest extends AbstractGraphitiTest {
 		UsesPortStub connectionSource = (UsesPortStub) DUtil.getBusinessObject(connection.getStart());
 		ProvidesPortStub connectionTarget = (ProvidesPortStub) DUtil.getBusinessObject(connection.getEnd());
 		Assert.assertEquals("Connection source incorrect", uses[0], connectionSource.getName());
-		Assert.assertEquals("Connection target incorrect", "dataDouble_in", connectionTarget.getName());
+		Assert.assertEquals("Connection target incorrect", "dataFloat_in", connectionTarget.getName());
 	}
 
 	/**
