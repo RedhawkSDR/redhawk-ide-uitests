@@ -8,19 +8,17 @@
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at 
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package gov.redhawk.ide.graphiti.sad.ui.tests;
-
-import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore("This is a runtime test (not design time). TODO: move under graphical-runtime")
+import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+
 public class UnknownPortTest extends AbstractGraphitiTest {
 
 	private static final String COMP_NAME = "testIDE1095"; 
