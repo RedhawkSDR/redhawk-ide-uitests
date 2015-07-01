@@ -10,6 +10,19 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
+import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
+import org.junit.Assert;
+import org.junit.Test;
+
 import gov.redhawk.ide.graphiti.sad.ui.diagram.patterns.HostCollocationPattern;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
@@ -20,18 +33,6 @@ import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import gov.redhawk.ide.swtbot.diagram.UsesDeviceTestUtils;
 import mil.jpeojtrs.sca.sad.HostCollocation;
 import mil.jpeojtrs.sca.sad.SadComponentPlacement;
-
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class HostCollocationTest extends AbstractGraphitiTest {
 
@@ -68,7 +69,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		Assert.assertNotNull(hostCoEditPart);
 		ContainerShape containerShape = (ContainerShape) hostCoEditPart.part().getModel();
 		String shapeType = Graphiti.getPeService().getPropertyValue(containerShape, DUtil.SHAPE_TYPE);
-		Assert.assertTrue("Host Collocation property is missing or wrong", shapeType.equals(HostCollocationPattern.HOST_COLLOCATION_OUTER_CONTAINER_SHAPE));
+		Assert.assertEquals("Host Collocation property is missing or wrong", HostCollocationPattern.HOST_COLLOCATION_OUTER_CONTAINER_SHAPE, shapeType);
 
 		// Check model object values
 		Object bo = DUtil.getBusinessObject(containerShape);
@@ -336,7 +337,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		oldX = hostCollocationGa.getX() + hostCollocationGa.getWidth();
 		oldY = 0;
 		newX = oldX;
-		newY = hostCollocationGa.getHeight() / 2;
+		newY = (hostCollocationGa.getHeight() / 2) + 50;
 		editor.drag(oldX, oldY, newX, newY);
 		assertShapeLocationAndNumber(hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
 
@@ -414,20 +415,20 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		assertShapeLocationAndNumber(hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
 	}
 
-	private void assertShapeLocationAndNumber(ContainerShape shape1, int shape1X, // SUPPRESS CHECKSTYLE INLINE
-		int shape1Y, ContainerShape shape2, int shape2X, int shape2Y, HostCollocation hostCo, String hostCoName, int numContainedShapes) {
+	private void assertShapeLocationAndNumber(ContainerShape shape1, int shape1X, int shape1Y, // SUPPRESS CHECKSTYLE INLINE
+		ContainerShape shape2, int shape2X, int shape2Y, HostCollocation hostCo, String hostCoName, int numContainedShapes) {
 
 		MenuUtils.save(editor);
 		hostCo = DiagramTestUtils.getHostCollocationObject(editor, hostCoName);
 
-		gefBot.sleep(1000);
+		gefBot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY);
+
+		// Test how many components are contained in the host collocation bounds
+		Assert.assertEquals(UNEXPECTED_NUM_COMPONENTS, numContainedShapes, hostCo.getComponentPlacement().size());
 
 		// Test Position of component shapes
 		Assert.assertTrue(UNEXPECTED_SHAPE_LOCATION, DiagramTestUtils.verifyShapeLocation(shape1, shape1X, shape1Y));
 		Assert.assertTrue(UNEXPECTED_SHAPE_LOCATION, DiagramTestUtils.verifyShapeLocation(shape2, shape2X, shape2Y));
-
-		// Test how many components are contained in the host collocation bounds
-		Assert.assertTrue(UNEXPECTED_NUM_COMPONENTS, hostCo.getComponentPlacement().size() == numContainedShapes);
 	}
 
 	/**
