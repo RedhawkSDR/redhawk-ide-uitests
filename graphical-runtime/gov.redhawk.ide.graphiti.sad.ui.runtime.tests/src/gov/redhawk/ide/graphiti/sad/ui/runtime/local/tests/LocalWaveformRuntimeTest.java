@@ -10,25 +10,24 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
-import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
-import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.diagram.FindByUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
-import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
-
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
+import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.FindByUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
+import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
+
 public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRuntimeTest {
 
-
 	private static final String HARD_LIMIT = "HardLimit";
-	private SWTBotGefEditor editor;
+	private RHBotGefEditor editor;
 
 	/**
 	 * IDE-671
@@ -40,7 +39,7 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 	@Test
 	public void checkLocalWaveformComponents() {
 
-		editor = gefBot.gefEditor(getWaveFormFullName());
+		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 		
 		//verify existing component exists
@@ -58,7 +57,7 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 		// Open the chalkboard with components already launched
 		editor.close();
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, DiagramType.GRAPHITI_CHALKBOARD);
-		editor = gefBot.gefEditor(getWaveFormFullName());
+		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		Assert.assertNotNull(editor.getEditPart(HARD_LIMIT));
 	}
 	
@@ -81,7 +80,7 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, NAMESPACE_LOCAL_WAVEFORM, DiagramType.GRAPHITI_CHALKBOARD);
 		setWaveFormFullName(ScaExplorerTestUtils.getFullNameFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, NAMESPACE_LOCAL_WAVEFORM));
 
-		editor = gefBot.gefEditor(getWaveFormFullName());
+		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 		
 		//verify waveform elements exist
@@ -100,7 +99,7 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 	@Test
 	public void checkFindByNotInSandbox() {
 		
-		editor = gefBot.gefEditor(getWaveFormFullName());
+		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 		
 		String[] findByList = { FindByUtils.FIND_BY_NAME, FindByUtils.FIND_BY_DOMAIN_MANAGER, FindByUtils.FIND_BY_EVENT_CHANNEL,

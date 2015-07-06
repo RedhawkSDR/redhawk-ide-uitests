@@ -10,15 +10,15 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-
 import java.util.List;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 /**
  * Tests that actions performed on a local sandbox waveform in the diagram get reflected in the SCA Explorer view, and
@@ -26,7 +26,7 @@ import org.junit.Test;
  */
 public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformRuntimeTest {
 	
-	private SWTBotGefEditor editor;
+	private RHBotGefEditor editor;
 	private static final String[] LOCAL_WAVEFORM_PARENT_PATH = {"Sandbox"};
 	private static final String LOCAL_WAVEFORM = "ExampleWaveform01";
 	private static final String HARD_LIMIT = "HardLimit";
@@ -39,7 +39,7 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 	 */
 	@Test
 	public void addRemoveComponentInDiagram() {
-		editor = gefBot.gefEditor(getWaveFormFullName());
+		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 		
 		// Add component to diagram from palette
@@ -61,7 +61,7 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 	 */
 	@Test
 	public void addRemoveComponentConnectionInDiagram() {
-		editor = gefBot.gefEditor(getWaveFormFullName());
+		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
 		// Add two components to diagram from palette
@@ -100,7 +100,7 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 	 */
 	@Test
 	public void startStopComponentsFromDiagram() {
-		editor = gefBot.gefEditor(getWaveFormFullName());
+		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
 		// Add two components to diagram from palette
@@ -156,7 +156,7 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 	 */
 	@Test
 	public void addRemoveComponentConnectionInScaExplorer() {
-		editor = gefBot.gefEditor(getWaveFormFullName());
+		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
 		// Add two components to diagram from palette
@@ -189,7 +189,7 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 	 */
 	@Test
 	public void startStopComponentsFromScaExplorer() {
-		editor = gefBot.gefEditor(getWaveFormFullName());
+		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
 		// Launch two components from TargetSDR

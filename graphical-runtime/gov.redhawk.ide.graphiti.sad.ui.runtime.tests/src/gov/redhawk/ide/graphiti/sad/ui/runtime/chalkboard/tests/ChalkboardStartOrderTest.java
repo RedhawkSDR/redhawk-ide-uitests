@@ -11,18 +11,18 @@
  */
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
-import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+
 public class ChalkboardStartOrderTest extends AbstractGraphitiChalkboardTest {
 
-	private SWTBotGefEditor editor;
+	private RHBotGefEditor editor;
 
 	/**
 	 * IDE-326 Test to make sure the Start Order ellipse doesn't not get drawn in the sandbox

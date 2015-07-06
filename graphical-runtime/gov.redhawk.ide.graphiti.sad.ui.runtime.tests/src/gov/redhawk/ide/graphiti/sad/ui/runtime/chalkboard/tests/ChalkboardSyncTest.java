@@ -10,27 +10,27 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
-import gov.redhawk.ide.swtbot.MenuUtils;
-import gov.redhawk.ide.swtbot.ViewUtils;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-
 import java.util.List;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+
 public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 
-	private SWTBotGefEditor editor;
 	private static final String HARD_LIMIT_1 = "HardLimit_1";
 	private static final String SIG_GEN = "SigGen";
 	private static final String SIG_GEN_1 = "SigGen_1";
+	private RHBotGefEditor editor;
 
 	/**
 	 * IDE-659

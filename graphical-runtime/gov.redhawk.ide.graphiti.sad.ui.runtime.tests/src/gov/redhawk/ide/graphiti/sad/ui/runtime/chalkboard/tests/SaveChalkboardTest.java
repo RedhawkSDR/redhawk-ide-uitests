@@ -10,17 +10,10 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
-import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
-import gov.redhawk.ide.swtbot.SWTBotRadioMenu;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.util.List;
-
-import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
-import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -28,7 +21,6 @@ import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
@@ -36,9 +28,16 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
+import gov.redhawk.ide.swtbot.SWTBotRadioMenu;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
+import mil.jpeojtrs.sca.partitioning.UsesPortStub;
+
 public class SaveChalkboardTest extends AbstractGraphitiChalkboardTest {
 
-	private SWTBotGefEditor editor;
+	private RHBotGefEditor editor;
 
 	/**
 	 * IDE-684
@@ -88,7 +87,7 @@ public class SaveChalkboardTest extends AbstractGraphitiChalkboardTest {
 		new SWTBotRadioMenu(menu).click();
 		
 		// confirm that components and connection exist
-		editor = gefBot.gefEditor(WAVEFORM_NAME);
+		editor = gefBot.rhGefEditor(WAVEFORM_NAME);
 		Assert.assertNotNull(SIGGEN + " component was not found", editor.getEditPart(SIGGEN));
 		Assert.assertNotNull(HARD_LIMIT + " component was not found", editor.getEditPart(HARD_LIMIT));
 		

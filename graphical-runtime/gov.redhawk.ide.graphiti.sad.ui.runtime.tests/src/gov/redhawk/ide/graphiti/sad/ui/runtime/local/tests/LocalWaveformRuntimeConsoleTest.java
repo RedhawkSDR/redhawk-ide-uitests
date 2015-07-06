@@ -10,24 +10,24 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotLabel;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+
 /**
  * 
  */
 public class LocalWaveformRuntimeConsoleTest extends AbstractGraphitiLocalWaveformRuntimeTest {
 
-	private SWTBotGefEditor editor;
+	private RHBotGefEditor editor;
 	private static final String SIGGEN = "SigGen";
 	private static final String SIGGEN_1 = SIGGEN + "_1";
 	private static final String CONSOLE_VIEW_LABEL = "Console";
@@ -38,7 +38,7 @@ public class LocalWaveformRuntimeConsoleTest extends AbstractGraphitiLocalWavefo
 	 */
 	@Test
 	public void checkConsoleTitle() {
-		editor = gefBot.gefEditor(WAVEFORM_EDITOR_TITLE);
+		editor = gefBot.rhGefEditor(WAVEFORM_EDITOR_TITLE);
 		editor.setFocus();
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);

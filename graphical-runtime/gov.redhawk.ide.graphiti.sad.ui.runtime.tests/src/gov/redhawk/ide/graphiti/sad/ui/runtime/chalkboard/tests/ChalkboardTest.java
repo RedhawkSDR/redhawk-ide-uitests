@@ -10,6 +10,13 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
+import org.junit.Assert;
+import org.junit.Test;
+
 import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.ViewUtils;
@@ -18,17 +25,9 @@ import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
-import org.junit.Assert;
-import org.junit.Test;
-
 public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 
-	private SWTBotGefEditor editor;
+	private RHBotGefEditor editor;
 
 	/**
 	 * IDE-884 Create the chalkboard waveform diagram. Add components to diagram from palette and TargetSDR.
@@ -91,7 +90,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 
 		// Add namespaced component to the chalkboard
 		String nameSpaceComp = "name.space.comp";
-		DiagramTestUtils.addFromPaletteToDiagramWithNameSpace((RHBotGefEditor) editor, nameSpaceComp, 200, 300);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, nameSpaceComp, 200, 300);
 		Assert.assertNotNull(editor.getEditPart(nameSpaceComp));
 	}
 

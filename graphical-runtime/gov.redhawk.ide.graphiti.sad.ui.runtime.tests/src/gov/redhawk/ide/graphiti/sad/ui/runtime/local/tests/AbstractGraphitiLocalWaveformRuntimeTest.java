@@ -10,16 +10,14 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
-import gov.redhawk.ide.swtbot.UIRuntimeTest;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
-
-import org.eclipse.swtbot.eclipse.gef.finder.SWTGefBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 import org.junit.Before;
 
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
 /**
  * Before: Starts a waveform locally in the sandbox and opens the Graphiti editor for it.
@@ -30,7 +28,7 @@ public abstract class AbstractGraphitiLocalWaveformRuntimeTest extends UIRuntime
 	public static final String[] LOCAL_WAVEFORM_PARENT_PATH = {"Sandbox"};
 	public static final String LOCAL_WAVEFORM = "ExampleWaveform01";
 	public static final String NAMESPACE_LOCAL_WAVEFORM = "namespaceWF"; // Contains namespaced components
-	protected SWTGefBot gefBot; // SUPPRESS CHECKSTYLE INLINE
+	protected RHSWTGefBot gefBot; // SUPPRESS CHECKSTYLE INLINE
 	private String waveFormFullName; //full name of waveform that is launched
 
 	@Before

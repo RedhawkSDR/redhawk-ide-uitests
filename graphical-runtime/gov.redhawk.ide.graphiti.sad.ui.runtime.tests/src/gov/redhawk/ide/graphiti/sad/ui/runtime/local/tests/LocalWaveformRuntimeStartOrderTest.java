@@ -11,18 +11,18 @@
  */
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
-import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+
 public class LocalWaveformRuntimeStartOrderTest extends AbstractGraphitiLocalWaveformRuntimeTest {
 
-	private SWTBotGefEditor editor;
+	private RHBotGefEditor editor;
 	private static final String[] LOCAL_WAVEFORM_PARENT_PATH = {"Sandbox"};
 	private static final String LOCAL_WAVEFORM = "ExampleWaveform01";
 	private static final String SIGGEN = "SigGen";
@@ -34,7 +34,7 @@ public class LocalWaveformRuntimeStartOrderTest extends AbstractGraphitiLocalWav
 	@Test
 	public void removeStartOrderIconTest() {
 		
-		editor = gefBot.gefEditor(getWaveFormFullName());
+		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
 		//drag SigGen to diagram and verify loaded in sca explorer

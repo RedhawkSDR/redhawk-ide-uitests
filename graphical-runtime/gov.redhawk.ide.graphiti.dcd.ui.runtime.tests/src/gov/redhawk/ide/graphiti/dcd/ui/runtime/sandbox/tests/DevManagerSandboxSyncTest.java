@@ -10,22 +10,20 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.diagram.RHTestBotCanvas;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-
 import java.util.List;
 
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+
 public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest {
 
-	private SWTBotGefEditor editor;
+	private RHBotGefEditor editor;
 
 	/**
 	 * IDE-1119

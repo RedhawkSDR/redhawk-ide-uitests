@@ -11,17 +11,17 @@
  */
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class ChalkboardToolbarTest extends AbstractGraphitiChalkboardTest {
 
 	private static final String SIGGEN_1 = "SigGen_1";
 	private static final String HARD_LIMIT_1 = "HardLimit_1";
-	private SWTBotGefEditor editor;
+	private RHBotGefEditor editor;
 
 	/**
 	 * IDE-1076 - Make sure start, stop, and release toolbar buttons appear/function during runtime

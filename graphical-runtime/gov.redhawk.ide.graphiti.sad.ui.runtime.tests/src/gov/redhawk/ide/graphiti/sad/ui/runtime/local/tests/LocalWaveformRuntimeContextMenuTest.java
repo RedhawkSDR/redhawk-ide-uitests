@@ -11,21 +11,21 @@
  */
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
-import gov.redhawk.ide.swtbot.ViewUtils;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.logging.ui.LogLevels;
-
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.logging.ui.LogLevels;
+
 public class LocalWaveformRuntimeContextMenuTest extends AbstractGraphitiLocalWaveformRuntimeTest {
 
-	private SWTBotGefEditor editor;
+	private RHBotGefEditor editor;
 	private static final String[] LOCAL_WAVEFORM_PARENT_PATH = {"Sandbox"};
 	private static final String LOCAL_WAVEFORM = "ExampleWaveform01";
 	private static final String SIGGEN = "SigGen";
@@ -39,7 +39,7 @@ public class LocalWaveformRuntimeContextMenuTest extends AbstractGraphitiLocalWa
 	@Test
 	public void runtimeContextMenuTest() {
 		
-		editor = gefBot.gefEditor(getWaveFormFullName());
+		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
@@ -126,7 +126,7 @@ public class LocalWaveformRuntimeContextMenuTest extends AbstractGraphitiLocalWa
 	@Test
 	public void removeDevelopmentContextOptionsTest() {
 		
-		editor = gefBot.gefEditor(getWaveFormFullName());
+		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);

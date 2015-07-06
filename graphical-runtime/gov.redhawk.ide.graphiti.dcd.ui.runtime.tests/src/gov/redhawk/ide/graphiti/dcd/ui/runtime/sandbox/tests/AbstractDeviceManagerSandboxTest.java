@@ -10,15 +10,14 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
+import org.junit.After;
+import org.junit.Before;
+
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
-
-import org.eclipse.swtbot.eclipse.gef.finder.SWTGefBot;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.junit.After;
-import org.junit.Before;
 
 /**
  * 
@@ -39,7 +38,7 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 	static final String DEVICE_STUB_DOUBLE_IN_PORT = "dataDouble_in";
 	static final String DEVICE_STUB_DOUBLE_OUT_PORT = "dataDouble_out";
 
-	protected SWTGefBot gefBot; // SUPPRESS CHECKSTYLE VisibilityModifier
+	protected RHSWTGefBot gefBot;
 
 	@Before
 	public void beforeTest() throws Exception {
@@ -59,9 +58,9 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 	}
 
 	/** Helper method to open Sandbox Device Manager Graphiti Chalkboard Diagram */
-	static SWTBotGefEditor openNodeChalkboardDiagram(SWTGefBot gefBot) {
+	static RHBotGefEditor openNodeChalkboardDiagram(RHSWTGefBot gefBot) {
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DiagramType.GRAPHITI_CHALKBOARD);
-		SWTBotGefEditor editor = gefBot.gefEditor(DIAGRAM_TAB_TITLE);
+		RHBotGefEditor editor = gefBot.rhGefEditor(DIAGRAM_TAB_TITLE);
 		editor.setFocus();
 		return editor;
 	}

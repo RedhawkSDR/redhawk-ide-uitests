@@ -10,22 +10,22 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotLabel;
 import org.junit.Assert;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 /**
  * 
  */
 public class ChalkboardConsoleTest extends AbstractGraphitiChalkboardTest {
 
-	private SWTBotGefEditor editor;
 	private static final String SIGGEN_1 = SIGGEN + "_1";
+	private RHBotGefEditor editor;
 	private static final String CONSOLE_VIEW_LABEL = "Console";
 	private static final String CHALKBOARD_WAVEFORM = "Chalkboard";
 

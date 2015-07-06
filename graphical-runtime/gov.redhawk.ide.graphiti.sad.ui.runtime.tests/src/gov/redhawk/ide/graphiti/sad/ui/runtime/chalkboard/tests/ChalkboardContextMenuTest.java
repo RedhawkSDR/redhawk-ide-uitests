@@ -11,21 +11,21 @@
  */
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
-import gov.redhawk.ide.swtbot.ViewUtils;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.logging.ui.LogLevels;
-
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.logging.ui.LogLevels;
+
 public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 
-	private SWTBotGefEditor editor;
 	private static final String SIGGEN_1 = SIGGEN + "_1";
+	private RHBotGefEditor editor;
 
 	/**
 	 * IDE-661, IDE-662, IDE-663, IDE-664, IDE-665, IDE-666, IDE-667, IDE-1038, IDE-1065
