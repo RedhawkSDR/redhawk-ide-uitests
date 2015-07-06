@@ -11,7 +11,7 @@
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
-import gov.redhawk.ide.swtbot.diagram.RHTestBot;
+import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
@@ -37,7 +37,7 @@ public abstract class AbstractGraphitiChalkboardTest extends UIRuntimeTest {
 
 	@Before
 	public void beforeTest() throws Exception {
-		gefBot = new RHTestBot();
+		gefBot = new RHSWTGefBot();
 	}
 	
 	@After
