@@ -24,7 +24,6 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
  */
 public class ChalkboardConsoleTest extends AbstractGraphitiChalkboardTest {
 
-	private static final String SIGGEN_1 = SIGGEN + "_1";
 	private RHBotGefEditor editor;
 	private static final String CONSOLE_VIEW_LABEL = "Console";
 	private static final String CHALKBOARD_WAVEFORM = "Chalkboard";

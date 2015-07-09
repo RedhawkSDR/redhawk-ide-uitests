@@ -24,7 +24,6 @@ import gov.redhawk.logging.ui.LogLevels;
 
 public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 
-	private static final String SIGGEN_1 = SIGGEN + "_1";
 	private RHBotGefEditor editor;
 
 	/**
@@ -39,7 +38,7 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 		// Prepare Graphiti diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		
-		//wait for SIGGEN_1 to show up in Sca Explorer
+		// Wait for the component in the explorer
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
 
 		// Start the component
@@ -70,7 +69,7 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 		ViewUtils.waitUntilSRIViewPopulates(bot);
 		SWTBotView sriView = ViewUtils.getSRIView(bot);
 		Assert.assertEquals("streamID property is missing for column 1", "streamID: ", sriView.bot().tree().cell(0, "Property: "));
-		Assert.assertEquals("streamID property is wrong", SIGGEN + " Stream", sriView.bot().tree().cell(0, "Value: "));
+		Assert.assertEquals("streamID property is wrong", "SigGen Stream", sriView.bot().tree().cell(0, "Value: "));
 		sriView.close();
 
 		// Audio/Play port view test
@@ -80,7 +79,7 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 		//get audio view
 		SWTBotView audioView = ViewUtils.getAudioView(bot);
 		String item = audioView.bot().list().getItems()[0];
-		Assert.assertTrue("SigGen not found in Audio Port Playback", item.matches(SIGGEN + ".*"));
+		Assert.assertTrue("SigGen not found in Audio Port Playback", item.matches(SIGGEN_1 + ".*"));
 		audioView.close();
 
 		//open data list view
@@ -107,7 +106,7 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 		// Monitor ports test
 		DiagramTestUtils.displayPortMonitorViewOnComponentPort(editor, SIGGEN, null);
 		//wait until port monitor view appears
-		ViewUtils.waitUntilPortMonitorViewPopulates(bot, SIGGEN);
+		ViewUtils.waitUntilPortMonitorViewPopulates(bot, SIGGEN_1);
 		//close PortMonitor View
 		SWTBotView monitorView = ViewUtils.getPortMonitorView(bot);
 		monitorView.close();
@@ -130,7 +129,7 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 
 		// Prepare Graphiti diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN + "_1");
+		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
 
 		// Make sure start order and assembly controller context options don't exist
 		editor.getEditPart(SIGGEN).select();

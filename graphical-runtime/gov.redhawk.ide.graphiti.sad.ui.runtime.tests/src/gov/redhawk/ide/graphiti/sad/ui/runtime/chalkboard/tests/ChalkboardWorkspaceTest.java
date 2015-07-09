@@ -27,7 +27,7 @@ import org.junit.Test;
 
 public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 
-	private static final String ROOT_SHELL_NAME = "SCA - Eclipse Platform";
+	private static final String ROOT_SHELL_NAME = "SCA - REDHAWK IDE";
 
 	private SWTBotGefEditor editor;
 
@@ -87,7 +87,7 @@ public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 
 		// create test Service in workspace
 		final String wkspServiceName = "testServiceInWorkspace";
-		ServiceUtils.createServiceProject(bot, wkspServiceName, null, "Python");
+		ServiceUtils.createServiceProject(bot, wkspServiceName, "IDL:BULKIO/dataDouble:1.0", "Python");
 
 		editor = openChalkboardDiagram(gefBot);
 
@@ -107,7 +107,7 @@ public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 
 		// create test Softpackage in workspace
 		final String wkspSftpkgName = "testSftpkgInWorkspace";
-		SharedLibraryUtils.createSharedLibraryProject(bot, wkspSftpkgName, null);
+		SharedLibraryUtils.createSharedLibraryProject(bot, wkspSftpkgName, "C++ Library");
 
 		editor = openChalkboardDiagram(gefBot);
 

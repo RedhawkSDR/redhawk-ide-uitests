@@ -23,6 +23,7 @@ import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 
 public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
@@ -42,6 +43,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
 		assertHardLimit(editor.getEditPart(HARD_LIMIT));
+		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
 		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(HARD_LIMIT));
 
 		// IDE-984 Make sure device cannot be added from Target SDR
@@ -51,6 +53,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		// Add component to diagram from Target SDR
 		DiagramTestUtils.dragComponentFromTargetSDRToDiagram(gefBot, editor, HARD_LIMIT);
 		assertHardLimit(editor.getEditPart(HARD_LIMIT));
+		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
 
 		// Open the chalkboard with components already launched
 		editor.close();
@@ -182,7 +185,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		// HardLimit only has the two ports
 		Assert.assertTrue(componentShape.getUsesPortStubs().size() == 1 && componentShape.getProvidesPortStubs().size() == 1);
 
-		// Both ports are of type dataDouble
+		// Both ports are of type dataFloat
 		Assert.assertEquals(componentShape.getUsesPortStubs().get(0).getUses().getInterface().getName(), "dataFloat");
 		Assert.assertEquals(componentShape.getProvidesPortStubs().get(0).getProvides().getInterface().getName(), "dataFloat");
 	}

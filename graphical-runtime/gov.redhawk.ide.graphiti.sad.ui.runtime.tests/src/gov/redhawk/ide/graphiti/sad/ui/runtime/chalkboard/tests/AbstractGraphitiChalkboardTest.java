@@ -29,8 +29,10 @@ public abstract class AbstractGraphitiChalkboardTest extends UIRuntimeTest {
 	static final String CHALKBOARD_TAB_TITLE = "Chalkboard";
 
 	// Common Test Component Names
-	static final String HARD_LIMIT = "HardLimit";
-	static final String SIGGEN = "SigGen";
+	protected static final String HARD_LIMIT = "rh.HardLimit";
+	protected static final String HARD_LIMIT_1 = "HardLimit_1";
+	protected static final String SIGGEN = "rh.SigGen";
+	protected static final String SIGGEN_1 = "SigGen_1";
 
 	protected RHSWTGefBot gefBot; // SUPPRESS CHECKSTYLE VisibilityModifier
 

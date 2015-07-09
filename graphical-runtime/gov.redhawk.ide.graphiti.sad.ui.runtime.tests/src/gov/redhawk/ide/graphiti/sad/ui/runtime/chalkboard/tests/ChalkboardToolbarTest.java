@@ -19,8 +19,6 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class ChalkboardToolbarTest extends AbstractGraphitiChalkboardTest {
 
-	private static final String SIGGEN_1 = "SigGen_1";
-	private static final String HARD_LIMIT_1 = "HardLimit_1";
 	private RHBotGefEditor editor;
 
 	/**
