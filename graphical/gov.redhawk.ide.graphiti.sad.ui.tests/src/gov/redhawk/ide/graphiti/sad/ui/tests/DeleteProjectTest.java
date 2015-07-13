@@ -10,24 +10,23 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
-import gov.redhawk.ide.swtbot.MenuUtils;
-import gov.redhawk.ide.swtbot.WaveformUtils;
-import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-
 import java.util.List;
 
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.ICondition;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+
 public class DeleteProjectTest extends AbstractGraphitiTest {
 
-	private SWTBotGefEditor editor;
 	private String waveformName;
 
 	/**
@@ -41,7 +40,7 @@ public class DeleteProjectTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		List< ? extends SWTBotEditor> editors = gefBot.editors();
 		Assert.assertEquals("Editor not found", 1, editors.size());
 

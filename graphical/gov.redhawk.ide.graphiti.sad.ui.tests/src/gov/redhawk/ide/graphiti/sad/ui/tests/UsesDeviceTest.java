@@ -10,6 +10,16 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import java.util.List;
+
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
+import org.junit.Assert;
+import org.junit.Test;
+
 import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.WaveformUtils;
@@ -17,24 +27,12 @@ import gov.redhawk.ide.swtbot.condition.WaitForWidgetEnablement;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FETunerControl;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.UsesDeviceTestUtils;
-
-import java.util.List;
-
 import mil.jpeojtrs.sca.partitioning.UsesDeviceStub;
-
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class UsesDeviceTest extends AbstractGraphitiTest {
 
-	private SWTBotGefEditor editor;
 	private String waveformName;
 
 	/**
@@ -47,7 +45,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 
 		// Create an empty waveform project
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
 		// generate usesdevice FrontEnd tuner with listen by id
@@ -101,7 +99,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 
 		// Create an empty waveform project
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
 		// Add a usesdevice for a FrontEnd tuner in control mode
@@ -157,7 +155,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 
 		// Create an empty waveform project
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
 		// generate generic use frontent tuner device with listen by id
@@ -282,7 +280,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 
 		// Create an empty waveform project
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
 		// Create a uses device for a FrontEnd tuner using listen by id
@@ -358,7 +356,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 
 		// Create an empty waveform project
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
 		// Add uses device for a FrontEnd tuner

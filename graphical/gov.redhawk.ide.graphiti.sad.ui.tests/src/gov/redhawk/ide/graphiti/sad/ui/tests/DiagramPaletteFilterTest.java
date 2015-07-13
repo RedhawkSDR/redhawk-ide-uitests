@@ -10,18 +10,14 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
-import gov.redhawk.ide.swtbot.WaveformUtils;
-import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
-import gov.redhawk.ide.swtbot.diagram.PaletteFilterUtil;
-import gov.redhawk.ide.swtbot.diagram.PaletteUtils;
-
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- *
- */
+import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
+import gov.redhawk.ide.swtbot.diagram.PaletteUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+
 public class DiagramPaletteFilterTest extends AbstractGraphitiTest {
 
 	private String waveformName;
@@ -45,38 +41,38 @@ public class DiagramPaletteFilterTest extends AbstractGraphitiTest {
 		final String errorShown3 = "Component " + component3 + " should be filtered out of the palette";
 
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		final SWTBotGefEditor editor = gefBot.gefEditor(waveformName);
+		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		Assert.assertTrue(errorMissing1, PaletteUtils.toolIsPresent(editor, component1));
 		Assert.assertTrue(errorMissing2, PaletteUtils.toolIsPresent(editor, component2));
 		Assert.assertTrue(errorMissing3, PaletteUtils.toolIsPresent(editor, component3));
 
 //		PaletteFilterUtil.FilterRunnable filterer = new PaletteFilterUtil.FilterRunnable(editor);
-		PaletteFilterUtil.setFilter(editor, "s");
+		PaletteUtils.setFilter(editor, "s");
 
 		Assert.assertTrue(errorMissing1, PaletteUtils.toolIsPresent(editor, component1));
 		Assert.assertFalse(errorShown2, PaletteUtils.toolIsPresent(editor, component2));
 		Assert.assertTrue(errorMissing3, PaletteUtils.toolIsPresent(editor, component3));
 
-		PaletteFilterUtil.setFilter(editor, "sh");
+		PaletteUtils.setFilter(editor, "sh");
 
 		Assert.assertFalse(errorShown1, PaletteUtils.toolIsPresent(editor, component1));
 		Assert.assertFalse(errorShown2, PaletteUtils.toolIsPresent(editor, component2));
 		Assert.assertFalse(errorShown3, PaletteUtils.toolIsPresent(editor, component3));
 
-		PaletteFilterUtil.setFilter(editor, "h");
+		PaletteUtils.setFilter(editor, "h");
 
 		Assert.assertFalse(errorShown1, PaletteUtils.toolIsPresent(editor, component1));
 		Assert.assertTrue(errorMissing2, PaletteUtils.toolIsPresent(editor, component2));
 		Assert.assertFalse(errorShown3, PaletteUtils.toolIsPresent(editor, component3));
 
-		PaletteFilterUtil.setFilter(editor, ".");
+		PaletteUtils.setFilter(editor, ".");
 
 		Assert.assertFalse(errorShown1, PaletteUtils.toolIsPresent(editor, component1));
 		Assert.assertFalse(errorShown2, PaletteUtils.toolIsPresent(editor, component2));
 		Assert.assertTrue(errorMissing3, PaletteUtils.toolIsPresent(editor, component3));
 
-		PaletteFilterUtil.setFilter(editor, "");
+		PaletteUtils.setFilter(editor, "");
 
 		Assert.assertTrue(errorMissing1, PaletteUtils.toolIsPresent(editor, component1));
 		Assert.assertTrue(errorMissing2, PaletteUtils.toolIsPresent(editor, component2));
@@ -89,7 +85,7 @@ public class DiagramPaletteFilterTest extends AbstractGraphitiTest {
 		final String component1 = "SigGen";
 		final String component2 = "HardLimit";
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		final SWTBotGefEditor editor = gefBot.gefEditor(waveformName);
+		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		Assert.assertFalse("Different implementations should not be visible in design-time palette", PaletteUtils.hasMultipleImplementations(editor, component1));
 		Assert.assertFalse("Different implementations should not be visible in design-time palette", PaletteUtils.hasMultipleImplementations(editor, component2));

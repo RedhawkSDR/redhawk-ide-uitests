@@ -10,6 +10,15 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import java.util.List;
+
+import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.junit.Assert;
+import org.junit.Test;
+
 import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
@@ -17,23 +26,13 @@ import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
-
-import java.util.List;
-
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.partitioning.FindByStub;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
-import org.eclipse.graphiti.mm.pictograms.Connection;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.junit.Assert;
-import org.junit.Test;
-
 public class FindByTest extends AbstractGraphitiTest {
-	private SWTBotGefEditor editor;
+
 	private String waveformName;
 
 	/**
@@ -55,7 +54,7 @@ public class FindByTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
@@ -100,7 +99,7 @@ public class FindByTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		for (String s : findByList) {
 			// Add component to diagram from palette
@@ -128,7 +127,7 @@ public class FindByTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
@@ -159,7 +158,7 @@ public class FindByTest extends AbstractGraphitiTest {
 			Assert.assertTrue(e.getMessage().matches(".*" + "Confirm Delete" + ".*"));
 		}
 
-		editor = gefBot.gefEditor(waveformName);
+		editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 		gefBot.menu("File").menu("Save").click();
 
@@ -189,7 +188,7 @@ public class FindByTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
@@ -271,7 +270,7 @@ public class FindByTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);

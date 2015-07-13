@@ -10,21 +10,21 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
+import org.junit.Assert;
+import org.junit.Test;
+
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.sad.HostCollocation;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
-
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.Diagram;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.eclipse.swtbot.swt.finder.waits.Conditions;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test class that deals with removing elements from the sad.xml
@@ -32,7 +32,6 @@ import org.junit.Test;
  */
 public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
-	private SWTBotGefEditor editor;
 	private String waveformName;
 
 	/**
@@ -47,7 +46,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
@@ -92,7 +91,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
@@ -140,7 +139,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HOSTCOLLOCATION_PALETTE, 0, 0);
@@ -181,7 +180,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 200, 0);
@@ -239,7 +238,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Edit content of sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");

@@ -10,21 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
-import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
-import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
-import gov.redhawk.ide.graphiti.ui.diagram.util.StyleUtil;
-import gov.redhawk.ide.swtbot.MenuUtils;
-import gov.redhawk.ide.swtbot.WaveformUtils;
-import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
-import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.diagram.RHTestBotCanvas;
-import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
-
 import java.util.List;
-
-import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
-import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -37,9 +23,21 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.util.IColorConstant;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.junit.Assert;
 import org.junit.Test;
+
+import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
+import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
+import gov.redhawk.ide.graphiti.ui.diagram.util.StyleUtil;
+import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
+import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.RHTestBotCanvas;
+import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
+import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
 public class ConnectionTest extends AbstractGraphitiTest {
 
@@ -60,7 +58,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
 
 		// Add components to diagram from palette
-		SWTBotGefEditor editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
 
@@ -140,7 +138,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 
 		// Add components to diagram from palette
 		gefBot.waitUntil(new WaitForEditorCondition());
-		SWTBotGefEditor editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
 
@@ -157,7 +155,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		gefBot.tree().expandNode(waveformName);
 		gefBot.tree().getTreeItem(waveformName).getNode(waveformName + ".sad.xml").select().doubleClick();
 		gefBot.waitUntil(new WaitForEditorCondition());
-		editor = gefBot.gefEditor(waveformName);
+		editor = gefBot.rhGefEditor(waveformName);
 
 		// ...get target component edit parts and container shapes
 		SWTBotGefEditPart targetComponentEditPart = editor.getEditPart(HARD_LIMIT);
@@ -191,7 +189,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
 
 		// Add components to diagram from palette
-		SWTBotGefEditor editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 300, 0);
 

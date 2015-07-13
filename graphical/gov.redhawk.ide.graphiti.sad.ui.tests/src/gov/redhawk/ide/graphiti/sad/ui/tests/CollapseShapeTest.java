@@ -10,11 +10,6 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
-import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
-import gov.redhawk.ide.swtbot.WaveformUtils;
-import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-
 import java.util.List;
 
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -22,7 +17,6 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
@@ -31,6 +25,12 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
+import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+
 public class CollapseShapeTest extends AbstractGraphitiTest {
 	static final String DATA_READER    = "DataReader";
 	static final String DATA_CONVERTER = "DataConverter";
@@ -38,7 +38,6 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 	static final String HARD_LIMIT     = "HardLimit";
 	static final String SIGGEN         = "SigGen";
 
-	private SWTBotGefEditor editor;
 	private String waveformName;
 
 	/**
@@ -56,7 +55,7 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
 
 		// Add components to diagram from palette
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		DiagramTestUtils.maximizeActiveWindow(gefBot);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_READER, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 150);
@@ -210,7 +209,7 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 
 		waveformName = "IDE-1026-checkCollapseExpandPreference";
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Set preference to collapse new components
 		setPortCollapsePreference(true);
@@ -257,7 +256,7 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 	public void superPortWizardTest() {
 		waveformName = "IDE-1026-superPortWizard";
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		setPortCollapsePreference(true);
 

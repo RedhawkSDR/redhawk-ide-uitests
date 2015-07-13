@@ -10,23 +10,21 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import java.math.BigInteger;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-
-import java.math.BigInteger;
-
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
-
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class StartOrderTest extends AbstractGraphitiTest {
 
-	private SWTBotGefEditor editor;
 	private String waveformName;
 
 	/**
@@ -41,7 +39,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add components to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, componentOne, 100, 0);
@@ -112,7 +110,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		// ...when assembly controllers are added from the new project wizard they don't have a start order
 		// ...this is kind of a hack
 		WaveformUtils.createNewWaveformWithAssemblyController(gefBot, waveformName, compNoStartOrder);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add additional components to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, componentOne, 10,  150);
@@ -215,7 +213,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		final String[] component = { "DataConverter", "HardLimit", "SigGen" };
 
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add components to diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, component[0], 0, 0);
@@ -253,7 +251,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 	public void setAssemblyControllerFromDiagramChangesOverview() {
 		waveformName = "AC_From_Diagram";
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		final String[] component = { "DataConverter", "HardLimit", "SigGen" };
 
 		// Add components to diagram
@@ -297,7 +295,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		final String[] component = { "DataConverter", "HardLimit", "SigGen" };
 
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		// Add and check start order
 		int xCoord = 0;
 		for (int i = 0; i < component.length; i++) {

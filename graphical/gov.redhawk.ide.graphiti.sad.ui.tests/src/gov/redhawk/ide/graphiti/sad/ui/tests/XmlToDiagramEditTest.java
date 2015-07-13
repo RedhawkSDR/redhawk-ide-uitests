@@ -10,6 +10,17 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import java.math.BigInteger;
+import java.util.List;
+
+import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
+import org.junit.Assert;
+import org.junit.Test;
+
 import gov.redhawk.ide.graphiti.sad.ext.ComponentShape;
 import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
@@ -17,22 +28,10 @@ import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-
-import java.math.BigInteger;
-import java.util.List;
-
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
-
-import org.eclipse.graphiti.mm.pictograms.Connection;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test class that deals with editing elements to the sad.xml and making sure they appear correctly in the diagram
@@ -42,7 +41,6 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 	static final String HARD_LIMIT = "HardLimit";
 	static final String DATA_CONVERTER = "DataConverter";
 
-	private SWTBotGefEditor editor;
 	private String waveformName;
 
 	/**
@@ -56,7 +54,7 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
@@ -109,7 +107,7 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add components to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 10);
@@ -194,7 +192,7 @@ bot.sleep(5000);
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
@@ -245,7 +243,7 @@ bot.sleep(5000);
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
 		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
@@ -365,7 +363,7 @@ bot.sleep(5000);
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Edit content of sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");

@@ -52,7 +52,6 @@ import org.junit.Test;
 
 public class WaveformComponentTest extends AbstractGraphitiTest {
 
-	private SWTBotGefEditor editor;
 	private String waveformName;
 	private static final String HARD_LIMIT = "HardLimit";
 	private static final String SIG_GEN = "SigGen";
@@ -72,7 +71,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 
 		// Create an empty waveform project
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
 		// Add component to diagram from palette
@@ -100,7 +99,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		waveformName = "IDE-669-Test";
 		// Create an empty waveform project
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		for (String s : COMPONENTS) {
 			// Add component to diagram from palette
@@ -128,7 +127,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HOST_CO, 0, 0);
@@ -189,7 +188,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		waveformName = "IDE-728-Test";
 
 		WaveformUtils.createNewWaveformWithAssemblyController(gefBot, waveformName, componentName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.getEditPart(componentName).click();
 		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
 		String propertyname = gefBot.viewByTitle("Properties").bot().tree().cell(0, "Property").toString();
@@ -218,7 +217,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		waveformName = "IDE-729-Test";
 
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add a SigGen component instantiation to the diagram and save
 		DiagramTestUtils.addFromPaletteToDiagram(editor, "SigGen", 0, 0);
@@ -257,10 +256,10 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		String componentBaseName = "comp";
 
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add namespaced component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagramWithNameSpace((RHBotGefEditor) editor, componentName, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, componentName, 0, 0);
 		MenuUtils.save(editor);
 
 		// Build expected xml string for component
@@ -282,7 +281,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		waveformName = "IDE-741-Test";
 		// Create an empty waveform project
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
 		List<String> sdrComponents = WaveformComponentTest.getTargetSdrComponents(gefBot);
@@ -332,7 +331,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		waveformName = "IDE-766-Test";
 		// Create an empty waveform project
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
@@ -417,7 +416,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 200, 0);
@@ -463,7 +462,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 200, 0);

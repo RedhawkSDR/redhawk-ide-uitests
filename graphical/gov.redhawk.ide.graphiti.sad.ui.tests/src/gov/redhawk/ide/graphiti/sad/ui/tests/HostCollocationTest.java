@@ -30,13 +30,13 @@ import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.UsesDeviceTestUtils;
 import mil.jpeojtrs.sca.sad.HostCollocation;
 import mil.jpeojtrs.sca.sad.SadComponentPlacement;
 
 public class HostCollocationTest extends AbstractGraphitiTest {
 
-	private SWTBotGefEditor editor;
 	private String waveformName;
 	static final String UNEXPECTED_NUM_COMPONENTS = "Incorrect number of components in Host Collocation";
 	static final String UNEXPECTED_SHAPE_LOCATION = "Shape location unexpected";
@@ -54,7 +54,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
 		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
@@ -95,7 +95,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
 		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
@@ -138,7 +138,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
 		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
@@ -182,7 +182,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HOST_CO, 0, 0);
@@ -241,7 +241,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Maximize window
 		DiagramTestUtils.maximizeActiveWindow(gefBot);
@@ -281,7 +281,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		int newX = oldX + 500;
 		int newY = oldY + 200;
 		editor.drag(oldX + 5, oldY + 5, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
 		// Contract Host Collocation from the left thereby excluding the two components
 		oldX = hostCollocationGa.getX();
@@ -289,7 +289,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = oldX + 500;
 		newY = oldY;
 		editor.drag(oldX + 2, oldY + 2, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
 
 		// Expand Host Collocation from the left thereby including the two components
 		hostCollocationEditPart.click();
@@ -299,7 +299,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = 0;
 		newY = oldY;
 		editor.drag(oldX - 1, oldY + 2, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
 		// Contract Host Collocation from the top-left coming down and to the right thereby including the two components
 		oldX = hostCollocationGa.getX();
@@ -307,7 +307,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = oldX + 500;
 		newY = oldY + 200;
 		editor.drag(oldX, oldY + 2, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
 
 		// Expand Host Collocation from the top-left thereby including the two components
 		oldX = hostCollocationGa.getX();
@@ -315,7 +315,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = 0;
 		newY = 0;
 		editor.drag(oldX, oldY, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
 		// Contract Host Collocation from the bottom-left to the right and up thereby excluding the two components
 		oldX = hostCollocationGa.getX();
@@ -323,7 +323,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = 500;
 		newY = oldY / 2;
 		editor.drag(oldX, oldY, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
 
 		// Expand Host Collocation from the bottom-left to the left and down thereby including the two components
 		oldX = hostCollocationGa.getX();
@@ -331,7 +331,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = 0;
 		newY = oldY * 2;
 		editor.drag(oldX - 2, oldY - 1, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
 		// Collapse Host Collocation from the top-right downwards thereby excluding the two components
 		oldX = hostCollocationGa.getX() + hostCollocationGa.getWidth();
@@ -339,7 +339,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = oldX;
 		newY = (hostCollocationGa.getHeight() / 2) + 50;
 		editor.drag(oldX, oldY, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
 
 		// Expand Host Collocation from the top-right upwards thereby including the two components
 		oldX = hostCollocationGa.getX() + hostCollocationGa.getWidth();
@@ -347,7 +347,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = oldX;
 		newY = 0;
 		editor.drag(oldX, oldY, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
 		// Collapse Host Collocation from the bottom-right upwards thereby including the one component (topmost)
 		oldX = hostCollocationGa.getX() + hostCollocationGa.getWidth();
@@ -355,7 +355,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = oldX;
 		newY = 130;
 		editor.drag(oldX, oldY, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
 
 		// Drag HardLimit to right
 		editor.drag(editor.getEditPart(HARD_LIMIT), 350, 15);
@@ -367,7 +367,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = 300;
 		newY = oldY;
 		editor.drag(oldX + 5, oldY + 2, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
 
 		// Expand Host Collocation from the right towards the right thereby including one component
 		hostCollocationEditPart.click();
@@ -376,7 +376,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = 750;
 		newY = oldY;
 		editor.drag(oldX + 5, oldY + 2, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
 
 		// Expand Host Collocation from the bottom downward thereby adding one more component
 		oldX = (hostCollocationGa.getX() + hostCollocationGa.getWidth()) / 2;
@@ -384,7 +384,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = oldX;
 		newY = 400;
 		editor.drag(oldX + 5, oldY + 2, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
 		// Collapse Host Collocation from the bottom upward thereby removing one component
 		oldX = (hostCollocationGa.getX() + hostCollocationGa.getWidth()) / 2;
@@ -392,7 +392,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = oldX;
 		newY = 130;
 		editor.drag(oldX + 5, oldY + 2, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
 
 		// Drag Host Collocation Down below SigGenComponent
 		editor.drag(hostCollocationEditPart, 0, 300);
@@ -404,7 +404,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = oldX;
 		newY = 0;
 		editor.drag(oldX + 5, oldY, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 350, 320, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 350, 320, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
 		// Collapse Host Collocation from the top downwards thereby removing one component
 		oldX = (hostCollocationGa.getX() + hostCollocationGa.getWidth()) / 2;
@@ -412,10 +412,10 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		newX = oldX;
 		newY = 300;
 		editor.drag(oldX + 5, oldY, newX, newY);
-		assertShapeLocationAndNumber(hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
 	}
 
-	private void assertShapeLocationAndNumber(ContainerShape shape1, int shape1X, int shape1Y, // SUPPRESS CHECKSTYLE INLINE
+	private void assertShapeLocationAndNumber(SWTBotGefEditor editor, ContainerShape shape1, int shape1X, int shape1Y, // SUPPRESS CHECKSTYLE INLINE
 		ContainerShape shape2, int shape2X, int shape2Y, HostCollocation hostCo, String hostCoName, int numContainedShapes) {
 
 		MenuUtils.save(editor);
@@ -443,7 +443,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// maximize window
 		DiagramTestUtils.maximizeActiveWindow(gefBot);
@@ -491,7 +491,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		editor = gefBot.gefEditor(waveformName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// maximize window
 		DiagramTestUtils.maximizeActiveWindow(gefBot);

@@ -13,7 +13,6 @@ package gov.redhawk.ide.graphiti.sad.ui.tests;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.ui.internal.views.properties.tabbed.view.TabbedPropertyList;
 import org.eclipse.ui.internal.views.properties.tabbed.view.TabbedPropertyList.ListElement;
@@ -27,6 +26,7 @@ import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
 @SuppressWarnings("restriction")
 public class PortPropertiesTest extends AbstractGraphitiTest {
@@ -42,7 +42,7 @@ public class PortPropertiesTest extends AbstractGraphitiTest {
 		final String waveformName = "IDE-1050-test";
 		final String onlyComponent = "HardLimit";
 		WaveformUtils.createNewWaveform(gefBot, waveformName);
-		final SWTBotGefEditor editor = gefBot.gefEditor(waveformName);
+		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, onlyComponent, 0, 0);
 		SWTBotGefEditPart part;
 		SWTBotTree tree;
