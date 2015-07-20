@@ -30,15 +30,14 @@ import org.junit.Test;
 public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
 	private SWTBotGefEditor editor;
-	private static final String GPP = "GPP";
-	private static final String DEVICE_STUB = "DeviceStub";
 
 	/**
 	 * IDE-998 Opens Graphiti Node Explorer diagram.
 	 * This editor is "look but don't touch". All design functionality should be disabled.
 	 * Runtime functionality (start/stop, plot, etc) should still work.
 	 * IDE-1001 Hide grid on runtime diagram.
-	 * IDE-1038, IDE-1064 No Undo Start|Stop|Terminate|Do Command
+	 * IDE-1038 No undo for Start|Stop|Terminate|Do Command
+	 * IDE-1196 Ensure "Show Console" doesn't show up for domain nodes
 	 */
 	@Test
 	public void nodeExplorerTest() {
@@ -55,9 +54,9 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		SWTBotGefEditPart gpp = editor.getEditPart(gppFullName);
 		Assert.assertNotNull(gppFullName + " device not found in diagram", gpp);
 
-		// check that delete option does not appear
+		// Check that some design-time options, and local-runtime options don't appear
 		gpp.select();
-		String[] removedContextOptions = { "Delete", "Release", "Terminate" };
+		String[] removedContextOptions = { "Delete", "Release", "Terminate", "Show Console" };
 		for (String contextOption : removedContextOptions) {
 			try {
 				editor.clickContextMenu(contextOption);
@@ -94,7 +93,6 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
 	@Test
 	public void nodeExplorerContextMenuTest() {
-
 		bot.closeAllEditors();
 		NodeUtils.launchNodeInDomain(bot, DOMAIN, DEVICE_MANAGER_W_BULKIO);
 		setNodeFullName(ScaExplorerTestUtils.getFullNameFromScaExplorer(gefBot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER_W_BULKIO));

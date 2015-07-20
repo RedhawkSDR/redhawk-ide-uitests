@@ -26,19 +26,18 @@ public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTes
 
 	static final String DOMAIN_MANAGER_PROCESS = "Domain Manager";
 	static final String DEVICE_MANAGER_PROCESS = "Device Manager";
-	static final String DEVICE_MANAGER = "DevMgr";
+	static final String DEVICE_MANAGER = "DevMgr_localhost";
 	static final String DEVICE_MANAGER_W_BULKIO = "DevMgr_with_bulkio"; // For tests that need a device with a Bulkio port
 	static final String NAMESPACE_DEVICE_MANAGER = "namespaceNode";
+
+	protected static final String GPP = "GPP";
+	protected static final String DEVICE_STUB = "DeviceStub";
 
 	final String DOMAIN = "SWTBOT_TEST_" + (int) (1000.0 * Math.random());
 	final String[] DOMAIN_NODE_PARENT_PATH = { DOMAIN + " CONNECTED", "Device Managers"};
 	protected SWTGefBot gefBot; // SUPPRESS CHECKSTYLE VisibilityModifier
 	private String nodeFullName; //full name of device node that is launched
 	
-	// Common Test Component Names
-	static final String GPP = "GPP";
-	static final String DEVICE_STUB = "DeviceStub";
-
 	@Before
 	public void beforeTest() throws Exception {
 		gefBot = new SWTGefBot();
