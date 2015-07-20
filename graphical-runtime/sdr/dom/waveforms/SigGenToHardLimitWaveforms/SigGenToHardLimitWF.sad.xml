@@ -14,10 +14,10 @@
   <description>Test Waveform with overridden values in SAD. Contains SigGen to HardLimit.</description>
   <componentfiles>
     <componentfile id="SigGen_26706ce2-9117-432a-aa1b-01f138f313dd" type="SPD">
-      <localfile name="/components/SigGen/SigGen.spd.xml"/>
+      <localfile name="/components/rh/SigGen/SigGen.spd.xml"/>
     </componentfile>
     <componentfile id="HardLimit_e3eae791-9761-4a88-89de-5cf8ba5b3aa1" type="SPD">
-      <localfile name="/components/HardLimit/HardLimit.spd.xml"/>
+      <localfile name="/components/rh/HardLimit/HardLimit.spd.xml"/>
     </componentfile>
   </componentfiles>
   <partitioning>

@@ -13,7 +13,7 @@
 <softwareassembly id="DCE:e79dac11-d55a-4cbe-9e75-27789d01f266" name="ExampleWaveform05">
   <componentfiles>
     <componentfile id="SigGen_8b1a4ce7-06bf-43b4-844c-cc57ce0d0e53" type="SPD">
-      <localfile name="/components/SigGen/SigGen.spd.xml"/>
+      <localfile name="/components/rh/SigGen/SigGen.spd.xml"/>
     </componentfile>
   </componentfiles>
   <partitioning>

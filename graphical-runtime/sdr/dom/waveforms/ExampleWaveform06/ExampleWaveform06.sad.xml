@@ -13,10 +13,10 @@
 <softwareassembly id="DCE:7dbcd5d8-c12b-42a3-a7fc-d038c39dca70" name="ExampleWaveform06">
   <componentfiles>
     <componentfile id="SigGen_30331c62-6986-4b68-bc21-bbd32f8e1005" type="SPD">
-      <localfile name="/components/SigGen/SigGen.spd.xml"/>
+      <localfile name="/components/rh/SigGen/SigGen.spd.xml"/>
     </componentfile>
     <componentfile id="HardLimit_68fd506c-103f-4231-8a28-d605b453df48" type="SPD">
-      <localfile name="/components/HardLimit/HardLimit.spd.xml"/>
+      <localfile name="/components/rh/HardLimit/HardLimit.spd.xml"/>
     </componentfile>
   </componentfiles>
   <partitioning>
