@@ -54,8 +54,11 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		StandardTestActions.cleanUpConnections();
 	}
 
+	/**
+	 * Tests using the wizard to connect to a running domain.
+	 */
 	@Test
-	public void testConnect() {
+	public void testConnectWithWizard() {
 		launchDomainManager(DOMAIN_NAME);
 
 		StandardTestActions.viewToolbarWithToolTip(explorerView, "New Domain Connection").click();
@@ -82,13 +85,16 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 
 		bot.button("Finish").click();
 
-		waitForConnect(DOMAIN_NAME);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN_NAME);
 		viewBot.tree().getTreeItem("REDHAWK_DEV CONNECTED").expand();
 		viewBot.tree().getTreeItem("REDHAWK_DEV CONNECTED").select();
 	}
 
+	/**
+	 * Test using the wizard to launch a new domain manager.
+	 */
 	@Test
-	public void testLaunch() {
+	public void testLaunchDomMgr() {
 		viewBot.tree().getTreeItem("Target SDR").select();
 		viewBot.tree().getTreeItem("Target SDR").contextMenu("Launch Domain ...").click();
 		bot.textWithLabel("Domain Name: ").setText("REDHAWK");
@@ -101,19 +107,22 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		Assert.assertTrue(bot.button("OK").isEnabled());
 		bot.button("OK").click();
 
-		waitForConnect("REDHAWK_DOMAIN_TEST02");
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, "REDHAWK_DOMAIN_TEST02");
 		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST02 CONNECTED").expand();
 		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST02 CONNECTED").select();
 	}
 
+	/**
+	 * Test using the wizards to launch a domain and then later launch a node in that domain.
+	 */
 	@Test
-	public void testLaunch03() {
+	public void testLaunchDomMgrThenDevMgr() {
 		viewBot.tree().getTreeItem("Target SDR").select();
 		viewBot.tree().getTreeItem("Target SDR").contextMenu("Launch Domain ...").click();
 		bot.textWithLabel("Domain Name: ").setText("REDHAWK_DOMAIN_TEST03");
 		bot.button("OK").click();
 
-		waitForConnect("REDHAWK_DOMAIN_TEST03");
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, "REDHAWK_DOMAIN_TEST03");
 
 		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST03 CONNECTED").expand();
 		viewBot.tree().getTreeItem("Target SDR").expand();
@@ -150,37 +159,18 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST03 CONNECTED").select();
 	}
 
-	public void waitForConnect(final String domainName) {
-		viewBot.waitUntil(new ICondition() {
-
-			@Override
-			public boolean test() throws Exception {
-				viewBot.tree().getTreeItem(domainName + " CONNECTED");
-				return true;
-			}
-
-			@Override
-			public void init(SWTBot bot) {
-
-			}
-
-			@Override
-			public String getFailureMessage() {
-				return domainName + " never connected";
-			}
-
-		}, 30000, 1000);
-	}
-
+	/**
+	 * Test using the wizard do launch both a domain and device manager at the same time.
+	 */
 	@Test
-	public void testLaunch04() {
+	public void testLaunchDomMgrAndDevMgr() {
 		viewBot.tree().getTreeItem("Target SDR").select();
 		viewBot.tree().getTreeItem("Target SDR").contextMenu("Launch Domain ...").click();
 		bot.textWithLabel("Domain Name: ").setText("REDHAWK_DOMAIN_TEST04");
 		bot.tree().getTreeItem("ExampleExecutableNode01 (/nodes/ExampleExecutableNode01/)").check();
 		bot.button("OK").click();
 
-		waitForConnect("REDHAWK_DOMAIN_TEST04");
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, "REDHAWK_DOMAIN_TEST04");
 
 		explorerView.show();
 		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST04 CONNECTED").expand();
@@ -208,6 +198,9 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST04 CONNECTED").select();
 	}
 
+	/**
+	 * Ensure the user can't create two domain entries with the same display name (although they can target the same domain).
+	 */
 	@Test
 	public void testDisplayName() {
 		launchDomainManager("REDHAWK_DOMAIN_TEST01x");
@@ -226,44 +219,32 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST01x_2 CONNECTED").expand();
 	}
 
+	/**
+	 * Test being able to connect to multiple domain managers.
+	 */
 	@Test
-	public void testLaunch05() {
-		launchDomainManager("REDHAWK_DOMAIN_TEST01x");
-		StandardTestActions.viewToolbarWithToolTip(explorerView, "New Domain Connection").click();
-		bot.textWithLabel("Display Name:").setText("REDHAWK_DOMAIN_TEST01x");
-		bot.button("Finish").click();
-		waitForConnect("REDHAWK_DOMAIN_TEST01x");
-		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST01x CONNECTED").expand();
+	public void testConnectManyDomMgr() {
+		for (int i = 1; i < 5; i++) {
+			String domainName = "REDHAWK_DOMAIN_TEST0" + i + "x";
+			launchDomainManager(domainName);
+			StandardTestActions.viewToolbarWithToolTip(explorerView, "New Domain Connection").click();
+			bot.textWithLabel("Display Name:").setText(domainName);
+			bot.button("Finish").click();
+			ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
+			ScaExplorerTestUtils.getDomain(bot, domainName).select();
+		}
 
-		launchDomainManager("REDHAWK_DOMAIN_TEST02x");
-		StandardTestActions.viewToolbarWithToolTip(explorerView, "New Domain Connection").click();
-		bot.textWithLabel("Display Name:").setText("REDHAWK_DOMAIN_TEST02x");
-		bot.button("Finish").click();
-		waitForConnect("REDHAWK_DOMAIN_TEST02x");
-		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST02x CONNECTED").expand();
-
-		launchDomainManager("REDHAWK_DOMAIN_TEST03x");
-		StandardTestActions.viewToolbarWithToolTip(explorerView, "New Domain Connection").click();
-		bot.textWithLabel("Display Name:").setText("REDHAWK_DOMAIN_TEST03x");
-		bot.button("Finish").click();
-		waitForConnect("REDHAWK_DOMAIN_TEST03x");
-		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST03x CONNECTED").expand();
-
-		launchDomainManager("REDHAWK_DOMAIN_TEST04x");
-		StandardTestActions.viewToolbarWithToolTip(explorerView, "New Domain Connection").click();
-		bot.textWithLabel("Display Name:").setText("REDHAWK_DOMAIN_TEST04x");
-		bot.button("Finish").click();
-		waitForConnect("REDHAWK_DOMAIN_TEST04x");
-		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST04x CONNECTED").expand();
-
-		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST01x CONNECTED").select();
-		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST02x CONNECTED").select();
-		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST03x CONNECTED").select();
-		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST04x CONNECTED").select();
+		for (int i = 1; i < 5; i++) {
+			String domainName = "REDHAWK_DOMAIN_TEST0" + i + "x";
+			ScaExplorerTestUtils.getDomain(bot, domainName).select();
+		}
 	}
 
+	/**
+	 * Test launching a domain manager with multiple nodes.
+	 */
 	@Test
-	public void testLaunch06() {
+	public void testLaunchDomMgrAndManyDevMgr() {
 		viewBot.tree().getTreeItem("Target SDR").select();
 		viewBot.tree().getTreeItem("Target SDR").contextMenu("Launch Domain ...").click();
 
@@ -274,8 +255,8 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		bot.tree().getTreeItem("ExampleExecutableNode02 (/nodes/ExampleExecutableNode02/)").check();
 		bot.button("OK").click();
 
-		waitForConnect("REDHAWK_DOMAIN_TEST06");
-		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST06 CONNECTED").expand();
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, "REDHAWK_DOMAIN_TEST06");
+		ScaExplorerTestUtils.getDomain(bot, "REDHAWK_DOMAIN_TEST06").expand();
 
 		bot.waitUntil(new ICondition() {
 
@@ -318,8 +299,11 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		viewBot.tree().getTreeItem("REDHAWK_DOMAIN_TEST06 CONNECTED").select();
 	}
 
+	/**
+	 * Tests validation in the launch domain manager wizard. Should enable/disable based on the chosen domain name.
+	 */
 	@Test
-	public void testLaunch08() {
+	public void testLaunchDomMgrValidation() {
 		ScaExplorerTestUtils.launchDomain(bot, DOMAIN_NAME, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN_NAME);
 
@@ -372,74 +356,11 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 
 	@Test
 	public void testPortsPlotData() {
-		viewBot.tree().getTreeItem("Target SDR").select();
-		viewBot.tree().getTreeItem("Target SDR").contextMenu("Launch Domain ...").click();
-		bot.textWithLabel("Domain Name: ").setText("REDHAWK_DEV_ports");
-		bot.button("OK").click(); // launch Domain without Device Manager
+		ScaExplorerTestUtils.launchDomain(bot, "REDHAWK_DEV_ports", "DevMgr_localhost");
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, "REDHAWK_DEV_ports");
+		ScaExplorerTestUtils.launchWaveformFromDomain(bot, "REDHAWK_DEV_ports", "ExampleWaveform05");
+		SWTBotTreeItem sigGenTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] {"REDHAWK_DEV_ports", "Waveforms", "ExampleWaveform05"}, "SigGen_1");
 
-		waitForConnect("REDHAWK_DEV_ports");
-		viewBot.tree().getTreeItem("REDHAWK_DEV_ports CONNECTED").expand();
-		
-		// Launch Device Manager from Target SDR using defaults
-		SWTBotTreeItem nodesTreeItem = viewBot.tree().expandNode("Target SDR", "Nodes").select().expand();
-		SWTBotTreeItem firstNode = nodesTreeItem.getNode(0); // get first node vs hard coding to DevMgr_localhost
-		firstNode.select();
-		final String firstNodeName = firstNode.getText(); 
-		firstNode.contextMenu("Launch Device Manager").click();
-		bot.button("OK").click();
-
-		explorerView.show();
-		String[] nodePath = { "REDHAWK_DEV_ports CONNECTED", "Device Managers" };
-		final SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodePath, firstNodeName);
-		bot.waitUntil(new ICondition() {
-
-			@Override
-			public boolean test() throws Exception {
-				SWTBotTreeItem item = treeItem.expand().getNode(0);
-				item.expand();
-				final String name = item.getText();
-				return name.startsWith("GPP_") && name.endsWith("STARTED");
-			}
-
-			@Override
-			public void init(SWTBot bot) {
-			}
-
-			@Override
-			public String getFailureMessage() {
-				return "Couldn't find some element in the tree leading up to 'GPP_* STARTED'";
-			}
-		}, 10000, 1000);
-		viewBot.tree().getTreeItem("REDHAWK_DEV_ports CONNECTED").select();
-
-		viewBot.tree().getTreeItem("REDHAWK_DEV_ports CONNECTED").contextMenu("Launch Waveform...").click();
-		bot.tree().getTreeItem("ExampleWaveform05").select();
-		bot.button("Finish").click();
-
-		bot.closeAllEditors();
-
-		bot.waitUntil(new ICondition() {
-
-			@Override
-			public boolean test() throws Exception {
-				StandardTestActions.getTreeItemMatches(viewBot.tree(), "REDHAWK_DEV_ports CONNECTED", "Waveforms", "ExampleWaveform05.*", "SigGen_1");
-				return true;
-			}
-
-			@Override
-			public void init(SWTBot bot) {
-
-			}
-
-			@Override
-			public String getFailureMessage() {
-				return "Could not find REDHAWK_DEV_ports/Waveforms/ExampleWaveform05.*/SigGen_1";
-			}
-
-		}, 30000, 1000);
-
-		explorerView.setFocus();
-		SWTBotTreeItem sigGenTreeItem = StandardTestActions.getTreeItemMatches(viewBot.tree(), "REDHAWK_DEV_ports CONNECTED", "Waveforms", "ExampleWaveform05.*", "SigGen_1");
 		sigGenTreeItem.select();
 		sigGenTreeItem.contextMenu("Start").click();
 		SWTBotTreeItem outPortTreeItem = sigGenTreeItem.expandNode("dataFloat_out");
