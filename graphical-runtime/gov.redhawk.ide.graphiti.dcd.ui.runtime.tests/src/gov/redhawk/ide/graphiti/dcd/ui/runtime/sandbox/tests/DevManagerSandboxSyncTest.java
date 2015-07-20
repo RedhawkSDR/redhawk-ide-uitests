@@ -103,11 +103,13 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		// Add two devices to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 300, 0);
-		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_1); // GPP starts when launched
 
 		// wait for device to show up in ScaExplorer Dev Manager Chalkboard
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+
+		// GPP starts when launched
+		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_1);
 
 		// verify GPP stopped
 		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);

@@ -26,7 +26,7 @@ public class DomainNodeTest extends AbstractGraphitiDomainNodeRuntimeTest {
 	 */
 	@Test
 	public void launchNodeInDomain() {
-		String device1 = "device_1";
+		String device1 = "name.space.device";
 
 		NodeUtils.launchNodeInDomain(bot, DOMAIN, NAMESPACE_DEVICE_MANAGER);
 		setNodeFullName(ScaExplorerTestUtils.getFullNameFromScaExplorer(gefBot, DOMAIN_NODE_PARENT_PATH, NAMESPACE_DEVICE_MANAGER));
