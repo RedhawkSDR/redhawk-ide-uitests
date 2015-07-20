@@ -29,17 +29,12 @@ import org.junit.Test;
 
 public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeTest {
 
-	private static final String SIGGEN = "SigGen";
-	private static final String SIGGEN_1 = "SigGen_1";
-	private static final String HARD_LIMIT = "HardLimit";
-	private static final String HARD_LIMIT_1 = "HardLimit_1";
-	private static final String DATA_READER = "DataReader";
-
 	/**
 	 * IDE-969 Opens Graphiti diagram using the Waveform Explorer editor.
 	 * This editor is "look but don't touch". All design functionality should be disabled.
 	 * Runtime functionality (start/stop, plot, etc) should still work.
 	 * IDE-1001 Hide grid on runtime diagram.
+	 * IDE-1196 Ensure "Show Console" doesn't show up for domain waveforms
 	 */
 	@Test
 	public void waveformExplorerTest() {
@@ -50,9 +45,9 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 		SWTBotGefEditPart hardLimit = editor.getEditPart(HARD_LIMIT);
 		Assert.assertNotNull(HARD_LIMIT + " component not found in diagram", hardLimit);
 
-		// check that delete & design options don't appear
+		// Check that some design-time options, options we've removed, and local-runtime options don't appear
 		hardLimit.select();
-		String[] removedContextOptions = { "Delete", "Set As Assembly Controller", "Move Start Order Earlier", "Move Start Order Later" };
+		String[] removedContextOptions = { "Delete", "Release", "Terminate", "Show Console", "Set As Assembly Controller", "Move Start Order Earlier", "Move Start Order Later" };
 		for (String contextOption : removedContextOptions) {
 			try {
 				editor.clickContextMenu(contextOption);
@@ -75,10 +70,10 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
 
 		// check that DnD does not work - From Target SDR
-		DiagramTestUtils.dragComponentFromTargetSDRToDiagram(gefBot, editor, DATA_READER);
+		DiagramTestUtils.dragComponentFromTargetSDRToDiagram(gefBot, editor, DATA_CONVERTER);
 		editor.setFocus();
-		SWTBotGefEditPart dataReader = editor.getEditPart(DATA_READER);
-		Assert.assertNull(DATA_READER + " component should not have be drawn in diagram", dataReader);
+		SWTBotGefEditPart dataReader = editor.getEditPart(DATA_CONVERTER);
+		Assert.assertNull(DATA_CONVERTER + " component should not have be drawn in diagram", dataReader);
 
 		// IDE-1001 check that grid is hidden on runtime diagram
 		Diagram diagram = DiagramTestUtils.getDiagram(editor);

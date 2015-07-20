@@ -27,14 +27,20 @@ import org.junit.Before;
  */
 public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntimeTest {
 
-	public static final String DOMAIN_WAVEFORM = "ExampleWaveform06";
-	public static final String NAMESPACE_DOMAIN_WAVEFORM = "namespaceWF"; // Contains namespaced components
-	public static final String DOMAIN_MANAGER_PROCESS = "Domain Manager";
-	public static final String DEVICE_MANAGER_PROCESS = "Device Manager";
-	public static final String DEVICE_MANAGER = "DevMgr";
-	
+	protected static final String DOMAIN_WAVEFORM = "ExampleWaveform06";
+	protected static final String NAMESPACE_DOMAIN_WAVEFORM = "namespaceWF"; // Contains namespaced components
+	protected static final String DOMAIN_MANAGER_PROCESS = "Domain Manager";
+	protected static final String DEVICE_MANAGER_PROCESS = "Device Manager";
+	protected static final String DEVICE_MANAGER = "DevMgr";
+
+	protected static final String SIGGEN = "rh.SigGen";
+	protected static final String SIGGEN_1 = "SigGen_1";
+	protected static final String HARD_LIMIT = "rh.HardLimit";
+	protected static final String HARD_LIMIT_1 = "HardLimit_1";
+	protected static final String DATA_CONVERTER = "rh.DataConverter";
+
 	final String DOMAIN = "SWTBOT_SAD_TEST_" + (int) (1000.0 * Math.random()); // SUPPRESS CHECKSTYLE VisibilityModifier
-	final String[] DOMAIN_WAVEFORM_PARENT_PATH = { DOMAIN + " CONNECTED", "Waveforms" }; // SUPPRESS CHECKSTYLE VisibilityModifier
+	final String[] DOMAIN_WAVEFORM_PARENT_PATH = { DOMAIN, "Waveforms" }; // SUPPRESS CHECKSTYLE VisibilityModifier
 	protected SWTGefBot gefBot = new RHSWTGefBot(); // SUPPRESS CHECKSTYLE VisibilityModifier
 	private String waveFormFullName; // full name of waveform that is launched
 
