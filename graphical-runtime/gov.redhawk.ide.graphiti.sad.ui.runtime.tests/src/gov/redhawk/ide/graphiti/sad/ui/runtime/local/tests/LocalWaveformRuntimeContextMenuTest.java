@@ -25,12 +25,6 @@ import gov.redhawk.logging.ui.LogLevels;
 
 public class LocalWaveformRuntimeContextMenuTest extends AbstractGraphitiLocalWaveformRuntimeTest {
 
-	private RHBotGefEditor editor;
-	private static final String[] LOCAL_WAVEFORM_PARENT_PATH = {"Sandbox"};
-	private static final String LOCAL_WAVEFORM = "ExampleWaveform01";
-	private static final String SIGGEN = "SigGen";
-	private static final String SIGGEN_1 = SIGGEN + "_1";
-
 	/**
 	 * IDE-661, IDE-662, IDE-663, IDE-664, IDE-665, IDE-666, IDE-667, IDE-1038, IDE-1065
 	 * Test that context menu options appear in Graphiti during runtime,
@@ -38,55 +32,49 @@ public class LocalWaveformRuntimeContextMenuTest extends AbstractGraphitiLocalWa
 	 */
 	@Test
 	public void runtimeContextMenuTest() {
-		
-		editor = gefBot.rhGefEditor(getWaveFormFullName());
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
-		
-		//wait for SIGGEN_1 to show up in Sca Explorer
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1);
-
 		// Start the component
-		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1);
+		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, getWaveformPath(), SIGGEN_1);
 
 		// Test Log Levels
-		DiagramTestUtils.changeLogLevelFromDiagram(editor, SIGGEN, LogLevels.TRACE);
-		DiagramTestUtils.confirmLogLevelFromDiagram(editor, SIGGEN, LogLevels.TRACE);
+		DiagramTestUtils.changeLogLevelFromDiagram(editor, SIGGEN_1, LogLevels.TRACE);
+		DiagramTestUtils.confirmLogLevelFromDiagram(editor, SIGGEN_1, LogLevels.TRACE);
 
-		DiagramTestUtils.changeLogLevelFromDiagram(editor, SIGGEN, LogLevels.FATAL);
-		DiagramTestUtils.confirmLogLevelFromDiagram(editor, SIGGEN, LogLevels.FATAL);
+		DiagramTestUtils.changeLogLevelFromDiagram(editor, SIGGEN_1, LogLevels.FATAL);
+		DiagramTestUtils.confirmLogLevelFromDiagram(editor, SIGGEN_1, LogLevels.FATAL);
 
 		//plot port data for SIGGEN
 		editor.setFocus();
-		DiagramTestUtils.plotPortDataOnComponentPort(editor, SIGGEN, null);
+		DiagramTestUtils.plotPortDataOnComponentPort(editor, SIGGEN_1, null);
 		//close plot view
 		SWTBotView plotView = ViewUtils.getPlotView(bot);
 		plotView.close();
 
 		// SRI view test
-		DiagramTestUtils.displaySRIDataOnComponentPort(editor, SIGGEN, null);
+		DiagramTestUtils.displaySRIDataOnComponentPort(editor, SIGGEN_1, null);
 		//verify sriView displayed
 		ViewUtils.waitUntilSRIViewPopulates(bot);
 		SWTBotView sriView = ViewUtils.getSRIView(bot);
 		Assert.assertEquals("streamID property is missing for column 1", "streamID: ", sriView.bot().tree().cell(0, "Property: "));
-		Assert.assertEquals("streamID property is wrong", SIGGEN + " Stream", sriView.bot().tree().cell(0, "Value: "));
+		Assert.assertEquals("streamID property is wrong", "SigGen Stream", sriView.bot().tree().cell(0, "Value: "));
 		sriView.close();
 
 		// Audio/Play port view test
-		DiagramTestUtils.playPortDataOnComponentPort(editor, SIGGEN, null);
+		DiagramTestUtils.playPortDataOnComponentPort(editor, SIGGEN_1, null);
 		//wait until audio view populates
 		ViewUtils.waitUntilAudioViewPopulates(bot);
 		//get audio view
 		SWTBotView audioView = ViewUtils.getAudioView(bot);
 		String item = audioView.bot().list().getItems()[0];
-		Assert.assertTrue("SigGen not found in Audio Port Playback", item.matches(SIGGEN + ".*"));
+		Assert.assertTrue("SigGen not found in Audio Port Playback", item.matches(SIGGEN_1 + ".*"));
 		audioView.close();
 
 		
 		//open data list view
-		DiagramTestUtils.displayDataListViewOnComponentPort(editor, SIGGEN, null);
+		DiagramTestUtils.displayDataListViewOnComponentPort(editor, SIGGEN_1, null);
 		//verify data list view opens
 		ViewUtils.waitUntilDataListViewDisplays(bot);
 		//start acquire
@@ -98,7 +86,7 @@ public class LocalWaveformRuntimeContextMenuTest extends AbstractGraphitiLocalWa
 		dataListView.close();
 
 		// Snapshot view test
-		DiagramTestUtils.displaySnapshotDialogOnComponentPort(editor, SIGGEN, null);
+		DiagramTestUtils.displaySnapshotDialogOnComponentPort(editor, SIGGEN_1, null);
 		//wait until Snapshot dialog appears
 		ViewUtils.waitUntilSnapshotDialogDisplays(bot);
 		//get snapshot dialog
@@ -107,34 +95,26 @@ public class LocalWaveformRuntimeContextMenuTest extends AbstractGraphitiLocalWa
 		snapshotDialog.close();
 
 		// Monitor ports test
-		DiagramTestUtils.displayPortMonitorViewOnComponentPort(editor, SIGGEN, null);
-		//wait until port monitor view appears
-		ViewUtils.waitUntilPortMonitorViewPopulates(bot, SIGGEN);
-		//close PortMonitor View
-		SWTBotView monitorView = ViewUtils.getPortMonitorView(bot);
-		monitorView.close();
+		DiagramTestUtils.displayPortMonitorViewOnComponentPort(editor, SIGGEN_1, null);
+		ViewUtils.waitUntilPortMonitorViewPopulates(bot, SIGGEN_1);
+		ViewUtils.getPortMonitorView(bot).close();
 
 		//stop component
-		DiagramTestUtils.stopComponentFromDiagram(editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1);
+		DiagramTestUtils.stopComponentFromDiagram(editor, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, getWaveformPath(), SIGGEN_1);
 	}
 
 	/**
 	 * IDE-326
-	 * Test that certain context menu option don't appear in Graphiti during runtime,
+	 * Test that certain context menu options don't appear in Graphiti during runtime
 	 */
 	@Test
 	public void removeDevelopmentContextOptionsTest() {
-		
-		editor = gefBot.rhGefEditor(getWaveFormFullName());
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1);
-		
-
 		// Make sure start order and assembly controller context options don't exist
-		editor.getEditPart(SIGGEN).select();
+		editor.getEditPart(SIGGEN_1).select();
 		String[] removedContextOptions = { "Set As Assembly Controller", "Move Start Order Earlier", "Move Start Order Later" };
 		for (String contextOption : removedContextOptions) {
 			try {

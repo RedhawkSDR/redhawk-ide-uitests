@@ -25,230 +25,189 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
  * vice versa.
  */
 public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformRuntimeTest {
-	
-	private RHBotGefEditor editor;
-	private static final String[] LOCAL_WAVEFORM_PARENT_PATH = {"Sandbox"};
-	private static final String LOCAL_WAVEFORM = "ExampleWaveform01";
-	private static final String HARD_LIMIT = "HardLimit";
+
+	private static final String HARD_LIMIT = "rh.HardLimit";
 	private static final String HARD_LIMIT_1 = "HardLimit_1";
-	private static final String SIG_GEN = "SigGen";
-	private static final String SIG_GEN_1 = "SigGen_1";
 
 	/**
 	 * Adds, then removes a component via diagram. Verify the SCA Explorer reflects actions.
 	 */
 	@Test
 	public void addRemoveComponentInDiagram() {
-		editor = gefBot.rhGefEditor(getWaveFormFullName());
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
-		
+
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
-		
-		//wait for component to show up in ScaExplorer
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-				
-		//delete component from diagram
-		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(HARD_LIMIT));
-		
-		//wait until hard limit component not present in ScaExplorer
-		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
+
+		// wait for component to show up in ScaExplorer
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+
+		// delete component from diagram
+		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(HARD_LIMIT_1));
+
+		// wait until hard limit component not present in ScaExplorer
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
 	}
-	
+
 	/**
 	 * IDE-659
 	 * Adds, then removes a port connection via chalkboard diagram. Verify the SCA Explorer reflects actions.
 	 */
 	@Test
-	public void addRemoveComponentConnectionInDiagram() {
-		editor = gefBot.rhGefEditor(getWaveFormFullName());
+	public void addRemoveConnectionInDiagram() {
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
 		// Add two components to diagram from palette
-		final String sourceComponent = SIG_GEN;
-		final String targetComponent = HARD_LIMIT;
-		DiagramTestUtils.addFromPaletteToDiagram(editor, sourceComponent, 0, 0);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, targetComponent, 300, 0);
-		
-		//wait for component to show up in ScaExplorer (connections don't always work correctly if you don't wait.
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-		
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
+
+		// wait for component to show up in ScaExplorer (connections don't always work correctly if you don't wait.
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+
 		// Get port edit parts
-		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, sourceComponent);
-		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, targetComponent);
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN_1);
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 
 		// Draw connection
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
 
-		//wait for connection to show up in ScaExplorer
-		ScaExplorerTestUtils.waitUntilConnectionDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1, "out", "connection_1");
-				
+		// wait for connection to show up in ScaExplorer
+		ScaExplorerTestUtils.waitUntilConnectionDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1, "dataFloat_out", "connection_1");
+
 		// Delete connection
 		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		for (SWTBotGefConnectionEditPart con : sourceConnections) {
 			DiagramTestUtils.deleteFromDiagram(editor, con);
 		}
-		
-		//wait until connection not present in ScaExplorer
-		ScaExplorerTestUtils.waitUntilConnectionDisappearsInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1, "out", "connection_1");
+
+		// wait until connection not present in ScaExplorer
+		ScaExplorerTestUtils.waitUntilConnectionDisappearsInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1, "dataFloat_out", "connection_1");
 	}
-	
+
 	/**
 	 * IDE-659
 	 * Adds components, starts/stops them from Diagram. Verify the SCA Explorer reflects actions.
 	 */
 	@Test
 	public void startStopComponentsFromDiagram() {
-		editor = gefBot.rhGefEditor(getWaveFormFullName());
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
-		// Add two components to diagram from palette
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
+		// Add one additional component to the diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
 
-		//wait for component to show up in ScaExplorer
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-		
-		//verify hard limit stopped
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
+		// verify both are stopped
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, getWaveformPath(), SIGGEN_1);
 
-		//start hard limit
+		// start hard limit
 		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
-		
-		//verify hardlimit started but siggen did not
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
-		
-		//start SigGen
-		DiagramTestUtils.startComponentFromDiagram(editor, SIG_GEN);
-		
-		//verify SigGen started
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
-		
-		//stop hard limit
-		DiagramTestUtils.stopComponentFromDiagram(editor, HARD_LIMIT);
-		
-		//verify hardlimit stopped, SigGen started
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
-		
-		//stop SigGen
-		DiagramTestUtils.stopComponentFromDiagram(editor, SIG_GEN);
-		
-		//verify SigGen stopped
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
-		
-		//start both components
-		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
-		DiagramTestUtils.startComponentFromDiagram(editor, SIG_GEN);
-		
-		//verify both started
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, getWaveformPath(), SIGGEN_1);
+
+		// start SigGen
+		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, getWaveformPath(), SIGGEN_1);
+
+		// stop hard limit
+		DiagramTestUtils.stopComponentFromDiagram(editor, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, getWaveformPath(), SIGGEN_1);
+
+		// stop SigGen
+		DiagramTestUtils.stopComponentFromDiagram(editor, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, getWaveformPath(), SIGGEN_1);
+
+		// start both components
+		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT_1);
+		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, getWaveformPath(), SIGGEN_1);
 	}
-	
+
 	/**
 	 * IDE-659
-	 * Adds, then removes component connections via SCA Explorer.  Verify its no
-	 * longer present in Diagram
+	 * Adds, then removes component connections via SCA Explorer. Verify its no longer present in Diagram
 	 */
 	@Test
-	public void addRemoveComponentConnectionInScaExplorer() {
-		editor = gefBot.rhGefEditor(getWaveFormFullName());
+	public void addRemoveConnectionInExplorer() {
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
-		// Add two components to diagram from palette
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
+		// Add an additional component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
 
-		//verify components were added to sca explorer
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
-		
-		//create connection between components via Sca Explorer
-		ScaExplorerTestUtils.connectComponentPortsInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, getWaveFormFullName(), "connection_1", SIG_GEN_1, "out",
-			HARD_LIMIT_1, "dataDouble_in");
-		
-		//verify connection exists in diagram
+		// create connection between components via Sca Explorer
+		ScaExplorerTestUtils.connectComponentPortsInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, getWaveFormFullName(), "connection_1", SIGGEN_1, "dataFloat_out",
+			HARD_LIMIT_1, "dataFloat_in");
+
+		// verify connection exists in diagram
 		DiagramTestUtils.waitUntilConnectionDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
-		
-		//disconnect connection_1 via Sca Explorer 
-		ScaExplorerTestUtils.disconnectConnectionInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, getWaveFormFullName(), "connection_1", SIG_GEN_1, "out");
-		
-		//verify connection does NOT exist in diagram
+
+		// disconnect connection_1 via Sca Explorer
+		ScaExplorerTestUtils.disconnectConnectionInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, getWaveFormFullName(), "connection_1", SIGGEN_1, "dataFloat_out");
+
+		// verify connection does NOT exist in diagram
 		DiagramTestUtils.waitUntilConnectionDisappearsInDiagram(bot, editor, HARD_LIMIT_1);
 	}
-	
+
 	/**
 	 * IDE-659
-	 * Adds components, starts/stops them from ScaExplorer and verifies
+	 * Adds components, starts/stops them from the explorer view and verifies
 	 * components in diagram reflect appropriate color changes
 	 * 
 	 */
 	@Test
-	public void startStopComponentsFromScaExplorer() {
-		editor = gefBot.rhGefEditor(getWaveFormFullName());
+	public void startStopComponentsFromExplorer() {
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
-		// Launch two components from TargetSDR
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
+		// Launch an additional component from TargetSDR
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
 
-		//verify components were added to the diagram
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIG_GEN);
-		
-		//verify hard limit stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
+		// verify hard limit stopped
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
 
-		//start hard limit from sca explorer
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-		
-		//verify hardlimit started but siggen did not
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIG_GEN);
-		
-		//start SigGen from sca explorer
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
-		
-		//verify SigGen started but siggen did not
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIG_GEN);
-		
-		//stop hard limit from sca explorer
-		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-		
-		//verify hardlimit stopped, SigGen started
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIG_GEN);
-		
-		//stop SigGen from sca explorer
-		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
-		
-		//verify SigGen stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIG_GEN);
-		
-		//start both components
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, HARD_LIMIT_1);
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIG_GEN_1);
-		
-		//verify both started
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIG_GEN);
-		
-		//stop chalkboard
-		ScaExplorerTestUtils.stopWaveformFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
-		
-		//verify both components stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIG_GEN);
-		
-		//start chalkboard
-		ScaExplorerTestUtils.startWaveformFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
-		
-		//verify both components started
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIG_GEN);
+		// start hard limit from sca explorer
+		ScaExplorerTestUtils.startResourceInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);
+
+		// start SigGen from sca explorer
+		ScaExplorerTestUtils.startResourceInExplorer(bot, getWaveformPath(), SIGGEN_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
+
+		// stop hard limit from sca explorer
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
+
+		// stop SigGen from sca explorer
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, getWaveformPath(), SIGGEN_1);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);
+
+		// start both components
+		ScaExplorerTestUtils.startResourceInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, getWaveformPath(), SIGGEN_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
+
+		// stop chalkboard
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);
+
+		// start chalkboard
+		ScaExplorerTestUtils.startResourceInExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
 	}
 }

@@ -16,16 +16,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class LocalWaveformRuntimeStartOrderTest extends AbstractGraphitiLocalWaveformRuntimeTest {
-
-	private RHBotGefEditor editor;
-	private static final String[] LOCAL_WAVEFORM_PARENT_PATH = {"Sandbox"};
-	private static final String LOCAL_WAVEFORM = "ExampleWaveform01";
-	private static final String SIGGEN = "SigGen";
 
 	/**
 	 * IDE-326
@@ -33,16 +26,10 @@ public class LocalWaveformRuntimeStartOrderTest extends AbstractGraphitiLocalWav
 	 */
 	@Test
 	public void removeStartOrderIconTest() {
-		
-		editor = gefBot.rhGefEditor(getWaveFormFullName());
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
-		//drag SigGen to diagram and verify loaded in sca explorer
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN + "_1");
-		
-
-		SWTBotGefEditPart sigGenEditPart = editor.getEditPart(SIGGEN);
+		SWTBotGefEditPart sigGenEditPart = editor.getEditPart(SIGGEN_1);
 		ComponentShapeImpl componentShape = (ComponentShapeImpl) sigGenEditPart.part().getModel();
 		Assert.assertNull("Start Order ellipse should not be created during runtime", componentShape.getStartOrderEllipseShape());
 	}

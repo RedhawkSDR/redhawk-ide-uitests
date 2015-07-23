@@ -19,6 +19,9 @@ import org.junit.Test;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
+/**
+ * TODO: Move to a more appropriate bundle
+ */
 public class UnknownPortTest extends AbstractGraphitiTest {
 
 	private static final String COMP_NAME = "testIDE1095"; 

@@ -29,6 +29,8 @@ import org.junit.Test;
  * The purpose of this class is to test that selecting "Monitor Ports" on a waveform in the SCA Explorer correctly adds
  * the ports of all child components to the Port Monitor view. The actual implementation of the Port Monitor View is
  * tested via a Jubula test that was labeled, at the time of this writing, as 'IDE-Runtime_Port_Monitor_View'
+ * <p/>
+ * TODO: Move to a more appropriate bundle
  */
 public class PortMonitorViewTest extends UIRuntimeTest {
 
@@ -52,7 +54,7 @@ public class PortMonitorViewTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void portMonitorWaveformTest() {
-		ScaExplorerTestUtils.startWaveformFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
+		ScaExplorerTestUtils.startResourceInExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
 		ScaExplorerTestUtils.montiorWaveformPortsFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
 
 		ViewUtils.disableConsoleView(gefBot);
@@ -61,10 +63,10 @@ public class PortMonitorViewTest extends UIRuntimeTest {
 		portMonitorView.show();
 
 		SWTBotTreeItem rootItem = portMonitorView.bot().tree().getAllItems()[0];
-		Assert.assertTrue("Root tree item should be the waveform", waveFormFullName.equals(rootItem.getText()));
+		Assert.assertEquals("Root tree item should be the waveform", waveFormFullName, rootItem.getText());
 
 		List<String> nodes = rootItem.getNodes();
-		Assert.assertEquals("Wrong number of ports being monitored", 6, nodes.size());
+		Assert.assertEquals("Wrong number of ports being monitored", 4, nodes.size());
 
 	}
 

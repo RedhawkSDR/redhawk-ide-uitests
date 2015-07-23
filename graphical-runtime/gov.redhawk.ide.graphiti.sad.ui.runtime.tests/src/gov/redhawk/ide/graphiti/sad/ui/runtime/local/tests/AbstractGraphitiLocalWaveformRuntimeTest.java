@@ -10,7 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.junit.After;
 import org.junit.Before;
 
@@ -25,9 +25,11 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
  */
 public abstract class AbstractGraphitiLocalWaveformRuntimeTest extends UIRuntimeTest {
 
-	public static final String[] LOCAL_WAVEFORM_PARENT_PATH = {"Sandbox"};
-	public static final String LOCAL_WAVEFORM = "ExampleWaveform01";
-	public static final String NAMESPACE_LOCAL_WAVEFORM = "namespaceWF"; // Contains namespaced components
+	protected static final String[] LOCAL_WAVEFORM_PARENT_PATH = { "Sandbox" };
+	protected static final String LOCAL_WAVEFORM = "ExampleWaveform05";
+	protected static final String SIGGEN = "SigGen";
+	protected static final String SIGGEN_1 = SIGGEN + "_1";
+
 	protected RHSWTGefBot gefBot; // SUPPRESS CHECKSTYLE INLINE
 	private String waveFormFullName; //full name of waveform that is launched
 
@@ -35,32 +37,26 @@ public abstract class AbstractGraphitiLocalWaveformRuntimeTest extends UIRuntime
 	public void beforeTest() throws Exception {
 		gefBot = new RHSWTGefBot();
 		
-		//Launch Local Waveform From Target SDR
+		// Launch Local Waveform From Target SDR
 		ScaExplorerTestUtils.launchWaveformFromTargetSDR(gefBot, LOCAL_WAVEFORM);
-
-		//wait until local waveform appears in ScaExplorer Sandbox
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
 
 		// Open Local Waveform Diagram
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, DiagramType.GRAPHITI_CHALKBOARD);
 		waveFormFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
-		
 	}
 	
 	@After
 	public void afterTest() {
-		//does waveform exist
-		SWTBotTreeItem waveformEntry = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
-		
-		//release waveform, make sure it disappears
-		if (waveformEntry != null) {
-			ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
-			
-			//wait until waveform no longer exists!!!!
-			ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
+		// Release the waveform if it exists
+		try {
+			ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
+		} catch (WidgetNotFoundException ex) {
+			return;
 		}
+		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
 	}
-
 
 	public String getWaveFormFullName() {
 		return waveFormFullName;
@@ -69,7 +65,9 @@ public abstract class AbstractGraphitiLocalWaveformRuntimeTest extends UIRuntime
 	public void setWaveFormFullName(String waveFormFullName) {
 		this.waveFormFullName = waveFormFullName;
 	}
-	
-	
+
+	public String[] getWaveformPath() {
+		return new String[] { "Sandbox", getWaveFormFullName() };
+	}
 
 }

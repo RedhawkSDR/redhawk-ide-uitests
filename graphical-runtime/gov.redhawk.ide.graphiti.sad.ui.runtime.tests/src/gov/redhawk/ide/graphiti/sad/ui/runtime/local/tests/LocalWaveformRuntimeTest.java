@@ -26,8 +26,10 @@ import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 
 public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRuntimeTest {
 
-	private static final String HARD_LIMIT = "HardLimit";
-	private RHBotGefEditor editor;
+	public static final String NAMESPACE_LOCAL_WAVEFORM = "namespaceWF"; // Contains namespaced components
+
+	private static final String HARD_LIMIT = "rh.HardLimit";
+	private static final String HARD_LIMIT_1 = "HardLimit_1";
 
 	/**
 	 * IDE-671
@@ -38,32 +40,34 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 	 */
 	@Test
 	public void checkLocalWaveformComponents() {
-
-		editor = gefBot.rhGefEditor(getWaveFormFullName());
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
-		
+
 		//verify existing component exists
-		Assert.assertNotNull(editor.getEditPart("DataReader"));
+		Assert.assertNotNull(editor.getEditPart(SIGGEN_1));
 
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
-		assertHardLimit(editor.getEditPart(HARD_LIMIT));
-		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(HARD_LIMIT));
+		assertHardLimit(editor.getEditPart(HARD_LIMIT_1));
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+
+		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(HARD_LIMIT_1));
 
 		// Add component to diagram from Target SDR
 		DiagramTestUtils.dragComponentFromTargetSDRToDiagram(gefBot, editor, HARD_LIMIT);
-		assertHardLimit(editor.getEditPart(HARD_LIMIT));
-		
+		assertHardLimit(editor.getEditPart(HARD_LIMIT_1));
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+
 		// Open the chalkboard with components already launched
 		editor.close();
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, DiagramType.GRAPHITI_CHALKBOARD);
 		editor = gefBot.rhGefEditor(getWaveFormFullName());
-		Assert.assertNotNull(editor.getEditPart(HARD_LIMIT));
+		Assert.assertNotNull(editor.getEditPart(HARD_LIMIT_1));
 	}
-	
+
 	/**
 	 * IDE-671
-	 * Launch local waveform waveform diagram that contains namespaced components
+	 * Launch local waveform that contains namespaced components
 	 * Verify component exists
 	 * Add components to diagram from palette and TargetSDR
 	 * Close diagram and re-open, verify newly added component exists
@@ -72,24 +76,23 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 	public void checkLocalWaveformNamespaceComponents() {
 		final String comp1 = "comp_1";
 		final String comp2 = "comp_2";
-		
+
 		bot.closeAllEditors();
-		
+
 		ScaExplorerTestUtils.launchWaveformFromTargetSDR(gefBot, NAMESPACE_LOCAL_WAVEFORM);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, NAMESPACE_LOCAL_WAVEFORM);
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, NAMESPACE_LOCAL_WAVEFORM, DiagramType.GRAPHITI_CHALKBOARD);
 		setWaveFormFullName(ScaExplorerTestUtils.getFullNameFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, NAMESPACE_LOCAL_WAVEFORM));
 
-		editor = gefBot.rhGefEditor(getWaveFormFullName());
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
-		
+
 		//verify waveform elements exist
 		Assert.assertNotNull(editor.getEditPart(comp1));
 		Assert.assertNotNull(editor.getEditPart(comp2));
 		SWTBotGefEditPart providesPort = DiagramTestUtils.getDiagramProvidesPort(editor, comp2);
 		SWTBotGefEditPart providesAnchor = DiagramTestUtils.getDiagramPortAnchor(providesPort);
 		Assert.assertTrue(providesAnchor.targetConnections().size() == 1);
-
 	}
 
 	/**
@@ -98,13 +101,12 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 	 */
 	@Test
 	public void checkFindByNotInSandbox() {
-		
-		editor = gefBot.rhGefEditor(getWaveFormFullName());
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
-		
+
 		String[] findByList = { FindByUtils.FIND_BY_NAME, FindByUtils.FIND_BY_DOMAIN_MANAGER, FindByUtils.FIND_BY_EVENT_CHANNEL,
 			FindByUtils.FIND_BY_FILE_MANAGER, FindByUtils.FIND_BY_SERVICE };
-		
+
 		for (String findByType : findByList) {
 			try {
 				DiagramTestUtils.addFromPaletteToDiagram(editor, findByType, 0, 0);
@@ -141,7 +143,7 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 		Assert.assertTrue(componentShape.getUsesPortStubs().size() == 1 && componentShape.getProvidesPortStubs().size() == 1);
 
 		// Both ports are of type dataDouble
-		Assert.assertEquals(componentShape.getUsesPortStubs().get(0).getUses().getInterface().getName(), "dataDouble");
-		Assert.assertEquals(componentShape.getProvidesPortStubs().get(0).getProvides().getInterface().getName(), "dataDouble");
+		Assert.assertEquals(componentShape.getUsesPortStubs().get(0).getUses().getInterface().getName(), "dataFloat");
+		Assert.assertEquals(componentShape.getProvidesPortStubs().get(0).getProvides().getInterface().getName(), "dataFloat");
 	}
 }
