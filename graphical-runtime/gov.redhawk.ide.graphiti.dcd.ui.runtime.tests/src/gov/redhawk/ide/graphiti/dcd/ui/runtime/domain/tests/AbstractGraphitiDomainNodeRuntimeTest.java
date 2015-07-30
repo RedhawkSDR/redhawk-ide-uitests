@@ -34,7 +34,7 @@ public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTes
 	protected static final String DEVICE_STUB = "DeviceStub";
 
 	final String DOMAIN = "SWTBOT_TEST_" + (int) (1000.0 * Math.random());
-	final String[] DOMAIN_NODE_PARENT_PATH = { DOMAIN + " CONNECTED", "Device Managers"};
+	final String[] DOMAIN_NODE_PARENT_PATH = { DOMAIN, "Device Managers"};
 	protected SWTGefBot gefBot; // SUPPRESS CHECKSTYLE VisibilityModifier
 	private String nodeFullName; //full name of device node that is launched
 	
