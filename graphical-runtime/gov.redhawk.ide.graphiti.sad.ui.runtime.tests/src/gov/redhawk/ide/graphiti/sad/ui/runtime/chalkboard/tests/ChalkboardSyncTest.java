@@ -45,11 +45,11 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
 
 		// RELEASE component from diagram
-		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(HARD_LIMIT));
+		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(HARD_LIMIT_1));
 
 		// wait until hard limit component not present in ScaExplorer Chalkboard & Diagram
 		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-		Assert.assertNull(editor.getEditPart(HARD_LIMIT));
+		Assert.assertNull(editor.getEditPart(HARD_LIMIT_1));
 	}
 	
 	/**
@@ -68,11 +68,11 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
 
 		// TERMINATE component from diagram
-		DiagramTestUtils.terminateFromDiagram(editor, editor.getEditPart(HARD_LIMIT));
+		DiagramTestUtils.terminateFromDiagram(editor, editor.getEditPart(HARD_LIMIT_1));
 
 		// wait until hard limit component not present in ScaExplorer Chalkboard & Diagram
 		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-		Assert.assertNull(editor.getEditPart(HARD_LIMIT));
+		Assert.assertNull(editor.getEditPart(HARD_LIMIT_1));
 	}
 
 	/**
@@ -85,27 +85,25 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		editor = openChalkboardDiagram(gefBot);
 
 		// Add two components to diagram from palette
-		final String sourceComponent = SIGGEN;
-		final String targetComponent = HARD_LIMIT;
-		DiagramTestUtils.addFromPaletteToDiagram(editor, sourceComponent, 0, 0);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, targetComponent, 300, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
 
 		// wait for component to show up in ScaExplorer Chalkboard (connections don't always work correctly if you don't
 		// wait.
-		String sourceUsage = DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, sourceComponent);
-		String targetUsage = DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, targetComponent);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, sourceUsage);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, targetUsage);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN_1);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
 
 		// Get port edit parts
-		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, sourceComponent);
-		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, targetComponent);
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN_1);
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 
 		// Draw connection
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
 
 		// wait for connection to show up in ScaExplorer Chalkboard
-		ScaExplorerTestUtils.waitUntilConnectionDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, sourceUsage, "dataFloat_out", "connection_1");
+		ScaExplorerTestUtils.waitUntilConnectionDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1, "dataFloat_out", "connection_1");
 
 		// Delete connection
 		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
@@ -114,7 +112,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		}
 
 		// wait until connection not present in ScaExplorer Chalkboard
-		ScaExplorerTestUtils.waitUntilConnectionDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, sourceUsage, "dataFloat_out", "connection_1");
+		ScaExplorerTestUtils.waitUntilConnectionDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1, "dataFloat_out", "connection_1");
 	}
 
 	/**
@@ -130,51 +128,44 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		// Add two components to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
-
-		// wait for component to show up in ScaExplorer Chalkboard
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
 
-		// verify hard limit stopped
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
+		// verify stopped
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// start hard limit
 		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
-
-		// verify hardlimit started but siggen did not
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// start SigGen
-		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN);
-
-		// verify SigGen started but siggen did not
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// stop hard limit
-		DiagramTestUtils.stopComponentFromDiagram(editor, HARD_LIMIT);
-
-		// verify hardlimit stopped, SigGen started
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		DiagramTestUtils.stopComponentFromDiagram(editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// stop SigGen
-		DiagramTestUtils.stopComponentFromDiagram(editor, SIGGEN);
-
-		// verify SigGen stopped
+		DiagramTestUtils.stopComponentFromDiagram(editor, SIGGEN_1);
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// start both components
 		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
 		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN);
-
-		// verify both started
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// cleanup
 		ScaExplorerTestUtils.terminateWaveformFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
@@ -191,27 +182,19 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
-
-		// verify HardLimit was added to the diagram
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
 
 		// delete component from ScaExplorer chalkboard
-		ScaExplorerTestUtils.terminateComponentInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT);
-
-		// verify hard limit component not present in Chalkboard Diagram
-		DiagramTestUtils.waitUntilComponentDisappearsInChalkboardDiagram(bot, editor, HARD_LIMIT);
+		ScaExplorerTestUtils.terminateLocalResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentDisappearsInChalkboardDiagram(bot, editor, HARD_LIMIT_1);
 
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
-
-		// verify HardLimit was added to the diagram
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
 
 		// terminate chalkboard
 		ScaExplorerTestUtils.terminateWaveformFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
-
-		// verify hard limit component not present in Chalkboard Diagram
-		DiagramTestUtils.waitUntilComponentDisappearsInChalkboardDiagram(bot, editor, HARD_LIMIT);
+		DiagramTestUtils.waitUntilComponentDisappearsInChalkboardDiagram(bot, editor, HARD_LIMIT_1);
 	}
 
 	/**
@@ -228,20 +211,16 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
 
 		// verify components were added to the diagram
-		String hardLimitUsage = DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT);
-		String sigGenUsage = DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN_1);
 
 		// create connection between components via Sca Explorer Chalkboard
-		ScaExplorerTestUtils.connectComponentPortsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, "connection_1", sigGenUsage, "dataFloat_out", hardLimitUsage,
+		ScaExplorerTestUtils.connectComponentPortsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, "connection_1", SIGGEN_1, "dataFloat_out", HARD_LIMIT_1,
 			"dataFloat_in");
-
-		// verify connection exists in diagram
 		DiagramTestUtils.waitUntilConnectionDisplaysInDiagram(bot, editor, HARD_LIMIT);
 
 		// disconnect connection_1 via Sca Explorer Chalkboard
-		ScaExplorerTestUtils.disconnectConnectionInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, "connection_1", sigGenUsage, "dataFloat_out");
-
-		// verify connection does NOT exist in diagram
+		ScaExplorerTestUtils.disconnectConnectionInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, "connection_1", SIGGEN_1, "dataFloat_out");
 		DiagramTestUtils.waitUntilConnectionDisappearsInDiagram(bot, editor, HARD_LIMIT);
 	}
 
@@ -260,62 +239,62 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
 
 		// verify components were added to the diagram
-		String hardLimitUsage = DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, hardLimitUsage);
-		String sigGenUsage = DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, sigGenUsage);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// verify hard limit stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
 
 		// start hard limit from sca explorer
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, hardLimitUsage);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 
 		// verify hardlimit started but siggen did not
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, hardLimitUsage);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);
 
 		// start SigGen from sca explorer
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, sigGenUsage);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// verify SigGen started but siggen did not
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
 
 		// stop hard limit from sca explorer
-		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, hardLimitUsage);
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 
 		// verify hardlimit stopped, SigGen started
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
 
 		// stop SigGen from sca explorer
-		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, sigGenUsage);
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// verify SigGen stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);
 
 		// start both components
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, hardLimitUsage);
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, sigGenUsage);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// verify both started
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
 
 		// stop chalkboard
-		ScaExplorerTestUtils.stopWaveformFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
 
 		// verify both components stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);
 
 		// start chalkboard
-		ScaExplorerTestUtils.startWaveformFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
 
 		// verify both components started
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
 
 		// terminate, then stop chalkboard
 		ScaExplorerTestUtils.terminateWaveformFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
@@ -324,7 +303,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		ScaExplorerTestUtils.waitUntilScaExplorerWaveformEmpty(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
 
 		// stop chalkboard
-		ScaExplorerTestUtils.stopWaveformFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
 
 		// wait for Chalkboard to be stopped
 		ScaExplorerTestUtils.waitUntilScaExplorerWaveformStopped(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
@@ -337,18 +316,15 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	public void changePropertiesInScaExplorer() {
 		editor = openChalkboardDiagram(gefBot);
 		
-		final String[] chalkboardPath = ScaExplorerTestUtils.joinPaths(CHALKBOARD_PARENT_PATH, new String[] {CHALKBOARD});
-		SWTBotTree propTable;
-		
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, chalkboardPath, SIGGEN);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
 		
 		// Select component in SCA tree first
-		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, chalkboardPath, SIGGEN).select().click();
+		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1).select().click();
 		
-		propTable = ViewUtils.activateFirstPropertiesTab(gefBot);
+		SWTBotTree propTable = ViewUtils.activateFirstPropertiesTab(gefBot);
 		
 		SWTBotTreeItem magItem = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItem.cell(1), "100.0");
@@ -359,7 +335,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		// Workaround for issue where diagram component does not populate 
 		// properties view if selected right after creation
 		editor.rootEditPart().click();
-		editor.click(SIGGEN);
+		editor.click(SIGGEN_1);
 		propTable = gefBot.viewByTitle("Properties").bot().tree();
 		magItem = propTable.getTreeItem("magnitude");
 		Assert.assertEquals("Property has wrong value", "50.0", magItem.cell(1));
@@ -372,26 +348,23 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	public void changePropertiesInChalkboardDiagram() {
 		editor = openChalkboardDiagram(gefBot);
 
-		final String[] chalkboardPath = ScaExplorerTestUtils.joinPaths(CHALKBOARD_PARENT_PATH, new String[] {CHALKBOARD});
-		SWTBotTree propTable;
-		
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, chalkboardPath, SIGGEN);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
 		
 		// Click in diagram outside of component first
 		// Workaround for issue where diagram component does not populate 
 		// properties view if selected right after creation
 		editor.rootEditPart().click();
-		editor.click(SIGGEN);
-		propTable = ViewUtils.activateFirstPropertiesTab(gefBot);
+		editor.click(SIGGEN_1);
+		SWTBotTree propTable = ViewUtils.activateFirstPropertiesTab(gefBot);
 		SWTBotTreeItem magItem = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItem.cell(1), "100.0");
 		magItem.select().click(1);
 		gefBot.viewByTitle("Properties").bot().text().setText("50");
 		
-		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, chalkboardPath, SIGGEN).select().click();
+		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1).select().click();
 		propTable = gefBot.viewByTitle("Properties").bot().tree();
 		magItem = propTable.getTreeItem("magnitude");
 		Assert.assertEquals("Property has wrong value", "50.0", magItem.cell(1));

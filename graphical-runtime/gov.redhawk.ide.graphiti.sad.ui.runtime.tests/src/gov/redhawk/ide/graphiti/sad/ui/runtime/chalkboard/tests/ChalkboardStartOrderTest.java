@@ -35,7 +35,7 @@ public class ChalkboardStartOrderTest extends AbstractGraphitiChalkboardTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
 
-		SWTBotGefEditPart sigGenEditPart = editor.getEditPart(SIGGEN);
+		SWTBotGefEditPart sigGenEditPart = editor.getEditPart(SIGGEN_1);
 		ComponentShapeImpl componentShape = (ComponentShapeImpl) sigGenEditPart.part().getModel();
 		Assert.assertNull("Start Order ellipse should not be created during runtime", componentShape.getStartOrderEllipseShape());
 	}

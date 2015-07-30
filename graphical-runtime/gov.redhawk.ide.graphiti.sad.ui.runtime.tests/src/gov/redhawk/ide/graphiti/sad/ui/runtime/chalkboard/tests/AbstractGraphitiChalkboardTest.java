@@ -25,8 +25,9 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 public abstract class AbstractGraphitiChalkboardTest extends UIRuntimeTest {
 
 	static final String[] CHALKBOARD_PARENT_PATH = { "Sandbox" };
+	static final String[] CHALKBOARD_PATH = { "Sandbox", "Chalkboard" };
 	static final String CHALKBOARD = "Chalkboard";
-	static final String CHALKBOARD_TAB_TITLE = "Chalkboard";
+	private static final String CHALKBOARD_TAB_TITLE = "Chalkboard";
 
 	// Common Test Component Names
 	protected static final String HARD_LIMIT = "rh.HardLimit";
@@ -44,13 +45,7 @@ public abstract class AbstractGraphitiChalkboardTest extends UIRuntimeTest {
 	@After
 	public void afterTest() {
 		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
-		
-		//wait until waveform empty
 		ScaExplorerTestUtils.waitUntilScaExplorerWaveformEmpty(gefBot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
-		
-		//close editors
-		gefBot.closeAllEditors();
-		gefBot = null;
 	}
 
 	/** Helper method to open Sandbox "Waveform" Chalkboard Graphiti Diagram */

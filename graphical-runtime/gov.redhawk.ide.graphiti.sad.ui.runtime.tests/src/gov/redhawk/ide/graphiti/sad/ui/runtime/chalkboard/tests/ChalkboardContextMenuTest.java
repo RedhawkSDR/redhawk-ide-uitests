@@ -37,35 +37,35 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 
 		// Prepare Graphiti diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
-		
+
 		// Wait for the component in the explorer
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// Start the component
-		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// Check that we can't undo certain actions
-		Assert.assertFalse("IDE-1038 No Undo Start Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Start Command"));
-		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Do Command"));
+		Assert.assertFalse("IDE-1038 No Undo Start Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN_1, "Undo Start Command"));
+		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN_1, "Undo Do Command"));
 
 		// Test Log Levels
-		DiagramTestUtils.changeLogLevelFromDiagram(editor, SIGGEN, LogLevels.TRACE);
-		DiagramTestUtils.confirmLogLevelFromDiagram(editor, SIGGEN, LogLevels.TRACE);
+		DiagramTestUtils.changeLogLevelFromDiagram(editor, SIGGEN_1, LogLevels.TRACE);
+		DiagramTestUtils.confirmLogLevelFromDiagram(editor, SIGGEN_1, LogLevels.TRACE);
 
-		DiagramTestUtils.changeLogLevelFromDiagram(editor, SIGGEN, LogLevels.FATAL);
-		DiagramTestUtils.confirmLogLevelFromDiagram(editor, SIGGEN, LogLevels.FATAL);
+		DiagramTestUtils.changeLogLevelFromDiagram(editor, SIGGEN_1, LogLevels.FATAL);
+		DiagramTestUtils.confirmLogLevelFromDiagram(editor, SIGGEN_1, LogLevels.FATAL);
 
-		//plot port data for SIGGEN
+		// plot port data for SIGGEN
 		editor.setFocus();
-		DiagramTestUtils.plotPortDataOnComponentPort(editor, SIGGEN, null);
-		//close plot view
+		DiagramTestUtils.plotPortDataOnComponentPort(editor, SIGGEN_1, null);
+		// close plot view
 		SWTBotView plotView = ViewUtils.getPlotView(bot);
 		plotView.close();
 
 		// SRI view test
-		DiagramTestUtils.displaySRIDataOnComponentPort(editor, SIGGEN, null);
-		//verify sriView displayed
+		DiagramTestUtils.displaySRIDataOnComponentPort(editor, SIGGEN_1, null);
+		// verify sriView displayed
 		ViewUtils.waitUntilSRIViewPopulates(bot);
 		SWTBotView sriView = ViewUtils.getSRIView(bot);
 		Assert.assertEquals("streamID property is missing for column 1", "streamID: ", sriView.bot().tree().cell(0, "Property: "));
@@ -73,50 +73,50 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 		sriView.close();
 
 		// Audio/Play port view test
-		DiagramTestUtils.playPortDataOnComponentPort(editor, SIGGEN, null);
-		//wait until audio view populates
+		DiagramTestUtils.playPortDataOnComponentPort(editor, SIGGEN_1, null);
+		// wait until audio view populates
 		ViewUtils.waitUntilAudioViewPopulates(bot);
-		//get audio view
+		// get audio view
 		SWTBotView audioView = ViewUtils.getAudioView(bot);
 		String item = audioView.bot().list().getItems()[0];
 		Assert.assertTrue("SigGen not found in Audio Port Playback", item.matches(SIGGEN_1 + ".*"));
 		audioView.close();
 
-		//open data list view
-		DiagramTestUtils.displayDataListViewOnComponentPort(editor, SIGGEN, null);
-		//verify data list view opens
+		// open data list view
+		DiagramTestUtils.displayDataListViewOnComponentPort(editor, SIGGEN_1, null);
+		// verify data list view opens
 		ViewUtils.waitUntilDataListViewDisplays(bot);
-		//start acquire
+		// start acquire
 		ViewUtils.startAquireOnDataListView(bot);
-		//wait until view populates
+		// wait until view populates
 		ViewUtils.waitUntilDataListViewPopulates(bot);
-		//close data list view
+		// close data list view
 		SWTBotView dataListView = ViewUtils.getDataListView(bot);
 		dataListView.close();
 
 		// Snapshot view test
-		DiagramTestUtils.displaySnapshotDialogOnComponentPort(editor, SIGGEN, null);
-		//wait until Snapshot dialog appears
+		DiagramTestUtils.displaySnapshotDialogOnComponentPort(editor, SIGGEN_1, null);
+		// wait until Snapshot dialog appears
 		ViewUtils.waitUntilSnapshotDialogDisplays(bot);
-		//get snapshot dialog
+		// get snapshot dialog
 		SWTBotShell snapshotDialog = ViewUtils.getSnapshotDialog(bot);
 		Assert.assertNotNull(snapshotDialog);
 		snapshotDialog.close();
 
 		// Monitor ports test
-		DiagramTestUtils.displayPortMonitorViewOnComponentPort(editor, SIGGEN, null);
-		//wait until port monitor view appears
+		DiagramTestUtils.displayPortMonitorViewOnComponentPort(editor, SIGGEN_1, null);
+		// wait until port monitor view appears
 		ViewUtils.waitUntilPortMonitorViewPopulates(bot, SIGGEN_1);
-		//close PortMonitor View
+		// close PortMonitor View
 		SWTBotView monitorView = ViewUtils.getPortMonitorView(bot);
 		monitorView.close();
 
-		//stop component
-		DiagramTestUtils.stopComponentFromDiagram(editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
-		
-		Assert.assertFalse("IDE-1038 No Undo Stop Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Stop Command"));
-		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Do Command"));
+		// stop component
+		DiagramTestUtils.stopComponentFromDiagram(editor, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
+
+		Assert.assertFalse("IDE-1038 No Undo Stop Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN_1, "Undo Stop Command"));
+		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN_1, "Undo Do Command"));
 	}
 
 	/**
@@ -129,14 +129,28 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 
 		// Prepare Graphiti diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// Make sure start order and assembly controller context options don't exist
-		editor.getEditPart(SIGGEN).select();
+		editor.getEditPart(SIGGEN_1).select();
 		String[] removedContextOptions = { "Set As Assembly Controller", "Move Start Order Earlier", "Move Start Order Later" };
 		for (String contextOption : removedContextOptions) {
-			Assert.assertFalse("IDE-326 No context menu item " + contextOption, DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, contextOption));
+			Assert.assertFalse("IDE-326 No context menu item " + contextOption, DiagramTestUtils.hasContentMenuItem(editor, SIGGEN_1, contextOption));
 		}
 	}
-	
+
+	/**
+	 * IDE-1327 - Test terminate from the context menu
+	 */
+	@Test
+	public void terminate() {
+		editor = openChalkboardDiagram(gefBot);
+
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
+
+		editor.getEditPart(SIGGEN_1).select();
+		editor.clickContextMenu("Terminate");
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
+	}
 }

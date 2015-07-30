@@ -125,4 +125,17 @@ public class LocalWaveformRuntimeContextMenuTest extends AbstractGraphitiLocalWa
 			}
 		}
 	}
+
+	/**
+	 * IDE-1327 - Test terminate from the context menu
+	 */
+	@Test
+	public void terminate() {
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
+		editor.setFocus();
+
+		editor.getEditPart(SIGGEN_1).select();
+		editor.clickContextMenu("Terminate");
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, getWaveformPath(), SIGGEN_1);
+	}
 }
