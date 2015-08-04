@@ -5,5 +5,6 @@ Bundle-SymbolicName: gov.redhawk.ide.codegen.runtime.tests
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- gov.redhawk.ide.swtbot
+ gov.redhawk.ide.swtbot,
+ org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
