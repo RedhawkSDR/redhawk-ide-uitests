@@ -10,14 +10,12 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
-import gov.redhawk.ide.swtbot.SWTBotRadioMenu;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Test;
@@ -44,8 +42,7 @@ public class GmfGraphitiTest extends AbstractGraphitiTest {
 		SWTBotTreeItem sadFileTreeItem = projectTree.expandNode(waveformName).getNode(waveformName + ".sad.xml");
 
 		// Open Graphiti editor
-		SWTBotMenu menu = sadFileTreeItem.select().contextMenu("Open With").menu("Waveform Editor");
-		new SWTBotRadioMenu(menu).click();
+		sadFileTreeItem.select().contextMenu("Open With").menu("Waveform Editor").click();
 
 		// Find the editor by name to ensure it opened, then close it
 		gefBot.waitUntil(new WaitForEditorCondition());
@@ -53,8 +50,7 @@ public class GmfGraphitiTest extends AbstractGraphitiTest {
 		editor.close();
 
 		// Open GMF editor
-		menu = sadFileTreeItem.select().contextMenu("Open With").menu("Legacy Waveform Editor");
-		new SWTBotRadioMenu(menu).click();
+		sadFileTreeItem.select().contextMenu("Open With").menu("Legacy Waveform Editor").click();
 
 		// Find the editor by name to ensure it opened, then close it
 		gefBot.waitUntil(new WaitForEditorCondition());

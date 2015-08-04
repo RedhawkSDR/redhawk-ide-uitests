@@ -22,14 +22,12 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
-import gov.redhawk.ide.swtbot.SWTBotRadioMenu;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
@@ -83,8 +81,7 @@ public class SaveChalkboardTest extends AbstractGraphitiChalkboardTest {
 		SWTBotView projectView = gefBot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
 		SWTBotTreeItem waveformNode = projectView.bot().tree().getTreeItem(WAVEFORM_NAME);
 		SWTBotTreeItem waveformSadXml = waveformNode.expand().getNode(WAVEFORM_NAME + ".sad.xml").select();
-		SWTBotMenu menu = waveformSadXml.contextMenu("Open With").menu("Waveform Editor");
-		new SWTBotRadioMenu(menu).click();
+		waveformSadXml.contextMenu("Open With").menu("Waveform Editor").click();
 		
 		// confirm that components and connection exist
 		editor = gefBot.rhGefEditor(WAVEFORM_NAME);
