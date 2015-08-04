@@ -224,16 +224,6 @@ public class NamespaceTest extends UIRuntimeTest {
 		Assert.assertTrue("DCD XML for node doesn't exist in SDRROOT", nodeDir.append("DeviceManager.dcd.xml").toFile().exists());
 
 		checkExistsInScaAndRemove(scaPath, nodeBaseName);
-
-		try {
-			namespaceBehaviorDevices();
-		} catch (OperationCanceledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	/**
