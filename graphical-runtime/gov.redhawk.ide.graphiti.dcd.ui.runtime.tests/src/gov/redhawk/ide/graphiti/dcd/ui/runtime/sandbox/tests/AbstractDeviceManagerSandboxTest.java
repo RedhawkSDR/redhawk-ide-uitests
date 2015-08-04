@@ -26,6 +26,7 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 
 	static final String[] CHALKBOARD_PARENT_PATH = { "Sandbox" };
 	static final String DEVICE_MANAGER = "Device Manager";
+	static final String[] SANDBOX_DEVMGR_PATH = { "Sandbox", "Device Manager" };
 	static final String DIAGRAM_TAB_TITLE = "Device Manager Chalkboard";
 
 	// Common Test Component Names

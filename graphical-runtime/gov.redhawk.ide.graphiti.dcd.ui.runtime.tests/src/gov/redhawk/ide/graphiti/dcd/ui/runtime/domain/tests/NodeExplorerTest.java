@@ -16,6 +16,7 @@ import gov.redhawk.ide.swtbot.NodeUtils;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.logging.ui.LogLevels;
 
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
@@ -100,6 +101,13 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
 		// Start device stub
 		DiagramTestUtils.startComponentFromDiagram(editor, DEVICE_STUB);
+
+		// Test Log Levels
+		DiagramTestUtils.changeLogLevelFromDiagram(editor, DEVICE_STUB, LogLevels.TRACE);
+		DiagramTestUtils.confirmLogLevelFromDiagram(editor, DEVICE_STUB, LogLevels.TRACE);
+
+		DiagramTestUtils.changeLogLevelFromDiagram(editor, DEVICE_STUB, LogLevels.FATAL);
+		DiagramTestUtils.confirmLogLevelFromDiagram(editor, DEVICE_STUB, LogLevels.FATAL);
 
 		// Test plot context menu
 		editor.setFocus();
