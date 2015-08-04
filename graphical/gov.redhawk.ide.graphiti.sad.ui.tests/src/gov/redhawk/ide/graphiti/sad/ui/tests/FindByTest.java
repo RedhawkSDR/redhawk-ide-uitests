@@ -83,16 +83,13 @@ public class FindByTest extends AbstractGraphitiTest {
 	}
 
 	/**
-	 * IDE-669 Components are removed with the delete button (trashcan image)
-	 * that appears when you select the component, but the delete context menu
-	 * does not remove the component from the diagram. In most cases, the delete
-	 * and remove context menu options are grayed out and not selectable.
-	 * 
-	 * IDE-737 Create wizards to get user input when adding FindBy Name, FindBy Service,
-	 * and FindBy Event Channel elements to the SAD Diagram.
+	 * <ul>
+	 * <li>IDE-737 Test adding a findby to the SAD diagram and completing the wizard</li>
+	 * <li>IDE-669 Test the delete context menu item</li>
+	 * </ul>
 	 */
 	@Test
-	public void checkFindByContextMenuDelete() {
+	public void addDeleteFindBys() {
 		waveformName = "FindBy_Delete";
 		String[] findByList = { FindByUtils.FIND_BY_NAME, FindByUtils.FIND_BY_DOMAIN_MANAGER, FindByUtils.FIND_BY_EVENT_CHANNEL,
 			FindByUtils.FIND_BY_FILE_MANAGER, FindByUtils.FIND_BY_SERVICE };
@@ -119,7 +116,7 @@ public class FindByTest extends AbstractGraphitiTest {
 	 * Ensure that deleting a FindBy that is part of a connection removes the connection from the sad.xml
 	 */
 	@Test
-	public void deleteFindByTest() {
+	public void deleteFindByWithConnection() {
 		waveformName = "Delete_FindBy";
 		final String SIGGEN = "SigGen";
 		final String FIND_BY_NAME = "FindByName";
@@ -176,7 +173,7 @@ public class FindByTest extends AbstractGraphitiTest {
 	 * Change names, add & remove ports
 	 */
 	@Test
-	public void editFindByTest() {
+	public void editFindBy() {
 		waveformName = "FindBy_Connection";
 		final String SIGGEN = "SigGen";
 		final String HARD_LIMIT = "HardLimit";
@@ -260,7 +257,7 @@ public class FindByTest extends AbstractGraphitiTest {
 	 * Update the sad.xml to show the resultant connection details
 	 */
 	@Test
-	public void findByConnectionTest() {
+	public void findByConnection() {
 		waveformName = "FindBy_Connection";
 		final String SIGGEN = "SigGen";
 		final String HARDLIMIT = "HardLimit";
