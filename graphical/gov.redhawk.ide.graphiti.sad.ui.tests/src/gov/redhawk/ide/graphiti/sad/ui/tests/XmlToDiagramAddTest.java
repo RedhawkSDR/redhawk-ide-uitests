@@ -67,7 +67,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		final String componentOne = "SigGen";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -112,7 +112,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -171,7 +171,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 400, 0);
 		MenuUtils.save(editor);
@@ -223,7 +223,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		final String FBS_PORT_NAME = "ServicePort";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -320,7 +320,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -368,7 +368,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		waveformName = "Add_UseDevice_Xml";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Edit content of sad.xml

@@ -32,7 +32,7 @@ public class GmfGraphitiTest extends AbstractGraphitiTest {
 		waveformName = "Diagram_Type";
 
 		// Create a new empty waveform, close editor
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		gefBot.waitUntil(new WaitForEditorCondition());
 		SWTBotGefEditor editor = gefBot.gefEditor(waveformName);
 		editor.close();

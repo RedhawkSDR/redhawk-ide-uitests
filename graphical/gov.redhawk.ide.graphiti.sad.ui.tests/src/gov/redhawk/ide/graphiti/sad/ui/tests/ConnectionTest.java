@@ -55,7 +55,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		waveformName = "IDE-731-Test";
 
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 
 		// Add components to diagram from palette
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
@@ -134,7 +134,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		waveformName = "IDE-679-Test";
 
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 
 		// Add components to diagram from palette
 		gefBot.waitUntil(new WaitForEditorCondition());
@@ -186,7 +186,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		waveformName = "IDE-657-Test";
 
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 
 		// Add components to diagram from palette
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
@@ -228,7 +228,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		String sigGenPort = "dataFloat_out";
 		String dataConPort = "dataFloat";
 
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 
 		// Add components to diagram from palette
 		// We need the RHTestBotEditor so we can get the canvas and do direct mouse events

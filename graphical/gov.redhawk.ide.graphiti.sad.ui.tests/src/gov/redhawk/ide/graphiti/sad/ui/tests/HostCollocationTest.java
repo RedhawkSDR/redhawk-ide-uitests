@@ -53,7 +53,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
@@ -94,7 +94,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
@@ -137,7 +137,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
@@ -181,7 +181,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
@@ -240,7 +240,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Maximize window
@@ -442,7 +442,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// maximize window
@@ -490,7 +490,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// maximize window

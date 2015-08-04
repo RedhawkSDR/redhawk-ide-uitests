@@ -70,7 +70,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		waveformName = "IDE-726-Test";
 
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
@@ -98,7 +98,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	public void checkComponentContextMenuDelete() {
 		waveformName = "IDE-669-Test";
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		for (String s : COMPONENTS) {
@@ -126,7 +126,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
@@ -216,7 +216,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	public void checkComponentsInSad() {
 		waveformName = "IDE-729-Test";
 
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add a SigGen component instantiation to the diagram and save
@@ -255,7 +255,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		String componentName = "name.space.comp";
 		String componentBaseName = "comp";
 
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add namespaced component to the diagram
@@ -280,7 +280,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	public void checkTargetSDRComponentsInPalette() {
 		waveformName = "IDE-741-Test";
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
@@ -330,7 +330,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	public void doNotDeletePortsTest() {
 		waveformName = "IDE-766-Test";
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
@@ -415,7 +415,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -461,7 +461,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram

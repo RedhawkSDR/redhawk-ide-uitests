@@ -38,7 +38,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		final String componentTwo = "SigGen";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add components to the diagram
@@ -212,7 +212,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		waveformName = "AC_From_Overview";
 		final String[] component = { "DataConverter", "HardLimit", "SigGen" };
 
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add components to diagram
@@ -250,7 +250,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 	@Test
 	public void setAssemblyControllerFromDiagramChangesOverview() {
 		waveformName = "AC_From_Diagram";
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		final String[] component = { "DataConverter", "HardLimit", "SigGen" };
 
@@ -294,7 +294,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		waveformName = "Start_Order_Seq";
 		final String[] component = { "DataConverter", "HardLimit", "SigGen" };
 
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		// Add and check start order
 		int xCoord = 0;

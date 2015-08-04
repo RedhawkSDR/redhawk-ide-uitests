@@ -52,7 +52,7 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 		waveformName = "IDE-1026-checkCollapseExpandComponents";
 
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 
 		// Add components to diagram from palette
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
@@ -208,7 +208,7 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 	public void collapseExpandPrefPageTest() {
 
 		waveformName = "IDE-1026-checkCollapseExpandPreference";
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Set preference to collapse new components
@@ -255,7 +255,7 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 	@Test
 	public void superPortWizardTest() {
 		waveformName = "IDE-1026-superPortWizard";
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		setPortCollapsePreference(true);

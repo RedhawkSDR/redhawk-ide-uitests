@@ -53,7 +53,7 @@ public class FindByTest extends AbstractGraphitiTest {
 		final String[] uses = { "dataFloat_out" };
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -95,7 +95,7 @@ public class FindByTest extends AbstractGraphitiTest {
 			FindByUtils.FIND_BY_FILE_MANAGER, FindByUtils.FIND_BY_SERVICE };
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		for (String s : findByList) {
@@ -123,7 +123,7 @@ public class FindByTest extends AbstractGraphitiTest {
 		final String[] provides = { "data_in" };
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -184,7 +184,7 @@ public class FindByTest extends AbstractGraphitiTest {
 		final String NEW_USES_PORT = "dataFloat_out";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -266,7 +266,7 @@ public class FindByTest extends AbstractGraphitiTest {
 		final String[] uses = { "data_out" };
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram

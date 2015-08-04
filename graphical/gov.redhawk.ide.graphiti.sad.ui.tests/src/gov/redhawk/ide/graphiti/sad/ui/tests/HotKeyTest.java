@@ -40,7 +40,7 @@ public class HotKeyTest extends AbstractGraphitiTest {
 		final String SIGGEN = "SigGen";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -70,7 +70,7 @@ public class HotKeyTest extends AbstractGraphitiTest {
 		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram

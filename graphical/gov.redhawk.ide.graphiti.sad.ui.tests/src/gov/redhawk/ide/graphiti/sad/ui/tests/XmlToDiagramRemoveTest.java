@@ -45,7 +45,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -90,7 +90,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -138,7 +138,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		final String HOSTCOLLOCATION_INSTANCE_NAME = "AAA";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the diagram
@@ -179,7 +179,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -237,7 +237,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		waveformName = "Edit_UseDevice_Xml";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Edit content of sad.xml

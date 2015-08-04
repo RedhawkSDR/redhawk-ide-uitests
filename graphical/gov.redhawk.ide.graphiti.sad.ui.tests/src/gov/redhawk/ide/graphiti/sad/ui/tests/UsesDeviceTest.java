@@ -44,7 +44,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		waveformName = "IDE-124-CreateAndDeleteUseGenericFrontEndTunerDeviceTest";
 
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
@@ -98,7 +98,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		waveformName = "IDE-124-CreateAndDeleteUse_im_rx_digitizer_FrontEndTunerDeviceTest";
 
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
@@ -154,7 +154,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		waveformName = "IDE-124-editGenericFrontEndTunerDevice";
 
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
@@ -279,7 +279,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		waveformName = "IDE-124-editUsesDevice";
 
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
@@ -355,7 +355,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		waveformName = "IDE-1266-feUsesDeviceWizardValidation";
 
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 

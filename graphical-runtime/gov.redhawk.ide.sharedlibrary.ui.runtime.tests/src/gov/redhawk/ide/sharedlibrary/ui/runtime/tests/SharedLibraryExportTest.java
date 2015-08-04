@@ -74,7 +74,7 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 
 		// Create and generate component
 		final String waveformName = "WaveformExportTest";
-		WaveformUtils.createNewWaveform(bot, waveformName);
+		WaveformUtils.createNewWaveform(bot, waveformName, null);
 		bot.closeAllEditors();
 
 		// Drag-and-drop both projects onto the Shared Libraries container

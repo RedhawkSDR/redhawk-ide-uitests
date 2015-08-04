@@ -30,7 +30,7 @@ public class GDiagramFilterTest extends AbstractGraphitiTest {
 		waveformName = "Filter_Resource";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 
 		// Check if GDiagram is visible
 		SWTBotView projectExplorerView = gefBot.viewById("org.eclipse.ui.navigator.ProjectExplorer");

@@ -53,7 +53,7 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		waveformName = "Edit_Component_Xml";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -106,7 +106,7 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		waveformName = "Edit_Connection_Xml";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add components to the diagram
@@ -191,7 +191,7 @@ bot.sleep(5000);
 		waveformName = "Edit_Assembly_Controller_Xml";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
@@ -242,7 +242,7 @@ bot.sleep(5000);
 		final String HOST_CO_NAME = "HC";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
@@ -362,7 +362,7 @@ bot.sleep(5000);
 		waveformName = "Edit_UseDevice_Xml";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Edit content of sad.xml

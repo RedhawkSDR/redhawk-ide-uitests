@@ -39,7 +39,7 @@ public class DeleteProjectTest extends AbstractGraphitiTest {
 		final String SIGGEN = "SigGen";
 
 		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		List< ? extends SWTBotEditor> editors = gefBot.editors();
 		Assert.assertEquals("Editor not found", 1, editors.size());

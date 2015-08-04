@@ -40,7 +40,7 @@ public class DiagramPaletteFilterTest extends AbstractGraphitiTest {
 		final String errorShown2 = "Component " + component2 + " should be filtered out of the palette";
 		final String errorShown3 = "Component " + component3 + " should be filtered out of the palette";
 
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		Assert.assertTrue(errorMissing1, PaletteUtils.toolIsPresent(editor, component1));
@@ -84,7 +84,7 @@ public class DiagramPaletteFilterTest extends AbstractGraphitiTest {
 		waveformName = "IDE-953-Test";
 		final String component1 = "SigGen";
 		final String component2 = "HardLimit";
-		WaveformUtils.createNewWaveform(gefBot, waveformName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		Assert.assertFalse("Different implementations should not be visible in design-time palette", PaletteUtils.hasMultipleImplementations(editor, component1));
