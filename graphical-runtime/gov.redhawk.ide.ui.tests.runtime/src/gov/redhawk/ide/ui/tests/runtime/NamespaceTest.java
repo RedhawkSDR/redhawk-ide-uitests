@@ -26,6 +26,7 @@ import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.util.ModelUtil;
 import mil.jpeojtrs.sca.spd.SoftPkg;
@@ -35,6 +36,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
@@ -48,8 +50,7 @@ import org.junit.Test;
 public class NamespaceTest extends UIRuntimeTest {
 
 	private static final String PREFIX_DOTS = "runtime.test.";
-
-	SWTBotEditor editor;
+	private static final String SIGGEN = "rh.SigGen";
 
 	@After
 	public void after() {
@@ -170,7 +171,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	}
 
 	/**
-	 * IDE-1122, IDE-1128
+	 * IDE-1122, IDE-1128, IDE-1332
 	 * Check that a name-spaced waveform project can be created and exported.
 	 * It should install to the correct location (we install it), and also be represented in the SCA Explorer.
 	 */
@@ -178,9 +179,26 @@ public class NamespaceTest extends UIRuntimeTest {
 	public void namespaceBehaviorWaveforms() {
 		final String waveformBaseName = "waveform";
 
-		WaveformUtils.createNewWaveform(bot, PREFIX_DOTS + waveformBaseName);
-		exportProject(PREFIX_DOTS + waveformBaseName);
+		// Create with one name, change the XML to another
+		WaveformUtils.createNewWaveform(bot, waveformBaseName, SIGGEN);
+		final SWTBotEditor editor = bot.editorByTitle(waveformBaseName);
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.OVERVIEW_TAB);
+		editor.bot().textWithLabel("Name:").setText(PREFIX_DOTS + waveformBaseName);
+		bot.waitUntil(new DefaultCondition() {
 
+			@Override
+			public boolean test() throws Exception {
+				return editor.isDirty();
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Editor was never dirty";
+			}
+		});
+		editor.save();
+
+		exportProject(waveformBaseName);
 		String[] scaPath = { "Target SDR", "Waveforms", "runtime", "test" };
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, waveformBaseName);
 
@@ -197,7 +215,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	}
 
 	/**
-	 * IDE-1122, IDE-1128
+	 * IDE-1122, IDE-1128, IDE-1332
 	 * Check that a name-spaced service project can be created and exported.
 	 * It should install to the correct location (we install it), and also be represented in the SCA Explorer.
 	 */
@@ -206,9 +224,26 @@ public class NamespaceTest extends UIRuntimeTest {
 		final String nodeBaseName = "node";
 		final String nodeDomain = "REDHAWK_DEV";
 
-		NodeUtils.createNewNodeProject(bot, PREFIX_DOTS + nodeBaseName, nodeDomain);
-		exportProject(PREFIX_DOTS + nodeBaseName);
+		// Create with one name, change the XML to another
+		NodeUtils.createNewNodeProject(bot, nodeBaseName, nodeDomain);
+		final SWTBotEditor editor = bot.editorByTitle(nodeBaseName);
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.OVERVIEW_TAB);
+		editor.bot().textWithLabel("Name:").setText(PREFIX_DOTS + nodeBaseName);
+		bot.waitUntil(new DefaultCondition() {
 
+			@Override
+			public boolean test() throws Exception {
+				return editor.isDirty();
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Editor was never dirty";
+			}
+		});
+		editor.save();
+
+		exportProject(nodeBaseName);
 		String[] scaPath = { "Target SDR", "Nodes", "runtime", "test" };
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, nodeBaseName);
 
@@ -252,7 +287,7 @@ public class NamespaceTest extends UIRuntimeTest {
 
 	private void generateProjectAndBuild(String projectName, String editorTabName) {
 		// Generate
-		editor = bot.editorByTitle(projectName);
+		SWTBotEditor editor = bot.editorByTitle(projectName);
 		StandardTestActions.generateProject(bot, editor);
 
 		// Default file editor should open
