@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<!-- 
+ This file is protected by Copyright. Please refer to the COPYRIGHT file
+ distributed with this source distribution.
+ 
+ This file is part of REDHAWK Basic Components DataConverter.
+ 
+ REDHAWK Basic Components DataConverter is free software: you can redistribute it and/or modify it
+ under the terms of the GNU General Public License as published by the
+ Free Software Foundation, either version 3 of the License, or (at your
+ option) any later version.
+ 
+ REDHAWK Basic Components DataConverter is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see http://www.gnu.org/licenses/.
+-->
+<softpkg id="DCE:c6c15f7e-16d3-11e5-bb31-3417ebc4aab5" name="rh.DataConverter" type="2.0.0" version="4.0.0">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <description>The DataConverter component is used to convert between BULKIO data types in REDHAWK.  With proper configuration, the DataConverter component can convert between any of the following data types; Char, Octet, Unsigned Short, Short, Float and Double.  The DataConverter component is also capable of converting real data into complex data, and similarly complex data to real data.
+</description>
+  <propertyfile type="PRF">
+    <localfile name="DataConverter.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="DataConverter.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <code type="Executable">
+      <localfile name="cpp/DataConverter"/>
+      <entrypoint>cpp/DataConverter</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+  </implementation>
+</softpkg>
