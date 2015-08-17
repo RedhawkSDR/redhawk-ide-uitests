@@ -7,5 +7,4 @@ Eclipse-BundleShape: dir
 Require-Bundle: gov.redhawk.ide.graphiti.dcd.ui,
  gov.redhawk.ide.swtbot
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-Activator: gov.redhawk.ide.graphiti.dcd.ui.tests.GraphitiTestsActivator
 Bundle-Vendor: REDHAWK
