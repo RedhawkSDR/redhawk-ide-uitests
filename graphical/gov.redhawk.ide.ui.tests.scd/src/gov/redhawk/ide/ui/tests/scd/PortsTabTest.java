@@ -10,14 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.scd;
 
-import gov.redhawk.ide.spd.internal.ui.editor.ComponentEditor;
-import gov.redhawk.ide.spd.internal.ui.editor.PortsPage;
-import gov.redhawk.ide.swtbot.ComponentUtils;
-import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.UITest;
-import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
-import mil.jpeojtrs.sca.scd.Ports;
-import mil.jpeojtrs.sca.spd.SoftPkg;
+import java.io.IOException;
 
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.SWTBot;
@@ -32,18 +25,29 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import gov.redhawk.ide.spd.internal.ui.editor.ComponentEditor;
+import gov.redhawk.ide.spd.internal.ui.editor.PortsPage;
+import gov.redhawk.ide.swtbot.ComponentUtils;
+import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
+import mil.jpeojtrs.sca.scd.Ports;
+import mil.jpeojtrs.sca.scd.Provides;
+import mil.jpeojtrs.sca.scd.Uses;
+import mil.jpeojtrs.sca.spd.SoftPkg;
+
 public class PortsTabTest extends UITest {
 	static final String PORTS_TAB_NAME = "Ports";
-	static final String PROG_LANG_CPP  = "C++";
-	static final String FIELD_NAME        = "Name*:";
+	static final String PROG_LANG_CPP = "C++";
+	static final String FIELD_NAME = "Name*:";
 	static final String FIELD_DESCRIPTION = "Description:";
-	static final String COMBO_DIRECTION   = "Direction:";
-	static final String BUTTON_ADD     = "Add";
-	static final String BUTTON_REMOVE  = "Remove";
-	static final String IDL_MODULE     = "IDETEST";
+	static final String COMBO_DIRECTION = "Direction:";
+	static final String BUTTON_ADD = "Add";
+	static final String BUTTON_REMOVE = "Remove";
+	static final String IDL_MODULE = "IDETEST";
 	static final String EXPECTED_IDL_SAMPLE1 = "IDL:IDETEST/SampleInterface:1.0";
 	static final String EXPECTED_IDL_SAMPLE2 = "IDL:IDETEST/SampleInterface2:1.0";
-	
+
 	static final String PROJECT_NAME = "TestCppComponent";
 
 	private SWTBot editorBot;
@@ -83,7 +87,7 @@ public class PortsTabTest extends UITest {
 		ComponentEditor spdEditor = (ComponentEditor) editor.getReference().getEditor(false);
 		this.spd = SoftPkg.Util.getSoftPkg(spdEditor.getMainResource());
 		this.page = spdEditor.getPortsPage();
-		
+
 		checkNoPortDetails();
 	}
 
@@ -98,7 +102,7 @@ public class PortsTabTest extends UITest {
 	}
 
 	@Test
-	public void testAddPort() {
+	public void testAddPort() throws IOException {
 		editorBot.button(BUTTON_ADD).click();
 
 		editorBot.textWithLabel(FIELD_NAME).setText("inTestPort");
@@ -114,7 +118,7 @@ public class PortsTabTest extends UITest {
 		typeTable.getTableItem("control").uncheck();
 		typeTable.getTableItem("responses").uncheck();
 		typeTable.getTableItem("data").uncheck();
-		
+
 		final String expectedDescriptionText = "A description for the test Port.";
 		editorBot.styledTextWithLabel(FIELD_DESCRIPTION).setText(expectedDescriptionText);
 
@@ -134,29 +138,31 @@ public class PortsTabTest extends UITest {
 		bot.saveAllEditors();
 		assertFormValid();
 		Assert.assertEquals("Number of Ports in Ports Table (UI)", 3, editorBot.table().rowCount());
-		Ports ports = spd.getDescriptor().getComponent().getComponentFeatures().getPorts();
 
-		Assert.assertEquals("Number of Ports in scd.xml", 4, ports.getAllPorts().size()); // bidir direction creates two Ports
-		
+		// The bi-directional port is actually two ports (one in each direction, both with the same name) 
+		Ports ports = spd.getDescriptor().getComponent().getComponentFeatures().getPorts();
+		Assert.assertEquals("Number of Ports in scd.xml", 4, ports.getAllPorts().size());
+
 		editorBot.table().getTableItem("<provides> inTestPort").select();
 		Assert.assertEquals("Description of inTestPort", expectedDescriptionText, editorBot.styledTextWithLabel(FIELD_DESCRIPTION).getText());
-		
-		// Check that valid XML was generated in SCD file
-		this.editorBot.cTabItem(PROJECT_NAME + ".scd.xml").activate();
-		String xmlText = editorBot.styledText().getText();
-		Assert.assertTrue("provides Port (inTestPort) in XML",
-			xmlText.matches("(?s).* <provides repid=\"" + EXPECTED_IDL_SAMPLE1 + "\" providesname=\"inTestPort\">" + ".*"));
-		Assert.assertTrue("provides Port (inTestPort) description in XML",
-			xmlText.matches("(?s).* <description>" + expectedDescriptionText + "</description>" + ".*"));
 
-		Assert.assertTrue("uses Port (outTestPort) in XML",
-			xmlText.matches("(?s).* <uses repid=\"" + EXPECTED_IDL_SAMPLE1 + "\" usesname=\"outTestPort\">" + ".*"));
+		Assert.assertEquals("inTestPort", ports.getAllPorts().get(0).getName());
+		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, ports.getAllPorts().get(0).getRepID());
+		Assert.assertTrue(ports.getAllPorts().get(0) instanceof Provides);
+		Assert.assertEquals(expectedDescriptionText, ports.getAllPorts().get(0).getDescription());
 
-		Assert.assertTrue("bidir Port (bidirTestPort) created provides Port in XML",
-			xmlText.matches("(?s).* <provides repid=\"" + EXPECTED_IDL_SAMPLE1 + "\" providesname=\"bidirTestPort\">" + ".*"));
-		Assert.assertTrue("bidir Port (bidirTestPort) created uses Port in XML",
-			xmlText.matches("(?s).* <uses repid=\"" + EXPECTED_IDL_SAMPLE1 + "\" usesname=\"bidirTestPort\">" + ".*"));
-		
+		Assert.assertEquals("outTestPort", ports.getAllPorts().get(1).getName());
+		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, ports.getAllPorts().get(1).getRepID());
+		Assert.assertTrue(ports.getAllPorts().get(1) instanceof Uses);
+
+		Assert.assertEquals("bidirTestPort", ports.getAllPorts().get(2).getName());
+		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, ports.getAllPorts().get(2).getRepID());
+		Assert.assertTrue(ports.getAllPorts().get(2) instanceof Provides);
+
+		Assert.assertEquals("bidirTestPort", ports.getAllPorts().get(3).getName());
+		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, ports.getAllPorts().get(3).getRepID());
+		Assert.assertTrue(ports.getAllPorts().get(3) instanceof Uses);
+
 		checkNoPortDetails();
 	}
 
@@ -194,7 +200,7 @@ public class PortsTabTest extends UITest {
 		item = editorBot.table().getTableItem(0);
 		Assert.assertEquals("<uses> outTestPort", item.getText());
 		Assert.assertEquals(EXPECTED_IDL_SAMPLE2, item.getText(1));
-		
+
 		assertFormValid();
 	}
 
@@ -229,14 +235,14 @@ public class PortsTabTest extends UITest {
 			} catch (WidgetNotFoundException ex) {
 				// PASS
 			}
-	
+
 			try {
 				editorBot.textWithLabel(FIELD_NAME);
 				Assert.fail("Found Port Details section - name field");
 			} catch (WidgetNotFoundException ex) {
 				// PASS
 			}
-	
+
 			Assert.assertTrue("No Port Details section", true);
 		} finally {
 			SWTBotPreferences.TIMEOUT = origTimeout; // restore original timeout
