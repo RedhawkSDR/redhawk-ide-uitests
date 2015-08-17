@@ -201,9 +201,9 @@ bot.sleep(5000);
 
 		// Verify componentOne is set as assembly Controller
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
-		ComponentShapeImpl componentShapeOne = DiagramTestUtils.getComponentShape(editor, SIG_GEN);
+		ComponentShapeImpl componentShapeOne = (ComponentShapeImpl) DiagramTestUtils.getComponentShape(editor, SIG_GEN);
 		Assert.assertEquals("Setup for test is flawed, componentOne is not the assembly controller", componentShapeOne.getStartOrderText().getValue(), "0");
-		ComponentShapeImpl componentShapeTwo = DiagramTestUtils.getComponentShape(editor, HARD_LIMIT);
+		ComponentShapeImpl componentShapeTwo = (ComponentShapeImpl) DiagramTestUtils.getComponentShape(editor, HARD_LIMIT);
 		Assert.assertEquals("Setup for test is flawed, componentTwo is the assembly controller", componentShapeTwo.getStartOrderText().getValue(), "1");
 
 		// Edit content of sad.xml, change assembly controller from componentOne to componentTwo
@@ -220,8 +220,8 @@ bot.sleep(5000);
 
 			@Override
 			public boolean test() throws Exception {
-				return "1".equals(DiagramTestUtils.getComponentShape(editor, SIG_GEN).getStartOrderText().getValue())
-					&& "0".equals(DiagramTestUtils.getComponentShape(editor, HARD_LIMIT).getStartOrderText().getValue());
+				return "1".equals(((ComponentShapeImpl) DiagramTestUtils.getComponentShape(editor, SIG_GEN)).getStartOrderText().getValue())
+					&& "0".equals(((ComponentShapeImpl) DiagramTestUtils.getComponentShape(editor, HARD_LIMIT)).getStartOrderText().getValue());
 			}
 
 			@Override
