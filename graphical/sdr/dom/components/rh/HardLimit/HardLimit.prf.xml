@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
+source distribution.
+
+This file is part of REDHAWK Basic Components HardLimit.
+
+REDHAWK Basic Components HardLimit is free software: you can redistribute it and/or modify it under the terms of 
+the GNU Lesser General Public License as published by the Free Software Foundation, either 
+version 3 of the License, or (at your option) any later version.
+
+REDHAWK Basic Components HardLimit is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE.  See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along with this 
+program.  If not, see http://www.gnu.org/licenses/.
+-->
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <struct id="limits" mode="readwrite" name="limits">
+    <description>Sets the limit thresholds.</description>
+    <simple id="limits::upper_limit" name="upper_limit" type="float" optional="true">
+      <description>Sets the upper limit threshold.  If unset, then there is no upper threshold.</description>
+    </simple>
+    <simple id="limits::lower_limit" name="lower_limit" type="float" optional="true">
+      <description>Sets the lower limit threshold.  If unset, then there is no lower threshold.</description>
+    </simple>
+    <configurationkind kindtype="property"/>
+  </struct>
+</properties>

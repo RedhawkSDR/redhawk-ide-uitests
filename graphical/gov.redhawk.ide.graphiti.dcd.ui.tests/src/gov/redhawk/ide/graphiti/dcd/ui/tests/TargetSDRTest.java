@@ -36,7 +36,7 @@ public class TargetSDRTest extends AbstractGraphitiTest {
 	 * Checks the context menus available on a device in a node opened from the Target SDR.
 	 */
 	@Test
-	public void contextMenus() {
+	public void deviceContextMenus() {
 		// Open waveform diagram from the Target SDR
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, NODE_PARENT_PATH, NODE_NAME, DiagramType.GRAPHITI_NODE_EDITOR);
 		SWTBotGefEditor editor = gefBot.gefEditor(NODE_NAME);
