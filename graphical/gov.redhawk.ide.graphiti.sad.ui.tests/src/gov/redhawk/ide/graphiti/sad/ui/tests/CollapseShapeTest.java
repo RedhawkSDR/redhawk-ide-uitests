@@ -22,9 +22,13 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotList;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import gov.redhawk.ide.graphiti.ui.GraphitiUIPlugin;
+import gov.redhawk.ide.graphiti.ui.diagram.preferences.DiagramPreferenceConstants;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
@@ -32,13 +36,24 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
 public class CollapseShapeTest extends AbstractGraphitiTest {
-	static final String DATA_READER    = "DataReader";
-	static final String DATA_CONVERTER = "DataConverter";
-	static final String DATA_WRITER    = "DataWriter";
-	static final String HARD_LIMIT     = "HardLimit";
-	static final String SIGGEN         = "SigGen";
+	static final String DATA_READER = "DataReader";
+	static final String DATA_READER_1 = "DataReader_1";
+	static final String DATA_CONVERTER = "rh.DataConverter";
+	static final String DATA_CONVERTER_1 = "DataConverter_1";
+	static final String DATA_WRITER = "DataWriter";
+	static final String DATA_WRITER_1 = "DataWriter_1";
+	static final String HARD_LIMIT = "rh.HardLimit";
+	static final String HARD_LIMIT_1 = "HardLimit_1";
+	static final String SIGGEN = "rh.SigGen";
+	static final String SIGGEN_1 = "SigGen_1";
 
 	private String waveformName;
+
+	@Before
+	@After
+	public void resetPortDisplayPreferences() {
+		GraphitiUIPlugin.getDefault().getPreferenceStore().setValue(DiagramPreferenceConstants.HIDE_DETAILS, false);
+	}
 
 	/**
 	 * IDE-1026
@@ -64,11 +79,11 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 600, 150);
 
 		// Get gefEditParts for port shapes
-		SWTBotGefEditPart dataConverterDataFloat = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER, "dataFloat");
-		SWTBotGefEditPart dataConverterDataDouble = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER, "dataDouble");
-		SWTBotGefEditPart dataConverterDataFloatOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER, "dataFloat_out");
-		SWTBotGefEditPart dataConverterDataDoubleOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER, "dataDouble_out");
-		SWTBotGefEditPart hardLimitDataFloatIn = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT, "dataFloat_in");
+		SWTBotGefEditPart dataConverterDataFloat = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataFloat");
+		SWTBotGefEditPart dataConverterDataDouble = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataDouble");
+		SWTBotGefEditPart dataConverterDataFloatOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER_1, "dataFloat_out");
+		SWTBotGefEditPart dataConverterDataDoubleOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER_1, "dataDouble_out");
+		SWTBotGefEditPart hardLimitDataFloatIn = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1, "dataFloat_in");
 
 		// for simplicity just verify a couple port shapes
 		Assert.assertNotNull("DataConverter dataDouble port shape does not exist", dataConverterDataDouble);
@@ -81,19 +96,19 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 		editor.clickContextMenu("Collapse All Shapes");
 
 		// verify some port shapes were hidden
-		dataConverterDataDouble = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER, "dataDouble");
-		dataConverterDataDoubleOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER, "dataDouble_out");
-		hardLimitDataFloatIn = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT, "dataFloat_in");
+		dataConverterDataDouble = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER_1, "dataDouble");
+		dataConverterDataDoubleOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER_1, "dataDouble_out");
+		hardLimitDataFloatIn = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1, "dataFloat_in");
 		Assert.assertNull("DataConverter dataDouble port shape exists", dataConverterDataDouble);
 		Assert.assertNull("DataConverter dataDouble_out port shape exists", dataConverterDataDoubleOut);
 		Assert.assertNull("HardLimit dataFloat_in port shape exists", hardLimitDataFloatIn);
 
 		// super ports
-		SWTBotGefEditPart dataReaderSuperUses = DiagramTestUtils.getDiagramUsesSuperPort(editor, DATA_READER);
-		SWTBotGefEditPart dataConverterSuperProvides = DiagramTestUtils.getDiagramProvidesSuperPort(editor, DATA_CONVERTER);
-		SWTBotGefEditPart dataConverterSuperUses = DiagramTestUtils.getDiagramUsesSuperPort(editor, DATA_CONVERTER);
-		SWTBotGefEditPart dataWriterSuperProvides = DiagramTestUtils.getDiagramProvidesSuperPort(editor, DATA_WRITER);
-		SWTBotGefEditPart hardLimitSuperProvides = DiagramTestUtils.getDiagramProvidesSuperPort(editor, HARD_LIMIT);
+		SWTBotGefEditPart dataReaderSuperUses = DiagramTestUtils.getDiagramUsesSuperPort(editor, DATA_READER_1);
+		SWTBotGefEditPart dataConverterSuperProvides = DiagramTestUtils.getDiagramProvidesSuperPort(editor, DATA_CONVERTER_1);
+		SWTBotGefEditPart dataConverterSuperUses = DiagramTestUtils.getDiagramUsesSuperPort(editor, DATA_CONVERTER_1);
+		SWTBotGefEditPart dataWriterSuperProvides = DiagramTestUtils.getDiagramProvidesSuperPort(editor, DATA_WRITER_1);
+		SWTBotGefEditPart hardLimitSuperProvides = DiagramTestUtils.getDiagramProvidesSuperPort(editor, HARD_LIMIT_1);
 
 		// verify super ports exist (check a few)
 		Assert.assertNotNull("DataConverter Super Provides shape does not exist", dataConverterSuperProvides);
@@ -108,21 +123,21 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 		Assert.assertTrue("Connection DataConverter -> HardLimit via super ports failed",
 			DiagramTestUtils.drawConnectionBetweenPorts(editor, dataConverterSuperUses, hardLimitSuperProvides));
 		// expand data converter only
-		SWTBotGefEditPart dataConverterGefEditPart = editor.getEditPart(DATA_CONVERTER);
+		SWTBotGefEditPart dataConverterGefEditPart = editor.getEditPart(DATA_CONVERTER_1);
 		dataConverterGefEditPart.select();
 		editor.clickContextMenu("Expand Shape");
 
 		// verify data converter super ports are gone
-		dataConverterSuperProvides = DiagramTestUtils.getDiagramProvidesSuperPort(editor, DATA_CONVERTER);
-		dataConverterSuperUses = DiagramTestUtils.getDiagramUsesSuperPort(editor, DATA_CONVERTER);
+		dataConverterSuperProvides = DiagramTestUtils.getDiagramProvidesSuperPort(editor, DATA_CONVERTER_1);
+		dataConverterSuperUses = DiagramTestUtils.getDiagramUsesSuperPort(editor, DATA_CONVERTER_1);
 		Assert.assertNull("DataConverter Super Provides shape exists", dataConverterSuperProvides);
 		Assert.assertNull("DataConverter Super Uses port shape exists", dataConverterSuperUses);
 
 		// verify data convert individual port shapes exist
-		dataConverterDataDouble = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER, "dataDouble");
-		dataConverterDataFloat = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER, "dataFloat");
-		dataConverterDataDoubleOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER, "dataDouble_out");
-		dataConverterDataFloatOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER, "dataFloat_out");
+		dataConverterDataDouble = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataDouble");
+		dataConverterDataFloat = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataFloat");
+		dataConverterDataDoubleOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER_1, "dataDouble_out");
+		dataConverterDataFloatOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER_1, "dataFloat_out");
 		Assert.assertNotNull("DataConverter dataDouble port shape do not exist", dataConverterDataDouble);
 		Assert.assertNotNull("DataConverter dataFloat port shape do not exist", dataConverterDataFloat);
 		Assert.assertNotNull("DataConverter dataDouble_out port shape do not exist", dataConverterDataDoubleOut);
@@ -141,13 +156,13 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Data Converter dataFloat connections", 1, targetConnections.size());
 
 		// collapse data converter
-		dataConverterGefEditPart = editor.getEditPart(DATA_CONVERTER);
+		dataConverterGefEditPart = editor.getEditPart(DATA_CONVERTER_1);
 		dataConverterGefEditPart.select();
 		editor.clickContextMenu("Collapse Shape");
 
 		// verify super ports exist
-		dataConverterSuperProvides = DiagramTestUtils.getDiagramProvidesSuperPort(editor, DATA_CONVERTER);
-		dataConverterSuperUses = DiagramTestUtils.getDiagramUsesSuperPort(editor, DATA_CONVERTER);
+		dataConverterSuperProvides = DiagramTestUtils.getDiagramProvidesSuperPort(editor, DATA_CONVERTER_1);
+		dataConverterSuperUses = DiagramTestUtils.getDiagramUsesSuperPort(editor, DATA_CONVERTER_1);
 		Assert.assertNotNull("DataConverter Super Provides shape do not exist", dataConverterSuperProvides);
 		Assert.assertNotNull("DataConverter Super Uses port shape do not exist", dataConverterSuperUses);
 
@@ -160,8 +175,8 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Data Converter Super Provides Port connections", 1, targetConnections.size());
 
 		// verify individual port shapes hidden
-		dataConverterDataDouble = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER, "dataDouble");
-		dataConverterDataDoubleOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER, "dataDouble_out");
+		dataConverterDataDouble = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataDouble");
+		dataConverterDataDoubleOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER_1, "dataDouble_out");
 		Assert.assertNull("DataConverter dataDouble port shape exists", dataConverterDataDouble);
 		Assert.assertNull("DataConverter dataDouble_out port shape exists", dataConverterDataDoubleOut);
 
@@ -171,9 +186,9 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 		editor.clickContextMenu("Expand All Shapes");
 
 		// verify some individual port shapes exist
-		dataConverterDataDouble = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER, "dataDouble");
-		dataConverterDataDoubleOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER, "dataDouble_out");
-		hardLimitDataFloatIn = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT, "dataFloat_in");
+		dataConverterDataDouble = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataDouble");
+		dataConverterDataDoubleOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER_1, "dataDouble_out");
+		hardLimitDataFloatIn = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1, "dataFloat_in");
 		Assert.assertNotNull("DataConverter dataDouble port shape does not exist", dataConverterDataDouble);
 		Assert.assertNotNull("DataConverter dataDouble_out port shape does not exist", dataConverterDataDoubleOut);
 		Assert.assertNotNull("HardLimit dataDouble_in port shape does not exist", hardLimitDataFloatIn);
@@ -190,23 +205,22 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Data Converter dataFloat connections", 1, targetConnections.size());
 
 		// collapse DataConvert Shape
-		dataConverterGefEditPart = editor.getEditPart(DATA_CONVERTER);
+		dataConverterGefEditPart = editor.getEditPart(DATA_CONVERTER_1);
 		dataConverterGefEditPart.select();
 		editor.clickContextMenu("Collapse Shape");
 
 		// delete DataConverter
-		dataConverterGefEditPart = editor.getEditPart(DATA_CONVERTER);
+		dataConverterGefEditPart = editor.getEditPart(DATA_CONVERTER_1);
 		dataConverterGefEditPart.select();
 		editor.clickContextMenu("Delete");
 
 		// verify no connections in diagram
-		Diagram diagram = DUtil.findDiagram((ContainerShape) editor.getEditPart(HARD_LIMIT).part().getModel());
+		Diagram diagram = DUtil.findDiagram((ContainerShape) editor.getEditPart(HARD_LIMIT_1).part().getModel());
 		Assert.assertTrue("No connections should exist", diagram.getConnections().isEmpty());
 	}
 
 	@Test
 	public void collapseExpandPrefPageTest() {
-
 		waveformName = "IDE-1026-checkCollapseExpandPreference";
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
@@ -262,27 +276,21 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 0, 0);
 
-		SWTBotGefEditPart dataConverterSuperProvides = DiagramTestUtils.getDiagramProvidesSuperPort(editor, DATA_CONVERTER);
-		SWTBotGefEditPart dataConverterSuperUses = DiagramTestUtils.getDiagramUsesSuperPort(editor, DATA_CONVERTER);
+		SWTBotGefEditPart dataConverterSuperProvides = DiagramTestUtils.getDiagramProvidesSuperPort(editor, DATA_CONVERTER_1);
+		SWTBotGefEditPart dataConverterSuperUses = DiagramTestUtils.getDiagramUsesSuperPort(editor, DATA_CONVERTER_1);
 
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, dataConverterSuperUses, dataConverterSuperProvides);
 
 		bot.waitUntil(Conditions.shellIsActive("Connect"));
 		SWTBot connectBot = bot.shell("Connect").bot();
-		String[] ports = { "dataOctet", "dataUshort", "dataShort", "dataUlong", "dataLong", "dataFloat", "dataDouble" };
 		SWTBotButton finishButton = connectBot.button("Finish");
 
-		Assert.assertTrue("Finish Button should not be enabled unless source and target are selected", !finishButton.isEnabled());
+		Assert.assertFalse("Finish Button should not be enabled unless source and target are selected", finishButton.isEnabled());
 
-		SWTBotList sourceGroup = connectBot.listInGroup(DATA_CONVERTER + "_1 (Source)");
-		for (String port : ports) {
-			sourceGroup.select(port + "_out");
-		}
-
-		SWTBotList targetGroup = connectBot.listInGroup(DATA_CONVERTER + "_1 (Target)");
-		for (String port : ports) {
-			targetGroup.select(port);
-		}
+		SWTBotList sourceGroup = connectBot.listInGroup(DATA_CONVERTER_1 + " (Source)");
+		sourceGroup.select("dataFloat_out");
+		SWTBotList targetGroup = connectBot.listInGroup(DATA_CONVERTER_1 + " (Target)");
+		targetGroup.select("dataFloat");
 
 		Assert.assertTrue("Finish Button is not enabled", finishButton.isEnabled());
 		finishButton.click();
@@ -290,9 +298,6 @@ public class CollapseShapeTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart dataConverterOut = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER);
 		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, dataConverterOut);
 		Assert.assertTrue("Data Converter dataDouble_out doesn't have a connection", sourceConnections.size() == 1);
-
-		setPortCollapsePreference(false);
-
 	}
 
 	private void setPortCollapsePreference(boolean shouldCollapse) {
