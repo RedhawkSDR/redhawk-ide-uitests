@@ -16,6 +16,7 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,8 +39,9 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 	private RHBotGefEditor editor;
 	private String projectName;
 	private static final String DOMAIN_NAME = "REDHAWK_DEV";
-	private static final String GPP = "GPP";
 	private static final String DEVICE_STUB = "DeviceStub";
+	private static final String DEVICE_STUB_1 = "DeviceStub_1";
+	private static final String DEVICE_STUB_2 = "DeviceStub_2";
 
 	/**
 	 * IDE-994
@@ -56,15 +58,16 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		editor.setFocus();
 
 		// Add devices to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 300, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
 		MenuUtils.save(editor);
 
 		// Edit content of dcd.xml
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
 		String editorText = editor.toTextEditor().getText();
-		editorText = editorText.replace(GPP + "_1", GPP + "_2");
+		editorText = editorText.replace(DEVICE_STUB_1, DEVICE_STUB_2);
 		editor.toTextEditor().setText(editorText);
+		// TODO: Currently only typing in the XML editor seems to force an update. Why?
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 		MenuUtils.save(editor);
 
 		// Confirm edits appear in the diagram
@@ -74,19 +77,19 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 
 			@Override
 			public boolean test() throws Exception {
-				return (GPP + "_2").equals(DiagramTestUtils.getDeviceObject(editor, GPP).getUsageName());
+				return DiagramTestUtils.getDeviceObject(editor, DEVICE_STUB_2) != null;
 			}
 
 			@Override
 			public String getFailureMessage() {
-				return "Usage Name did not update correctly. Expected [" + GPP + "_2] Found [" + DiagramTestUtils.getDeviceObject(editor, GPP).getUsageName()
+				return "Usage Name did not update correctly. Expected [" + DEVICE_STUB_2 + "] Found [" + DiagramTestUtils.getDeviceObject(editor, DEVICE_STUB).getUsageName()
 					+ "]";
 			}
 		}, 10000, 1000);
 
-		DcdComponentInstantiation deviceObj = DiagramTestUtils.getDeviceObject(editor, GPP);
-		Assert.assertEquals("Component ID did not update correctly", GPP + "_2", deviceObj.getId());
-		Assert.assertEquals("Usage Name did not update correctly", GPP + "_2", deviceObj.getUsageName());
+		DcdComponentInstantiation deviceObj = DiagramTestUtils.getDeviceObject(editor, DEVICE_STUB_2);
+		Assert.assertEquals("Component ID did not update correctly", DEVICE_STUB_2, deviceObj.getId());
+		Assert.assertEquals("Usage Name did not update correctly", DEVICE_STUB_2, deviceObj.getUsageName());
 	}
 
 	/**
@@ -104,14 +107,14 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		editor.setFocus();
 
 		// Add devices to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 300, 0);
 		MenuUtils.save(editor);
 
 		// Get port edit parts
-		SWTBotGefEditPart gppUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, GPP);
-		SWTBotGefEditPart deviceStubProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB);
-		DiagramTestUtils.drawConnectionBetweenPorts(editor, gppUsesEditPart, deviceStubProvidesEditPart);
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, DEVICE_STUB_1, "dataFloat_out");
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB_2, "dataDouble_in");
+		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
 		MenuUtils.save(editor);
 
 		// Edit content of dcd.xml
@@ -119,21 +122,23 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		String editorText = editor.toTextEditor().getText();
 		editorText = editorText.replace("<providesidentifier>dataDouble_in</providesidentifier>", "<providesidentifier>dataFloat_in</providesidentifier>");
 		editor.toTextEditor().setText(editorText);
+		// TODO: Currently only typing in the XML editor seems to force an update. Why?
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 		MenuUtils.save(editor);
 
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 
 		// Check that connection data has changed
-		gppUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, GPP);
-		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, gppUsesEditPart);
+		usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, DEVICE_STUB_1, "dataFloat_out");
+		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertEquals("Wrong number of connections found", 1, sourceConnections.size());
 		final Connection connection = (Connection) sourceConnections.get(0).part().getModel();
 
 		UsesPortStub usesPort = (UsesPortStub) DUtil.getBusinessObject(connection.getStart());
-		Assert.assertEquals("Connection uses port not correct", usesPort, DUtil.getBusinessObject((ContainerShape) gppUsesEditPart.part().getModel()));
+		Assert.assertEquals("Connection uses port not correct", usesPort, DUtil.getBusinessObject((ContainerShape) usesEditPart.part().getModel()));
 
-		final SWTBotGefEditPart deviceStubProvidesPort = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB, "dataFloat_in");
+		final SWTBotGefEditPart deviceStubProvidesPort = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB_2, "dataFloat_in");
 		ProvidesPortStub providesPort = (ProvidesPortStub) DUtil.getBusinessObject(connection.getEnd());
 		Assert.assertEquals("Connect provides port not correct", DUtil.getBusinessObject((ContainerShape) deviceStubProvidesPort.part().getModel()),
 			providesPort);
