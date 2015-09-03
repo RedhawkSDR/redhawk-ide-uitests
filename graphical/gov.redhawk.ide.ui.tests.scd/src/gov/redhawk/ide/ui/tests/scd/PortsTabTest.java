@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.ide.spd.internal.ui.editor.ComponentEditor;
-import gov.redhawk.ide.spd.internal.ui.editor.PortsPage;
+import gov.redhawk.ide.scd.ui.editor.page.PortsFormPage;
 import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
@@ -53,7 +53,7 @@ public class PortsTabTest extends UITest {
 	private SWTBot editorBot;
 
 	private SoftPkg spd;
-	private PortsPage page;
+	private PortsFormPage page;
 
 	private DefaultCondition selectTestIDLCondition = new DefaultCondition() {
 
