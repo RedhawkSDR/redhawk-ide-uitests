@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * The purpose of this class is to test that selecting "Monitor Ports" on a waveform in the SCA Explorer correctly adds
+ * The purpose of this class is to test that selecting "Monitor Ports" on a waveform in the REDHAWK Explorer correctly adds
  * the ports of all child components to the Port Monitor view. The actual implementation of the Port Monitor View is
  * tested via a Jubula test that was labeled, at the time of this writing, as 'IDE-Runtime_Port_Monitor_View'
  * <p/>
@@ -50,7 +50,7 @@ public class PortMonitorViewTest extends UIRuntimeTest {
 
 	/**
 	 * IDE-1063
-	 * Enable "Monitor Ports" option on waveform in the SCA Explorer to monitor all ports of all components
+	 * Enable "Monitor Ports" option on waveform in the REDHAWK Explorer to monitor all ports of all components
 	 */
 	@Test
 	public void portMonitorWaveformTest() {

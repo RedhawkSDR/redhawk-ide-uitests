@@ -32,7 +32,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	/**
 	 * IDE-659
 	 * Adds, then removes a component via chalkboard diagram. Verify its no
-	 * longer present in ScaExplorer Chalkboard or Diagram
+	 * longer present in REDHAWK Explorer or Diagram
 	 */
 	@Test
 	public void addRemoveComponentInChalkboardDiagram() {
@@ -41,13 +41,13 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
 
-		// wait for component to show up in ScaExplorer Chalkboard
+		// wait for component to show up in REDHAWK Explorer
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
 
 		// RELEASE component from diagram
 		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(HARD_LIMIT_1));
 
-		// wait until hard limit component not present in ScaExplorer Chalkboard & Diagram
+		// wait until hard limit component not present in REDHAWK Explorer & Diagram
 		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
 		Assert.assertNull(editor.getEditPart(HARD_LIMIT_1));
 	}
@@ -55,7 +55,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	/**
 	 * IDE-659
 	 * Adds, then terminates a component via chalkboard diagram. Verify it's no
-	 * longer present in ScaExplorer Chalkboard or Diagram
+	 * longer present in REDHAWK Explorer or Diagram
 	 */
 	@Test
 	public void addTerminateComponentInChalkboardDiagram() {
@@ -64,13 +64,13 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
 
-		// wait for component to show up in ScaExplorer Chalkboard
+		// wait for component to show up in REDHAWK Explorer
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
 
 		// TERMINATE component from diagram
 		DiagramTestUtils.terminateFromDiagram(editor, editor.getEditPart(HARD_LIMIT_1));
 
-		// wait until hard limit component not present in ScaExplorer Chalkboard & Diagram
+		// wait until hard limit component not present in REDHAWK Explorer & Diagram
 		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
 		Assert.assertNull(editor.getEditPart(HARD_LIMIT_1));
 	}
@@ -78,7 +78,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	/**
 	 * IDE-659
 	 * Adds, then removes a component connections via chalkboard diagram. Verify its no
-	 * longer present in ScaExplorer Chalkboard
+	 * longer present in REDHAWK Explorer
 	 */
 	@Test
 	public void addRemoveComponentConnectionInChalkboardDiagram() {
@@ -88,7 +88,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
 
-		// wait for component to show up in ScaExplorer Chalkboard (connections don't always work correctly if you don't
+		// wait for component to show up in REDHAWK Explorer (connections don't always work correctly if you don't
 		// wait.
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN_1);
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
@@ -102,7 +102,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		// Draw connection
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
 
-		// wait for connection to show up in ScaExplorer Chalkboard
+		// wait for connection to show up in REDHAWK Explorer
 		ScaExplorerTestUtils.waitUntilConnectionDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1, "dataFloat_out", "connection_1");
 
 		// Delete connection
@@ -111,14 +111,14 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 			DiagramTestUtils.deleteFromDiagram(editor, con);
 		}
 
-		// wait until connection not present in ScaExplorer Chalkboard
+		// wait until connection not present in REDHAWK Explorer
 		ScaExplorerTestUtils.waitUntilConnectionDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1, "dataFloat_out", "connection_1");
 	}
 
 	/**
 	 * IDE-659
 	 * Adds components, starts/stops them from Chalkboard Diagram and verifies
-	 * components in ScaExplorer Chalkboard reflect changes
+	 * components in REDHAWK Explorer reflect changes
 	 * 
 	 */
 	@Test
@@ -173,7 +173,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 
 	/**
 	 * IDE-659
-	 * Adds, then removes a component via ScaExplorer Chalkboard. Verify its no
+	 * Adds, then removes a component via REDHAWK Explorer. Verify its no
 	 * longer present in Diagram
 	 */
 	@Test
@@ -184,7 +184,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
 
-		// delete component from ScaExplorer chalkboard
+		// delete component from REDHAWK Explorer
 		ScaExplorerTestUtils.terminateLocalResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 		DiagramTestUtils.waitUntilComponentDisappearsInChalkboardDiagram(bot, editor, HARD_LIMIT_1);
 
@@ -199,7 +199,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 
 	/**
 	 * IDE-659
-	 * Adds, then removes component connections via SCA Explorer Chalkboard. Verify its no
+	 * Adds, then removes component connections via REDHAWK Explorer. Verify its no
 	 * longer present in Chalkboard Diagram
 	 */
 	@Test
@@ -214,19 +214,19 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN_1);
 
-		// create connection between components via Sca Explorer Chalkboard
+		// create connection between components via REDHAWK Explorer
 		ScaExplorerTestUtils.connectComponentPortsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, "connection_1", SIGGEN_1, "dataFloat_out", HARD_LIMIT_1,
 			"dataFloat_in");
 		DiagramTestUtils.waitUntilConnectionDisplaysInDiagram(bot, editor, HARD_LIMIT);
 
-		// disconnect connection_1 via Sca Explorer Chalkboard
+		// disconnect connection_1 via REDHAWK Explorer
 		ScaExplorerTestUtils.disconnectConnectionInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, "connection_1", SIGGEN_1, "dataFloat_out");
 		DiagramTestUtils.waitUntilConnectionDisappearsInDiagram(bot, editor, HARD_LIMIT);
 	}
 
 	/**
 	 * IDE-659
-	 * Adds components, starts/stops them from ScaExplorer Chalkboard and verifies
+	 * Adds components, starts/stops them from REDHAWK Explorer and verifies
 	 * components in diagram reflect appropriate color changes
 	 * 
 	 */
@@ -247,7 +247,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		// verify hard limit stopped
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
 
-		// start hard limit from sca explorer
+		// start hard limit from REDHAWK explorer
 		ScaExplorerTestUtils.startResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 
 		// verify hardlimit started but siggen did not
@@ -255,20 +255,20 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);
 
-		// start SigGen from sca explorer
+		// start SigGen from REDHAWK explorer
 		ScaExplorerTestUtils.startResourceInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// verify SigGen started but siggen did not
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
 
-		// stop hard limit from sca explorer
+		// stop hard limit from REDHAWK explorer
 		ScaExplorerTestUtils.stopResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 
 		// verify hardlimit stopped, SigGen started
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
 
-		// stop SigGen from sca explorer
+		// stop SigGen from REDHAWK explorer
 		ScaExplorerTestUtils.stopResourceInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// verify SigGen stopped
@@ -310,7 +310,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	}
 	
 	/**
-	 * IDE-1205 Make sure properties match whether component is selected in diagram or SCA Explorer.
+	 * IDE-1205 Make sure properties match whether component is selected in diagram or REDHAWK Explorer.
 	 */
 	@Test
 	public void changePropertiesInScaExplorer() {
@@ -321,7 +321,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
 		
-		// Select component in SCA tree first
+		// Select component in REDHAWK explorer tree first
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1).select().click();
 		
 		SWTBotTree propTable = ViewUtils.activateFirstPropertiesTab(gefBot);
@@ -342,7 +342,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	}
 
 	/**
-	 * IDE-1205 Make sure properties match whether component is selected in diagram or SCA Explorer.
+	 * IDE-1205 Make sure properties match whether component is selected in diagram or REDHAWK Explorer.
 	 */
 	@Test
 	public void changePropertiesInChalkboardDiagram() {

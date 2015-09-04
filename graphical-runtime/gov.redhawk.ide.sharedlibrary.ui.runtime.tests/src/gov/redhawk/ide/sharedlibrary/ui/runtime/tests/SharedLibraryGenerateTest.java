@@ -34,7 +34,7 @@ public class SharedLibraryGenerateTest extends UIRuntimeTest {
 
 	@BeforeClass
 	public static void beforeClassSetup() {
-		// PyDev needs to be configured before running New SCA Shared Library (formerly Softpackage) Project Wizards
+		// PyDev needs to be configured before running New REDHAWK Shared Library (formerly Softpackage) Project Wizards
 		StandardTestActions.configurePyDev(new SWTWorkbenchBot());
 	}
 

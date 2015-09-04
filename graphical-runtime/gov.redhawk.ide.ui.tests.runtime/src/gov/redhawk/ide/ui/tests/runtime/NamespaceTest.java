@@ -77,7 +77,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	/**
 	 * IDE-1122, IDE-1182, IDE-1183, IDE-1185
 	 * Check that name-spaced component projects can be created, generated and exported.
-	 * They should also be represented in the SCA Explorer.
+	 * They should also be represented in the REDHAWK Explorer.
 	 */
 	@Test
 	public void namespaceBehaviorComponents() {
@@ -108,7 +108,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	/**
 	 * IDE-1122, IDE-1182, IDE-1183, IDE-1185
 	 * Check that name-spaced device projects can be created, generated and exported.
-	 * They should also be represented in the SCA Explorer.
+	 * They should also be represented in the REDHAWK Explorer.
 	 * @throws InterruptedException
 	 * @throws OperationCanceledException
 	 */
@@ -141,7 +141,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	/**
 	 * IDE-1122, IDE-1182, IDE-1183, IDE-1185
 	 * Check that a name-spaced service project can be created, generated and exported.
-	 * It should also be represented in the SCA Explorer.
+	 * It should also be represented in the REDHAWK Explorer.
 	 */
 	@Test
 	public void namespaceBehaviorServices() {
@@ -173,7 +173,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	/**
 	 * IDE-1122, IDE-1128, IDE-1332
 	 * Check that a name-spaced waveform project can be created and exported.
-	 * It should install to the correct location (we install it), and also be represented in the SCA Explorer.
+	 * It should install to the correct location (we install it), and also be represented in the REDHAWK Explorer.
 	 */
 	@Test
 	public void namespaceBehaviorWaveforms() {
@@ -217,7 +217,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	/**
 	 * IDE-1122, IDE-1128, IDE-1332
 	 * Check that a name-spaced service project can be created and exported.
-	 * It should install to the correct location (we install it), and also be represented in the SCA Explorer.
+	 * It should install to the correct location (we install it), and also be represented in the REDHAWK Explorer.
 	 */
 	@Test
 	public void namespaceBehaviorNodes() {
@@ -264,7 +264,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	/**
 	 * IDE-1122, IDE-1182, IDE-1185
 	 * Check that a name-spaced shared library can be created, generated and exported.
-	 * It should also be represented in the SCA Explorer.
+	 * It should also be represented in the REDHAWK Explorer.
 	 */
 	@Test
 	public void namespaceBehaviorSharedLib() {

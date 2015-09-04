@@ -28,7 +28,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	/**
 	 * IDE-1119
 	 * Adds, then removes a device via dev manager chalkboard diagram.
-	 * Verify its no longer present in ScaExplorer Sandbox or Diagram
+	 * Verify its no longer present in REDHAWK Explorer Sandbox or Diagram
 	 */
 	@Test
 	public void addRemoveDeviceInDeviceManagerDiagram() {
@@ -38,7 +38,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(DEVICE_STUB));
 
-		// wait until device not present in ScaExplorer Chalkboard & Diagram
+		// wait until device not present in REDHAWK Explorer Chalkboard & Diagram
 		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 		Assert.assertNull(editor.getEditPart(DEVICE_STUB));
 	}
@@ -46,7 +46,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	/**
 	 * IDE-1119
 	 * Adds, then terminates a device via dev manager chalkboard diagram.
-	 * Verify it's no longer present in ScaExplorer Sandbox or Diagram
+	 * Verify it's no longer present in REDHAWK Explorer Sandbox or Diagram
 	 */
 	@Test
 	public void addTerminateDeviceInChalkboardDiagram() {
@@ -56,7 +56,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 		DiagramTestUtils.terminateFromDiagram(editor, editor.getEditPart(DEVICE_STUB));
 
-		// wait until device not present in ScaExplorer Chalkboard & Diagram
+		// wait until device not present in REDHAWK Explorer Chalkboard & Diagram
 		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 		Assert.assertNull(editor.getEditPart(DEVICE_STUB));
 	}
@@ -64,7 +64,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	/**
 	 * IDE-1119
 	 * Adds, then removes a device connection via dev manager chalkboard diagram.
-	 * Verify its no longer present in ScaExplorer Chalkboard
+	 * Verify its no longer present in REDHAWK Explorer Chalkboard
 	 */
 	@Test
 	public void addRemoveDeviceConnectionInChalkboardDiagram() {
@@ -93,7 +93,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	/**
 	 * IDE-1119
 	 * Adds device, starts/stops them from Chalkboard Diagram and verifies
-	 * device in ScaExplorer Dev Manager Chalkboard reflect changes
+	 * device in REDHAWK Explorer Dev Manager Chalkboard reflect changes
 	 * 
 	 */
 	@Test
@@ -104,7 +104,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 300, 0);
 
-		// wait for device to show up in ScaExplorer Dev Manager Chalkboard
+		// wait for device to show up in REDHAWK Explorer Dev Manager Chalkboard
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 
@@ -156,7 +156,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 
 	/**
 	 * IDE-11199
-	 * Adds, then removes a device via ScaExplorer Dev Manager Chalkboard.
+	 * Adds, then removes a device via REDHAWK Explorer Dev Manager Chalkboard.
 	 * Verify its no longer present in Diagram
 	 */
 	@Test
@@ -169,7 +169,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		// verify DeviceStub was added to the diagram
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, DEVICE_STUB);
 
-		// delete device from ScaExplorer dev manager chalkboard
+		// delete device from REDHAWK Explorer dev manager chalkboard
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 		ScaExplorerTestUtils.terminateDeviceInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 
@@ -191,7 +191,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 
 	/**
 	 * IDE-1119
-	 * Adds, then removes device connections via SCA Explorer view.
+	 * Adds, then removes device connections via REDHAWK Explorer view.
 	 * Verify its no longer present in Diagram
 	 */
 	@Test
@@ -206,7 +206,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, DEVICE_STUB_1);
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, DEVICE_STUB_2);
 
-		// create connection between devices via Sca Explorer
+		// create connection between devices via REDHAWK Explorer
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 		ScaExplorerTestUtils.connectComponentPortsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, "connection_1", DEVICE_STUB_1, "dataDouble_out",
 			DEVICE_STUB_2, "dataDouble_in");
@@ -214,7 +214,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		// verify connection exists in diagram
 		DiagramTestUtils.waitUntilConnectionDisplaysInDiagram(bot, editor, DEVICE_STUB_2);
 
-		// disconnect connection_1 via Sca Explorer
+		// disconnect connection_1 via REDHAWK Explorer
 		ScaExplorerTestUtils.disconnectConnectionInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, "connection_1", DEVICE_STUB_1, "dataDouble_out");
 
 		// verify connection does NOT exist in diagram
@@ -223,7 +223,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 
 	/**
 	 * IDE-1119
-	 * Adds devices, starts/stops them from ScaExplorer Dev Manager Chalkboard and verifies
+	 * Adds devices, starts/stops them from REDHAWK Explorer Dev Manager Chalkboard and verifies
 	 * devices in diagram reflect appropriate color changes
 	 */
 	@Test
@@ -242,7 +242,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		// verify hard limit stopped
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, DEVICE_STUB);
 
-		// start hard limit from sca explorer
+		// start hard limit from REDHAWK explorer
 		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 
 		// verify device stub started but GPP did not
@@ -250,21 +250,21 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, DEVICE_STUB);
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, GPP);
 
-		// start GPP from sca explorer
+		// start GPP from REDHAWK explorer
 		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
 
 		// verify GPP started in explorer and diagram
 		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, GPP);
 
-		// stop device stub from sca explorer
+		// stop device stub from REDHAWK explorer
 		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 
 		// verify device stub stopped, GPP started
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, DEVICE_STUB);
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, GPP);
 
-		// stop GPP from sca explorer
+		// stop GPP from REDHAWK explorer
 		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
 
 		// verify GPP stopped

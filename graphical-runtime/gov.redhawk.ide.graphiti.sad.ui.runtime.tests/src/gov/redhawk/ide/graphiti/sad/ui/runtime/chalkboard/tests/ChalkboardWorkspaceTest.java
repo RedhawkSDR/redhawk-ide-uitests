@@ -27,13 +27,13 @@ import org.junit.Test;
 
 public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 
-	private static final String ROOT_SHELL_NAME = "SCA - REDHAWK IDE";
+	private static final String ROOT_SHELL_NAME = "REDHAWK IDE";
 
 	private SWTBotGefEditor editor;
 
 	@BeforeClass
 	public static void beforeClassSetup() {
-		// PyDev needs to be configured before running New SCA * Project Wizards in some of the test cases
+		// PyDev needs to be configured before running New REDHAWK * Project Wizards in some of the test cases
 		StandardTestActions.configurePyDev(new SWTWorkbenchBot());
 	}
 

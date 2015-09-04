@@ -55,7 +55,7 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 		// Launch waveform in domain
 		ScaExplorerTestUtils.launchWaveformFromDomain(bot, DOMAIN, DOMAIN_WAVEFORM);
 
-		// Wait until the editor opens and the waveform appears in the SCA Explorer view
+		// Wait until the editor opens and the waveform appears in the REDHAWK Explorer view
 		bot.waitUntil(new WaitForEditorCondition());
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
 
@@ -76,7 +76,7 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 			ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
 		}
 
-		// delete domain instance from sca explorer
+		// delete domain instance from REDHAWK explorer
 		ScaExplorerTestUtils.deleteDomainInstance(bot, DOMAIN);
 
 		// Stop all processes that may have been started

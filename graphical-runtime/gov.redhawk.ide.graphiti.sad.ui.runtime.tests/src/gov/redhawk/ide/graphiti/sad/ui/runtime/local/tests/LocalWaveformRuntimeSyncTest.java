@@ -21,7 +21,7 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 /**
- * Tests that actions performed on a local sandbox waveform in the diagram get reflected in the SCA Explorer view, and
+ * Tests that actions performed on a local sandbox waveform in the diagram get reflected in the REDHAWK Explorer view, and
  * vice versa.
  */
 public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformRuntimeTest {
@@ -30,7 +30,7 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 	private static final String HARD_LIMIT_1 = "HardLimit_1";
 
 	/**
-	 * Adds, then removes a component via diagram. Verify the SCA Explorer reflects actions.
+	 * Adds, then removes a component via diagram. Verify the REDHAWK Explorer reflects actions.
 	 */
 	@Test
 	public void addRemoveComponentInDiagram() {
@@ -40,19 +40,19 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
 
-		// wait for component to show up in ScaExplorer
+		// wait for component to show up in REDHAWK Explorer
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
 
 		// delete component from diagram
 		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(HARD_LIMIT_1));
 
-		// wait until hard limit component not present in ScaExplorer
+		// wait until hard limit component not present in REDHAWK Explorer
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
 	}
 
 	/**
 	 * IDE-659
-	 * Adds, then removes a port connection via chalkboard diagram. Verify the SCA Explorer reflects actions.
+	 * Adds, then removes a port connection via chalkboard diagram. Verify the REDHAWK Explorer reflects actions.
 	 */
 	@Test
 	public void addRemoveConnectionInDiagram() {
@@ -62,7 +62,7 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 		// Add two components to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
 
-		// wait for component to show up in ScaExplorer (connections don't always work correctly if you don't wait.
+		// wait for component to show up in REDHAWK Explorer (connections don't always work correctly if you don't wait.
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
 
 		// Get port edit parts
@@ -72,7 +72,7 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 		// Draw connection
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
 
-		// wait for connection to show up in ScaExplorer
+		// wait for connection to show up in REDHAWK Explorer
 		ScaExplorerTestUtils.waitUntilConnectionDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1, "dataFloat_out", "connection_1");
 
 		// Delete connection
@@ -81,13 +81,13 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 			DiagramTestUtils.deleteFromDiagram(editor, con);
 		}
 
-		// wait until connection not present in ScaExplorer
+		// wait until connection not present in REDHAWK Explorer
 		ScaExplorerTestUtils.waitUntilConnectionDisappearsInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1, "dataFloat_out", "connection_1");
 	}
 
 	/**
 	 * IDE-659
-	 * Adds components, starts/stops them from Diagram. Verify the SCA Explorer reflects actions.
+	 * Adds components, starts/stops them from Diagram. Verify the REDHAWK Explorer reflects actions.
 	 */
 	@Test
 	public void startStopComponentsFromDiagram() {
@@ -131,7 +131,7 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 
 	/**
 	 * IDE-659
-	 * Adds, then removes component connections via SCA Explorer. Verify its no longer present in Diagram
+	 * Adds, then removes component connections via REDHAWK Explorer. Verify its no longer present in Diagram
 	 */
 	@Test
 	public void addRemoveConnectionInExplorer() {
@@ -142,14 +142,14 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
 
-		// create connection between components via Sca Explorer
+		// create connection between components via REDHAWK Explorer
 		ScaExplorerTestUtils.connectComponentPortsInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, getWaveFormFullName(), "connection_1", SIGGEN_1, "dataFloat_out",
 			HARD_LIMIT_1, "dataFloat_in");
 
 		// verify connection exists in diagram
 		DiagramTestUtils.waitUntilConnectionDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
 
-		// disconnect connection_1 via Sca Explorer
+		// disconnect connection_1 via REDHAWK Explorer
 		ScaExplorerTestUtils.disconnectConnectionInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, getWaveFormFullName(), "connection_1", SIGGEN_1, "dataFloat_out");
 
 		// verify connection does NOT exist in diagram
@@ -174,22 +174,22 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 		// verify hard limit stopped
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
 
-		// start hard limit from sca explorer
+		// start hard limit from REDHAWK explorer
 		ScaExplorerTestUtils.startResourceInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);
 
-		// start SigGen from sca explorer
+		// start SigGen from REDHAWK explorer
 		ScaExplorerTestUtils.startResourceInExplorer(bot, getWaveformPath(), SIGGEN_1);
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
 
-		// stop hard limit from sca explorer
+		// stop hard limit from REDHAWK explorer
 		ScaExplorerTestUtils.stopResourceInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
 
-		// stop SigGen from sca explorer
+		// stop SigGen from REDHAWK explorer
 		ScaExplorerTestUtils.stopResourceInExplorer(bot, getWaveformPath(), SIGGEN_1);
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);

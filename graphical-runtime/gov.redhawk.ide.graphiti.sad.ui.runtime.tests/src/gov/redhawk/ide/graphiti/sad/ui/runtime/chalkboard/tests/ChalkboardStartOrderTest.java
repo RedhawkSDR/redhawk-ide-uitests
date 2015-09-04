@@ -31,7 +31,7 @@ public class ChalkboardStartOrderTest extends AbstractGraphitiChalkboardTest {
 	public void removeStartOrderIconTest() {
 		editor = openChalkboardDiagram(gefBot);
 
-		// drag SigGen to diagram and verify loaded in SCA explorer
+		// drag SigGen to diagram and verify loaded in REDHAWK explorer
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
 

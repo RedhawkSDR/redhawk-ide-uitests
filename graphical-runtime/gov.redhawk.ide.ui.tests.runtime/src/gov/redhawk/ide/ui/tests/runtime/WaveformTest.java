@@ -158,7 +158,7 @@ public class WaveformTest extends UIRuntimeTest {
 	}
 
 	/**
-	 * Launches the selected Waveform in the SCA Explorer Sandbox using Advanced Wizard. This just clicks Finish on the
+	 * Launches the selected Waveform in the REDHAWK Explorer Sandbox using Advanced Wizard. This just clicks Finish on the
 	 * Advanced Launch Waveform (in Sandbox) Wizard without specifying any user override property values.
 	 * @returns the SWTBotTreeItem for the launched Waveform on the Sandbox
 	 */

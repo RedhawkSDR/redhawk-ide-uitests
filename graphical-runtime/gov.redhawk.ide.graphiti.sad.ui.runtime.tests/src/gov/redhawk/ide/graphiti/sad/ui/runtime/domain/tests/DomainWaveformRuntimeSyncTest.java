@@ -33,7 +33,7 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 	/**
 	 * IDE-672
 	 * Starts/stops them from Diagram and verifies
-	 * components in ScaExplorer reflect changes
+	 * components in REDHAWK Explorer reflect changes
 	 * 
 	 */
 	@Test
@@ -84,7 +84,7 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 
 	/**
 	 * IDE-672
-	 * Starts/stops them from ScaExplorer and verifies
+	 * Starts/stops them from REDHAWK Explorer and verifies
 	 * components in diagram reflect appropriate color changes
 	 * 
 	 */
@@ -99,27 +99,27 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		// verify hard limit stopped
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
 
-		// start hard limit from sca explorer
+		// start hard limit from REDHAWK explorer
 		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
 
 		// verify hardlimit started but siggen did not
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIG_GEN);
 
-		// start SigGen from sca explorer
+		// start SigGen from REDHAWK explorer
 		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIG_GEN_1);
 
 		// verify SigGen started but siggen did not
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIG_GEN);
 
-		// stop hard limit from sca explorer
+		// stop hard limit from REDHAWK explorer
 		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
 
 		// verify hardlimit stopped, SigGen started
 		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
 		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIG_GEN);
 
-		// stop SigGen from sca explorer
+		// stop SigGen from REDHAWK explorer
 		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIG_GEN_1);
 
 		// verify SigGen stopped
@@ -149,7 +149,7 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 	}
 
 	/**
-	 * IDE-1205 Make sure properties match whether component is selected in diagram or SCA Explorer.
+	 * IDE-1205 Make sure properties match whether component is selected in diagram or REDHAWK Explorer.
 	 */
 	@Test
 	public void changePropertiesInScaExplorer() {
@@ -162,7 +162,7 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		
 		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
 		
-		// Select component in SCA tree first
+		// Select component in REDHAWK explorer tree first
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, waveformPath, SIG_GEN_1).select().click();
 		
 		propTable = ViewUtils.activateFirstPropertiesTab(gefBot);
@@ -185,7 +185,7 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 	}
 
 	/**
-	 * IDE-1205 Make sure properties match whether component is selected in diagram or SCA Explorer.
+	 * IDE-1205 Make sure properties match whether component is selected in diagram or REDHAWK Explorer.
 	 */
 	@Test
 	public void changePropertiesInChalkboardDiagram() {

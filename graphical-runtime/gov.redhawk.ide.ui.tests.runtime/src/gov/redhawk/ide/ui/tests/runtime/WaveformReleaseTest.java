@@ -52,7 +52,7 @@ public class WaveformReleaseTest extends UIRuntimeTest {
 		// Release waveform
 		waveformTreeItem.contextMenu("Release").click();
 		
-		// Make sure waveform is removed from the SCA Explorer
+		// Make sure waveform is removed from the REDHAWK Explorer
 		final SWTBotTreeItem sandbox = viewBot.tree().getTreeItem("Sandbox");
 		bot.waitUntil(new ICondition() {
 

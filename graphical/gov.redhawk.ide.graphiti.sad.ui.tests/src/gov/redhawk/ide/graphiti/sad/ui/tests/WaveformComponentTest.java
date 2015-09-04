@@ -356,7 +356,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	static List<String> getTargetSdrComponents(final SWTWorkbenchBot bot) {
 		LinkedList<String> list = new LinkedList<String>();
 
-		SWTBotView scaExplorerView = bot.viewByTitle("SCA Explorer");
+		SWTBotView scaExplorerView = bot.viewByTitle("REDHAWK Explorer");
 		SWTBotTree scaTree = scaExplorerView.bot().tree();
 		SWTBotTreeItem componentsItem = scaTree.expandNode("Target SDR", "Components");
 		SWTBotTreeItem[] sdrComponents = componentsItem.getItems();

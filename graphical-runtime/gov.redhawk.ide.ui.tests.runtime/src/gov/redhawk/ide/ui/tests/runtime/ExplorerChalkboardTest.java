@@ -40,7 +40,7 @@ public class ExplorerChalkboardTest extends UIRuntimeTest {
 	}
 	
 	/**
-	 * IDE-1171 - Update tooltips to include optional Port description in the SCA Explorer view
+	 * IDE-1171 - Update tooltips to include optional Port description in the REDHAWK Explorer view
 	 */
 	@Test
 	@Ignore // not sure why getToolTipText is returning empty String
