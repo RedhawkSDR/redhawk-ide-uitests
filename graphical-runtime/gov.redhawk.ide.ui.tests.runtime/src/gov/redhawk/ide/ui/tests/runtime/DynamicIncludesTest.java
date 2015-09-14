@@ -32,60 +32,59 @@ import org.junit.Test;
 
 /**
  * Tests component, device, and shared library projects by adding a shared library dependency (libdsp)
- * and including a header from libdsp (RealFIRFilter.h) 
+ * and including a header from libdsp (RealFIRFilter.h)
  */
 public class DynamicIncludesTest extends UIRuntimeTest {
-	
+
+	private static final String DSP = "dsp";
+
 	@Test
 	public void componentWithSharedLibDep() {
-		String sharedLibraryName = "dsp";
 		String headerToInclude = "RealFIRFilter.h";
-		
+
 		SWTBotEditor editor = null;
-		
+
 		String componentProjectName = "TestComponent";
 		ComponentUtils.createComponentProject(bot, componentProjectName, "C++");
 		editor = bot.editorByTitle(componentProjectName);
-		setSpdDependency(editor.bot(), editor, sharedLibraryName);
-		generateProjectAndBuild(componentProjectName, sharedLibraryName, headerToInclude);
+		setSpdDependency(editor.bot(), editor, DSP);
+		generateProjectAndBuild(componentProjectName, headerToInclude);
 	}
-	
+
 	@Test
 	public void deviceWithSharedLibDep() {
-		String sharedLibraryName = "dsp";
 		String headerToInclude = "RealFIRFilter.h";
-		
+
 		SWTBotEditor editor = null;
-		
+
 		String deviceProjectName = "TestDevice";
 		DeviceUtils.createDeviceProject(bot, deviceProjectName, "C++");
 		editor = bot.editorByTitle(deviceProjectName);
-		setSpdDependency(editor.bot(), editor, sharedLibraryName);
-		generateProjectAndBuild(deviceProjectName, sharedLibraryName, headerToInclude);
+		setSpdDependency(editor.bot(), editor, DSP);
+		generateProjectAndBuild(deviceProjectName, headerToInclude);
 	}
-	
+
 	@Test
 	public void sharedLibWithSharedLibDep() {
-		String sharedLibraryName = "dsp";
 		String headerToInclude = "RealFIRFilter.h";
-		
+
 		SWTBotEditor editor = null;
-		
+
 		String sharedLibraryProjectName = "TestSharedLibrary";
 		SharedLibraryUtils.createSharedLibraryProject(bot, sharedLibraryProjectName, "C++ Library");
 		editor = bot.editorByTitle(sharedLibraryProjectName);
-		setSpdDependency(editor.bot(), editor, sharedLibraryName);
-		generateProjectAndBuild(sharedLibraryProjectName, sharedLibraryName, headerToInclude);
+		setSpdDependency(editor.bot(), editor, DSP);
+		generateProjectAndBuild(sharedLibraryProjectName, headerToInclude);
 	}
-	
-	private void generateProjectAndBuild(String projectName, String sharedLibraryName, String headerToInclude) {
+
+	private void generateProjectAndBuild(String projectName, String headerToInclude) {
 		// Generate
 		SWTBotEditor spdEditor = bot.editorByTitle(projectName);
 		StandardTestActions.generateProject(bot, spdEditor);
 
 		// Default file editor should open
-		SWTBotEditor textEditor = bot.editorByTitle(projectName+".cpp");
-		
+		SWTBotEditor textEditor = bot.editorByTitle(projectName + ".cpp");
+
 		// Sometimes the comment block does not collapse fast enough and the include gets put in the wrong spot.
 		try {
 			Thread.sleep(1000);
@@ -93,10 +92,10 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 		}
 		textEditor.toTextEditor().insertText(3, 0, "#include \"" + headerToInclude + "\"");
 		textEditor.save();
-		
+
 		// Rebuild the project with the new modifications
 		StandardTestActions.buildAll();
-		
+
 		// Wait for the build to finish and any error markers to go away, then close editors
 		// One second sleep to make sure the error markers have shown up
 		try {
@@ -108,7 +107,7 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 			Assert.fail("Failed while waiting for the build to complete for: " + projectName);
 		}
 
-		// One second sleep to make sure the error markers have shown up		
+		// One second sleep to make sure the error markers have shown up
 		try {
 			Thread.sleep(1000);
 			textEditor.bot().waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), 120000);
@@ -117,21 +116,20 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 		} catch (InterruptedException e) {
 			Assert.fail("Failed due severity markers being present on: " + projectName);
 		}
-		
-		
+
 		bot.closeAllEditors();
 	}
 
 	private void setSpdDependency(SWTBot swtBot, SWTBotEditor editor, String sharedLibraryName) {
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.IMPLEMENTATIONS);
-		
+
 		SWTBotButton addDepButton = swtBot.button("Add...", 3);
 		addDepButton.click();
-		
-		SWTBotShell depWizardShell= bot.shell("Dependency Wizard");
+
+		SWTBotShell depWizardShell = bot.shell("Dependency Wizard");
 		depWizardShell.activate();
 		SWTBot depWizardBot = depWizardShell.bot();
-		
+
 		depWizardBot.comboBoxWithLabel("Kind:").setSelection("Shared Library (SoftPkg) Reference");
 		depWizardBot.comboBoxWithLabel("Type:").setSelection("other");
 		SWTBotTree depTree = depWizardBot.treeInGroup("Shared Library (SoftPkg) Reference");
@@ -144,10 +142,10 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 				break;
 			}
 		}
-		
+
 		Assert.assertNotNull("Could not find shared library: " + sharedLibraryName, selectedItem);
 		selectedItem.select();
-		
+
 		depWizardBot.button("Finish").click();
 		bot.saveAllEditors();
 	}
