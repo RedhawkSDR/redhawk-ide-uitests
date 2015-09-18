@@ -31,10 +31,11 @@ public class DeprecatedPropertiesTest extends UITest {
 	private final String compPrf = compName + ".prf.xml";
 
 	/**
-	 * IDE-1235. Tests upgrading a project with 'configure' and 'execparam' properties.
+	 * IDE-1235. Tests upgrading a project with 'configure' and 'execparam' properties. Tests both the cancel
+	 * functionality, and the upgrade functionality.
 	 */
 	@Test
-	public void test() {
+	public void cancel_and_upgrade() {
 		ComponentUtils.createComponentProject(bot, compName, compLanguage);
 		SWTBotEditor editor = bot.editorByTitle(compName);
 
@@ -56,7 +57,7 @@ public class DeprecatedPropertiesTest extends UITest {
 		// Generate again, but allow the upgrade this time
 		editor.bot().toolbarButton(0).click();
 		propShell = bot.shell("Deprecated property kinds");
-		propShell.bot().button("OK").click();
+		propShell.bot().button("Yes").click();
 		bot.waitUntil(Conditions.shellCloses(propShell));
 
 		SWTBotShell fileShell = bot.shell("Regenerate Files");
@@ -75,6 +76,47 @@ public class DeprecatedPropertiesTest extends UITest {
 		String newPrfText = editor.bot().styledText().getText();
 		Assert.assertFalse(newPrfText.contains("configure"));
 		Assert.assertFalse(newPrfText.contains("execparam"));
+	}
+
+	/**
+	 * IDE-1235. Tests skipping upgrading a project with 'configure' and 'execparam' properties.
+	 */
+	@Test
+	public void skip_upgrade() {
+		ComponentUtils.createComponentProject(bot, compName, compLanguage);
+		SWTBotEditor editor = bot.editorByTitle(compName);
+
+		// Replace the PRF with one that has 'configure' and 'execparam' properties
+		DiagramTestUtils.openTabInEditor(editor, compPrf);
+		String prfAsString = FileUtils.read(this.getClass().getResourceAsStream("/testFiles/DeprecatedPropertiesTest.prf.xml"));
+		Assert.assertTrue(prfAsString.contains("configure"));
+		Assert.assertTrue(prfAsString.contains("execparam"));
+		editor.bot().styledText().setText(prfAsString);
+		MenuUtils.save(editor);
+
+		// Generate, but skip the upgrade
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.OVERVIEW_TAB);
+		editor.bot().toolbarButton(0).click();
+		SWTBotShell propShell = bot.shell("Deprecated property kinds");
+		propShell.bot().button("No").click();
+		bot.waitUntil(Conditions.shellCloses(propShell));
+
+		SWTBotShell fileShell = bot.shell("Regenerate Files");
+		fileShell.bot().button("OK").click();
+
+		try {
+			SWTBotShell genShell = bot.shell("Generating...");
+			bot.waitUntil(Conditions.shellCloses(genShell));
+		} catch (WidgetNotFoundException e) {
+			// PASS
+		}
+
+		// The properties should have 'configure' and 'execparam' still
+		editor.show();
+		DiagramTestUtils.openTabInEditor(editor, compPrf);
+		String newPrfText = editor.bot().styledText().getText();
+		Assert.assertTrue(newPrfText.contains("configure"));
+		Assert.assertTrue(newPrfText.contains("execparam"));
 	}
 
 }
