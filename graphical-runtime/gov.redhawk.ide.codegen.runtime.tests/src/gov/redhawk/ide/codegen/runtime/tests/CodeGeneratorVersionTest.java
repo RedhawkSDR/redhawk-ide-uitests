@@ -11,13 +11,6 @@
  */
 package gov.redhawk.ide.codegen.runtime.tests;
 
-import gov.redhawk.ide.swtbot.ComponentUtils;
-import gov.redhawk.ide.swtbot.MenuUtils;
-import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
-import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.UITest;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -27,6 +20,13 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.ComponentUtils;
+import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
+import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 
 public class CodeGeneratorVersionTest extends UITest {
 
@@ -116,6 +116,13 @@ public class CodeGeneratorVersionTest extends UITest {
 		bot.waitUntil(new DefaultCondition() {			
 			@Override
 			public boolean test() throws Exception {
+				SWTBotShell[] shells = bot.shells();
+				for (SWTBotShell shell : shells) {
+					if ("File Changed".equals(shell.getText())) {
+						shell.bot().button("OK").click();
+						break;
+					}
+				}
 				return expectedVersion.equals(typeText.getText());
 			}
 			
