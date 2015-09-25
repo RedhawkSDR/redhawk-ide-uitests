@@ -28,12 +28,20 @@ public class SelectIDL extends DefaultCondition {
 	@Override
 	public boolean test() throws Exception {
 		SWTBotTree idlTree = bot.tree();
-		SWTBotTreeItem moduleItem = idlTree.getTreeItem(module).expand();
-		try {
-			moduleItem.getNode(intf).select();
-		} catch (WidgetNotFoundException ex) {
-			moduleItem.collapse();
-			return false;
+		if (module != null) {
+			SWTBotTreeItem moduleItem = idlTree.getTreeItem(module).expand();
+			try {
+				moduleItem.getNode(intf).select();
+			} catch (WidgetNotFoundException ex) {
+				moduleItem.collapse();
+				return false;
+			}
+		} else {
+			try {
+				idlTree.getTreeItem(intf).select();
+			} catch (WidgetNotFoundException ex) {
+				return false;
+			}
 		}
 		return true;
 	}

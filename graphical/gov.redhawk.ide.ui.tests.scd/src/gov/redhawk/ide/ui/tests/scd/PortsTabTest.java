@@ -20,6 +20,7 @@ import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
+import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -122,7 +123,7 @@ public class PortsTabTest extends UITest {
 
 		editorBot.textWithLabel(LABEL_NAME).setText("inTestPort");
 		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("in <provides>");
-		selectIDL(editorBot, IDL_MODULE, IDL_INTF);
+		selectIDL(editorBot, IDL_MODULE, IDL_INTF, true);
 
 		// Check type table
 		SWTBotTable typeTable = editorBot.tableWithLabel("Type:");
@@ -139,12 +140,12 @@ public class PortsTabTest extends UITest {
 
 		editorBot.button(BUTTON_ADD).click();
 		editorBot.textWithLabel(LABEL_NAME).setText("outTestPort");
-		selectIDL(bot, IDL_MODULE, IDL_INTF);
+		selectIDL(bot, IDL_MODULE, IDL_INTF, true);
 		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("out <uses>");
 
 		editorBot.button(BUTTON_ADD).click();
 		editorBot.textWithLabel(LABEL_NAME).setText("bidirTestPort");
-		selectIDL(bot, IDL_MODULE, IDL_INTF);
+		selectIDL(bot, IDL_MODULE, IDL_INTF, true);
 		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("bi-dir <uses/provides>");
 
 		assertFormValid();
@@ -195,7 +196,7 @@ public class PortsTabTest extends UITest {
 		editorBot.button(BUTTON_ADD).click();
 		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("in <provides>");
 		editorBot.textWithLabel(LABEL_NAME).setText("inTestPort");
-		selectIDL(editorBot, IDL_MODULE, IDL_INTF);
+		selectIDL(editorBot, IDL_MODULE, IDL_INTF, true);
 
 		SWTBotTree tree = editorBot.tree();
 		Assert.assertEquals("inTestPort", tree.cell(0, 0));
@@ -203,7 +204,7 @@ public class PortsTabTest extends UITest {
 
 		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("out <uses>");
 		editorBot.textWithLabel(LABEL_NAME).setText("outTestPort");
-		selectIDL(editorBot, IDL_MODULE, IDL_INTF2);
+		selectIDL(editorBot, IDL_MODULE, IDL_INTF2, true);
 
 		Assert.assertEquals("outTestPort", tree.cell(0, 0));
 		Assert.assertEquals(EXPECTED_IDL_SAMPLE2, tree.cell(0, 1));
@@ -238,12 +239,54 @@ public class PortsTabTest extends UITest {
 		checkNoPortDetails();
 	}
 
-	private void selectIDL(SWTBot bot, String module, String intf) {
+	/**
+	 * Tests IDE-1389, ensuring BULKIO:dataChar isn't shown by default
+	 */
+	@Test
+	public void filter_dataChar() {
+		editorBot.button(BUTTON_ADD).click();
+		boolean dataCharShown = false;
+		try {
+			selectIDL(editorBot, "BULKIO", "dataChar", false);
+			dataCharShown = true;
+		} catch (TimeoutException ex) {
+			// PASS - This is expected
+		}
+		Assert.assertFalse(dataCharShown);
+		selectIDL(editorBot, "BULKIO", "dataChar", true);
+	}
+
+	/**
+	 * Tests IDE-943, ensuring that a non-namespaced module (like Echo) isn't shown by default
+	 */
+	@Test
+	public void filter_Echo() {
+		editorBot.button(BUTTON_ADD).click();
+		boolean dataCharShown = false;
+		try {
+			selectIDL(editorBot, null, "Echo", false);
+			dataCharShown = true;
+		} catch (TimeoutException ex) {
+			// PASS - This is expected
+		}
+		Assert.assertFalse(dataCharShown);
+		selectIDL(editorBot, null, "Echo", true);
+	}
+
+	private void selectIDL(SWTBot bot, String module, String intf, boolean showAll) {
 		bot.button(BUTTON_BROWSE).click();
 		SWTBotShell dialogShell = bot.shell(SHELL_SELECT_INTERFACE);
 		SWTBot dialogBot = dialogShell.bot();
-		dialogBot.checkBox(CHECK_SHOW_ALL).select();
-		dialogBot.waitUntil(new SelectIDL(module, intf));
+		if (showAll) {
+			dialogBot.checkBox(CHECK_SHOW_ALL).select();
+		}
+		try {
+			dialogBot.waitUntil(new SelectIDL(module, intf));
+		} catch (TimeoutException ex) {
+			dialogBot.button("Cancel").click();
+			bot.waitUntil(Conditions.shellCloses(dialogShell));
+			throw ex;
+		}
 		dialogBot.button("OK").click();
 		bot.waitUntil(Conditions.shellCloses(dialogShell));
 	}
