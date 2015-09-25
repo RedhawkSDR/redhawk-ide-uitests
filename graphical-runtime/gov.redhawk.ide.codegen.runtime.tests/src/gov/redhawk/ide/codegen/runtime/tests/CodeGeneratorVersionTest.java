@@ -21,6 +21,7 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -112,7 +113,17 @@ public class CodeGeneratorVersionTest extends UITest {
 	private void assertCodegenVersionUpdated() {
 		editor.show();
 		typeText = bot.textWithLabel("Type:");
-		Assert.assertEquals("Generator version type was not updated", expectedVersion, typeText.getText());
+		bot.waitUntil(new DefaultCondition() {			
+			@Override
+			public boolean test() throws Exception {
+				return expectedVersion.equals(typeText.getText());
+			}
+			
+			@Override
+			public String getFailureMessage() {
+				return "Generator version type was not updated";
+			}
+		});
 		DiagramTestUtils.openTabInEditor(editor, compSpd);
 		String editorText = editor.bot().styledText().getText();
 		final String versionXmlString = "(?s).* type=\"" + expectedVersion + "\">" + ".*";
