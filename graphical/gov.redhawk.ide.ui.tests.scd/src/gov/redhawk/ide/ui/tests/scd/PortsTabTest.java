@@ -16,62 +16,57 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
-import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTableItem;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import gov.redhawk.ide.spd.internal.ui.editor.ComponentEditor;
 import gov.redhawk.ide.scd.ui.editor.page.PortsFormPage;
+import gov.redhawk.ide.spd.internal.ui.editor.ComponentEditor;
 import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
+import gov.redhawk.ide.ui.tests.scd.conditions.SelectIDL;
+import mil.jpeojtrs.sca.scd.AbstractPort;
 import mil.jpeojtrs.sca.scd.Ports;
 import mil.jpeojtrs.sca.scd.Provides;
 import mil.jpeojtrs.sca.scd.Uses;
 import mil.jpeojtrs.sca.spd.SoftPkg;
 
 public class PortsTabTest extends UITest {
-	static final String PORTS_TAB_NAME = "Ports";
-	static final String PROG_LANG_CPP = "C++";
-	static final String FIELD_NAME = "Name*:";
-	static final String FIELD_DESCRIPTION = "Description:";
-	static final String COMBO_DIRECTION = "Direction:";
-	static final String BUTTON_ADD = "Add";
-	static final String BUTTON_REMOVE = "Remove";
-	static final String IDL_MODULE = "IDETEST";
-	static final String EXPECTED_IDL_SAMPLE1 = "IDL:IDETEST/SampleInterface:1.0";
-	static final String EXPECTED_IDL_SAMPLE2 = "IDL:IDETEST/SampleInterface2:1.0";
+	private static final String PORTS_TAB_NAME = "Ports";
+	private static final String PROG_LANG_CPP = "C++";
 
-	static final String PROJECT_NAME = "TestCppComponent";
+	private static final String LABEL_NAME = "Name*:";
+	private static final String LABEL_DIRECTION = "Direction:";
+	private static final String LABEL_TYPE = "Type:";
+	private static final String LABEL_INTERFACE = "Interface:";
+	private static final String LABEL_DESCRIPTION = "Description:";
+
+	private static final String BUTTON_ADD = "Add";
+	private static final String BUTTON_BROWSE = "Browse...";
+	private static final String BUTTON_REMOVE = "Remove";
+	private static final String SHELL_SELECT_INTERFACE = "Select an interface";
+	private static final String CHECK_SHOW_ALL = "Show all interfaces";
+
+	private static final String IDL_MODULE = "IDETEST";
+	private static final String IDL_INTF = "SampleInterface";
+	private static final String IDL_INTF2 = "SampleInterface2";
+	private static final String EXPECTED_IDL_SAMPLE1 = "IDL:" + IDL_MODULE + "/" + IDL_INTF + ":1.0";
+	private static final String EXPECTED_IDL_SAMPLE2 = "IDL:" + IDL_MODULE + "/" + IDL_INTF2 + ":1.0";
+
+	private static final String PROJECT_NAME = "TestCppComponent";
 
 	private SWTBot editorBot;
 
 	private SoftPkg spd;
 	private PortsFormPage page;
 
-	private DefaultCondition selectTestIDLCondition = new DefaultCondition() {
-
-		@Override
-		public boolean test() throws Exception {
-			SWTBotTree idlTree = bot.tree(2);
-			SWTBotTreeItem treeItem = idlTree.getTreeItem(IDL_MODULE).expand().getNode("SampleInterface");
-			treeItem.select();
-			return true;
-		}
-
-		@Override
-		public String getFailureMessage() {
-			return "Failed to find and select IDL: SampleInterface from " + IDL_MODULE;
-		}
-
-	};
-
+	@SuppressWarnings("restriction")
 	@Before
 	public void before() throws Exception {
 		super.before();
@@ -92,22 +87,42 @@ public class PortsTabTest extends UITest {
 	}
 
 	protected void assertFormValid() {
-		this.bot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY);
+		this.bot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY); // Alow form to have time to validate
 		StandardTestActions.assertFormValid(this.editorBot, this.page);
 	}
 
 	protected void assertFormInvalid() {
-		this.bot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY);
+		this.bot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY); // Alow form to have time to validate
 		StandardTestActions.assertFormInvalid(this.editorBot, this.page);
 	}
 
 	@Test
-	public void testAddPort() throws IOException {
+	public void validation_duplicatePortName() {
+		editorBot.button(BUTTON_ADD).click();
+		editorBot.textWithLabel(LABEL_NAME).setText("portA");
+		assertFormValid();
+
+		editorBot.button(BUTTON_ADD).click();
+		editorBot.textWithLabel(LABEL_NAME).setText("portA");
+		assertFormInvalid();
+	}
+
+	@Test
+	public void validation_noPortName() {
+		editorBot.button(BUTTON_ADD).click();
+		assertFormValid();
+
+		editorBot.textWithLabel(LABEL_NAME).setText("");
+		assertFormInvalid();
+	}
+
+	@Test
+	public void addPort() throws IOException {
 		editorBot.button(BUTTON_ADD).click();
 
-		editorBot.textWithLabel(FIELD_NAME).setText("inTestPort");
-		editorBot.comboBoxWithLabel(COMBO_DIRECTION).setSelection("in <provides>");
-		bot.waitUntil(selectTestIDLCondition);
+		editorBot.textWithLabel(LABEL_NAME).setText("inTestPort");
+		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("in <provides>");
+		selectIDL(editorBot, IDL_MODULE, IDL_INTF);
 
 		// Check type table
 		SWTBotTable typeTable = editorBot.tableWithLabel("Type:");
@@ -117,112 +132,120 @@ public class PortsTabTest extends UITest {
 		typeTable.getTableItem("control").check();
 		typeTable.getTableItem("control").uncheck();
 		typeTable.getTableItem("responses").uncheck();
-		typeTable.getTableItem("data").uncheck();
 
 		final String expectedDescriptionText = "A description for the test Port.";
-		editorBot.styledTextWithLabel(FIELD_DESCRIPTION).setText(expectedDescriptionText);
+		editorBot.textWithLabel(LABEL_DESCRIPTION).setText(expectedDescriptionText);
+		editorBot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY * 2); // Must allow description to set
 
 		editorBot.button(BUTTON_ADD).click();
-		editorBot.textWithLabel(FIELD_NAME).setText("inTestPort");
-//		assertFormInvalid(); // TODO: enable to validate that Duplicate Port name should result in error on editor
-
-		editorBot.textWithLabel(FIELD_NAME).setText("outTestPort");
-		editorBot.comboBox().setSelection("out <uses>");
-		bot.waitUntil(selectTestIDLCondition);
+		editorBot.textWithLabel(LABEL_NAME).setText("outTestPort");
+		selectIDL(bot, IDL_MODULE, IDL_INTF);
+		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("out <uses>");
 
 		editorBot.button(BUTTON_ADD).click();
-		editorBot.textWithLabel(FIELD_NAME).setText("bidirTestPort");
-		editorBot.comboBox().setSelection("bidir <uses/provides>");
-		bot.waitUntil(selectTestIDLCondition);
+		editorBot.textWithLabel(LABEL_NAME).setText("bidirTestPort");
+		selectIDL(bot, IDL_MODULE, IDL_INTF);
+		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("bi-dir <uses/provides>");
 
-		bot.saveAllEditors();
 		assertFormValid();
-		Assert.assertEquals("Number of Ports in Ports Table (UI)", 3, editorBot.table().rowCount());
+		Assert.assertEquals("Number of ports in ports tree (UI)", 3, editorBot.tree().rowCount());
 
-		// The bi-directional port is actually two ports (one in each direction, both with the same name) 
+		// The bi-directional port is actually two ports (one in each direction, both with the same name)
 		Ports ports = spd.getDescriptor().getComponent().getComponentFeatures().getPorts();
 		Assert.assertEquals("Number of Ports in scd.xml", 4, ports.getAllPorts().size());
 
-		editorBot.table().getTableItem("<provides> inTestPort").select();
-		Assert.assertEquals("Description of inTestPort", expectedDescriptionText, editorBot.styledTextWithLabel(FIELD_DESCRIPTION).getText());
+		editorBot.tree().getTreeItem("inTestPort").select();
+		Assert.assertEquals("inTestPort", editorBot.textWithLabel(LABEL_NAME).getText());
+		Assert.assertEquals("in <provides>", editorBot.comboBoxWithLabel(LABEL_DIRECTION).getText());
+		Assert.assertEquals(true, editorBot.tableWithLabel(LABEL_TYPE).getTableItem("data").isChecked());
+		Assert.assertEquals(false, editorBot.tableWithLabel(LABEL_TYPE).getTableItem("responses").isChecked());
+		Assert.assertEquals(false, editorBot.tableWithLabel(LABEL_TYPE).getTableItem("control").isChecked());
+		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, editorBot.textWithLabel(LABEL_INTERFACE).getText());
+		Assert.assertEquals(expectedDescriptionText, editorBot.textWithLabel(LABEL_DESCRIPTION).getText());
 
-		Assert.assertEquals("inTestPort", ports.getAllPorts().get(0).getName());
-		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, ports.getAllPorts().get(0).getRepID());
-		Assert.assertTrue(ports.getAllPorts().get(0) instanceof Provides);
-		Assert.assertEquals(expectedDescriptionText, ports.getAllPorts().get(0).getDescription());
+		AbstractPort port = ports.getPort("inTestPort");
+		Assert.assertNotNull(port);
+		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, port.getRepID());
+		Assert.assertTrue(port instanceof Provides);
+		Assert.assertEquals(expectedDescriptionText, port.getDescription());
 
-		Assert.assertEquals("outTestPort", ports.getAllPorts().get(1).getName());
-		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, ports.getAllPorts().get(1).getRepID());
-		Assert.assertTrue(ports.getAllPorts().get(1) instanceof Uses);
+		port = ports.getPort("outTestPort");
+		Assert.assertNotNull(port);
+		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, port.getRepID());
+		Assert.assertTrue(port instanceof Uses);
 
-		Assert.assertEquals("bidirTestPort", ports.getAllPorts().get(2).getName());
-		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, ports.getAllPorts().get(2).getRepID());
-		Assert.assertTrue(ports.getAllPorts().get(2) instanceof Provides);
-
-		Assert.assertEquals("bidirTestPort", ports.getAllPorts().get(3).getName());
-		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, ports.getAllPorts().get(3).getRepID());
-		Assert.assertTrue(ports.getAllPorts().get(3) instanceof Uses);
-
-		checkNoPortDetails();
+		boolean foundProvides = false, foundUses = false;
+		for (AbstractPort absPort : ports.getAllPorts()) {
+			if ("bidirTestPort".equals(absPort.getName())) {
+				if (absPort instanceof Provides) {
+					Assert.assertEquals(EXPECTED_IDL_SAMPLE1, absPort.getRepID());
+					foundProvides = true;
+				} else if (absPort instanceof Uses) {
+					Assert.assertEquals(EXPECTED_IDL_SAMPLE1, absPort.getRepID());
+					foundUses = true;
+				}
+			}
+		}
+		Assert.assertTrue("Missing bi-dir port (provides)", foundProvides);
+		Assert.assertTrue("Missing bi-dir port (uses)", foundUses);
 	}
 
 	@Test
-	public void testEditPort() {
+	public void editPort() {
 		editorBot.button(BUTTON_ADD).click();
-		editorBot.textWithLabel(FIELD_NAME).setText("inTestPort");
-		editorBot.comboBoxWithLabel(COMBO_DIRECTION).setSelection("in <provides>");
-		bot.waitUntil(selectTestIDLCondition);
+		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("in <provides>");
+		editorBot.textWithLabel(LABEL_NAME).setText("inTestPort");
+		selectIDL(editorBot, IDL_MODULE, IDL_INTF);
 
-		// Test double-clicking on the port in the table, then bailing out
-//		bot.table().click(0, 0); // TODO: why does it blank out right side?
+		SWTBotTree tree = editorBot.tree();
+		Assert.assertEquals("inTestPort", tree.cell(0, 0));
+		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, tree.cell(0, 1));
 
-		SWTBotTableItem item = editorBot.table().getTableItem(0);
-		Assert.assertEquals("<provides> inTestPort", item.getText());
-		Assert.assertEquals(EXPECTED_IDL_SAMPLE1, item.getText(1));
+		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("out <uses>");
+		editorBot.textWithLabel(LABEL_NAME).setText("outTestPort");
+		selectIDL(editorBot, IDL_MODULE, IDL_INTF2);
 
-		// Test clicking the Port and making a change
-//		editorBot.table().select(0); // TODO: why does it blank out right side?
-
-		editorBot.textWithLabel(FIELD_NAME).setText("outTestPort");
-		editorBot.comboBox().setSelection("out <uses>");
-		bot.waitUntil(selectTestIDLCondition);
-		bot.tree(2).getTreeItem(IDL_MODULE).expand().getNode("SampleInterface2").select();
-
-		item = editorBot.table().getTableItem(0);
-		Assert.assertEquals("<uses> outTestPort", item.getText());
-		Assert.assertEquals(EXPECTED_IDL_SAMPLE2, item.getText(1));
+		Assert.assertEquals("outTestPort", tree.cell(0, 0));
+		Assert.assertEquals(EXPECTED_IDL_SAMPLE2, tree.cell(0, 1));
 
 		// Test clicking to edit and NOT making a change (IDE-1230)
-		editorBot.table().select(0);
-		Assert.assertEquals("<uses> outTestPort", item.getText());
-		Assert.assertEquals(EXPECTED_IDL_SAMPLE2, item.getText(1));
-
-		item = editorBot.table().getTableItem(0);
-		Assert.assertEquals("<uses> outTestPort", item.getText());
-		Assert.assertEquals(EXPECTED_IDL_SAMPLE2, item.getText(1));
+		editorBot.tree().select(0);
+		editorBot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY);
+		Assert.assertEquals("outTestPort", tree.cell(0, 0));
+		Assert.assertEquals(EXPECTED_IDL_SAMPLE2, tree.cell(0, 1));
 
 		assertFormValid();
 	}
 
 	@Test
-	public void testRemovePort() {
+	public void removePort() {
 		Assert.assertFalse("Remove button should be disabled", editorBot.button(BUTTON_REMOVE).isEnabled());
 
 		editorBot.button(BUTTON_ADD).click();
 		editorBot.label("Port Details"); // make sure this does not cause a WidgetNotFoundException
 
 		// fill in required Port details
-		editorBot.textWithLabel(FIELD_NAME).setText("inTestPortToRemove");
-		editorBot.comboBoxWithLabel(COMBO_DIRECTION).setSelection("in <provides>");
+		editorBot.textWithLabel(LABEL_NAME).setText("inTestPortToRemove");
+		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("in <provides>");
 
-		bot.table().select(0);
+		editorBot.tree().select(0);
 		editorBot.button(BUTTON_REMOVE).click();
 
-		Assert.assertEquals("Removed Port", 0, bot.table().rowCount());
+		Assert.assertEquals("Removed Port", 0, editorBot.tree().rowCount());
 		Assert.assertFalse("Remove button should be disabled #2", editorBot.button(BUTTON_REMOVE).isEnabled());
 
 		assertFormValid();
 		checkNoPortDetails();
+	}
+
+	private void selectIDL(SWTBot bot, String module, String intf) {
+		bot.button(BUTTON_BROWSE).click();
+		SWTBotShell dialogShell = bot.shell(SHELL_SELECT_INTERFACE);
+		SWTBot dialogBot = dialogShell.bot();
+		dialogBot.checkBox(CHECK_SHOW_ALL).select();
+		dialogBot.waitUntil(new SelectIDL(module, intf));
+		dialogBot.button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(dialogShell));
 	}
 
 	private void checkNoPortDetails() {
@@ -237,7 +260,7 @@ public class PortsTabTest extends UITest {
 			}
 
 			try {
-				editorBot.textWithLabel(FIELD_NAME);
+				editorBot.textWithLabel(LABEL_NAME);
 				Assert.fail("Found Port Details section - name field");
 			} catch (WidgetNotFoundException ex) {
 				// PASS
