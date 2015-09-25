@@ -187,7 +187,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		final String componentName = SIG_GEN;
 		waveformName = "IDE-728-Test";
 
-		WaveformUtils.createNewWaveformWithAssemblyController(gefBot, waveformName, componentName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, componentName);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.getEditPart(componentName).click();
 		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");

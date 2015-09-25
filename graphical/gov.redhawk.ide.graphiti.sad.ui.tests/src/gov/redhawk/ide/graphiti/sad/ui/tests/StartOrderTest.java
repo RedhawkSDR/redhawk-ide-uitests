@@ -111,7 +111,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		// Create a new waveform with an assembly controller
 		// ...when assembly controllers are added from the new project wizard they don't have a start order
 		// ...this is kind of a hack
-		WaveformUtils.createNewWaveformWithAssemblyController(gefBot, waveformName, SIG_GEN);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, SIG_GEN);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add additional components to the diagram
