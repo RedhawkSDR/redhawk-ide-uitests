@@ -5,5 +5,8 @@ Bundle-SymbolicName: gov.redhawk.ide.ui.tests.prf
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- gov.redhawk.ide.swtbot
+ gov.redhawk.ide.swtbot,
+ org.eclipse.emf.ecore,
+ mil.jpeojtrs.sca.prf,
+ mil.jpeojtrs.sca.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

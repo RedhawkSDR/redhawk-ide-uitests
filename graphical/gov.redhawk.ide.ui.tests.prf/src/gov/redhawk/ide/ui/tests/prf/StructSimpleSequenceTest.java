@@ -11,23 +11,35 @@
  */
 package gov.redhawk.ide.ui.tests.prf;
 
-import gov.redhawk.ide.swtbot.ComponentUtils;
-import gov.redhawk.ide.swtbot.MenuUtils;
-import gov.redhawk.ide.swtbot.UITest;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.ComponentUtils;
+import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import mil.jpeojtrs.sca.prf.PrfPackage;
+import mil.jpeojtrs.sca.prf.Properties;
+import mil.jpeojtrs.sca.prf.PropertyValueType;
+import mil.jpeojtrs.sca.prf.SimpleSequence;
+import mil.jpeojtrs.sca.prf.Struct;
+import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
+
 public class StructSimpleSequenceTest extends UITest {
 
 	SWTBotEditor editor;
 
 	@Test
-	public void structSimpleSequenceTest() {
+	public void structSimpleSequenceTest() throws IOException {
 		final String projectName = "ssTest";
 		final String progLanguage = "C++";
 		final String structId = "TestStruct";
@@ -36,7 +48,6 @@ public class StructSimpleSequenceTest extends UITest {
 		final String simpleSeqUnits = "unit";
 		final String simpleSeqMin = "1";
 		final String simpleSeqMax = "10";
-		final String simpleSeqOptional = "true";
 		final String simpleSeqDescription = "A simple sequence contained within a struct";
 
 		ComponentUtils.createComponentProject(bot, projectName, progLanguage);
@@ -53,12 +64,12 @@ public class StructSimpleSequenceTest extends UITest {
 		structNode.expand().getNode("Simple").select();
 		final SWTBotTreeItem simpleNode = structNode.getNode("Simple");
 		bot.waitUntil(new DefaultCondition() {
-			
+
 			@Override
 			public boolean test() throws Exception {
 				return simpleNode.isSelected();
 			}
-			
+
 			@Override
 			public String getFailureMessage() {
 				return "Simple Node was not selected";
@@ -76,42 +87,44 @@ public class StructSimpleSequenceTest extends UITest {
 		bot.checkBoxWithLabel("Range:").click();
 		bot.textWithLabel("Min:").typeText(simpleSeqMin);
 		bot.textWithLabel("Max:").typeText(simpleSeqMax);
-		bot.comboBoxWithLabel("Optional:").setSelection(simpleSeqOptional);
 		bot.textWithLabel("Description:").typeText(simpleSeqDescription);
 
 		MenuUtils.save(editor);
 
-		// Check that valid xml was generated
+		// Get the model for the PRF XML
 		DiagramTestUtils.openTabInEditor(editor, projectName + ".prf.xml");
 		String xmlText = editor.bot().styledText().getText();
-		Assert.assertTrue("Simple sequence attributes in XML are incorrect",
-			xmlText.matches("(?s).* <simplesequence id=\"" + simpleSeqId + "\" type=\"string\" optional=\"" + simpleSeqOptional + "\">" + ".*"));
-		Assert.assertTrue("Simple sequence description in XML is incorrect",
-			xmlText.matches("(?s).* <description>" + simpleSeqDescription + "</description>" + ".*"));
-		Assert.assertTrue("Simple sequence values in XML are incorrect",
-			xmlText.matches("(?s).* <value>" + simpleSeqValue + "</value>" + ".*"));
-		Assert.assertTrue("Simple sequence unit in XML is incorrect",
-			xmlText.matches("(?s).* <units>" + simpleSeqUnits + "</units>" + ".*"));
-		Assert.assertTrue("Simple sequence range in XML is incorrect",
-			xmlText.matches("(?s).* <range max=\"" + simpleSeqMax + "\" min=\"" + simpleSeqMin + "\"/>" + ".*"));
+		final ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
+		final Resource resource = resourceSet.createResource(URI.createURI("mem://StructSimpleSequenceTest.prf.xml"), PrfPackage.eCONTENT_TYPE);
+		resource.load(new ByteArrayInputStream(xmlText.getBytes()), null);
+		Properties props = Properties.Util.getProperties(resource);
+
+		// Ensure our changes are present
+		Struct struct = (Struct) props.getProperties().getValue(0);
+		SimpleSequence ss = (SimpleSequence) struct.getFields().getValue(0);
+		Assert.assertEquals(simpleSeqId, ss.getId());
+		Assert.assertEquals(PropertyValueType.STRING, ss.getType());
+		Assert.assertEquals(simpleSeqDescription, ss.getDescription());
+		Assert.assertEquals(1, ss.getValues().getValue().size());
+		Assert.assertEquals(simpleSeqValue, ss.getValues().getValue().get(0));
+		Assert.assertEquals(simpleSeqUnits, ss.getUnits());
+		Assert.assertEquals(simpleSeqMax, ss.getRange().getMax());
+		Assert.assertEquals(simpleSeqMin, ss.getRange().getMin());
 
 		// Remove the simple sequence property and validate xml
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PROPERTIES_TAB);
 		editor.bot().tree().getTreeItem(structId).getNode(simpleSeqId).select();
 		bot.button("Remove").click();
 
+		// Re-load the model
 		DiagramTestUtils.openTabInEditor(editor, projectName + ".prf.xml");
 		xmlText = editor.bot().styledText().getText();
-		Assert.assertFalse("Simple sequence attributes were not removed from XML",
-			xmlText.matches("(?s).* <simplesequence id=\"" + simpleSeqId + "\" type=\"string\" optional=\"" + simpleSeqOptional + "\">" + ".*"));
-		Assert.assertFalse("Simple sequence description was not removed from XML",
-			xmlText.matches("(?s).* <description>" + simpleSeqDescription + "</description>" + ".*"));
-		Assert.assertFalse("Simple sequence values were not removed from XML",
-			xmlText.matches("(?s).* <value>" + simpleSeqValue + "</value>" + ".*"));
-		Assert.assertFalse("Simple sequence unit was not removed from XML",
-			xmlText.matches("(?s).* <units>" + simpleSeqUnits + "</units>" + ".*"));
-		Assert.assertFalse("Simple sequence range was not removed from XML",
-			xmlText.matches("(?s).* <range max=\"" + simpleSeqMax + "\" min=\"" + simpleSeqMin + "\"/>" + ".*"));
+		resource.unload();
+		resource.load(new ByteArrayInputStream(xmlText.getBytes()), null);
+		props = Properties.Util.getProperties(resource);
 
+		// Ensure things were removed
+		struct = (Struct) props.getProperties().getValue(0);
+		Assert.assertTrue(struct.getSimpleSequence().isEmpty());
 	}
 }
