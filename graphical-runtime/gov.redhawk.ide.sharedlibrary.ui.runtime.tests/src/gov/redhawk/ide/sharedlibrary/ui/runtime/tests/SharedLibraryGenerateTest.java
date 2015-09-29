@@ -11,18 +11,17 @@
  */
 package gov.redhawk.ide.sharedlibrary.ui.runtime.tests;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 
 /**
  * Shared Library projects should display many fewer options in the editor pages
@@ -48,30 +47,16 @@ public class SharedLibraryGenerateTest extends UIRuntimeTest {
 	public void softpackageGenerationTest() {
 		final String projectName = "SharedLibraryTest";
 		final String projectType = "C++ Library";
-		final String[][] possiblePaths = new String[][] { { "cpp", "include", projectName + ".h" }, { "cpp", "src", projectName + ".cpp" },
-			{ "cpp", "build.sh" }, { "cpp", "configure.ac" }, { "cpp", projectName + ".pc.in" }, { "cpp", "Makefile.am" }, { "cpp", "Makefile.am.ide" },
-			{ "cpp", "reconf" }, { "tests", "test_" + projectName + ".py" }, { "build.sh" }, { projectName + ".spd.xml" }, { projectName + ".spec" } };
 
 		SharedLibraryUtils.createSharedLibraryProject(bot, projectName, projectType);
-		ProjectExplorerUtils.openProjectInEditor(bot, new String[] { projectName, projectName + ".spd.xml" });
-
 		editor = bot.editorByTitle(projectName);
-		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.OVERVIEW_TAB);
 
-		editor.bot().toolbarButton(0).click();
-		bot.waitUntil(Conditions.shellIsActive("Regenerate Files"), 10000);
-		SWTBotShell fileShell = bot.shell("Regenerate Files");
-		fileShell.bot().button("OK").click();
+		StandardTestActions.generateProject(bot, editor);
 
 		// Every possible path starts from the same root, in this case the projectName
-		for (String[] possiblePath : possiblePaths) {
-			final String[] path = new String[possiblePath.length + 1];
-			path[0] = projectName;
-			for (int i = 1; i < possiblePath.length + 1; i++) {
-				path[i] = possiblePath[i - 1];
-			}
-			ProjectExplorerUtils.selectNode(bot, path);
-		}
-
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+		Assert.assertTrue(project.getFolder("cpp").exists());
+		Assert.assertTrue(project.getFolder("cpp/include").exists());
+		Assert.assertTrue(project.getFolder("cpp/src").exists());
 	}
 }
