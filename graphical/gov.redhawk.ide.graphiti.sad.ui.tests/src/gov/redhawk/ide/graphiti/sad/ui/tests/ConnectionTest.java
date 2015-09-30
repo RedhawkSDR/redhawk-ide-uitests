@@ -250,7 +250,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		for (ContainerShape port : dataConPorts) {
 			GraphicsAlgorithm portGa = port.getChildren().get(0).getAnchors().get(0).getGraphicsAlgorithm();
 			if (dataConPort.equals(((ProvidesPortStub) DUtil.getBusinessObject(port)).getName())) {
-				Assert.assertTrue(compareColors(StyleUtil.GREEN, portGa.getStyle().getBackground()));
+				Assert.assertTrue(compareColors(StyleUtil.COLOR_OK, portGa.getStyle().getBackground()));
 			} else {
 				Assert.assertTrue(compareColors(StyleUtil.WHITE, portGa.getStyle().getBackground()));
 			}
