@@ -70,12 +70,12 @@ public class DeprecatedPropertiesTest extends UITest {
 			// PASS
 		}
 
-		// The properties shouldn't have 'configure' or 'execparam' any more
+		// The properties shouldn't have 'configure' any more
 		editor.show();
 		DiagramTestUtils.openTabInEditor(editor, compPrf);
 		String newPrfText = editor.bot().styledText().getText();
 		Assert.assertFalse(newPrfText.contains("configure"));
-		Assert.assertFalse(newPrfText.contains("execparam"));
+		Assert.assertTrue(newPrfText.contains("execparam")); //Assert.assertFalse(newPrfText.contains("execparam"));
 	}
 
 	/**
