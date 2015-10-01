@@ -20,4 +20,23 @@
     <kind kindtype="execparam"/>
     <action type="external"/>
   </simple>
+  <simplesequence id="simplesequence1" mode="readwrite" type="string">
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simplesequence>
+  <struct id="struct1" mode="readwrite">
+    <simple id="simple3" type="string">
+      <kind kindtype="configure"/>
+    </simple>
+    <configurationkind kindtype="configure"/>
+  </struct>
+  <structsequence id="structseq1" mode="readwrite">
+    <struct id="struct2">
+      <simple id="simple4" type="string">
+        <kind kindtype="configure"/>
+      </simple>
+      <configurationkind kindtype="configure"/>
+    </struct>
+    <configurationkind kindtype="property"/>
+  </structsequence>
 </properties>

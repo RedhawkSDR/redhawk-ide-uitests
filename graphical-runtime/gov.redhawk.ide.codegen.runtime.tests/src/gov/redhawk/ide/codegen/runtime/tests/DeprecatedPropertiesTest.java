@@ -11,11 +11,12 @@
  */
 package gov.redhawk.ide.codegen.runtime.tests;
 
-import gov.redhawk.ide.swtbot.ComponentUtils;
-import gov.redhawk.ide.swtbot.MenuUtils;
-import gov.redhawk.ide.swtbot.UITest;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -23,6 +24,21 @@ import org.eclipse.swtbot.swt.finder.utils.FileUtils;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.ComponentUtils;
+import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import mil.jpeojtrs.sca.prf.AbstractProperty;
+import mil.jpeojtrs.sca.prf.PrfPackage;
+import mil.jpeojtrs.sca.prf.Properties;
+import mil.jpeojtrs.sca.prf.PropertyConfigurationType;
+import mil.jpeojtrs.sca.prf.Simple;
+import mil.jpeojtrs.sca.prf.SimpleSequence;
+import mil.jpeojtrs.sca.prf.Struct;
+import mil.jpeojtrs.sca.prf.StructSequence;
+import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
+import mil.jpeojtrs.sca.util.collections.FeatureMapList;
 
 public class DeprecatedPropertiesTest extends UITest {
 
@@ -33,9 +49,10 @@ public class DeprecatedPropertiesTest extends UITest {
 	/**
 	 * IDE-1235. Tests upgrading a project with 'configure' and 'execparam' properties. Tests both the cancel
 	 * functionality, and the upgrade functionality.
+	 * @throws IOException
 	 */
 	@Test
-	public void cancel_and_upgrade() {
+	public void cancel_and_upgrade() throws IOException {
 		ComponentUtils.createComponentProject(bot, compName, compLanguage);
 		SWTBotEditor editor = bot.editorByTitle(compName);
 
@@ -70,12 +87,41 @@ public class DeprecatedPropertiesTest extends UITest {
 			// PASS
 		}
 
-		// The properties shouldn't have 'configure' any more
+		// The properties shouldn't have 'configure' or 'execparam' any more, we should have a commandline attribute
 		editor.show();
 		DiagramTestUtils.openTabInEditor(editor, compPrf);
 		String newPrfText = editor.bot().styledText().getText();
-		Assert.assertFalse(newPrfText.contains("configure"));
-		Assert.assertTrue(newPrfText.contains("execparam")); //Assert.assertFalse(newPrfText.contains("execparam"));
+		final ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
+		final Resource resource = resourceSet.createResource(URI.createURI("mem://DeprecatedPropertiesTest.prf.xml"), PrfPackage.eCONTENT_TYPE);
+		resource.load(new ByteArrayInputStream(newPrfText.getBytes()), null);
+		Properties props = Properties.Util.getProperties(resource);
+		for (AbstractProperty prop : new FeatureMapList<AbstractProperty>(props.getProperties(), AbstractProperty.class)) {
+			Assert.assertFalse("Property " + prop.getName() + " shouldn't contain configure kind", prop.isKind(PropertyConfigurationType.CONFIGURE));
+			Assert.assertFalse("Property " + prop.getName() + " shouldn't contain execparam kind", prop.isKind(PropertyConfigurationType.EXECPARAM));
+			switch (prop.eClass().getClassifierID()) {
+			case PrfPackage.STRUCT:
+				Struct struct = (Struct) prop;
+				for (Simple innerSimple : struct.getSimple()) {
+					Assert.assertTrue("Property " + prop.getName() + "." + innerSimple.getName() + " has kind(s)", innerSimple.getKind().isEmpty());
+				}
+				for (SimpleSequence simpleSequence : struct.getSimpleSequence()) {
+					Assert.assertTrue("Property " + prop.getName() + "." + simpleSequence.getName() + " has kind(s)", simpleSequence.getKind().isEmpty());
+				}
+				break;
+			case PrfPackage.STRUCT_SEQUENCE:
+				StructSequence structSequence = (StructSequence) prop;
+				for (Simple innerSimple : structSequence.getStruct().getSimple()) {
+					Assert.assertTrue("Property " + prop.getName() + "." + innerSimple.getName() + " has kind(s)", innerSimple.getKind().isEmpty());
+				}
+				for (SimpleSequence simpleSequence : structSequence.getStruct().getSimpleSequence()) {
+					Assert.assertTrue("Property " + prop.getName() + "." + simpleSequence.getName() + " has kind(s)", simpleSequence.getKind().isEmpty());
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		Assert.assertTrue(((Simple) props.getProperty("simple2")).isCommandLine());
 	}
 
 	/**
