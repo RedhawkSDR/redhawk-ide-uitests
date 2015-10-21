@@ -13,29 +13,29 @@ package gov.redhawk.ide.graphiti.sad.ui.tests;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
-import org.eclipse.graphiti.mm.algorithms.styles.Color;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
-import org.eclipse.graphiti.util.IColorConstant;
+import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
-import gov.redhawk.ide.graphiti.ui.diagram.util.StyleUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
+import gov.redhawk.ide.swtbot.diagram.ConnectionUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.PortUtils;
+import gov.redhawk.ide.swtbot.diagram.PortUtils.PortState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHTestBotCanvas;
+import gov.redhawk.ide.swtbot.diagram.ConnectionUtils.ConnectionState;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
@@ -202,8 +202,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		List<SWTBotGefConnectionEditPart> connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertEquals("Connection was not added", 1, connections.size());
 
-		Connection connection = (Connection) connections.get(0).part().getModel();
-		Assert.assertEquals("Error decorator should have been added", 2, connection.getConnectionDecorators().size());
+		ConnectionUtils.assertConnectionStyling(connections.get(0), ConnectionState.ERROR);
 		connections.get(0).select();
 		editor.clickContextMenu("Delete");
 		connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
@@ -214,8 +213,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, lollipopEditPart);
 		connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertEquals("Connection was not added", 1, connections.size());
-		connection = (Connection) connections.get(0).part().getModel();
-		Assert.assertEquals("Error decorator should have been added", 2, connection.getConnectionDecorators().size());
+		ConnectionUtils.assertConnectionStyling(connections.get(0), ConnectionState.ERROR);
 	}
 
 	/**
@@ -245,14 +243,15 @@ public class ConnectionTest extends AbstractGraphitiTest {
 
 		// Check data converter ports for color change - (it's actually the anchor that changes color)
 		SWTBotGefEditPart dataConEditPart = editor.getEditPart(DATA_CONVERTER);
-		ComponentShapeImpl dataConShape = (ComponentShapeImpl) dataConEditPart.part().getModel();
-		List<ContainerShape> dataConPorts = DUtil.getDiagramProvidesPorts(dataConShape);
-		for (ContainerShape port : dataConPorts) {
-			GraphicsAlgorithm portGa = port.getChildren().get(0).getAnchors().get(0).getGraphicsAlgorithm();
-			if (dataConPort.equals(((ProvidesPortStub) DUtil.getBusinessObject(port)).getName())) {
-				Assert.assertTrue(compareColors(StyleUtil.COLOR_OK, portGa.getStyle().getBackground()));
+		List<SWTBotGefEditPart> providesPorts = PortUtils.getProvidesPortContainerBots(dataConEditPart);
+
+		for (SWTBotGefEditPart providesPort : providesPorts) {
+			ContainerShape shape = (ContainerShape) providesPort.part().getModel();
+			ProvidesPortStub portStub = (ProvidesPortStub) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(shape);
+			if (dataConPort.equals(portStub.getName())) {
+				PortUtils.assertPortStyling(providesPort, PortState.HIGHLIGHT_FOR_CONNECTION);
 			} else {
-				Assert.assertTrue(compareColors(StyleUtil.WHITE, portGa.getStyle().getBackground()));
+				PortUtils.assertPortStyling(providesPort, PortState.NORMAL_PROVIDES);
 			}
 		}
 
@@ -260,23 +259,8 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		canvas.mouseUp(point.x(), point.y());
 
 		// Confirm ports return to default color
-		dataConEditPart = editor.getEditPart(DATA_CONVERTER);
-		dataConShape = (ComponentShapeImpl) dataConEditPart.part().getModel();
-		dataConPorts = DUtil.getDiagramProvidesPorts(dataConShape);
-		for (ContainerShape port : dataConPorts) {
-			GraphicsAlgorithm portGa = port.getChildren().get(0).getAnchors().get(0).getGraphicsAlgorithm();
-			Assert.assertTrue(compareColors(StyleUtil.WHITE, portGa.getStyle().getBackground()));
+		for (SWTBotGefEditPart providesPort : providesPorts) {
+			PortUtils.assertPortStyling(providesPort, PortState.NORMAL_PROVIDES);
 		}
-	}
-
-	private boolean compareColors(IColorConstant expectedColor, Color actualColor) {
-		int[] expectedRGB = { expectedColor.getRed(), expectedColor.getGreen(), expectedColor.getBlue() };
-		int[] actualRGB = { actualColor.getRed(), actualColor.getGreen(), actualColor.getBlue() };
-		for (int i = 0; i < expectedRGB.length; i++) {
-			if (expectedRGB[i] != actualRGB[i]) {
-				return false;
-			}
-		}
-		return true;
 	}
 }

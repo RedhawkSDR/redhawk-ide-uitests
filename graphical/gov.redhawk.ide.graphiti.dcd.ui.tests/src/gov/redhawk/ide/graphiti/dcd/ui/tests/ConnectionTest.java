@@ -24,6 +24,8 @@ import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
+import gov.redhawk.ide.swtbot.diagram.ConnectionUtils;
+import gov.redhawk.ide.swtbot.diagram.ConnectionUtils.ConnectionState;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
@@ -110,7 +112,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		Assert.assertTrue("Source connections should be empty, all connections were deleted", sourceConnections.isEmpty());
 		Assert.assertTrue("All connections should have been deleted", diagram.getConnections().isEmpty());
 	}
-	
+
 	/**
 	 * IDE-1132
 	 * Test that connection decorators are drawn for incompatible connections
@@ -132,38 +134,35 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, GPP);
 		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB, "dataDouble_in");
 
-		// Draw incompatible connection and confirm error decorator exists
+		// Draw incompatible connection between ports and confirm error decoration
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
 		List<SWTBotGefConnectionEditPart> connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertTrue("Connection was not added", connections.size() == 1);
+		ConnectionUtils.assertConnectionStyling(connections.get(0), ConnectionState.ERROR);
 
-		Connection connection = (Connection) connections.get(0).part().getModel();
-		Assert.assertTrue("Error decorator should have been added", connection.getConnectionDecorators().size() == 2);
 		connections.get(0).select();
 		editor.clickContextMenu("Delete");
 		connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertTrue("Connection was not removed", connections.size() == 0);
-		
-		// Test incompatible connection to component supported interface (DEVICE)
+
+		// Draw incompatible connection to component supported interface (DEVICE) and confirm error decoration
 		SWTBotGefEditPart lollipopEditPart = DiagramTestUtils.getComponentSupportedInterface(editor, DEVICE_STUB);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, lollipopEditPart);
 		connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertTrue("Connection was not added", connections.size() == 1);
-		connection = (Connection) connections.get(0).part().getModel();
-		Assert.assertTrue("Error decorator should have been added", connection.getConnectionDecorators().size() == 2);
-		
+		ConnectionUtils.assertConnectionStyling(connections.get(0), ConnectionState.ERROR);
+
 		connections.get(0).select();
 		editor.clickContextMenu("Delete");
 		connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertTrue("Connection was not removed", connections.size() == 0);
-		
-		// Test incompatible connection to component supported interface (SERVICE)
+
+		// Test incompatible connection to component supported interface (SERVICE) and confirm error decoration
 		lollipopEditPart = DiagramTestUtils.getComponentSupportedInterface(editor, SERVICE_STUB);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, lollipopEditPart);
 		connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertTrue("Connection was not added", connections.size() == 1);
-		connection = (Connection) connections.get(0).part().getModel();
-		Assert.assertTrue("Error decorator should have been added", connection.getConnectionDecorators().size() == 2);
+		ConnectionUtils.assertConnectionStyling(connections.get(0), ConnectionState.ERROR);
 	}
 
 }
