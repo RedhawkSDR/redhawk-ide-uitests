@@ -1,3 +1,13 @@
+/**
+ * This file is protected by Copyright.
+ * Please refer to the COPYRIGHT file distributed with this source distribution.
+ *
+ * This file is part of REDHAWK IDE.
+ *
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package gov.redhawk.ide.ui.tests.prf;
 
 import gov.redhawk.ide.swtbot.ComponentUtils;
@@ -21,7 +31,7 @@ public class PropertyKindTest extends UITest {
 	private final String compLanguage = "Python";
 	private final String compSpd = compName + ".spd.xml";
 	private final String compPrf = compName + ".prf.xml";
-	private final String[] BUTTONS = new String[] { "Add Simple", "Add Sequence", "Add Struct", "Add StructSeq" };
+	private final String[] buttons = new String[] { "Add Simple", "Add Sequence", "Add Struct", "Add StructSeq" };
 
 	/**
 	 * Ensure 'configure' and 'execparam' are present only when there are deprecated properties. Also check that the
@@ -34,7 +44,7 @@ public class PropertyKindTest extends UITest {
 
 		// Ensure 'configure' and 'execparam' aren't in the list when adding a property
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PROPERTIES_TAB);
-		for (String buttonText : BUTTONS) {
+		for (String buttonText : buttons) {
 			editor.bot().button(buttonText).click();
 			SWTBotCombo combo = editor.bot().comboBoxWithLabel("Kind:");
 			Assert.assertTrue(String.format("After clicking %s, expected a new property of kind 'property'", buttonText), combo.getText().contains("property"));
