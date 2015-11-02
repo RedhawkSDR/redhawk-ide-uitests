@@ -30,7 +30,7 @@ public class BadDevMgrSPDTest extends UITest {
 	 */
 	@Test
 	public void badDevMgrSPD() throws CoreException {
-		StandardTestActions.importProject(FrameworkUtil.getBundle(NodeOverviewTabTest.class), new Path("workspace/BadDevMgrSPD"), null);
+		StandardTestActions.importProject(FrameworkUtil.getBundle(BadDevMgrSPDTest.class), new Path("workspace/BadDevMgrSPD"), null);
 		ProjectExplorerUtils.openProjectInEditor(bot, "BadDevMgrSPD", "DeviceManager.dcd.xml");
 		SWTBotEditor editor = bot.editorByTitle("BadDevMgrSPD");
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.OVERVIEW_TAB);
