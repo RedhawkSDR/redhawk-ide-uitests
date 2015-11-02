@@ -15,22 +15,26 @@ import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.debug.ScaDebugPlugin;
 import gov.redhawk.ide.graphiti.dcd.ext.impl.DeviceShapeImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.model.sca.ScaDevice;
 import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
 
 public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 
 	private RHBotGefEditor editor;
 
+	private static final String NSDEV = "name.space.device";
+	private static final String NSDEV_1 = "device_1";
+
 	/**
 	 * Add devices to the sandbox node diagram from palette
-	 * IDE-1187 Add namespaced device to sandbox node diagram
 	 */
 	@Test
-	public void checkDevManagerDevices() {
+	public void launchDevice() {
 		editor = openNodeChalkboardDiagram(gefBot);
 
 		// Add device to diagram from palette
@@ -41,11 +45,24 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 		editor.close();
 		editor = openNodeChalkboardDiagram(gefBot);
 		Assert.assertNotNull(editor.getEditPart(GPP));
+	}
+
+	/**
+	 * IDE-1187, IDE-1446 - Ensure namespaced devices will launch in sandbox
+	 */
+	@Test
+	public void launchNamespacedDevice() {
+		editor = openNodeChalkboardDiagram(gefBot);
 
 		// Add namespaced component to the chalkboard
-		String nameSpaceDevice = "name.space.device";
-		DiagramTestUtils.addFromPaletteToDiagram(editor, nameSpaceDevice, 200, 300);
-		Assert.assertNotNull(editor.getEditPart(nameSpaceDevice));
+		DiagramTestUtils.addFromPaletteToDiagram(editor, NSDEV, 200, 300);
+		Assert.assertNotNull(editor.getEditPart(NSDEV_1));
+
+		// Ensure it doesn't have any problems
+		ScaDevice< ? > device = ScaDebugPlugin.getInstance().getLocalSca().getSandboxDeviceManager().getDevice(NSDEV_1);
+		Assert.assertNotNull(device);
+		Assert.assertTrue(device.getStatus().isOK());
+		Assert.assertNotNull(device.getProfileObj());
 	}
 
 	/**
