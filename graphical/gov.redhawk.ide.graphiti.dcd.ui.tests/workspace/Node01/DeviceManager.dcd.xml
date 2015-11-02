@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deviceconfiguration id="DCE:943f8180-003c-47bc-98ff-efe2cc6ef1f7" name="Node01">
+    <devicemanagersoftpkg>
+        <localfile name="/bad/path/DeviceManager.spd.xml"/>
+    </devicemanagersoftpkg>
+    <componentfiles>
+        <componentfile type="SPD" id="GPP_16c33a5e-e0ce-45c9-b286-765367b2f6f3">
+            <localfile name="/devices/GPP/GPP.spd.xml"/>
+        </componentfile>
+    </componentfiles>
+    <partitioning>
+        <componentplacement>
+            <componentfileref refid="GPP_16c33a5e-e0ce-45c9-b286-765367b2f6f3"/>
+            <componentinstantiation id="DCE:3487546a-1cb1-4b9b-9590-1d6b34773698">
+                <usagename>GPP_axiosws-drw</usagename>
+            </componentinstantiation>
+        </componentplacement>
+    </partitioning>
+    <domainmanager>
+        <namingservice name="REDHAWK_DEV/REDHAWK_DEV"/>
+    </domainmanager>
+</deviceconfiguration>
