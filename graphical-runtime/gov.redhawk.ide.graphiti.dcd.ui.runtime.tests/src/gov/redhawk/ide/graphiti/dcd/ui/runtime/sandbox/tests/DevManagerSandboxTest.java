@@ -19,6 +19,7 @@ import gov.redhawk.ide.debug.ScaDebugPlugin;
 import gov.redhawk.ide.graphiti.dcd.ext.impl.DeviceShapeImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.model.sca.ScaDevice;
 import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
@@ -40,6 +41,7 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 		// Add device to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
 		assertGPP(editor.getEditPart(GPP));
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP, ComponentState.STARTED);
 
 		// Open the chalkboard with components already launched
 		editor.close();
@@ -48,7 +50,7 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 	}
 
 	/**
-	 * IDE-1187, IDE-1446 - Ensure namespaced devices will launch in sandbox
+	 * IDE-1187, IDE-1446, IDE-1450 - Ensure namespaced devices will launch in sandbox
 	 */
 	@Test
 	public void launchNamespacedDevice() {
@@ -57,6 +59,7 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 		// Add namespaced component to the chalkboard
 		DiagramTestUtils.addFromPaletteToDiagram(editor, NSDEV, 200, 300);
 		Assert.assertNotNull(editor.getEditPart(NSDEV_1));
+		DiagramTestUtils.waitForComponentState(bot, editor, NSDEV, ComponentState.STOPPED);
 
 		// Ensure it doesn't have any problems
 		ScaDevice< ? > device = ScaDebugPlugin.getInstance().getLocalSca().getSandboxDeviceManager().getDevice(NSDEV_1);
