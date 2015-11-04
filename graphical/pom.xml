@@ -29,7 +29,7 @@
     <gov.redhawk.ide>http://download.redhawksdr.org/gov.redhawk.ide/releases/2.0</gov.redhawk.ide>
     <gov.redhawk.codegen>http://download.redhawksdr.org/gov.redhawk.codegen/releases/2.0</gov.redhawk.codegen>
     <gov.redhawk.ide.product>http://download.redhawksdr.org/gov.redhawk.ide.product/releases/2.0</gov.redhawk.ide.product>
-    <swt-bot>http://download.eclipse.org/technology/swtbot/releases/latest/</swt-bot>
+    <swt-bot>http://download.eclipse.org/technology/swtbot/snapshots/</swt-bot>
     <jacorb>http://download.redhawksdr.org/jacorb/updates/stable</jacorb>
     <pydev>http://pydev.org/updates/</pydev>
     <nebula>http://download.eclipse.org/technology/nebula/archives/Q32014/release</nebula>
