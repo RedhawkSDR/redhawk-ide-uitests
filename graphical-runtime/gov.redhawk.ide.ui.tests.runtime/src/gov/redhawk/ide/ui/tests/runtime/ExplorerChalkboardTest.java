@@ -11,51 +11,40 @@
  */
 package gov.redhawk.ide.ui.tests.runtime;
 
-import gov.redhawk.ide.swtbot.ComponentUtils;
-import gov.redhawk.ide.swtbot.UIRuntimeTest;
-
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.finder.widgets.RHBotTreeItem;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class ExplorerChalkboardTest extends UIRuntimeTest {
 	private static final String COMPONENT_NAME = "ExamplePythonComponent";
+	private static final String COMPONENT_NAME_1 = COMPONENT_NAME + "_1";
 	private static final String COMPONENT_IMPL = "python";
 	private static final String COMPONENT_PROVIDES_IN_PORT = "dataDouble";
-	private static final String COMPONENT_USES_OUT_PORT    = "dataFloat";
-	
-	SWTBot viewBot;
-	
-	@Override
-	public void before() throws Exception {
-		super.before();
-		
-		SWTBotView explorerView = bot.viewById("gov.redhawk.ui.sca_explorer");
-		explorerView.show();
-		explorerView.setFocus();
-		viewBot = explorerView.bot();
-	}
-	
+	private static final String COMPONENT_USES_OUT_PORT = "dataFloat";
+
 	/**
 	 * IDE-1171 - Update tooltips to include optional Port description in the REDHAWK Explorer view
 	 */
 	@Test
-	@Ignore // not sure why getToolTipText is returning empty String
 	public void portDescriptionToolTip() {
-		SWTBotTreeItem componentTreeItem = ComponentUtils.launchLocalComponent(bot, COMPONENT_NAME, COMPONENT_IMPL);
-		componentTreeItem.expand();
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, COMPONENT_NAME, COMPONENT_IMPL);
+		SWTBotTreeItem componentTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" },
+			COMPONENT_NAME_1);
 
-		SWTBotTreeItem providesInPort = componentTreeItem.expandNode(COMPONENT_PROVIDES_IN_PORT);
-		String tooltip = providesInPort.getToolTipText(); //
-		Assert.assertEquals("Description for " + COMPONENT_PROVIDES_IN_PORT + " provides Port", "Example description of a provides/input Port", tooltip);
-		
-		SWTBotTreeItem usesOutPort = componentTreeItem.expandNode(COMPONENT_USES_OUT_PORT);
+		SWTBotTreeItem providesInPort = new RHBotTreeItem(componentTreeItem.expandNode(COMPONENT_PROVIDES_IN_PORT));
+		String tooltip = providesInPort.getToolTipText();
+		Assert.assertNotNull(tooltip);
+		Assert.assertTrue("Description for " + COMPONENT_PROVIDES_IN_PORT + " provides Port", tooltip.contains("Example description of a provides/input Port"));
+
+		SWTBotTreeItem usesOutPort = new RHBotTreeItem(componentTreeItem.expandNode(COMPONENT_USES_OUT_PORT));
 		tooltip = usesOutPort.getToolTipText();
-		Assert.assertEquals("Description for " + COMPONENT_USES_OUT_PORT + " uses Port", "Example description of a uses/output Port", tooltip);
-		
+		Assert.assertNotNull(tooltip);
+		Assert.assertTrue("Description for " + COMPONENT_USES_OUT_PORT + " uses Port", tooltip.contains("Example description of a uses/output Port"));
+
 		// Release test Component
 		componentTreeItem.contextMenu("Release").click();
 	}
