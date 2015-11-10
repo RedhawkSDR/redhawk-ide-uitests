@@ -11,7 +11,8 @@
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
 import static org.junit.Assert.assertEquals;
-import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
+
+import gov.redhawk.ide.graphiti.sad.ext.ComponentShape;
 import gov.redhawk.ide.graphiti.sad.ui.diagram.patterns.HostCollocationPattern;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.sdr.ComponentsSubContainer;
@@ -227,8 +228,8 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, "HardLimit", 0, 0);
 
 		// Find expected xml string for SigGen and HardLimit components
-		final String sigGenSad = DiagramTestUtils.regexStringForComponent((ComponentShapeImpl) editor.getEditPart("SigGen").part().getModel());
-		final String hardLimitSad = DiagramTestUtils.regexStringForComponent((ComponentShapeImpl) editor.getEditPart("HardLimit").part().getModel());
+		final String sigGenSad = DiagramTestUtils.regexStringForComponent((ComponentShape) editor.getEditPart("SigGen").part().getModel());
+		final String hardLimitSad = DiagramTestUtils.regexStringForComponent((ComponentShape) editor.getEditPart("HardLimit").part().getModel());
 
 		// Check to see if SigGen is included in the sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -264,7 +265,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 
 		// Build expected xml string for component
 		final String componentFileString = "(?s).*<componentfile id=\"" + componentBaseName + ".*";
-		final String componentXmlString = DiagramTestUtils.regexStringForComponent((ComponentShapeImpl) editor.getEditPart(componentName).part().getModel());
+		final String componentXmlString = DiagramTestUtils.regexStringForComponent((ComponentShape) editor.getEditPart(componentName).part().getModel());
 
 		// Check sad.xml for string
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -562,7 +563,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	private static void assertHardLimit(SWTBotGefEditPart gefEditPart) {
 		Assert.assertNotNull("gefEditPart is not null for HardLimit", gefEditPart);
 		// Drill down to graphiti component shape
-		ComponentShapeImpl componentShape = (ComponentShapeImpl) gefEditPart.part().getModel();
+		ComponentShape componentShape = (ComponentShape) gefEditPart.part().getModel();
 
 		// Grab the associated business object and confirm it is a SadComponentInstantiation
 		Object bo = DUtil.getBusinessObject(componentShape);
@@ -570,10 +571,10 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		SadComponentInstantiation ci = (SadComponentInstantiation) bo;
 
 		// Run assertions on expected properties
-		Assert.assertEquals("outer text should match component type", HARD_LIMIT, componentShape.getOuterText().getValue());
-		Assert.assertEquals("inner text should match component usage name", ci.getUsageName(), componentShape.getInnerText().getValue());
-		Assert.assertNotNull("component supported interface graphic should not be null", componentShape.getLollipop());
-		Assert.assertNotNull("start order shape/text should not be null", componentShape.getStartOrderText());
+		Assert.assertEquals("outer text should match component type", HARD_LIMIT, ComponentUtils.getOuterText(componentShape).getValue());
+		Assert.assertEquals("inner text should match component usage name", ci.getUsageName(), ComponentUtils.getInnerText(componentShape).getValue());
+		Assert.assertNotNull("component supported interface graphic should not be null", ComponentUtils.getLollipop(componentShape));
+		Assert.assertNotNull("start order shape/text should not be null", ComponentUtils.getStartOrderText(componentShape));
 		Assert.assertTrue("should be assembly controller", ComponentUtils.isAssemblyController(componentShape));
 
 		// HardLimit only has the two ports

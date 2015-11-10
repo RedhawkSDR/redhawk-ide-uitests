@@ -17,9 +17,10 @@ import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
+import gov.redhawk.ide.graphiti.sad.ext.ComponentShape;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -147,7 +148,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		// verify sigGen is python
 		SWTBotGefEditPart sigGenEditPart = editor.getEditPart(SIGGEN);
 		// get graphiti shape
-		ComponentShapeImpl sigGenComponentShape = (ComponentShapeImpl) sigGenEditPart.part().getModel();
+		ComponentShape sigGenComponentShape = (ComponentShape) sigGenEditPart.part().getModel();
 		// Grab the associated business object and confirm it is a SadComponentInstantiation
 		SadComponentInstantiation sigGenSadComponentInstantiation = (SadComponentInstantiation) DUtil.getBusinessObject(sigGenComponentShape);
 		Assert.assertEquals("SigGen implementation was not python", "python", sigGenSadComponentInstantiation.getImplID());
@@ -155,7 +156,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		// verify hardLimit is java
 		SWTBotGefEditPart hardLimitEditPart = editor.getEditPart(HARD_LIMIT);
 		// get graphiti shape
-		ComponentShapeImpl hardLimitComponentShape = (ComponentShapeImpl) hardLimitEditPart.part().getModel();
+		ComponentShape hardLimitComponentShape = (ComponentShape) hardLimitEditPart.part().getModel();
 		// Grab the associated business object and confirm it is a SadComponentInstantiation
 		SadComponentInstantiation hardLimitSadComponentInstantiation = (SadComponentInstantiation) DUtil.getBusinessObject(hardLimitComponentShape);
 		Assert.assertEquals("HardLimit implementation was not java", "java", hardLimitSadComponentInstantiation.getImplID());
@@ -170,7 +171,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 	private static void assertHardLimit(SWTBotGefEditPart gefEditPart) {
 		Assert.assertNotNull(gefEditPart);
 		// Drill down to graphiti component shape
-		ComponentShapeImpl componentShape = (ComponentShapeImpl) gefEditPart.part().getModel();
+		ComponentShape componentShape = (ComponentShape) gefEditPart.part().getModel();
 
 		// Grab the associated business object and confirm it is a SadComponentInstantiation
 		Object bo = DUtil.getBusinessObject(componentShape);
@@ -178,10 +179,10 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		SadComponentInstantiation ci = (SadComponentInstantiation) bo;
 
 		// Run assertions on expected properties
-		Assert.assertEquals("outer text should match component type", HARD_LIMIT, componentShape.getOuterText().getValue());
-		Assert.assertEquals("inner text should match component usage name", ci.getUsageName(), componentShape.getInnerText().getValue());
-		Assert.assertNotNull("component supported interface graphic should not be null", componentShape.getLollipop());
-		Assert.assertNull("start order shape/text should be null", componentShape.getStartOrderText());
+		Assert.assertEquals("outer text should match component type", HARD_LIMIT, ComponentUtils.getOuterText(componentShape).getValue());
+		Assert.assertEquals("inner text should match component usage name", ci.getUsageName(), ComponentUtils.getInnerText(componentShape).getValue());
+		Assert.assertNotNull("component supported interface graphic should not be null", ComponentUtils.getLollipop(componentShape));
+		Assert.assertNull("start order shape/text should be null", ComponentUtils.getStartOrderText(componentShape));
 
 		// HardLimit only has the two ports
 		Assert.assertTrue(componentShape.getUsesPortStubs().size() == 1 && componentShape.getProvidesPortStubs().size() == 1);

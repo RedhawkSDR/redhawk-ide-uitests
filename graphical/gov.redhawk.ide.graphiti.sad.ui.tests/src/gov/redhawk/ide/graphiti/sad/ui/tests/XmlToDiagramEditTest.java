@@ -22,11 +22,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.graphiti.sad.ext.ComponentShape;
-import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
+import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
@@ -201,10 +201,10 @@ bot.sleep(5000);
 
 		// Verify componentOne is set as assembly Controller
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
-		ComponentShapeImpl componentShapeOne = (ComponentShapeImpl) DiagramTestUtils.getComponentShape(editor, SIG_GEN);
-		Assert.assertEquals("Setup for test is flawed, componentOne is not the assembly controller", componentShapeOne.getStartOrderText().getValue(), "0");
-		ComponentShapeImpl componentShapeTwo = (ComponentShapeImpl) DiagramTestUtils.getComponentShape(editor, HARD_LIMIT);
-		Assert.assertEquals("Setup for test is flawed, componentTwo is the assembly controller", componentShapeTwo.getStartOrderText().getValue(), "1");
+		ComponentShape componentShapeOne = DiagramTestUtils.getComponentShape(editor, SIG_GEN);
+		Assert.assertEquals("Setup for test is flawed, componentOne is not the assembly controller", ComponentUtils.getStartOrderText(componentShapeOne).getValue(), "0");
+		ComponentShape componentShapeTwo = DiagramTestUtils.getComponentShape(editor, HARD_LIMIT);
+		Assert.assertEquals("Setup for test is flawed, componentTwo is the assembly controller", ComponentUtils.getStartOrderText(componentShapeTwo).getValue(), "1");
 
 		// Edit content of sad.xml, change assembly controller from componentOne to componentTwo
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -220,8 +220,8 @@ bot.sleep(5000);
 
 			@Override
 			public boolean test() throws Exception {
-				return "1".equals(((ComponentShapeImpl) DiagramTestUtils.getComponentShape(editor, SIG_GEN)).getStartOrderText().getValue())
-					&& "0".equals(((ComponentShapeImpl) DiagramTestUtils.getComponentShape(editor, HARD_LIMIT)).getStartOrderText().getValue());
+				return "1".equals(ComponentUtils.getStartOrderText(DiagramTestUtils.getComponentShape(editor, SIG_GEN)).getValue())
+					&& "0".equals(ComponentUtils.getStartOrderText(DiagramTestUtils.getComponentShape(editor, HARD_LIMIT)).getValue());
 			}
 
 			@Override
