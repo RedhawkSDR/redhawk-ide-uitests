@@ -186,7 +186,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 
 		// delete component from REDHAWK Explorer
 		ScaExplorerTestUtils.terminateLocalResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentDisappearsInChalkboardDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, HARD_LIMIT_1);
 
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
@@ -194,7 +194,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 
 		// terminate chalkboard
 		ScaExplorerTestUtils.terminateWaveformFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
-		DiagramTestUtils.waitUntilComponentDisappearsInChalkboardDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, HARD_LIMIT_1);
 	}
 
 	/**

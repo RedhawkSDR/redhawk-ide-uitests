@@ -174,7 +174,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		ScaExplorerTestUtils.terminateDeviceInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 
 		// verify DeviceStub device not present in Diagram
-		DiagramTestUtils.waitUntilComponentDisappearsInChalkboardDiagram(bot, editor, DEVICE_STUB);
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, DEVICE_STUB);
 
 		// Launch device from TargetSDR
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, DEVICE_STUB, "python");
@@ -186,7 +186,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		ScaExplorerTestUtils.terminateFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER);
 
 		// verify DeviceStub not present in Diagram
-		DiagramTestUtils.waitUntilComponentDisappearsInChalkboardDiagram(bot, editor, DEVICE_STUB);
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, DEVICE_STUB);
 	}
 
 	/**

@@ -50,8 +50,8 @@ public class ChalkboardToolbarTest extends AbstractGraphitiChalkboardTest {
 		bot.toolbarButtonWithTooltip("Release Waveform").click();
 		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
 		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentDisappearsInChalkboardDiagram(bot, editor, SIGGEN);
-		DiagramTestUtils.waitUntilComponentDisappearsInChalkboardDiagram(bot, editor, HARD_LIMIT);
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, HARD_LIMIT);
 
 	}
 }
