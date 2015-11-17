@@ -2,7 +2,10 @@
 
 ## Description
 
-This repo contains test plugins for the REDHAWK IDE. The tests leverage [SWTBot](https://www.eclipse.org/swtbot/) and a REDHAWK installation to perform UI tests of the IDE in a full runtime environment.
+This repo contains JUnit test plugins for the REDHAWK IDE. The tests leverage [SWTBot](https://www.eclipse.org/swtbot/) and a REDHAWK installation to perform iautomated UI tests. The tests are divided into two main directories:
+
+* [graphical](graphical): tests require a running X display, and the omniORB IDLs to be installed
+* [graphical-runtime](graphical-runtime): tests additionally require a full REDHAWK runtime environment to be installed
 
 ## REDHAWK Documentation
 
