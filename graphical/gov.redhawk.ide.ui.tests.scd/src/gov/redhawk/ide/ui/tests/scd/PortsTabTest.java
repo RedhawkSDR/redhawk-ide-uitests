@@ -25,13 +25,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import gov.redhawk.ide.scd.ui.editor.page.PortsFormPage;
-import gov.redhawk.ide.spd.internal.ui.editor.ComponentEditor;
 import gov.redhawk.ide.swtbot.ComponentUtils;
-import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.EditorActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 import gov.redhawk.ide.ui.tests.scd.conditions.SelectIDL;
+import gov.redhawk.ui.editor.SCAFormEditor;
 import mil.jpeojtrs.sca.scd.AbstractPort;
 import mil.jpeojtrs.sca.scd.Ports;
 import mil.jpeojtrs.sca.scd.Provides;
@@ -62,12 +61,11 @@ public class PortsTabTest extends UITest {
 
 	private static final String PROJECT_NAME = "TestCppComponent";
 
+	private SWTBotEditor editor;
 	private SWTBot editorBot;
 
 	private SoftPkg spd;
-	private PortsFormPage page;
 
-	@SuppressWarnings("restriction")
 	@Before
 	public void before() throws Exception {
 		super.before();
@@ -75,26 +73,25 @@ public class PortsTabTest extends UITest {
 		ComponentUtils.createComponentProject(bot, PROJECT_NAME, PROG_LANG_CPP);
 		bot.waitUntil(new WaitForEditorCondition());
 
-		SWTBotEditor editor = bot.activeEditor();
+		editor = bot.activeEditor();
 		editor.setFocus();
 		this.editorBot = editor.bot();
 		this.editorBot.cTabItem(PORTS_TAB_NAME).activate();
 
-		ComponentEditor spdEditor = (ComponentEditor) editor.getReference().getEditor(false);
+		SCAFormEditor spdEditor = (SCAFormEditor) editor.getReference().getEditor(false);
 		this.spd = SoftPkg.Util.getSoftPkg(spdEditor.getMainResource());
-		this.page = spdEditor.getPortsPage();
 
 		checkNoPortDetails();
 	}
 
 	protected void assertFormValid() {
-		this.bot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY); // Alow form to have time to validate
-		StandardTestActions.assertFormValid(this.editorBot, this.page);
+		this.bot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY); // Allow form to have time to validate
+		EditorActions.assertEditorTabValid(editor, EditorActions.SPD_EDITOR_PORTS_TAB_ID);
 	}
 
 	protected void assertFormInvalid() {
-		this.bot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY); // Alow form to have time to validate
-		StandardTestActions.assertFormInvalid(this.editorBot, this.page);
+		this.bot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY); // Allow form to have time to validate
+		EditorActions.assertEditorTabInvalid(editor, EditorActions.SPD_EDITOR_PORTS_TAB_ID);
 	}
 
 	@Test

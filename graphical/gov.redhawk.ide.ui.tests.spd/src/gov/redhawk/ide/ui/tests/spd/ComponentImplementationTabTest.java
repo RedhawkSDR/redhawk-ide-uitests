@@ -12,12 +12,11 @@ package gov.redhawk.ide.ui.tests.spd;
 
 import java.math.BigInteger;
 
-import gov.redhawk.ide.spd.internal.ui.editor.ComponentEditor;
-import gov.redhawk.ide.spd.internal.ui.editor.ImplementationPage;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.finder.RHBot;
 import gov.redhawk.ide.swtbot.finder.widgets.RHBotSection;
+import gov.redhawk.ui.editor.SCAFormEditor;
 import mil.jpeojtrs.sca.spd.SoftPkg;
 
 import org.eclipse.core.runtime.Path;
@@ -31,7 +30,6 @@ public class ComponentImplementationTabTest extends UITest {
 
 	private SWTBotEditor editor;
 	private RHBot editorBot;
-	private ImplementationPage implementationPage;
 	private SoftPkg spd;
 
 	@Before
@@ -52,8 +50,7 @@ public class ComponentImplementationTabTest extends UITest {
 		editorBot = new RHBot(editor.bot());
 		editorBot.cTabItem("Implementations").activate();
 
-		ComponentEditor spdEditor = (ComponentEditor) editor.getReference().getEditor(false);
-		implementationPage = spdEditor.getImplementationPage();
+		SCAFormEditor spdEditor = (SCAFormEditor) editor.getReference().getEditor(false);
 		spd = SoftPkg.Util.getSoftPkg(spdEditor.getMainResource());
 	}
 

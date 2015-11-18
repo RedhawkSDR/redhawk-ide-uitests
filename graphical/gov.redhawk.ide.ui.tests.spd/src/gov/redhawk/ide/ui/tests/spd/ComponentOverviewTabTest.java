@@ -10,10 +10,10 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.spd;
 
-import gov.redhawk.ide.spd.internal.ui.editor.ComponentEditor;
-import gov.redhawk.ide.spd.internal.ui.editor.ComponentOverviewPage;
+import gov.redhawk.ide.swtbot.EditorActions;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ui.editor.SCAFormEditor;
 import mil.jpeojtrs.sca.spd.SoftPkg;
 import mil.jpeojtrs.sca.util.DceUuidUtil;
 
@@ -25,13 +25,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * 
- */
 public class ComponentOverviewTabTest extends UITest {
 
 	private SWTBotEditor editor;
-	private ComponentOverviewPage overviewPage;
 	private SoftPkg spd;
 	private SWTBot editorBot;
 
@@ -47,23 +43,24 @@ public class ComponentOverviewTabTest extends UITest {
 		view.bot().tree().getTreeItem("CppComTest").select();
 		view.bot().tree().getTreeItem("CppComTest").expand();
 		view.bot().tree().getTreeItem("CppComTest").getNode("CppComTest.spd.xml").doubleClick();
-		
+
 		editor = bot.editorByTitle("CppComTest");
 		editor.setFocus();
 		editorBot = editor.bot();
 		editorBot.cTabItem("Overview").activate();
 
-		ComponentEditor spdEditor = (ComponentEditor) editor.getReference().getEditor(false);
-		overviewPage = spdEditor.getOverviewPage();
+		SCAFormEditor spdEditor = (SCAFormEditor) editor.getReference().getEditor(false);
 		spd = SoftPkg.Util.getSoftPkg(spdEditor.getMainResource());
 	}
 
-	protected void assertFormValid() {
-		StandardTestActions.assertFormValid(editorBot, overviewPage);
+	private void assertFormValid() {
+		editorBot.sleep(600);
+		EditorActions.assertEditorTabValid(editor, EditorActions.SPD_EDITOR_OVERVIEW_TAB_ID);
 	}
 
-	protected void assertFormInvalid() {
-		StandardTestActions.assertFormInvalid(editorBot, overviewPage);
+	private void assertFormInvalid() {
+		editorBot.sleep(600);
+		EditorActions.assertEditorTabInvalid(editor, EditorActions.SPD_EDITOR_OVERVIEW_TAB_ID);
 	}
 
 	@Test
@@ -71,46 +68,38 @@ public class ComponentOverviewTabTest extends UITest {
 		editorBot.button("Generate").click();
 
 		String idText = bot.textWithLabel("ID*:").getText();
-		editorBot.sleep(600);
-		Assert.assertTrue("Not valid DCE UUID", DceUuidUtil.isValid(idText));
 		assertFormValid();
+		Assert.assertTrue("Not valid DCE UUID", DceUuidUtil.isValid(idText));
 		Assert.assertEquals(spd.getId(), idText);
 
 		editorBot.textWithLabel("ID*:").setText("DCE");
-		editorBot.sleep(600);
 		assertFormInvalid();
 
 		editorBot.textWithLabel("ID*:").setText("DCE:8745512e-cdaf-41ad-93e4-a404d5e8e6db");
-		editorBot.sleep(600);
 		assertFormValid();
 		Assert.assertEquals("DCE:8745512e-cdaf-41ad-93e4-a404d5e8e6db", spd.getId());
 
 		editorBot.textWithLabel("ID*:").setText("");
-		editorBot.sleep(600);
 		assertFormInvalid();
 	}
 
 	@Test
 	public void testName() {
 		editorBot.textWithLabel("Name*:").setText("TestComponent");
-		editorBot.sleep(600);
 		assertFormValid();
 		Assert.assertEquals(spd.getName(), "TestComponent");
 
 		editorBot.textWithLabel("Name*:").setText("");
-		editorBot.sleep(600);
 		assertFormInvalid();
 	}
 
 	@Test
 	public void testDescription() {
 		editorBot.textWithLabel("Description:").setText("A component created for testing.");
-		editorBot.sleep(600);
 		assertFormValid();
 		Assert.assertEquals(spd.getDescription(), "A component created for testing.");
 
 		editorBot.textWithLabel("Description:").setText("");
-		editorBot.sleep(600);
 		assertFormValid();
 		Assert.assertNull(spd.getDescription());
 	}
@@ -118,29 +107,24 @@ public class ComponentOverviewTabTest extends UITest {
 	@Test
 	public void testVersion() {
 		editorBot.textWithLabel("Version:").setText("1.0.0");
-		editorBot.sleep(600);
 		assertFormValid();
 		Assert.assertEquals(spd.getVersion(), "1.0.0");
 
 		editorBot.textWithLabel("Version:").setText("");
-		editorBot.sleep(600);
 		assertFormValid();
 		Assert.assertNull(spd.getVersion());
 
 		editorBot.textWithLabel("Version:").setText("asd23r asd");
-		editorBot.sleep(600);
 		assertFormValid();
 	}
 
 	@Test
 	public void testTitle() {
 		editorBot.textWithLabel("Title:").setText("Test Component");
-		editorBot.sleep(600);
 		assertFormValid();
 		Assert.assertEquals(spd.getTitle(), "Test Component");
 
 		editorBot.textWithLabel("Title:").setText("");
-		editorBot.sleep(600);
 		assertFormValid();
 		Assert.assertNull(spd.getTitle());
 	}
@@ -152,13 +136,10 @@ public class ComponentOverviewTabTest extends UITest {
 		bot.button("OK").click();
 		assertFormValid();
 		editorBot.textWithLabel("Title:", 1).setText("CppComTest.prf.xml");
-		editorBot.sleep(600);
 		assertFormValid();
 		editorBot.textWithLabel("Title:", 1).setText("blah.prf.xml");
-		editorBot.sleep(600);
 		assertFormInvalid();
 		editorBot.textWithLabel("Title:", 1).setText("CppComTest.prf.xml");
-		editorBot.sleep(600);
 		assertFormValid();
 	}
 
@@ -169,13 +150,10 @@ public class ComponentOverviewTabTest extends UITest {
 		bot.button("OK").click();
 		assertFormValid();
 		editorBot.textWithLabel("Title:", 2).setText("CppComTest.scd.xml");
-		editorBot.sleep(600);
 		assertFormValid();
 		editorBot.textWithLabel("Title:", 2).setText("blah.scd.xml");
-		editorBot.sleep(600);
 		assertFormInvalid();
 		editorBot.textWithLabel("Title:", 2).setText("CppComTest.scd.xml");
-		editorBot.sleep(600);
 		assertFormValid();
 	}
 
