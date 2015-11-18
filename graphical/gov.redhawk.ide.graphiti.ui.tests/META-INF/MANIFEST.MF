@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Common code the Graphiti UI tests
+Bundle-SymbolicName: gov.redhawk.ide.graphiti.ui.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: REDHAWK
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: gov.redhawk.ide.graphiti.ui.tests
+Require-Bundle: gov.redhawk.ide.graphiti.ui,
+ gov.redhawk.ide.swtbot,
+ org.eclipse.gef;bundle-version="3.10.0"

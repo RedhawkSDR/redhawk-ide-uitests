@@ -137,6 +137,10 @@
     </repository>
   </repositories>
 
+  <modules>
+    <module>gov.redhawk.ide.graphiti.ui.tests</module>
+  </modules>
+
   <build>
     <plugins>
       <plugin>

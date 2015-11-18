@@ -4,7 +4,8 @@ Bundle-Name: Tests
 Bundle-SymbolicName: gov.redhawk.ide.graphiti.dcd.ui.tests;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Eclipse-BundleShape: dir
-Require-Bundle: gov.redhawk.ide.graphiti.dcd.ui,
+Require-Bundle: gov.redhawk.ide.graphiti.ui.tests;bundle-version="1.0.0",
+ gov.redhawk.ide.graphiti.dcd.ui,
  gov.redhawk.ide.swtbot,
  mil.jpeojtrs.sca.dcd;bundle-version="3.0.0",
  mil.jpeojtrs.sca.partitioning;bundle-version="2.0.0",
