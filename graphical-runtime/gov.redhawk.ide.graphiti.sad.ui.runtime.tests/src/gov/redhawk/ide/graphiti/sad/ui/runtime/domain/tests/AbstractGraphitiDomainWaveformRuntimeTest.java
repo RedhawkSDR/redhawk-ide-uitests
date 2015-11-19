@@ -17,7 +17,7 @@ import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 import org.eclipse.swtbot.eclipse.gef.finder.SWTGefBot;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.junit.After;
 import org.junit.Before;
 
@@ -46,13 +46,9 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 
 	@Before
 	public void beforeTest() throws Exception {
-		// Launch domain
+		// Launch domain & waveform
 		ScaExplorerTestUtils.launchDomain(bot, DOMAIN, DEVICE_MANAGER);
-
-		// Wait until domain launched and connected
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN);
-
-		// Launch waveform in domain
 		ScaExplorerTestUtils.launchWaveformFromDomain(bot, DOMAIN, DOMAIN_WAVEFORM);
 
 		// Wait until the editor opens and the waveform appears in the REDHAWK Explorer view
@@ -65,21 +61,15 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 
 	@After
 	public void afterTest() {
-		// does waveform exist
-		SWTBotTreeItem waveformEntry = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
-
-		// release waveform, make sure it disappears
-		if (waveformEntry != null) {
+		try {
+			ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
 			ScaExplorerTestUtils.releaseFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
-
-			// wait until waveform no longer exists!!!!
 			ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
+		} catch (WidgetNotFoundException ex) {
+			// PASS
 		}
 
-		// delete domain instance from REDHAWK explorer
 		ScaExplorerTestUtils.deleteDomainInstance(bot, DOMAIN);
-
-		// Stop all processes that may have been started
 		ConsoleUtils.terminateAllProcesses(gefBot);
 	}
 
