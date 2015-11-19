@@ -27,7 +27,6 @@ import org.junit.Before;
  */
 public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntimeTest {
 
-	protected static final String DOMAIN_WAVEFORM = "ExampleWaveform06";
 	protected static final String NAMESPACE_DOMAIN_WAVEFORM = "namespaceWF"; // Contains namespaced components
 	protected static final String DOMAIN_MANAGER_PROCESS = "Domain Manager";
 	protected static final String DEVICE_MANAGER_PROCESS = "Device Manager";
@@ -46,25 +45,27 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 
 	@Before
 	public void beforeTest() throws Exception {
-		// Launch domain & waveform
 		ScaExplorerTestUtils.launchDomain(bot, DOMAIN, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN);
-		ScaExplorerTestUtils.launchWaveformFromDomain(bot, DOMAIN, DOMAIN_WAVEFORM);
 
-		// Wait until the editor opens and the waveform appears in the REDHAWK Explorer view
-		bot.waitUntil(new WaitForEditorCondition());
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
+		ScaExplorerTestUtils.launchWaveformFromDomain(bot, DOMAIN, getWaveformName());
+		bot.waitUntil(new WaitForEditorCondition(), WaitForEditorCondition.DEFAULT_WAIT_FOR_EDITOR_TIME);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveformName());
 
 		// Record the waveform's full name
-		waveFormFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
+		waveFormFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveformName());
+	}
+
+	protected String getWaveformName() {
+		return "ExampleWaveform06";
 	}
 
 	@After
 	public void afterTest() {
 		try {
-			ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
-			ScaExplorerTestUtils.releaseFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
-			ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, DOMAIN_WAVEFORM);
+			ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveformName());
+			ScaExplorerTestUtils.releaseFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveformName());
+			ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveformName());
 		} catch (WidgetNotFoundException ex) {
 			// PASS
 		}

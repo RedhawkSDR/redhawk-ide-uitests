@@ -11,13 +11,11 @@
  */
 package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.tests;
 
-import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 /**
  * We were running into some race conditions when launching waveforms with more than a few components,
@@ -25,39 +23,25 @@ import org.junit.Test;
  */
 public class LargeDomainWaveformTest extends AbstractGraphitiDomainWaveformRuntimeTest {
 
+	@Override
+	protected String getWaveformName() {
+		return "LargeWaveform";
+	}
+
 	/**
 	 * IDE-1146, IDE-1137, IDE-1129
 	 */
 	@Test
 	public void launchLargeWaveform() {
-		// Don't need the default waveform for this test, but we do want the rest of the abstract behavior
-		gefBot.closeAllEditors();
-
-		// Launch the LargeWaveform
-		String waveformName = "LargeWaveform";
-		ScaExplorerTestUtils.launchWaveformFromDomain(bot, DOMAIN, waveformName);
-		bot.waitUntil(new WaitForEditorCondition());
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, waveformName);
-		String waveFormFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, waveformName);
-
+		String waveFormFullName = getWaveFormFullName();
 		SWTBotGefEditor editor = gefBot.gefEditor(waveFormFullName);
 
-		/*--- Confirm that the LargeWaveform was launched ---*/
-		String[] componentsList = { "agc_1", "AmFmPmBasebandDemod_1", "ArbitraryRateResampler_1", "DataConverter_1", "fastfilter_1", "fastfilter_2",
-			"fastfilter_3", "HardLimit_1", "HardLimit_2", "TuneFilterDecimate_1", "TuneFilterDecimate_2", "TuneFilterDecimate_3" };
-
+		String[] componentsList = { "SigGen_1", "HardLimit_1", "DataConverter_1", "SigGen_2", "SigGen_3", "SigGen_4", "DataConverter_2", "HardLimit_2",
+			"DataConverter_3", "DataConverter_4" };
 		for (String component : componentsList) {
 			ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, waveFormFullName, component);
-		}
-
-		for (String component : componentsList) {
 			DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, component);
 		}
-
-		// Release the waveform, making sure no error dialog pops up
-		ScaExplorerTestUtils.releaseFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, waveFormFullName);
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, waveFormFullName);
-		StandardTestActions.assertNoOpenDialogs();
 	}
 
 }
