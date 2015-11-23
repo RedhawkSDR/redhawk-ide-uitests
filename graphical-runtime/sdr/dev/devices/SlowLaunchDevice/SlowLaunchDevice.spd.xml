@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:466d5a78-dd40-4cfe-af09-1710f4c48b1f" name="SlowLaunchDevice" type="2.0.0">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <description>A device that sleeps before doing its CORBA registration, thus making it unreachable for a period of time.</description>
+  <propertyfile type="PRF">
+    <localfile name="SlowLaunchDevice.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="SlowLaunchDevice.scd.xml"/>
+  </descriptor>
+  <implementation id="python">
+    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <code type="Executable">
+      <localfile name="python"/>
+      <entrypoint>python/SlowLaunchDevice.py</entrypoint>
+    </code>
+    <programminglanguage name="Python"/>
+    <humanlanguage name="EN"/>
+    <runtime name="python" version="2.6.6"/>
+    <os name="Linux"/>
+  </implementation>
+</softpkg>
