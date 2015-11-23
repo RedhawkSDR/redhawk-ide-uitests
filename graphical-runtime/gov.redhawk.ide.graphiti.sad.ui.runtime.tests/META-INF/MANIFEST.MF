@@ -4,7 +4,8 @@ Bundle-Name: Runtime SAD Graphiti Tests
 Bundle-SymbolicName: gov.redhawk.ide.graphiti.sad.ui.runtime.tests;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Eclipse-BundleShape: dir
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: gov.redhawk.ide.graphiti.ui.runtime.tests,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.graphiti,
  org.eclipse.graphiti.ui,
