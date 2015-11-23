@@ -32,7 +32,7 @@ public abstract class SadAbstractPropertiesTabTest extends UITest {
 	private static final String DATA_CONVERTER = "rh.DataConverter";
 	protected static final String DATA_CONVERTER_1 = "DataConverter_1";
 
-	private static final int COLUMN_ID = 0;
+	private static final int COLUMN_NAME = 0;
 	private static final int COLUMN_VALUE = 3;
 
 	private SWTBot editorBot;
@@ -53,8 +53,8 @@ public abstract class SadAbstractPropertiesTabTest extends UITest {
 	public void componentsPresent() {
 		SWTBotTreeItem[] topLevelItems = editorBot.tree().getAllItems();
 		Assert.assertEquals(2, topLevelItems.length);
-		Assert.assertEquals(SIG_GEN_1, topLevelItems[0].cell(COLUMN_ID));
-		Assert.assertEquals(DATA_CONVERTER_1, topLevelItems[1].cell(COLUMN_ID));
+		Assert.assertEquals(SIG_GEN_1, topLevelItems[0].cell(COLUMN_NAME));
+		Assert.assertEquals(DATA_CONVERTER_1, topLevelItems[1].cell(COLUMN_NAME));
 	}
 
 	protected abstract List<String> getBooleanPath();
@@ -114,15 +114,13 @@ public abstract class SadAbstractPropertiesTabTest extends UITest {
 
 	private void setPropertyValue(SWTBotTreeItem propertyItem, String typeText, String expectedCellValue) {
 		StandardTestActions.writeToCell(editorBot, propertyItem, COLUMN_VALUE, typeText);
-		String msg = String.format("Property '%s' set to wrong value", propertyItem.cell(COLUMN_ID));
+		String msg = String.format("Property '%s' set to wrong value", propertyItem.cell(COLUMN_NAME));
 		Assert.assertEquals(msg, expectedCellValue, propertyItem.cell(COLUMN_VALUE));
 	}
 
-	private void setPropertyEnum(SWTBotTreeItem propertyItem, String selectText) {
-		propertyItem.select();
-		propertyItem.click(COLUMN_VALUE);
-		editorBot.list().select(selectText);
-		String msg = String.format("Property '%s' set to wrong value", propertyItem.cell(COLUMN_ID));
+	private void setPropertyEnum(final SWTBotTreeItem propertyItem, String selectText) {
+		StandardTestActions.selectXViewerListFromCell(bot, propertyItem, COLUMN_VALUE, selectText);
+		String msg = String.format("Property '%s' set to wrong value", propertyItem.cell(COLUMN_NAME));
 		Assert.assertEquals(msg, selectText, propertyItem.cell(COLUMN_VALUE));
 	}
 }
