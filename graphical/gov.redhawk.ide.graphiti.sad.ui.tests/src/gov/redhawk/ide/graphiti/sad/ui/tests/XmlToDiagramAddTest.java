@@ -55,6 +55,14 @@ import mil.jpeojtrs.sca.sad.SoftwareAssembly;
  */
 public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 
+	private static final String SIG_GEN = "rh.SigGen";
+	private static final String SIG_GEN_1 = "SigGen_1";
+	private static final String SIG_GEN_FLOAT_OUT = "dataFloat_out";
+	private static final String HARD_LIMIT = "rh.HardLimit";
+	private static final String HARD_LIMIT_1 = "HardLimit_1";
+	private static final String HARD_LIMIT_FLOAT_IN = "dataFloat_in";
+	private static final String HARD_LIMIT_FLOAT_OUT = "dataFloat_out";
+
 	private String waveformName;
 
 	/**
@@ -64,14 +72,13 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 	@Test
 	public void addComponentInXmlTest() {
 		waveformName = "Add_Component_Xml";
-		final String componentOne = "SigGen";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, componentOne, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		MenuUtils.save(editor);
 
 		// Edit content of sad.xml
@@ -79,13 +86,13 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		String editorText = editor.toTextEditor().getText();
 
 		String newComponentFile = "</componentfile> <componentfile id=\"HardLimit_304be23f-b97f-4371-b8bd-2d1922baf555\" type=\"SPD\"> "
-			+ "<localfile name=\"/components/HardLimit/HardLimit.spd.xml\"/> </componentfile>";
+			+ "<localfile name=\"/components/rh/HardLimit/HardLimit.spd.xml\"/> </componentfile>";
 		editorText = editorText.replace("</componentfile>", newComponentFile);
 
 		String newComponentPlacement = "</componentplacement> <componentplacement> "
 			+ "<componentfileref refid=\"HardLimit_304be23f-b97f-4371-b8bd-2d1922baf555\"/> "
-			+ "<componentinstantiation id=\"HardLimit_1\" startorder=\"1\"> <usagename>HardLimit_1</usagename> "
-			+ "<findcomponent> <namingservice name=\"HardLimit_1\"/> </findcomponent> </componentinstantiation> </componentplacement>";
+			+ "<componentinstantiation id=\"" + HARD_LIMIT_1 + "\" startorder=\"1\"> <usagename>" + HARD_LIMIT_1 + "</usagename> "
+			+ "<findcomponent> <namingservice name=\"" + HARD_LIMIT_1 + "\"/> </findcomponent> </componentinstantiation> </componentplacement>";
 		editorText = editorText.replace("</componentplacement>", newComponentPlacement);
 		editor.toTextEditor().setText(editorText);
 		MenuUtils.save(editor);
@@ -93,11 +100,11 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 
-		SadComponentInstantiation componentObj = DiagramTestUtils.getComponentObject(editor, "HardLimit");
+		SadComponentInstantiation componentObj = DiagramTestUtils.getComponentObject(editor, HARD_LIMIT_1);
 		Assert.assertNotNull(componentObj);
-		Assert.assertEquals("Usage Name did not create correctly", "HardLimit_1", componentObj.getUsageName());
-		Assert.assertEquals("Component ID did not create correctly", "HardLimit_1", componentObj.getId());
-		Assert.assertEquals("Naming Service did not create correctly", "HardLimit_1", componentObj.getFindComponent().getNamingService().getName());
+		Assert.assertEquals("Usage Name did not create correctly", HARD_LIMIT_1, componentObj.getUsageName());
+		Assert.assertEquals("Component ID did not create correctly", HARD_LIMIT_1, componentObj.getId());
+		Assert.assertEquals("Naming Service did not create correctly", HARD_LIMIT_1, componentObj.getFindComponent().getNamingService().getName());
 		Assert.assertEquals("Start Order did not create correctly", BigInteger.valueOf(1), componentObj.getStartOrder());
 	}
 
@@ -108,20 +115,18 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 	@Test
 	public void addConnectionInXmlTest() {
 		waveformName = "Add_Connection_Xml";
-		final String SIGGEN = "SigGen";
-		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 200, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 0);
 		MenuUtils.save(editor);
 
 		// Confirm that no connections currently exist
-		SWTBotGefEditPart sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
+		SWTBotGefEditPart sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, sigGenUsesEditPart);
 		Assert.assertTrue("No connections should exist", sourceConnections.isEmpty());
 
@@ -130,9 +135,9 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		String editorText = editor.toTextEditor().getText();
 
 		String newConnection = "</assemblycontroller> <connections> <connectinterface id=\"connection_1\"> "
-			+ "<usesport> <usesidentifier>dataFloat_out</usesidentifier> <componentinstantiationref refid=\"SigGen_1\"/> </usesport> "
-			+ "<providesport> <providesidentifier>dataFloat_in</providesidentifier> "
-			+ " <componentinstantiationref refid=\"HardLimit_1\"/> </providesport> </connectinterface> </connections>";
+			+ "<usesport> <usesidentifier>" + SIG_GEN_FLOAT_OUT + "</usesidentifier> <componentinstantiationref refid=\"" + SIG_GEN_1 + "\"/> </usesport> "
+			+ "<providesport> <providesidentifier>" + HARD_LIMIT_FLOAT_IN + "</providesidentifier> "
+			+ " <componentinstantiationref refid=\"" + HARD_LIMIT_1 + "\"/> </providesport> </connectinterface> </connections>";
 		editorText = editorText.replace("</assemblycontroller>", newConnection);
 		editor.toTextEditor().setText(editorText);
 		MenuUtils.save(editor);
@@ -140,8 +145,8 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 
-		sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
-		SWTBotGefEditPart hardLimitProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARDLIMIT);
+		sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
+		SWTBotGefEditPart hardLimitProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 
 		sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, sigGenUsesEditPart);
 		Assert.assertFalse("Connection should exist size=" + sourceConnections.size(), sourceConnections.isEmpty());
@@ -168,12 +173,11 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 	public void addHostCollocationInXmlTest() {
 		waveformName = "Add_Host_Collocation_Xml";
 		final String HOSTCOLLOCATION_INSTANCE_NAME = "Host A";
-		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 400, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 400, 0);
 		MenuUtils.save(editor);
 
 		// Edit content of sad.xml
@@ -194,15 +198,15 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		// check the shapes are drawing properly
 		ContainerShape hostCollocationShape = DiagramTestUtils.getHostCollocationShape(editor, HOSTCOLLOCATION_INSTANCE_NAME);
 		Assert.assertTrue(HOSTCOLLOCATION_INSTANCE_NAME + " host collocation shape does not exist", hostCollocationShape != null);
-		ComponentShape componentShape = DiagramTestUtils.getComponentShape(editor, HARDLIMIT);
-		Assert.assertTrue(HARDLIMIT + " component shape does not exist", componentShape != null);
-		Assert.assertTrue(HARDLIMIT + " component shape does not exist within " + HOSTCOLLOCATION_INSTANCE_NAME,
+		ComponentShape componentShape = DiagramTestUtils.getComponentShape(editor, HARD_LIMIT_1);
+		Assert.assertTrue(HARD_LIMIT_1 + " component shape does not exist", componentShape != null);
+		Assert.assertTrue(HARD_LIMIT_1 + " component shape does not exist within " + HOSTCOLLOCATION_INSTANCE_NAME,
 			DiagramTestUtils.childShapeExists(hostCollocationShape, componentShape));
 
 		// verify component exists within host collocation
 		HostCollocation hostCollocation = DiagramTestUtils.getHostCollocationObject(editor, HOSTCOLLOCATION_INSTANCE_NAME);
 		Assert.assertTrue(HOSTCOLLOCATION_INSTANCE_NAME + " host collocation object does not exist", hostCollocation != null);
-		Assert.assertTrue(HARDLIMIT + " component object does not exist within " + HOSTCOLLOCATION_INSTANCE_NAME,
+		Assert.assertTrue(HARD_LIMIT_1 + " component object does not exist within " + HOSTCOLLOCATION_INSTANCE_NAME,
 			hostCollocation.getComponentPlacement().size() == 1 && hostCollocation.getComponentPlacement().get(0).getComponentInstantiation().size() == 1);
 	}
 
@@ -214,9 +218,6 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 	@Test
 	public void addFindByInXmlTest() throws IOException {
 		waveformName = "Add_FindBy_Xml";
-		final String SIGGEN_NAME = "SigGen";
-		final String SIGGEN_REF = SIGGEN_NAME + "_1";
-		final String SIGGEN_PORT = "dataFloat_out";
 		final String FIND_BY_NAME = "FindByName";
 		final String FBN_PORT_NAME = "NamePort";
 		final String FIND_BY_SERVICE = "FindByService";
@@ -227,7 +228,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN_NAME, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		MenuUtils.save(editor);
 
 		// Switch to the XML tab and get contents
@@ -243,7 +244,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		// Create a connection from SigGen to a findby naming service
 		SadConnectInterface connection1 = SadFactory.eINSTANCE.createSadConnectInterface();
 		connection1.setId("connection_1");
-		SadUsesPort usesPort = SadFactory.eINSTANCE.createSadUsesPort(SIGGEN_PORT, SIGGEN_REF);
+		SadUsesPort usesPort = SadFactory.eINSTANCE.createSadUsesPort(SIG_GEN_FLOAT_OUT, SIG_GEN_1);
 		SadProvidesPort providesPort = SadFactory.eINSTANCE.createSadProvidesPort();
 		providesPort.setProvidesIdentifier(FBN_PORT_NAME);
 		FindBy findBy = PartitioningFactory.eINSTANCE.createFindByNamingServiceName(FIND_BY_NAME);
@@ -254,7 +255,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		// Create a connection from SigGen to a findby service name
 		SadConnectInterface connection2 = SadFactory.eINSTANCE.createSadConnectInterface();
 		connection2.setId("connection_2");
-		usesPort = SadFactory.eINSTANCE.createSadUsesPort(SIGGEN_PORT, SIGGEN_REF);
+		usesPort = SadFactory.eINSTANCE.createSadUsesPort(SIG_GEN_FLOAT_OUT, SIG_GEN_1);
 		providesPort = SadFactory.eINSTANCE.createSadProvidesPort();
 		providesPort.setProvidesIdentifier(FBS_PORT_NAME);
 		findBy = PartitioningFactory.eINSTANCE.createFindByServiceName(FIND_BY_SERVICE);
@@ -291,7 +292,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		Assert.assertEquals("FindBy Service provides port did not create as expected", FBS_PORT_NAME, findByServiceObject.getProvides().get(0).getName());
 
 		// Check that connections were made
-		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN_NAME);
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN);
 		List<SWTBotGefConnectionEditPart> connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertEquals("The expected number of connections are not present", 2, connections.size());
 
@@ -299,14 +300,14 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		Connection nameConnection = (Connection) nameConnectionPart.part().getModel();
 		UsesPortStub nameConnectionSource = (UsesPortStub) DUtil.getBusinessObject(nameConnection.getStart());
 		ProvidesPortStub nameConnectionTarget = (ProvidesPortStub) DUtil.getBusinessObject(nameConnection.getEnd());
-		Assert.assertEquals("FindByName connection source incorrect", SIGGEN_PORT, nameConnectionSource.getName());
+		Assert.assertEquals("FindByName connection source incorrect", SIG_GEN_FLOAT_OUT, nameConnectionSource.getName());
 		Assert.assertEquals("FindByName connection target incorrect", FBN_PORT_NAME, nameConnectionTarget.getName());
 
 		SWTBotGefConnectionEditPart serviceConnectionPart = connections.get(1);
 		Connection serviceConnection = (Connection) serviceConnectionPart.part().getModel();
 		UsesPortStub serviceConnectionSource = (UsesPortStub) DUtil.getBusinessObject(serviceConnection.getStart());
 		ProvidesPortStub serviceConnectionTarget = (ProvidesPortStub) DUtil.getBusinessObject(serviceConnection.getEnd());
-		Assert.assertEquals("FindByService connection source incorrect", SIGGEN_PORT, serviceConnectionSource.getName());
+		Assert.assertEquals("FindByService connection source incorrect", SIG_GEN_FLOAT_OUT, serviceConnectionSource.getName());
 		Assert.assertEquals("FindByService connection target incorrect", FBS_PORT_NAME, serviceConnectionTarget.getName());
 	}
 
@@ -317,18 +318,17 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 	@Test
 	public void addExternalPortsInXmlTest() {
 		waveformName = "Add_ExternalPort_Xml";
-		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 200, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 0);
 		MenuUtils.save(editor);
 
 		// Confirm that no external ports exist in diagram
-		SWTBotGefEditPart hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARDLIMIT);
+		SWTBotGefEditPart hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, false);
 
 		//switch to overview tab and verify there are no external ports
@@ -340,8 +340,8 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		String editorText = editor.toTextEditor().getText();
 
 		String externalports = "</assemblycontroller> <externalports><port>"
-			+ "<usesidentifier>dataFloat_out</usesidentifier>"
-			+ "<componentinstantiationref refid=\"HardLimit_1\"/>"
+			+ "<usesidentifier>" + HARD_LIMIT_FLOAT_OUT + "</usesidentifier>"
+			+ "<componentinstantiationref refid=\"" + HARD_LIMIT_1 + "\"/>"
 			+ "</port> </externalports>";
 		editorText = editorText.replace("</assemblycontroller>", externalports);
 		editor.toTextEditor().setText(editorText);
@@ -351,7 +351,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 
 		//assert port set to external in diagram
-		hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARDLIMIT);
+		hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, true);
 
 		//switch to overview tab and verify there are external ports

@@ -37,6 +37,11 @@ import mil.jpeojtrs.sca.sad.SadComponentPlacement;
 
 public class HostCollocationTest extends AbstractGraphitiTest {
 
+	private static final String SIG_GEN = "rh.SigGen";
+	private static final String SIG_GEN_1 = "SigGen_1";
+	private static final String HARD_LIMIT = "rh.HardLimit";
+	private static final String HARD_LIMIT_1 = "HardLimit_1";
+
 	private String waveformName;
 	static final String UNEXPECTED_NUM_COMPONENTS = "Incorrect number of components in Host Collocation";
 	static final String UNEXPECTED_SHAPE_LOCATION = "Shape location unexpected";
@@ -49,7 +54,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void checkHostCollocationPictogramElements() {
 		waveformName = "HC_Pictogram";
-		final String HARD_LIMIT = "HardLimit";
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
@@ -78,7 +82,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		HostCollocation hostCo = (HostCollocation) bo;
 		Assert.assertEquals("Name value does not match expected value: " + HOST_CO_NAME, HOST_CO_NAME, hostCo.getName());
 		EList<SadComponentPlacement> components = hostCo.getComponentPlacement();
-		Assert.assertEquals("Expected component \'" + HARD_LIMIT + "\' was not found", HARD_LIMIT + "_1",
+		Assert.assertEquals("Expected component \'" + HARD_LIMIT_1 + "\' was not found", HARD_LIMIT_1,
 			components.get(0).getComponentInstantiation().get(0).getId());
 	}
 
@@ -90,7 +94,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationRelativePosition() {
 		waveformName = "HC_Component_Position";
-		final String HARD_LIMIT = "HardLimit";
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
@@ -132,8 +135,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationDnDComponents() {
 		waveformName = "HC_DragAndDrop";
-		final String HARD_LIMIT = "HardLimit";
-		final String SIGGEN = "SigGen";
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
@@ -145,7 +146,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Add component to the host collocation
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 20, 20);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 20, 150);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
 
 		MenuUtils.save(editor);
 
@@ -155,16 +156,16 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		Assert.assertFalse("Component was not added to the Host Collocation", hostCo.getComponentPlacement().isEmpty());
 		Assert.assertTrue("Number of components should be 2, instead there are " + hostCo.getComponentPlacement().size(),
 			hostCo.getComponentPlacement().size() == 2);
-		Assert.assertEquals("Expected component \'" + HARD_LIMIT + "\' was not found", HARD_LIMIT + "_1",
+		Assert.assertEquals("Expected component \'" + HARD_LIMIT_1 + "\' was not found", HARD_LIMIT_1,
 			hostCo.getComponentPlacement().get(0).getComponentInstantiation().get(0).getId());
 
 		// Drag component outside of host collocation and confirm that it was removed
-		editor.drag(editor.getEditPart(HARD_LIMIT), 350, 0);
+		editor.drag(editor.getEditPart(HARD_LIMIT_1), 350, 0);
 		MenuUtils.save(editor);
 		hostCo = DiagramTestUtils.getHostCollocationObject(editor, HOST_CO_NAME);
 		Assert.assertTrue("Number of components should be 1, instead there are " + hostCo.getComponentPlacement().size(),
 			hostCo.getComponentPlacement().size() == 1);
-		Assert.assertEquals("Expected component \'" + SIGGEN + "\' was not found", SIGGEN + "_1",
+		Assert.assertEquals("Expected component \'" + SIG_GEN_1 + "\' was not found", SIG_GEN_1,
 			hostCo.getComponentPlacement().get(0).getComponentInstantiation().get(0).getId());
 	}
 
@@ -176,7 +177,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationContextMenuDelete() {
 		waveformName = "HC_Pictogram";
-		final String HARD_LIMIT = "HardLimit";
 		final String HOST_CO = "Host Collocation";
 		final String HOST_CO_NAME = "HC1";
 
@@ -212,7 +212,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		HostCollocation hostCo = (HostCollocation) bo;
 		EList<SadComponentPlacement> components = hostCo.getComponentPlacement();
-		Assert.assertEquals("Expected component \'" + HARD_LIMIT + "\' was not found", HARD_LIMIT + "_1",
+		Assert.assertEquals("Expected component \'" + HARD_LIMIT_1 + "\' was not found", HARD_LIMIT_1,
 			components.get(0).getComponentInstantiation().get(0).getId());
 
 		// delete host collocation
@@ -221,7 +221,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		// ensure host collocation is deleted
 		Assert.assertNull(editor.getEditPart(HOST_CO_NAME));
 		// ensure component still exists
-		Assert.assertNotNull(editor.getEditPart(HARD_LIMIT));
+		Assert.assertNotNull(editor.getEditPart(HARD_LIMIT_1));
 	}
 
 	/**
@@ -235,8 +235,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationResize() {
 		waveformName = "HC_Resize";
-		final String HARD_LIMIT = "HardLimit";
-		final String SIGGEN = "SigGen";
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
@@ -251,7 +249,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Add component to the host collocation
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 20, 20);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 20, 150);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
 
 		MenuUtils.save(editor);
 
@@ -260,7 +258,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		Assert.assertFalse("Component was not added to the Host Collocation", hostCo.getComponentPlacement().isEmpty());
 		Assert.assertTrue("Number of components should be 2, instead there are " + hostCo.getComponentPlacement().size(),
 			hostCo.getComponentPlacement().size() == 2);
-		Assert.assertEquals("Expected component \'" + HARD_LIMIT + "\' was not found", HARD_LIMIT + "_1",
+		Assert.assertEquals("Expected component \'" + HARD_LIMIT_1 + "\' was not found", HARD_LIMIT_1,
 			hostCo.getComponentPlacement().get(0).getComponentInstantiation().get(0).getId());
 
 		// ** Get hold of the shapes involved **//
@@ -268,9 +266,9 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart hostCollocationEditPart = editor.getEditPart(HOST_CO_NAME);
 		GraphicsAlgorithm hostCollocationGa = DiagramTestUtils.getHostCollocationShape(editor, HOST_CO_NAME).getGraphicsAlgorithm();
 		// HardLimit
-		ContainerShape hardLimitShape = (ContainerShape) editor.getEditPart(HARD_LIMIT).part().getModel();
+		ContainerShape hardLimitShape = (ContainerShape) editor.getEditPart(HARD_LIMIT_1).part().getModel();
 		// SigGen
-		ContainerShape sigGenShape = (ContainerShape) editor.getEditPart(SIGGEN).part().getModel();
+		ContainerShape sigGenShape = (ContainerShape) editor.getEditPart(SIG_GEN_1).part().getModel();
 
 		// Expand Host Collocation, verify components are still part of Host Collocation and
 		// absolute position of components (in relation to diagram) has not changed
@@ -358,7 +356,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
 
 		// Drag HardLimit to right
-		editor.drag(editor.getEditPart(HARD_LIMIT), 350, 15);
+		editor.drag(editor.getEditPart(HARD_LIMIT_1), 350, 15);
 
 		// Collapse Host Collocation from the right towards the left thereby excluding the all components
 		hostCollocationEditPart.click();
@@ -438,7 +436,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationResizeOverFindBy() {
 		waveformName = "HC_Resize_FindBy";
-		final String SIGGEN = "SigGen";
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
@@ -452,7 +449,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
 
 		// Add component/findby to the host collocation
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 20, 150);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, FindByUtils.FIND_BY_DOMAIN_MANAGER, 450, 150);
 		MenuUtils.save(editor);
 
@@ -475,7 +472,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		// Assert that FindBy Element is not contained within host collocation
 		Assert.assertTrue("Number of components should be 1, instead there are " + hostCo.getComponentPlacement().size(),
 			hostCo.getComponentPlacement().size() == 1);
-		Assert.assertEquals("Expected component \'" + SIGGEN + "\' was not found", SIGGEN + "_1",
+		Assert.assertEquals("Expected component \'" + SIG_GEN_1 + "\' was not found", SIG_GEN_1,
 			hostCo.getComponentPlacement().get(0).getComponentInstantiation().get(0).getId());
 	}
 
@@ -486,7 +483,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationResizeOverUsesDevice() {
 		waveformName = "HC_Resize_FindBy";
-		final String SIGGEN = "SigGen";
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
@@ -500,7 +496,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
 
 		// Add component/findby to the host collocation
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 20, 150);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
 		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor, 450, 150);
 		UsesDeviceTestUtils.completeUsesFEDeviceWizard(gefBot, "existingAllocId", "newAllocId", new String[] { "provides" }, new String[] { "uses" });
 		MenuUtils.save(editor);
@@ -524,7 +520,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		// Assert that Uses Device Element is not contained within host collocation
 		Assert.assertTrue("Number of components should be 1, instead there are " + hostCo.getComponentPlacement().size(),
 			hostCo.getComponentPlacement().size() == 1);
-		Assert.assertEquals("Expected component \'" + SIGGEN + "\' was not found", SIGGEN + "_1",
+		Assert.assertEquals("Expected component \'" + SIG_GEN_1 + "\' was not found", SIG_GEN_1,
 			hostCo.getComponentPlacement().get(0).getComponentInstantiation().get(0).getId());
 	}
 }

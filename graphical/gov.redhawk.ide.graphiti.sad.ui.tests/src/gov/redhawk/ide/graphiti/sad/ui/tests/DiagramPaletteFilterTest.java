@@ -20,6 +20,9 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
 public class DiagramPaletteFilterTest extends AbstractGraphitiTest {
 
+	private static final String SIG_GEN = "rh.SigGen";
+	private static final String HARD_LIMIT = "rh.HardLimit";
+
 	private String waveformName;
 
 	/**
@@ -28,8 +31,8 @@ public class DiagramPaletteFilterTest extends AbstractGraphitiTest {
 	@Test
 	public void testFilter() {
 		waveformName = "IDE-962-Test";
-		final String component1 = "SigGen";
-		final String component2 = "HardLimit";
+		final String component1 = SIG_GEN;
+		final String component2 = HARD_LIMIT;
 		// IDE-1112: test presence of namespaced component in palette
 		final String component3 = "ide1112.test.name.spaced.comp1";
 
@@ -82,8 +85,8 @@ public class DiagramPaletteFilterTest extends AbstractGraphitiTest {
 	@Test
 	public void checkImplementations() {
 		waveformName = "IDE-953-Test";
-		final String component1 = "SigGen";
-		final String component2 = "HardLimit";
+		final String component1 = SIG_GEN;
+		final String component2 = HARD_LIMIT;
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 

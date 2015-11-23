@@ -42,9 +42,12 @@ import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 public class ConnectionTest extends AbstractGraphitiTest {
 
 	private String waveformName;
-	private static final String SIGGEN = "SigGen";
-	private static final String HARD_LIMIT = "HardLimit";
-	private static final String DATA_CONVERTER = "DataConverter";
+	private static final String SIG_GEN = "rh.SigGen";
+	private static final String SIG_GEN_1 = "SigGen_1";
+	private static final String HARD_LIMIT = "rh.HardLimit";
+	private static final String HARD_LIMIT_1 = "HardLimit_1";
+	private static final String DATA_CONVERTER = "rh.DataConverter";
+	private static final String DATA_CONVERTER_1 = "DataConverter_1";
 
 	/**
 	 * IDE-731
@@ -59,18 +62,18 @@ public class ConnectionTest extends AbstractGraphitiTest {
 
 		// Add components to diagram from palette
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
 
 		// Get component edit parts and container shapes
-		SWTBotGefEditPart sourceComponentEditPart = editor.getEditPart(SIGGEN);
+		SWTBotGefEditPart sourceComponentEditPart = editor.getEditPart(SIG_GEN_1);
 		ContainerShape sourceContainerShape = (ContainerShape) sourceComponentEditPart.part().getModel();
-		SWTBotGefEditPart targetComponentEditPart = editor.getEditPart(HARD_LIMIT);
+		SWTBotGefEditPart targetComponentEditPart = editor.getEditPart(HARD_LIMIT_1);
 		ContainerShape targetContainerShape = (ContainerShape) targetComponentEditPart.part().getModel();
 
 		// Get port edit parts
-		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
-		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT);
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 
 		// Confirm that no connections currently exist
 		Diagram diagram = DUtil.findDiagram(sourceContainerShape);
@@ -81,7 +84,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
 
 		// (IDE-657) Attempt to make an illegal connection and confirm that it was not actually made
-		SWTBotGefEditPart illegalTarget = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT);
+		SWTBotGefEditPart illegalTarget = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, illegalTarget);
 		Assert.assertTrue("Illegal connection should not have been drawn", diagram.getConnections().isEmpty());
 
@@ -139,12 +142,12 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		// Add components to diagram from palette
 		gefBot.waitUntil(new WaitForEditorCondition());
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
 
 		// Get port edit parts
-		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
-		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT);
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 
 		// Draw redundant connections, save and close the editor
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
@@ -158,11 +161,11 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		editor = gefBot.rhGefEditor(waveformName);
 
 		// ...get target component edit parts and container shapes
-		SWTBotGefEditPart targetComponentEditPart = editor.getEditPart(HARD_LIMIT);
+		SWTBotGefEditPart targetComponentEditPart = editor.getEditPart(HARD_LIMIT_1);
 		ContainerShape targetContainerShape = (ContainerShape) targetComponentEditPart.part().getModel();
 
 		// ...update uses port edit part references, since this is technically a new editor
-		usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
+		usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		Connection connection = DUtil.getIncomingConnectionsContainedInContainerShape(targetContainerShape).get(0);
 		Assert.assertTrue("Error decorator should have been added", connection.getConnectionDecorators().size() == 2);
 
@@ -190,12 +193,12 @@ public class ConnectionTest extends AbstractGraphitiTest {
 
 		// Add components to diagram from palette
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 300, 0);
 
 		// Get port edit parts
-		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
-		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER, "dataOctet");
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataOctet");
 
 		// Draw incompatible connection and confirm error decorator exists
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
@@ -209,7 +212,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Connection was not removed", 0, connections.size());
 
 		// Test incompatible connection to component supported interface
-		SWTBotGefEditPart lollipopEditPart = DiagramTestUtils.getComponentSupportedInterface(editor, DATA_CONVERTER);
+		SWTBotGefEditPart lollipopEditPart = DiagramTestUtils.getComponentSupportedInterface(editor, DATA_CONVERTER_1);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, lollipopEditPart);
 		connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertEquals("Connection was not added", 1, connections.size());
@@ -231,9 +234,9 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		// Add components to diagram from palette
 		// We need the RHTestBotEditor so we can get the canvas and do direct mouse events
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 300, 0);
-		SWTBotGefEditPart usesPort = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN, sigGenPort).children().get(0);
+		SWTBotGefEditPart usesPort = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1, sigGenPort).children().get(0);
 		usesPort.select();
 
 		// Mouse down on target port (direct mouse event)
@@ -242,7 +245,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		canvas.mouseDown(point.x(), point.y());
 
 		// Check data converter ports for color change - (it's actually the anchor that changes color)
-		SWTBotGefEditPart dataConEditPart = editor.getEditPart(DATA_CONVERTER);
+		SWTBotGefEditPart dataConEditPart = editor.getEditPart(DATA_CONVERTER_1);
 		List<SWTBotGefEditPart> providesPorts = PortUtils.getProvidesPortContainerBots(dataConEditPart);
 
 		for (SWTBotGefEditPart providesPort : providesPorts) {

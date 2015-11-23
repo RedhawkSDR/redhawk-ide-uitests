@@ -27,6 +27,8 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
 public class DeleteProjectTest extends AbstractGraphitiTest {
 
+	private static final String SIG_GEN = "rh.SigGen";
+
 	private String waveformName;
 
 	/**
@@ -36,7 +38,6 @@ public class DeleteProjectTest extends AbstractGraphitiTest {
 	@Test
 	public void confirmEditorClosesOnDelete() {
 		waveformName = "Delete_and_Close";
-		final String SIGGEN = "SigGen";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
@@ -45,7 +46,7 @@ public class DeleteProjectTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Editor not found", 1, editors.size());
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		MenuUtils.save(editor);
 
 		// Delete project from the project explorer

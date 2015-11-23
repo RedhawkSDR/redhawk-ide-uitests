@@ -33,6 +33,11 @@ import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
 public class FindByTest extends AbstractGraphitiTest {
 
+	private static final String SIG_GEN = "rh.SigGen";
+	private static final String SIG_GEN_1 = "SigGen_1";
+	private static final String HARD_LIMIT = "rh.HardLimit";
+	private static final String HARD_LIMIT_1 = "HardLimit_1";
+
 	private String waveformName;
 
 	/**
@@ -47,7 +52,6 @@ public class FindByTest extends AbstractGraphitiTest {
 	@Test
 	public void checkFindByPictogramElements() {
 		waveformName = "FindBy_Pictogram";
-		final String SIGGEN = "SigGen";
 		final String findByName = "FindBy";
 		final String[] provides = { "dataFloat_in" };
 		final String[] uses = { "dataFloat_out" };
@@ -57,7 +61,7 @@ public class FindByTest extends AbstractGraphitiTest {
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, FindByUtils.FIND_BY_NAME, 0, 150);
 		FindByUtils.completeFindByWizard(gefBot, FindByUtils.FIND_BY_NAME, findByName, provides, uses);
 		MenuUtils.save(editor);
@@ -118,7 +122,6 @@ public class FindByTest extends AbstractGraphitiTest {
 	@Test
 	public void deleteFindByWithConnection() {
 		waveformName = "Delete_FindBy";
-		final String SIGGEN = "SigGen";
 		final String FIND_BY_NAME = "FindByName";
 		final String[] provides = { "data_in" };
 
@@ -127,13 +130,13 @@ public class FindByTest extends AbstractGraphitiTest {
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, FindByUtils.FIND_BY_NAME, 0, 150);
 		FindByUtils.completeFindByWizard(gefBot, FindByUtils.FIND_BY_NAME, FIND_BY_NAME, provides, null);
 		MenuUtils.save(editor);
 
 		// Create connection on diagram
-		SWTBotGefEditPart sigGenUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
+		SWTBotGefEditPart sigGenUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		SWTBotGefEditPart findByProvidesPart = DiagramTestUtils.getDiagramProvidesPort(editor, FIND_BY_NAME);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, sigGenUsesPart, findByProvidesPart);
 		MenuUtils.save(editor);
@@ -175,8 +178,6 @@ public class FindByTest extends AbstractGraphitiTest {
 	@Test
 	public void editFindBy() {
 		waveformName = "FindBy_Connection";
-		final String SIGGEN = "SigGen";
-		final String HARD_LIMIT = "HardLimit";
 		final String FIND_BY_NAME = "FindBy";
 		final String newFindByName = "NewFindByName";
 		final String[] provides = { "data_in" };
@@ -188,19 +189,19 @@ public class FindByTest extends AbstractGraphitiTest {
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 20);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, FindByUtils.FIND_BY_NAME, 0, 150);
 		FindByUtils.completeFindByWizard(gefBot, FindByUtils.FIND_BY_NAME, FIND_BY_NAME, provides, uses);
 		MenuUtils.save(editor);
 
 		// Create connection on diagram
-		SWTBotGefEditPart sigGenUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
+		SWTBotGefEditPart sigGenUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		SWTBotGefEditPart findByProvidesPart = DiagramTestUtils.getDiagramProvidesPort(editor, FIND_BY_NAME);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, sigGenUsesPart, findByProvidesPart);
 
 		SWTBotGefEditPart findByUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, FIND_BY_NAME);
-		SWTBotGefEditPart hardLimitProvidesPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT);
+		SWTBotGefEditPart hardLimitProvidesPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, findByUsesPart, hardLimitProvidesPart);
 
 		MenuUtils.save(editor);
@@ -235,11 +236,11 @@ public class FindByTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Diagram uses and domain uses don't match", NEW_USES_PORT, findByObject.getUses().get(1).getName());
 
 		// Confirm that connections properly updated
-		sigGenUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
+		sigGenUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		List<SWTBotGefConnectionEditPart> connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, sigGenUsesPart);
 		Assert.assertTrue("SigGen connection should have been removed", connections.size() == 0);
 
-		hardLimitProvidesPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT);
+		hardLimitProvidesPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		connections = DiagramTestUtils.getTargetConnectionsFromPort(editor, hardLimitProvidesPart);
 		Assert.assertEquals("HardLimit should only have one incoming connection", 1, connections.size());
 
@@ -259,8 +260,6 @@ public class FindByTest extends AbstractGraphitiTest {
 	@Test
 	public void findByConnection() {
 		waveformName = "FindBy_Connection";
-		final String SIGGEN = "SigGen";
-		final String HARDLIMIT = "HardLimit";
 		final String findByName = "FindBy";
 		final String[] provides = { "data_in" };
 		final String[] uses = { "data_out" };
@@ -270,18 +269,18 @@ public class FindByTest extends AbstractGraphitiTest {
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, FindByUtils.FIND_BY_NAME, 0, 150);
 		FindByUtils.completeFindByWizard(gefBot, FindByUtils.FIND_BY_NAME, findByName, provides, uses);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 0, 300);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 300);
 		MenuUtils.save(editor);
 
 		// Create connection on diagram
-		SWTBotGefEditPart sigGenUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
+		SWTBotGefEditPart sigGenUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		SWTBotGefEditPart findByProvidesPart = DiagramTestUtils.getDiagramProvidesPort(editor, findByName);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, sigGenUsesPart, findByProvidesPart);
 		SWTBotGefEditPart findByUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, findByName);
-		SWTBotGefEditPart hardLimitProvidesPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARDLIMIT);
+		SWTBotGefEditPart hardLimitProvidesPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		Assert.assertTrue("Failed to draw connection from FindBy uses port", 
 			DiagramTestUtils.drawConnectionBetweenPorts(editor, findByUsesPart, hardLimitProvidesPart));
 		MenuUtils.save(editor);

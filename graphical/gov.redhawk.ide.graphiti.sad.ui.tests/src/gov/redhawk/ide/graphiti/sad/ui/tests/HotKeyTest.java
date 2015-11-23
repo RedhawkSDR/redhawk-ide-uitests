@@ -25,6 +25,9 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
 public class HotKeyTest extends AbstractGraphitiTest {
 
+	private static final String SIG_GEN = "rh.SigGen";
+	private static final String SIG_GEN_1 = "SigGen_1";
+
 	private String waveformName;
 
 	/**
@@ -37,26 +40,25 @@ public class HotKeyTest extends AbstractGraphitiTest {
 	@Test
 	public void deleteHotKeyTest() throws ParseException, AWTException {
 		waveformName = "Delete_HotKey";
-		final String SIGGEN = "SigGen";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 
 		// Confirm component was added to waveform
-		Assert.assertNotNull("SigGen component not found", editor.getEditPart(SIGGEN));
+		Assert.assertNotNull("SigGen component not found", editor.getEditPart(SIG_GEN_1));
 
 		// Select component and delete with hotkey
-		editor.select(SIGGEN);
+		editor.select(SIG_GEN_1);
 		Robot robot = new Robot();
 		robot.keyPress(KeyEvent.VK_DELETE);
 		robot.keyRelease(KeyEvent.VK_DELETE);
 
 		// Confirm component was removed from the waveform
-		Assert.assertNull("Unexpected component found", editor.getEditPart(SIGGEN));
+		Assert.assertNull("Unexpected component found", editor.getEditPart(SIG_GEN_1));
 	}
 
 	/**

@@ -37,9 +37,13 @@ import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
  * Test class that deals with editing elements to the sad.xml and making sure they appear correctly in the diagram
  */
 public class XmlToDiagramEditTest extends AbstractGraphitiTest {
-	static final String SIG_GEN = "SigGen";
-	static final String HARD_LIMIT = "HardLimit";
-	static final String DATA_CONVERTER = "DataConverter";
+	static final String SIG_GEN = "rh.SigGen";
+	static final String SIG_GEN_1 = "SigGen_1";
+	static final String HARD_LIMIT = "rh.HardLimit";
+	static final String HARD_LIMIT_1 = "HardLimit_1";
+	static final String HARD_LIMIT_2 = "HardLimit_2";
+	static final String DATA_CONVERTER = "rh.DataConverter";
+	static final String DATA_CONVERTER_1 = "DataConverter_1";
 
 	private String waveformName;
 
@@ -65,7 +69,7 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		// Edit content of sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
 		String editorText = editor.toTextEditor().getText();
-		editorText = editorText.replace(HARD_LIMIT + "_1", HARD_LIMIT + "_2");
+		editorText = editorText.replace(HARD_LIMIT_1, HARD_LIMIT_2);
 		editorText = editorText.replace("startorder=\"1\"", "startorder=\"3\"");
 		editorText = editorText.replace("startorder=\"2\"", "startorder=\"1\"");
 		editorText = editorText.replace("startorder=\"3\"", "startorder=\"2\"");
@@ -79,19 +83,19 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 
 			@Override
 			public boolean test() throws Exception {
-				return (HARD_LIMIT + "_2").equals(DiagramTestUtils.getComponentObject(editor, HARD_LIMIT).getUsageName());
+				return HARD_LIMIT_2.equals(DiagramTestUtils.getComponentObject(editor, HARD_LIMIT_2).getUsageName());
 			}
 
 			@Override
 			public String getFailureMessage() {
-				return "Usage Name did not update correctly. Expected [" + HARD_LIMIT + "_2] Found ["
+				return "Usage Name did not update correctly. Expected [" + HARD_LIMIT_2 + "] Found ["
 					+ DiagramTestUtils.getComponentObject(editor, HARD_LIMIT).getUsageName() + "]";
 			}
 		}, 10000, 1000);
 
 		SadComponentInstantiation componentObj = DiagramTestUtils.getComponentObject(editor, HARD_LIMIT);
-		Assert.assertEquals("Component ID did not update correctly", HARD_LIMIT + "_2", componentObj.getId());
-		Assert.assertEquals("Naming Service did not update correctly", HARD_LIMIT + "_2", componentObj.getFindComponent().getNamingService().getName());
+		Assert.assertEquals("Component ID did not update correctly", HARD_LIMIT_2, componentObj.getId());
+		Assert.assertEquals("Naming Service did not update correctly", HARD_LIMIT_2, componentObj.getFindComponent().getNamingService().getName());
 		Assert.assertEquals("Start Order did not update correctly", BigInteger.valueOf(2), componentObj.getStartOrder());
 
 	}
@@ -115,12 +119,12 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 0, 150);
 
 		// Get port edit parts
-		SWTBotGefEditPart sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN);
-		SWTBotGefEditPart hardLimitProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT);
+		SWTBotGefEditPart sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
+		SWTBotGefEditPart hardLimitProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, sigGenUsesEditPart, hardLimitProvidesEditPart);
 		MenuUtils.save(editor);
 bot.sleep(5000);
-		Assert.assertEquals("Wrong number of connections before edit", 1, DiagramTestUtils.getSourceConnectionsFromPort(editor, DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN)).size());
+		Assert.assertEquals("Wrong number of connections before edit", 1, DiagramTestUtils.getSourceConnectionsFromPort(editor, DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1)).size());
 
 		// Edit content of sad.xml
 		final String connectionProvidesBefore = "<providesidentifier>dataFloat_in</providesidentifier>";
@@ -150,7 +154,7 @@ bot.sleep(5000);
 
 			@Override
 			public boolean test() throws Exception {
-				sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN));
+				sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1));
 				return (sourceConnections.size() == 1);
 			}
 
@@ -162,7 +166,7 @@ bot.sleep(5000);
 		});
 
 		// Check that SigGen connection data has changed
-		sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN);
+		sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		final List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, sigGenUsesEditPart);
 		Assert.assertEquals("Wrong number of connections found", 1, sourceConnections.size());
 		final Connection connection = (Connection) sourceConnections.get(0).part().getModel();
@@ -170,13 +174,13 @@ bot.sleep(5000);
 		UsesPortStub usesPort = (UsesPortStub) DUtil.getBusinessObject(connection.getStart());
 		Assert.assertEquals("Connection uses port not correct", usesPort, DUtil.getBusinessObject((ContainerShape) sigGenUsesEditPart.part().getModel()));
 
-		final SWTBotGefEditPart dataConverterProvidesPort = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER, "dataFloat");
+		final SWTBotGefEditPart dataConverterProvidesPort = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataFloat");
 		ProvidesPortStub providesPort = (ProvidesPortStub) DUtil.getBusinessObject(connection.getEnd());
 		Assert.assertEquals("Connect provides port not correct", DUtil.getBusinessObject((ContainerShape) dataConverterProvidesPort.part().getModel()),
 			providesPort);
 
 		// Check that HardLimit is no longer a part of a connection
-		hardLimitProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT);
+		hardLimitProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		List<SWTBotGefConnectionEditPart> providesConnections = DiagramTestUtils.getTargetConnectionsFromPort(editor, hardLimitProvidesEditPart);
 		Assert.assertTrue("HardLimit should not be the target of a connection", providesConnections.isEmpty());
 	}
@@ -201,15 +205,15 @@ bot.sleep(5000);
 
 		// Verify componentOne is set as assembly Controller
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
-		ComponentShape componentShapeOne = DiagramTestUtils.getComponentShape(editor, SIG_GEN);
+		ComponentShape componentShapeOne = DiagramTestUtils.getComponentShape(editor, SIG_GEN_1);
 		Assert.assertEquals("Setup for test is flawed, componentOne is not the assembly controller", ComponentUtils.getStartOrderText(componentShapeOne).getValue(), "0");
-		ComponentShape componentShapeTwo = DiagramTestUtils.getComponentShape(editor, HARD_LIMIT);
+		ComponentShape componentShapeTwo = DiagramTestUtils.getComponentShape(editor, HARD_LIMIT_1);
 		Assert.assertEquals("Setup for test is flawed, componentTwo is the assembly controller", ComponentUtils.getStartOrderText(componentShapeTwo).getValue(), "1");
 
 		// Edit content of sad.xml, change assembly controller from componentOne to componentTwo
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
 		String editorText = editor.toTextEditor().getText();
-		editorText = editorText.replace("<componentinstantiationref refid=\"SigGen_1\"/>", "<componentinstantiationref refid=\"HardLimit_1\"/>");
+		editorText = editorText.replace("<componentinstantiationref refid=\"" + SIG_GEN_1 + "\"/>", "<componentinstantiationref refid=\"" + HARD_LIMIT_1 + "\"/>");
 		editor.toTextEditor().setText(editorText);
 		MenuUtils.save(editor);
 
@@ -220,8 +224,8 @@ bot.sleep(5000);
 
 			@Override
 			public boolean test() throws Exception {
-				return "1".equals(ComponentUtils.getStartOrderText(DiagramTestUtils.getComponentShape(editor, SIG_GEN)).getValue())
-					&& "0".equals(ComponentUtils.getStartOrderText(DiagramTestUtils.getComponentShape(editor, HARD_LIMIT)).getValue());
+				return "1".equals(ComponentUtils.getStartOrderText(DiagramTestUtils.getComponentShape(editor, SIG_GEN_1)).getValue())
+					&& "0".equals(ComponentUtils.getStartOrderText(DiagramTestUtils.getComponentShape(editor, HARD_LIMIT_1)).getValue());
 			}
 
 			@Override
@@ -293,7 +297,7 @@ bot.sleep(5000);
 		MenuUtils.save(editor);
 		ComponentShape componentShape = (ComponentShape) hostCoShape.getChildren().get(0);
 		SadComponentInstantiation ci = (SadComponentInstantiation) DUtil.getBusinessObject(componentShape);
-		Assert.assertEquals("HardLimit component expected", HARD_LIMIT + "_1", ci.getId());
+		Assert.assertEquals("HardLimit component expected", HARD_LIMIT_1, ci.getId());
 
 		// Edit sad.xml to replace SigGen component
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -328,7 +332,7 @@ bot.sleep(5000);
 		}
 		componentShape = (ComponentShape) hostCoShape.getChildren().get(0);
 		ci = (SadComponentInstantiation) DUtil.getBusinessObject(componentShape);
-		Assert.assertEquals("SigGen component expected", SIG_GEN + "_1", ci.getId());
+		Assert.assertEquals("SigGen component expected", SIG_GEN_1, ci.getId());
 
 		// Edit sad.xml to change Host Collocation name
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");

@@ -32,6 +32,11 @@ import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
  */
 public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
+	private static final String SIG_GEN = "rh.SigGen";
+	private static final String SIG_GEN_1 = "SigGen_1";
+	private static final String HARD_LIMIT = "rh.HardLimit";
+	private static final String HARD_LIMIT_1 = "HardLimit_1";
+
 	private String waveformName;
 
 	/**
@@ -41,19 +46,17 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 	@Test
 	public void removeConnectionInXmlTest() {
 		waveformName = "Remove_Connection_Xml";
-		final String SIGGEN = "SigGen";
-		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 300, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
 		// Get port edit parts
-		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
-		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARDLIMIT);
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
 		MenuUtils.save(editor);
 
@@ -67,16 +70,16 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		// Confirm that the connection no longer exists
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
-		SWTBotGefEditPart componentEditPart = editor.getEditPart(SIGGEN);
+		SWTBotGefEditPart componentEditPart = editor.getEditPart(SIG_GEN_1);
 		ContainerShape containerShape = (ContainerShape) componentEditPart.part().getModel();
 		Diagram diagram = DUtil.findDiagram(containerShape);
 		Assert.assertTrue("No connections should exist", diagram.getConnections().isEmpty());
 
 		// Confirm both components exist in diagram
-		SadComponentInstantiation hardLimitComponentObj = DiagramTestUtils.getComponentObject(editor, HARDLIMIT);
-		Assert.assertNotNull(HARDLIMIT + " should continue to exist regardless of connection", hardLimitComponentObj);
-		SadComponentInstantiation sigGenComponentObj = DiagramTestUtils.getComponentObject(editor, SIGGEN);
-		Assert.assertNotNull(SIGGEN + " should continue to exist regardless of connection", sigGenComponentObj);
+		SadComponentInstantiation hardLimitComponentObj = DiagramTestUtils.getComponentObject(editor, HARD_LIMIT_1);
+		Assert.assertNotNull(HARD_LIMIT_1 + " should continue to exist regardless of connection", hardLimitComponentObj);
+		SadComponentInstantiation sigGenComponentObj = DiagramTestUtils.getComponentObject(editor, SIG_GEN_1);
+		Assert.assertNotNull(SIG_GEN_1 + " should continue to exist regardless of connection", sigGenComponentObj);
 	}
 
 	/**
@@ -86,19 +89,17 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 	@Test
 	public void removeComponentInXmlTest() {
 		waveformName = "Remove_Component_Xml";
-		final String SIGGEN = "SigGen";
-		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 300, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
 		// Get port edit parts
-		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
-		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARDLIMIT);
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
 		MenuUtils.save(editor);
 
@@ -114,16 +115,16 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		// Confirm that the connection no longer exists
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
-		SWTBotGefEditPart componentEditPart = editor.getEditPart(HARDLIMIT);
+		SWTBotGefEditPart componentEditPart = editor.getEditPart(HARD_LIMIT_1);
 		ContainerShape containerShape = (ContainerShape) componentEditPart.part().getModel();
 		Diagram diagram = DUtil.findDiagram(containerShape);
 		Assert.assertTrue("No connections should exist", diagram.getConnections().isEmpty());
 
 		// Confirm only one component exists in diagram
-		SadComponentInstantiation hardLimitComponentObj = DiagramTestUtils.getComponentObject(editor, HARDLIMIT);
-		Assert.assertNotNull(HARDLIMIT + " should continue to exist regardless of connection", hardLimitComponentObj);
-		SadComponentInstantiation sigGenComponentObj = DiagramTestUtils.getComponentObject(editor, SIGGEN);
-		Assert.assertNull(SIGGEN + " should have been deleted", sigGenComponentObj);
+		SadComponentInstantiation hardLimitComponentObj = DiagramTestUtils.getComponentObject(editor, HARD_LIMIT_1);
+		Assert.assertNotNull(HARD_LIMIT_1 + " should continue to exist regardless of connection", hardLimitComponentObj);
+		SadComponentInstantiation sigGenComponentObj = DiagramTestUtils.getComponentObject(editor, SIG_GEN_1);
+		Assert.assertNull(SIG_GEN_1 + " should have been deleted", sigGenComponentObj);
 	}
 
 	/**
@@ -133,7 +134,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 	@Test
 	public void removeHostCollocationInXmlTest() {
 		waveformName = "Remove_HostCollocation_Xml";
-		final String SIGGEN = "SigGen";
 		final String HOSTCOLLOCATION_PALETTE = "Host Collocation";
 		final String HOSTCOLLOCATION_INSTANCE_NAME = "AAA";
 
@@ -148,7 +148,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		gefBot.textWithLabel("Name:").setText("AAA");
 		gefBot.button("OK").click();
 		//add component inside host collocation (so host collocation is valid)
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 5, 5);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 5, 5);
 
 		//save
 		MenuUtils.save(editor);
@@ -176,14 +176,13 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 	@Test
 	public void removeExternalPortsInXmlTest() {
 		waveformName = "Add_ExternalPort_Xml";
-		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 200, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 0);
 		MenuUtils.save(editor);
 
 		// Edit content of (add external port) sad.xml
@@ -201,7 +200,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
 		//assert port set to external in diagram
-		SWTBotGefEditPart hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARDLIMIT);
+		SWTBotGefEditPart hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, true);
 
 		//switch to overview tab and verify there are external ports
@@ -220,7 +219,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		// Confirm that no external ports exist in diagram
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
-		hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARDLIMIT);
+		hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, false);
 
 		//switch to overview tab and verify there are no external ports

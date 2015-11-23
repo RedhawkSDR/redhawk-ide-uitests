@@ -53,10 +53,15 @@ import org.junit.Test;
 
 public class WaveformComponentTest extends AbstractGraphitiTest {
 
+	private static final String SIG_GEN = "rh.SigGen";
+	private static final String SIG_GEN_1 = "SigGen_1";
+	private static final String HARD_LIMIT = "rh.HardLimit";
+	private static final String HARD_LIMIT_1 = "HardLimit_1";
+	private static final String HARD_LIMIT_2 = "HardLimit_2";
+	private static final String DATA_CONVERTER = "rh.DataConverter";
+	private static final String DATA_CONVERTER_1 = "DataConverter_1";
+
 	private String waveformName;
-	private static final String HARD_LIMIT = "HardLimit";
-	private static final String SIG_GEN = "SigGen";
-	private static final String[] COMPONENTS = { "DataConverter", HARD_LIMIT, SIG_GEN };
 
 	private static final String[] TARGET_SDR_ITEMS_NOT_IN_PALETTE = { "fftlib", "RedhawkDevUtils" };
 
@@ -77,16 +82,11 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
-
-		// Confirm created component truly is HardLimit
-		assertHardLimit(editor.getEditPart(HARD_LIMIT));
-		DiagramTestUtils.deleteFromDiagram(editor, editor.getEditPart(HARD_LIMIT));
+		assertHardLimit(editor.getEditPart(HARD_LIMIT_1));
 
 		// Add component to diagram from Target SDR
 		DiagramTestUtils.dragComponentFromTargetSDRToDiagram(gefBot, editor, HARD_LIMIT);
-
-		// Confirm created component truly is HardLimit
-		assertHardLimit(editor.getEditPart(HARD_LIMIT));
+		assertHardLimit(editor.getEditPart(HARD_LIMIT_2));
 	}
 
 	/**
@@ -102,12 +102,12 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
-		for (String s : COMPONENTS) {
+		for (String s : new String[] { SIG_GEN, HARD_LIMIT, DATA_CONVERTER }) {
 			// Add component to diagram from palette
 			DiagramTestUtils.addFromPaletteToDiagram(editor, s, 0, 0);
 		}
 
-		for (String s : COMPONENTS) {
+		for (String s : new String[] { SIG_GEN_1, HARD_LIMIT_1, DATA_CONVERTER_1 }) {
 			// Drill down to graphiti component shape
 			SWTBotGefEditPart gefEditPart = editor.getEditPart(s);
 			DiagramTestUtils.deleteFromDiagram(editor, gefEditPart);
@@ -157,21 +157,21 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 
 		HostCollocation hostCo = (HostCollocation) bo;
 		EList<SadComponentPlacement> components = hostCo.getComponentPlacement();
-		Assert.assertEquals("Expected component \'" + HARD_LIMIT + "_1\' was not found", HARD_LIMIT + "_1",
+		Assert.assertEquals("Expected component \'" + HARD_LIMIT_1 + "\' was not found", HARD_LIMIT_1,
 			components.get(0).getComponentInstantiation().get(0).getId());
-		Assert.assertEquals("Expected component \'" + HARD_LIMIT + "_2\' was not found", HARD_LIMIT + "_2",
+		Assert.assertEquals("Expected component \'" + HARD_LIMIT_2 + "\' was not found", HARD_LIMIT_2,
 			components.get(1).getComponentInstantiation().get(0).getId());
 		Assert.assertNotNull("ComponentFile for " + HARD_LIMIT + " should exist", hostCo.getComponentPlacement().get(1).getComponentFileRef().getFile());
 
 		// delete component
-		SWTBotGefEditPart gefEditPart = editor.getEditPart(HARD_LIMIT);
+		SWTBotGefEditPart gefEditPart = editor.getEditPart(HARD_LIMIT_1);
 		DiagramTestUtils.deleteFromDiagram(editor, gefEditPart);
 
 		// IMPORTANT: We must do this step over because model has now been rebuilt from documents
 		hostCo = (HostCollocation) DUtil.getBusinessObject(hostCollocationContainerShape);
 
 		// ensure HardLimit_2 shape still exists
-		Assert.assertNotNull(editor.getEditPart("HardLimit_2"));
+		Assert.assertNotNull(editor.getEditPart(HARD_LIMIT_2));
 		// ensure HardLimit_1 component business object is deleted
 		Assert.assertTrue("Expected there to be only 1 component left after deletion", hostCo.getComponentPlacement().size() == 1);
 		Assert.assertNotNull("ComponentFile for " + HARD_LIMIT + " no longer exists", hostCo.getComponentPlacement().get(0).getComponentFileRef().getFile());
@@ -185,12 +185,11 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void checkChangesToPropertiesReflectedInSad() {
-		final String componentName = SIG_GEN;
 		waveformName = "IDE-728-Test";
 
-		WaveformUtils.createNewWaveform(gefBot, waveformName, componentName);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, SIG_GEN);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
-		editor.getEditPart(componentName).click();
+		editor.getEditPart(SIG_GEN_1).click();
 		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
 		String propertyname = gefBot.viewByTitle("Properties").bot().tree().cell(0, "Property").toString();
 		String newValue = "0.0";
@@ -200,7 +199,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 				break;
 			}
 		}
-		editor.getEditPart(componentName).click();
+		editor.getEditPart(SIG_GEN_1).click();
 		MenuUtils.save(editor);
 		String regex = DiagramTestUtils.regexStringForProperty(propertyname, newValue);
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -221,15 +220,15 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add a SigGen component instantiation to the diagram and save
-		DiagramTestUtils.addFromPaletteToDiagram(editor, "SigGen", 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		MenuUtils.save(editor);
 
 		// Add a HardLimit component instantiation to the diagram.  Should be added to the sad.xml, even without a save
-		DiagramTestUtils.addFromPaletteToDiagram(editor, "HardLimit", 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
 
 		// Find expected xml string for SigGen and HardLimit components
-		final String sigGenSad = DiagramTestUtils.regexStringForComponent((ComponentShape) editor.getEditPart("SigGen").part().getModel());
-		final String hardLimitSad = DiagramTestUtils.regexStringForComponent((ComponentShape) editor.getEditPart("HardLimit").part().getModel());
+		final String sigGenSad = DiagramTestUtils.regexStringForComponent((ComponentShape) editor.getEditPart(SIG_GEN_1).part().getModel());
+		final String hardLimitSad = DiagramTestUtils.regexStringForComponent((ComponentShape) editor.getEditPart(HARD_LIMIT_1).part().getModel());
 
 		// Check to see if SigGen is included in the sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -336,8 +335,8 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		editor.setFocus();
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
-		SWTBotGefEditPart provides = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT);
-		SWTBotGefEditPart uses = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT);
+		SWTBotGefEditPart provides = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
+		SWTBotGefEditPart uses = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
 
 		List<SWTBotGefEditPart> anchors = new ArrayList<SWTBotGefEditPart>();
 		anchors.add(DiagramTestUtils.getDiagramPortAnchor(provides));
@@ -413,14 +412,13 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	@Test
 	public void addRemoveExternalPortsViaOverviewTest() {
 		waveformName = "AddRemove_ExternalPort_Overview";
-		final String HARDLIMIT = "HardLimit";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 200, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 0);
 		MenuUtils.save(editor);
 
 		// add port via Overview tab
@@ -436,7 +434,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 		// assert port set to external in diagram
-		SWTBotGefEditPart hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARDLIMIT);
+		SWTBotGefEditPart hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, true);
 
 		// remove port via Overview tab
@@ -447,7 +445,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 
 		// Confirm that no external ports exist in diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
-		hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARDLIMIT);
+		hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, false);
 
 	}
@@ -471,13 +469,13 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		MenuUtils.save(editor);
 
 		// Make sure all 4 port anchors can be found
-		SWTBotGefEditPart hardLimit1UsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARDLIMIT + "_1");
+		SWTBotGefEditPart hardLimit1UsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
 		Assert.assertNotNull(hardLimit1UsesEditPart);
-		SWTBotGefEditPart hardLimit2UsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARDLIMIT + "_2");
+		SWTBotGefEditPart hardLimit2UsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_2);
 		Assert.assertNotNull(hardLimit2UsesEditPart);
-		SWTBotGefEditPart hardLimit1ProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARDLIMIT + "_1");
+		SWTBotGefEditPart hardLimit1ProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		Assert.assertNotNull(hardLimit1ProvidesEditPart);
-		SWTBotGefEditPart hardLimit2ProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARDLIMIT + "_2");
+		SWTBotGefEditPart hardLimit2ProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_2);
 		Assert.assertNotNull(hardLimit2ProvidesEditPart);
 
 		SWTBotGefEditPart hardLimit1UsesAnchor = DiagramTestUtils.getDiagramPortAnchor(hardLimit1UsesEditPart);
