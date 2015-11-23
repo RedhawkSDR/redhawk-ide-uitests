@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Common code the Graphiti UI tests
+Bundle-Name: Common code for Graphiti UI tests
 Bundle-SymbolicName: gov.redhawk.ide.graphiti.ui.tests
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: REDHAWK
