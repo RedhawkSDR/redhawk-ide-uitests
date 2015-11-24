@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Prf
 Bundle-SymbolicName: gov.redhawk.ide.ui.tests.prf
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: gov.redhawk.ide.ui.xml.editors.tests,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  gov.redhawk.ide.swtbot,
  org.eclipse.emf.ecore,
