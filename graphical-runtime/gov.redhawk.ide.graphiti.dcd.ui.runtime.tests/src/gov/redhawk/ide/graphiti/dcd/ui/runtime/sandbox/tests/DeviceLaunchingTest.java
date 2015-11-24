@@ -8,31 +8,31 @@
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
+package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.ComponentDescription;
-import gov.redhawk.ide.graphiti.ui.runtime.tests.ConnectionAbstractTest;
+import gov.redhawk.ide.graphiti.ui.runtime.tests.ResourceLaunchingAbstractTest;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
-public class ConnectionTest extends ConnectionAbstractTest {
+public class DeviceLaunchingTest extends ResourceLaunchingAbstractTest {
 
 	@Override
 	protected ComponentDescription getSlowComponentDescription() {
-		return new ComponentDescription("SlowLaunchComponent", "SlowLaunchComponent", new String[] { "dataFloat_in" }, new String[] { "dataFloat_out" });
+		return new ComponentDescription("SlowLaunchDevice", "SlowLaunchDevice", new String[] { "dataFloat_in" }, new String[] { "dataFloat_out" });
 	}
 
 	@Override
 	protected ComponentDescription getFastComponentDescription() {
-		return new ComponentDescription("rh.DataConverter", "DataConverter", new String[] { "dataFloat" }, new String[] { "dataFloat_out" });
+		return new ComponentDescription("DeviceStub", "DeviceStub", new String[] { "dataFloat_in" }, new String[] { "dataFloat_out" });
 	}
 
 	@Override
 	protected RHBotGefEditor openDiagram() {
-		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, new String[] { "Sandbox" }, "Chalkboard", DiagramType.GRAPHITI_CHALKBOARD);
-		return new RHSWTGefBot().rhGefEditor("Chalkboard");
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, new String[] { "Sandbox" }, "Device Manager", DiagramType.GRAPHITI_CHALKBOARD);
+		return new RHSWTGefBot().rhGefEditor("Device Manager Chalkboard");
 	}
 
 }
