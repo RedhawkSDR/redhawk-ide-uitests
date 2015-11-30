@@ -10,7 +10,6 @@ from ossie.utils import uuid
 from ossie.device import Device
 from ossie.threadedcomponent import *
 from ossie.properties import simple_property
-from ossie.properties import simpleseq_property
 
 import Queue, copy, time, threading
 from ossie.resource import usesport, providesport
@@ -75,7 +74,7 @@ class device_base(CF__POA.Device, Device, ThreadedComponent):
                                       type_="string",
                                       mode="readonly",
                                       action="eq",
-                                      kinds=("allocation","configure"),
+                                      kinds=("allocation",),
                                       description="""This specifies the device kind""")
         
         device_model = simple_property(id_="DCE:0f99b2e4-9903-4631-9846-ff349d18ecfb",
@@ -83,7 +82,7 @@ class device_base(CF__POA.Device, Device, ThreadedComponent):
                                        type_="string",
                                        mode="readonly",
                                        action="eq",
-                                       kinds=("allocation","configure"),
+                                       kinds=("allocation",),
                                        description=""" This specifies the specific device""")
         
 

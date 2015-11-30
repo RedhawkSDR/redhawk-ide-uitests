@@ -1,16 +1,17 @@
-/*******************************************************************************
- * This file is protected by Copyright. 
+/**
+ * This file is protected by Copyright.
  * Please refer to the COPYRIGHT file distributed with this source distribution.
  *
  * This file is part of REDHAWK IDE.
  *
- * All rights reserved.  This program and the accompanying materials are made available under 
- * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at 
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ */
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.domain.tests;
 
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
@@ -18,80 +19,55 @@ import org.junit.Test;
 
 public class DevManagerDomainSyncTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
-	private SWTBotGefEditor editor;
-
 	/**
 	 * IDE-1119
-	 * Adds device, starts/stops them from Chalkboard Diagram and verifies
-	 * device in ScaExplorer Dev Manager Chalkboard reflect changes
-	 * 
+	 * Test starting and stopping devices from the node explorer diagram. Verify state in node explorer diagram and
+	 * explorer view.
 	 */
 	@Test
 	public void startStopDevicesFromChalkboardDiagram() {
-		String[] gppParentPath = { DOMAIN + " CONNECTED", "Device Managers", getNodeFullName()}; 
-		editor = gefBot.gefEditor(getNodeFullName());
-		
-		DiagramTestUtils.stopComponentFromDiagram(editor, GPP); // GPP starts when launched
+		launchDomainAndDevMgr(DEVICE_MANAGER);
+		SWTBotGefEditor editor = gefBot.gefEditor(DEVICE_MANAGER);
 
-		// verify GPP stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, GPP);
-		
-		// Get device full name, need to cut of "STARTED" if it exists
-		final String GPP_FULL_NAME = getDeviceFullName(ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, gppParentPath, GPP)); // Needed
-		String tempStr = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, gppParentPath, GPP);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER, GPP_FULL_NAME);
+		// Stop GPP
+		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_LOCALHOST);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP_LOCALHOST, ComponentState.STOPPED);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
 
-		// start GPP
-		DiagramTestUtils.startComponentFromDiagram(editor, GPP);
+		// Start GPP
+		DiagramTestUtils.startComponentFromDiagram(editor, GPP_LOCALHOST);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP_LOCALHOST, ComponentState.STARTED);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
 
-		// verify GPP started
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, GPP);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER, GPP_FULL_NAME);
-
-		// stop GPP
-		DiagramTestUtils.stopComponentFromDiagram(editor, GPP);
-
-		// verify GPP stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, GPP);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER, GPP_FULL_NAME);
+		// Stop GPP
+		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_LOCALHOST);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP_LOCALHOST, ComponentState.STOPPED);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
 	}
 
 	/**
 	 * IDE-1119
-	 * Adds devices, starts/stops them from ScaExplorer Dev Manager Chalkboard and verifies
-	 * devices in diagram reflect appropriate color changes
+	 * Test starting and stopping devices from the explorer view. Verify state in node explorer diagram and explorer
+	 * view.
 	 */
 	@Test
 	public void startStopDevicesFromScaExplorer() {
-		String[] gppParentPath = { DOMAIN + " CONNECTED", "Device Managers", getNodeFullName()}; 
-		editor = gefBot.gefEditor(getNodeFullName());
-		
-		DiagramTestUtils.stopComponentFromDiagram(editor, GPP); // GPP starts when launched
-		String GPP_FULL_NAME = getDeviceFullName(ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, gppParentPath, GPP));
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER, GPP_FULL_NAME);
-		
-		// start GPP from sca explorer
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER, GPP_FULL_NAME);
+		launchDomainAndDevMgr(DEVICE_MANAGER);
+		SWTBotGefEditor editor = gefBot.gefEditor(DEVICE_MANAGER);
 
-		// verify GPP started
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER, GPP_FULL_NAME);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, GPP);
+		// Stop GPP
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP_LOCALHOST, ComponentState.STOPPED);
 
-		// stop GPP from sca explorer
-		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER, GPP_FULL_NAME);
+		// Start GPP
+		ScaExplorerTestUtils.startResourceInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP_LOCALHOST, ComponentState.STARTED);
 
-		// verify GPP stopped
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER, GPP_FULL_NAME);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, GPP);
-	}
-
-	
-	private String getDeviceFullName(String deviceName) {
-		int startedLoc = deviceName.indexOf(" STARTED");
-		if (startedLoc == -1) {
-			return deviceName;
-		}
-		deviceName = deviceName.substring(0, startedLoc);
-		return deviceName;
+		// Stop GPP
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP_LOCALHOST, ComponentState.STOPPED);
 	}
 }

@@ -12,11 +12,6 @@
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.domain.tests;
 
 import static org.junit.Assert.assertEquals;
-import gov.redhawk.ide.swtbot.NodeUtils;
-import gov.redhawk.ide.swtbot.ViewUtils;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.logging.ui.LogLevels;
 
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
@@ -27,6 +22,11 @@ import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.logging.ui.LogLevels;
 
 public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
@@ -42,18 +42,17 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 	 */
 	@Test
 	public void nodeExplorerTest() {
+		launchDomainAndDevMgr(DEVICE_MANAGER);
+		SWTBotEditor nodeEditor = gefBot.editorByTitle(DEVICE_MANAGER);
+		
 		// IDE-1089 test
-		SWTBotEditor nodeEditor = gefBot.editorByTitle(getNodeFullName());
-		nodeEditor.setFocus();
 		nodeEditor.bot().cTabItem("Diagram").activate();
-		editor = gefBot.gefEditor(getNodeFullName());
+		editor = gefBot.gefEditor(DEVICE_MANAGER);
 		editor.setFocus();
 
 		// check for devices
-		String hostName = getNodeFullName().substring(getNodeFullName().indexOf("_"));
-		String gppFullName = GPP + hostName;
-		SWTBotGefEditPart gpp = editor.getEditPart(gppFullName);
-		Assert.assertNotNull(gppFullName + " device not found in diagram", gpp);
+		SWTBotGefEditPart gpp = editor.getEditPart(GPP_LOCALHOST);
+		Assert.assertNotNull(GPP_LOCALHOST + " device not found in diagram", gpp);
 
 		// Check that some design-time options, and local-runtime options don't appear
 		gpp.select();
@@ -68,19 +67,18 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		}
 
 		// check that start/stop works
-		DiagramTestUtils.stopComponentFromDiagram(editor, gppFullName);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, getNodeFullName(), gppFullName);
-		Assert.assertFalse("IDE-1038 No Undo Stop Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, gppFullName, "Undo Stop Command"));
-		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, gppFullName, "Undo Do Command"));
+		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_LOCALHOST);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		Assert.assertFalse("IDE-1038 No Undo Stop Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, GPP_LOCALHOST, "Undo Stop Command"));
+		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, GPP_LOCALHOST, "Undo Do Command"));
 
-		DiagramTestUtils.startComponentFromDiagram(editor, gppFullName);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_NODE_PARENT_PATH, getNodeFullName(), gppFullName);
-		Assert.assertFalse("IDE-1038 No Undo Start Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, gppFullName, "Undo Start Command"));
-		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, gppFullName, "Undo Do Command"));
+		DiagramTestUtils.startComponentFromDiagram(editor, GPP_LOCALHOST);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		Assert.assertFalse("IDE-1038 No Undo Start Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, GPP_LOCALHOST, "Undo Start Command"));
+		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, GPP_LOCALHOST, "Undo Do Command"));
 
 		// check that device is removed from editor when released in the Sca Explorer
-		String[] GPP_PARENT_PATH = { DOMAIN_NODE_PARENT_PATH[0], DOMAIN_NODE_PARENT_PATH[1], getNodeFullName() };
-		ScaExplorerTestUtils.releaseFromScaExplorer(bot, GPP_PARENT_PATH, gppFullName);
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
 
 		// IDE-1001 check that grid is hidden on runtime diagram
 		Diagram diagram = DiagramTestUtils.getDiagram(editor);
@@ -94,10 +92,8 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
 	@Test
 	public void nodeExplorerContextMenuTest() {
-		bot.closeAllEditors();
-		NodeUtils.launchNodeInDomain(bot, DOMAIN, DEVICE_MANAGER_W_BULKIO);
-		setNodeFullName(ScaExplorerTestUtils.getFullNameFromScaExplorer(gefBot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER_W_BULKIO));
-		SWTBotGefEditor editor = gefBot.gefEditor(getNodeFullName());
+		launchDomainAndDevMgr(DEVICE_MANAGER_W_BULKIO);
+		SWTBotGefEditor editor = gefBot.gefEditor(DEVICE_MANAGER_W_BULKIO);
 
 		// Start device stub
 		DiagramTestUtils.startComponentFromDiagram(editor, DEVICE_STUB);

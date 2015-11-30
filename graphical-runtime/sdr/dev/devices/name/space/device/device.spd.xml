@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
-<softpkg id="DCE:b0bec9bd-576d-4415-991d-ce023003bdfc" name="name.space.device" type="sca_compliant">
+<softpkg id="DCE:7b503c0f-2a9c-4453-be7e-c4cee7b8b34b" name="name.space.device" type="2.0.0">
   <title></title>
   <author>
     <name>null</name>
@@ -19,7 +19,7 @@
     </code>
     <programminglanguage name="Python"/>
     <humanlanguage name="EN"/>
-    <runtime name="python" version="2.4.4"/>
+    <runtime name="python" version="2.6.6"/>
     <os name="Linux"/>
   </implementation>
 </softpkg>

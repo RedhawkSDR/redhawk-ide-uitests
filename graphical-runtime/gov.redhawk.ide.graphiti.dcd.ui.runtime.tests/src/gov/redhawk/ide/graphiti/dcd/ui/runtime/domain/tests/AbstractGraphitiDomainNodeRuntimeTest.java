@@ -15,61 +15,46 @@ import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
+import java.util.Arrays;
+
 import org.eclipse.swtbot.eclipse.gef.finder.SWTGefBot;
 import org.junit.After;
 import org.junit.Before;
 
-/**
- * 
- */
 public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTest {
 
-	static final String DOMAIN_MANAGER_PROCESS = "Domain Manager";
-	static final String DEVICE_MANAGER_PROCESS = "Device Manager";
-	static final String DEVICE_MANAGER = "DevMgr_localhost";
-	static final String DEVICE_MANAGER_W_BULKIO = "DevMgr_with_bulkio"; // For tests that need a device with a Bulkio port
-	static final String NAMESPACE_DEVICE_MANAGER = "namespaceNode";
+	protected static final String DEVICE_MANAGER = "DevMgr_localhost";
+	protected static final String DEVICE_MANAGER_W_BULKIO = "DevMgr_with_bulkio";
+	protected static final String NAMESPACE_DEVICE_MANAGER = "name.space.node";
 
-	protected static final String GPP = "GPP";
+	protected static final String GPP_1 = "GPP_1";
+	protected static final String GPP_LOCALHOST = "GPP_localhost";
 	protected static final String DEVICE_STUB = "DeviceStub";
+	protected static final String NAME_SPACE_DEVICE_1 = "device_1";
 
-	final String DOMAIN = "SWTBOT_TEST_" + (int) (1000.0 * Math.random());
-	final String[] DOMAIN_NODE_PARENT_PATH = { DOMAIN, "Device Managers"};
+	private final String DOMAIN = "SWTBOT_TEST_" + (int) (1000.0 * Math.random());
+	protected String[] DEV_MGR_PATH = null;
+
 	protected SWTGefBot gefBot; // SUPPRESS CHECKSTYLE VisibilityModifier
-	private String nodeFullName; //full name of device node that is launched
-	
+
 	@Before
 	public void beforeTest() throws Exception {
-		gefBot = new SWTGefBot();
 		super.before();
-		
-		//Launch Domain
-		ScaExplorerTestUtils.launchDomain(gefBot, DOMAIN, DEVICE_MANAGER);
-		
-		//wait until Domain launched and connected
-		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(gefBot, DOMAIN);
-
-		// Open Node Explorer Diagram
-		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER, DiagramType.GRAPHITI_NODE_EXPLORER);
-		nodeFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(gefBot, DOMAIN_NODE_PARENT_PATH, DEVICE_MANAGER);
+		gefBot = new SWTGefBot();
 	}
-	
+
+	protected void launchDomainAndDevMgr(String deviceManager) {
+		String[] parentPath = new String[] { DOMAIN, "Device Managers" };
+		ScaExplorerTestUtils.launchDomain(bot, DOMAIN, deviceManager);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN);
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, parentPath, deviceManager, DiagramType.GRAPHITI_NODE_EXPLORER);
+		DEV_MGR_PATH = Arrays.copyOf(parentPath, parentPath.length + 1);
+		DEV_MGR_PATH[parentPath.length] = deviceManager;
+	}
+
 	@After
 	public void afterTest() {
-		
-		//delete domain instance from sca explorer
 		ScaExplorerTestUtils.deleteDomainInstance(bot, DOMAIN);
-		
-		//Stop all processes that may have been started
 		ConsoleUtils.terminateAllProcesses(gefBot);
 	}
-	
-	public String getNodeFullName() {
-		return nodeFullName;
-	}
-
-	public void setNodeFullName(String waveFormFullName) {
-		this.nodeFullName = waveFormFullName;
-	}
-
 }
