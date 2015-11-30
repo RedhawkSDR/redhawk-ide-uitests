@@ -16,6 +16,8 @@ import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.condition.WaitForBuild;
+import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
@@ -46,6 +48,8 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 		// Export to SDR
 		SWTBotTreeItem projectNode = ProjectExplorerUtils.waitUntilNodeAppears(bot, projectName);
 		projectNode.contextMenu("Export to SDR").click();
+		bot.waitUntil(new WaitForBuild(), WaitForBuild.TIMEOUT);
+		bot.waitUntil(new WaitForLaunchTermination(), WaitForBuild.TIMEOUT);
 
 		// Confirm export worked
 		SWTBotTreeItem scaNode = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaExpPath, projectName);
@@ -70,9 +74,10 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 		ProjectExplorerUtils.openProjectInEditor(bot, new String[] { sharedLibName, sharedLibName + ".spd.xml" });
 		SWTBotEditor editor = bot.editorByTitle(sharedLibName);
 		StandardTestActions.generateProject(bot, editor);
+		bot.waitUntil(new WaitForBuild(), WaitForBuild.TIMEOUT);
 		bot.closeAllEditors();
 
-		// Create and generate component
+		// Create a waveform
 		final String waveformName = "WaveformExportTest";
 		WaveformUtils.createNewWaveform(bot, waveformName, null);
 		bot.closeAllEditors();
