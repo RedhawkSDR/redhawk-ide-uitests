@@ -139,6 +139,7 @@
 
   <modules>
     <module>gov.redhawk.ide.graphiti.ui.tests</module>
+    <module>gov.redhawk.ide.ui.xml.editors.tests</module>
   </modules>
 
   <build>
