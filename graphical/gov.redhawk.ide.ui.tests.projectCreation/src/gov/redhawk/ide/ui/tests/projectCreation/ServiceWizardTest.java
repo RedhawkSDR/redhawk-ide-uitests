@@ -12,6 +12,7 @@ package gov.redhawk.ide.ui.tests.projectCreation;
 
 import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class ServiceWizardTest extends ComponentWizardTest {
@@ -22,9 +23,9 @@ public class ServiceWizardTest extends ComponentWizardTest {
 		return "REDHAWK Service Project";
 	}
 
-	protected void testProjectCreation(String name, String lang, String generator, String template) {
+	protected void testServiceProjectCreation(String name, String lang, String generator, String template) {
 		setServiceInWizard();
-		super.testProjectCreation(name, lang, generator, template);
+		super.testProjectCreation(name, lang, generator, new StandardCodegenInfo(template));
 	}
 
 	public void setServiceInWizard() {
@@ -33,22 +34,22 @@ public class ServiceWizardTest extends ComponentWizardTest {
 	
 	@Test
 	@Override
-	public void testStubPythonCreation() {
-		testProjectCreation("ComponentWizardTest01", "Python", "Stub Python Code Generator", "Default Service");
+	public void testPythonCreation() {
+		testServiceProjectCreation("ComponentWizardTest01", "Python", "Python Code Generator", "Default Service");
 		wizardShell.close();
 	}
 
 	@Test
 	@Override
-	public void testStubCppCreation() {
-		testProjectCreation("ComponentWizardTest01", "C++", "Stub C++ Code Generator", "Default Service");
+	public void testCppCreation() {
+		testServiceProjectCreation("ComponentWizardTest01", "C++", "C++ Code Generator", "Default Service");
 		wizardShell.close();
 	}
 
 	@Test
 	@Override
-	public void testStubJavaCreation() {
-		testProjectCreation("ComponentWizardTest01", "Java", "Stub Java Code Generator", "Default Service");
+	public void testJavaCreation() {
+		testServiceProjectCreation("ComponentWizardTest01", "Java", "Java Code Generator", "Default Service");
 		wizardShell.close();
 	}
 	
@@ -86,9 +87,9 @@ public class ServiceWizardTest extends ComponentWizardTest {
 	@Test
 	@Override
 	public void testNamespacedObjectCreation() {
-		testProjectCreation("namespaced.service.IDE1111", "Python", null, null);
-		// IDE-1219 TODO: skip below check, until moved to redhawk-ide-uitests repo to test against IDE product
-//		Assert.assertEquals("code.entrypoint", "customOutput/IDE1111.py", bot.activeEditor().bot().textWithLabel("Entry Point:").getText());
+		testServiceProjectCreation("namespaced.service.IDE1111", "Python", null, null);
+		Assert.assertEquals("code.entrypoint", "python/IDE1111.py", bot.activeEditor().bot().textWithLabel("Entry Point:").getText());
+		verifyEditorTabPresent("IDE1111.spd.xml");
 		verifyEditorTabPresent("IDE1111.scd.xml");
 	}
 	

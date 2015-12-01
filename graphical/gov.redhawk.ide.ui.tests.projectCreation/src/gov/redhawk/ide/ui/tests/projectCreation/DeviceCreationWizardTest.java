@@ -27,9 +27,9 @@ public class DeviceCreationWizardTest extends ComponentWizardTest {
 	}
 
 	@Test
-	public void testStubCppDeviceCreation() {
+	public void testCppDeviceCreation() {
 		wizardBot.comboBox().setSelection("Device");
-		super.testStubCppCreation();
+		super.testCppCreation();
 
 		assertDeviceInterface("IDL:CF/Device:1.0");
 	}
@@ -48,25 +48,25 @@ public class DeviceCreationWizardTest extends ComponentWizardTest {
 	}
 
 	@Test
-	public void testStubCppExecutableDeviceCreation() {
+	public void testCppExecutableDeviceCreation() {
 		wizardBot.comboBox().setSelection("Executable");
-		super.testStubCppCreation();
+		super.testCppCreation();
 
 		assertDeviceInterface("IDL:CF/ExecutableDevice:1.0");
 	}
 
 	@Test
-	public void testStubCppAggregateDeviceCreation() {
+	public void testCppAggregateDeviceCreation() {
 		bot.checkBox("Aggregate device").click();
-		super.testStubCppCreation();
+		super.testCppCreation();
 
 		assertDeviceInterface("IDL:CF/AggregateDevice:1.0");
 	}
 
 	@Test
-	public void testStubCppLoadableDeviceCreation() {
+	public void testCppLoadableDeviceCreation() {
 		wizardBot.comboBox().setSelection("Loadable");
-		super.testStubCppCreation();
+		super.testCppCreation();
 
 		assertDeviceInterface("IDL:CF/LoadableDevice:1.0");
 	}

@@ -13,13 +13,13 @@ package gov.redhawk.ide.ui.tests.projectCreation;
 import java.io.File;
 import java.io.IOException;
 
-import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
+import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
@@ -52,6 +52,20 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		wizardBot.comboBoxWithLabel("Code Generator:").setSelection(0);
 		wizardBot.button("Next >").click();
 
+		testNonDefaultLocation_setupCodeGeneration();
+
+		wizardBot.button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(wizardShell));
+		SWTBotEditor editorBot = bot.editorByTitle("ProjectName");
+
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("ProjectName");
+		IPath location = project.getLocation();
+		Assert.assertEquals(createdFolder.getAbsolutePath(), location.toOSString());
+
+		testNonDefaultLocation_assertOutputDir(editorBot);
+	}
+
+	protected void testNonDefaultLocation_setupCodeGeneration() {
 		SWTBotCombo templateCombo = wizardBot.comboBoxWithLabel("Template:");
 		for (int i = 0; i < templateCombo.itemCount(); i++) {
 			wizardBot.comboBoxWithLabel("Template:").setSelection(i);
@@ -59,16 +73,15 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 				break;
 			}
 		}
-		wizardBot.button("Finish").click();
-
-		bot.waitUntil(new WaitForEditorCondition(), 30000, 500);
-
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("ProjectName");
-		IPath location = project.getLocation();
-		Assert.assertEquals(createdFolder.getAbsolutePath(), location.toOSString());
+		wizardBot.textWithLabel("Output Directory:").setText("customOutput");
 	}
 
-	protected void testProjectCreation(String name, String lang, String generator, String template) {
+	protected void testNonDefaultLocation_assertOutputDir(SWTBotEditor editorBot) {
+		editorBot.bot().cTabItem("Implementations").activate();
+		Assert.assertEquals("customOutput", editorBot.bot().textWithLabel("Output Dir:").getText());
+	}
+
+	protected void testProjectCreation(String name, String lang, String generator, ICodegenInfo iCodegenInfo) {
 		wizardBot.textWithLabel("&Project name:").setText(name);
 		wizardBot.button("Next >").click();
 
@@ -82,87 +95,69 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		wizardBot.textWithLabel("Description:").setText("custom description");
 		wizardBot.button("Next >").click();
 
-		if (template != null) {
-			wizardBot.comboBoxWithLabel("Template:").setSelection(template);
-		}
-		Assert.assertFalse(wizardBot.textWithLabel("Output Directory:").getText().isEmpty());
-		wizardBot.textWithLabel("Output Directory:").setText("customOutput");
+		setupCodeGeneration(iCodegenInfo);
+
 		wizardBot.button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(wizardShell));
 
-		String baseFilename = getBaseFilename(name);
 		// Ensure SPD file was created
-		SWTBotView view = bot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
-		view.show();
-		view.bot().tree().setFocus();
-		view.bot().tree().getTreeItem(name).select();
-		view.bot().tree().getTreeItem(name).expand();
-		view.bot().tree().getTreeItem(name).getNode(baseFilename + ".spd.xml");
+		String baseFilename = getBaseFilename(name);
+		ProjectExplorerUtils.waitUntilNodeAppears(bot, name, baseFilename + ".spd.xml");
 
-		bot.waitUntil(new WaitForEditorCondition(), 30000, 500);
-
-		// Ensure SPD Editor is open and has correct content
-		SWTBotEditor editorBot = bot.activeEditor();
+		// Ensure SPD editor opened
+		SWTBotEditor editorBot = bot.editorByTitle(name);
 		Assert.assertEquals("gov.redhawk.ide.ui.editors.ComponentEditor", editorBot.getReference().getId());
 
+		// Check overview tab contents
 		Assert.assertEquals(name, editorBot.bot().textWithLabel("Name*:").getText());
-		editorBot.bot().cTabItem("Implementations").activate();
 
+		// Check implementation tab contents
+		editorBot.bot().cTabItem("Implementations").activate();
 		SWTBotTreeItem[] items = editorBot.bot().tree().getAllItems();
 		Assert.assertEquals(1, editorBot.bot().tree().selectionCount());
 		Assert.assertEquals(1, items.length);
 		Assert.assertTrue(items[0].getText().matches("customImplID.*"));
 		Assert.assertEquals("customImplID", editorBot.bot().textWithLabel("ID*:").getText());
 		Assert.assertEquals(lang, editorBot.bot().textWithLabel("Prog. Lang:").getText());
-
 		Assert.assertEquals("custom description", editorBot.bot().textWithLabel("Description:").getText());
-
-		Assert.assertEquals("customOutput", editorBot.bot().textWithLabel("Output Dir:").getText());
-
 	}
 
 	@Test
-	public void testStubPythonCreation() {
-		testProjectCreation("ComponentWizardTest01", "Python", "Stub Python Code Generator", "Pull Port Data");
+	public void testPythonCreation() {
+		testProjectCreation("ComponentWizardTest01", "Python", "Python Code Generator", new StandardCodegenInfo("Pull Port Data"));
 	}
 
 	@Test
-	public void testStubCppCreation() {
-		testProjectCreation("ComponentWizardTest01", "C++", "Stub C++ Code Generator", "Pull Port Data");
+	public void testCppCreation() {
+		testProjectCreation("ComponentWizardTest01", "C++", "C++ Code Generator", new StandardCodegenInfo("Pull Port Data"));
 	}
 
 	@Test
-	public void testStubJavaCreation() {
-		testProjectCreation("ComponentWizardTest01", "Java", "Stub Java Code Generator", "Pull Port Data (Base/Derived)");
+	public void testJavaCreation() {
+		testProjectCreation("ComponentWizardTest01", "Java", "Java Code Generator", new StandardCodegenInfo("Pull Port Data (Base/Derived)"));
 	}
 
 	@Test
 	public void testBackNext() {
 		wizardBot.textWithLabel("&Project name:").setText("ComponentWizardTest01");
 		wizardBot.button("Next >").click();
-		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("Python");
-		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("Java");
-		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("C++");
 
 		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("Python");
-		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("Stub Python Code Generator");
+		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("Python Code Generator");
 		wizardBot.button("Next >").click();
+		setupCodeGeneration(null);
 		Assert.assertTrue(wizardBot.button("Finish").isEnabled());
+		reverseFromCodeGeneration();
 		wizardBot.button("< Back").click();
 
 		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("Java");
-		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("Stub Java Code Generator");
+		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("Java Code Generator");
 		wizardBot.button("Next >").click();
 		Assert.assertTrue(wizardBot.button("Finish").isEnabled());
 		wizardBot.button("< Back").click();
 
 		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("C++");
-		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("Stub C++ Code Generator");
-		wizardBot.button("Next >").click();
-		Assert.assertTrue(wizardBot.button("Finish").isEnabled());
-		wizardBot.button("< Back").click();
-
-		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("Python");
-		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("Stub Python Code Generator");
+		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("C++ Code Generator");
 		wizardBot.button("Next >").click();
 		Assert.assertTrue(wizardBot.button("Finish").isEnabled());
 
@@ -187,13 +182,25 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 	@Test
 	public void testNamespacedObjectCreation() {
 		testProjectCreation("namespaced.project.IDE1111", "Python", null, null);
-		Assert.assertEquals("code.entrypoint", "customOutput/IDE1111.py", bot.activeEditor().bot().textWithLabel("Entry Point:").getText());
+		Assert.assertEquals("code.entrypoint", "python/IDE1111.py", bot.activeEditor().bot().textWithLabel("Entry Point:").getText());
+		verifyEditorTabPresent("IDE1111.spd.xml");
 		verifyEditorTabPresent("IDE1111.prf.xml");
 		verifyEditorTabPresent("IDE1111.scd.xml");
 	}
+
+	protected void setupCodeGeneration(ICodegenInfo iCodegenInfo) {
+		StandardCodegenInfo codegenInfo = (StandardCodegenInfo) iCodegenInfo;
+		if (codegenInfo != null && codegenInfo.getTemplate() != null) {
+			wizardBot.comboBoxWithLabel("Template:").setSelection(codegenInfo.getTemplate());
+		}
+		Assert.assertFalse(wizardBot.textWithLabel("Output Directory:").getText().isEmpty());
+	}
 	
+	protected void reverseFromCodeGeneration() {
+	}
+
 	protected void verifyEditorTabPresent(String tabName) {
 		Assert.assertNotNull(tabName + " editor tab is missing", bot.activeEditor().bot().cTabItem(tabName));
 	}
-	
+
 }
