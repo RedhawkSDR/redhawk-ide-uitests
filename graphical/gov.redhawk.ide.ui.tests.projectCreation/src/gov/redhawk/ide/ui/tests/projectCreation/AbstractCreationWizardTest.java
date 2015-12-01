@@ -16,12 +16,14 @@ import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -36,12 +38,12 @@ public abstract class AbstractCreationWizardTest extends UITest {
 
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
-	
+
 	@BeforeClass
 	public static void setupPyDev() throws Exception {
 		StandardTestActions.configurePyDev();
 	}
-	
+
 	@Test
 	public void testUUID() {
 		wizardBot.textWithLabel("&Project name:").setText("WizardTest02");
@@ -76,10 +78,10 @@ public abstract class AbstractCreationWizardTest extends UITest {
 
 		wizardBot.textWithLabel("DCE UUID:").setText("DCE:187ca38e-ef38-487f-8f9b-935dca8595da");
 		Assert.assertTrue(wizardBot.button("Next >").isEnabled());
-		
+
 		wizardShell.close();
 	}
-	
+
 	@Before
 	@Override
 	public void before() throws Exception {
@@ -89,10 +91,11 @@ public abstract class AbstractCreationWizardTest extends UITest {
 		wizardShell = bot.shell("New Project");
 		Assert.assertTrue(wizardShell.isActive());
 		wizardBot = wizardShell.bot();
-		wizardBot.tree().getTreeItem("REDHAWK").expand().getNode(getProjectType()).select();
+		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(wizardBot, wizardBot.tree(), Arrays.asList("REDHAWK", getProjectType()));
+		treeItem.select();
 		wizardBot.button("Next >").click();
 	}
-	
+
 	protected abstract String getProjectType();
 
 	@Test
@@ -108,7 +111,7 @@ public abstract class AbstractCreationWizardTest extends UITest {
 		bot.button("Finish").click();
 
 		bot.waitUntil(new WaitForEditorCondition(), 30000, 500);
-		
+
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("ProjectName");
 		IPath location = project.getLocation();
 		Assert.assertEquals(createdFolder.getAbsolutePath(), location.toOSString());
@@ -124,5 +127,5 @@ public abstract class AbstractCreationWizardTest extends UITest {
 		String[] segments = projectName.split("\\.");
 		return segments[segments.length - 1];
 	}
-	
+
 }

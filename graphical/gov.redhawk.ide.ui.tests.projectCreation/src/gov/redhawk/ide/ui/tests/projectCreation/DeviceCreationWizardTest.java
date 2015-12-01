@@ -10,7 +10,6 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.projectCreation;
 
-
 import gov.redhawk.model.sca.util.ModelUtil;
 import mil.jpeojtrs.sca.scd.ComponentFeatures;
 import mil.jpeojtrs.sca.scd.SupportsInterface;
@@ -26,12 +25,12 @@ public class DeviceCreationWizardTest extends ComponentWizardTest {
 	protected String getProjectType() {
 		return "REDHAWK Device Project";
 	}
-	
+
 	@Test
 	public void testStubCppDeviceCreation() {
 		wizardBot.comboBox().setSelection("Device");
 		super.testStubCppCreation();
-		
+
 		assertDeviceInterface("IDL:CF/Device:1.0");
 	}
 
@@ -48,41 +47,28 @@ public class DeviceCreationWizardTest extends ComponentWizardTest {
 		Assert.assertTrue("Did not find correct supports interface:" + repid, found);
 	}
 
-
 	@Test
 	public void testStubCppExecutableDeviceCreation() {
 		wizardBot.comboBox().setSelection("Executable");
 		super.testStubCppCreation();
-		
+
 		assertDeviceInterface("IDL:CF/ExecutableDevice:1.0");
 	}
-	
+
 	@Test
 	public void testStubCppAggregateDeviceCreation() {
 		bot.checkBox("Aggregate device").click();
 		super.testStubCppCreation();
-		
+
 		assertDeviceInterface("IDL:CF/AggregateDevice:1.0");
 	}
-	
+
 	@Test
 	public void testStubCppLoadableDeviceCreation() {
 		wizardBot.comboBox().setSelection("Loadable");
 		super.testStubCppCreation();
-		
+
 		assertDeviceInterface("IDL:CF/LoadableDevice:1.0");
 	}
 
-	/**
-	 * IDE-1111: Test creation of device with dots in the name
-	 */
-	@Test
-	@Override
-	public void testNamespacedObjectCreation() {
-		super.testProjectCreation("namespaced.device.IDE1111", "Python", null, null);
-		Assert.assertEquals("code.entrypoint", "customOutput/IDE1111.py", bot.activeEditor().bot().textWithLabel("Entry Point:").getText());
-		verifyEditorTabPresent("IDE1111.prf.xml");
-		verifyEditorTabPresent("IDE1111.scd.xml");
-	}
-	
 }

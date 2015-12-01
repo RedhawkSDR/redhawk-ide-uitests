@@ -13,7 +13,6 @@ package gov.redhawk.ide.ui.tests.projectCreation;
 import java.io.File;
 import java.io.IOException;
 
-import gov.redhawk.ide.spd.internal.ui.editor.ComponentEditor;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 
 import org.eclipse.core.resources.IProject;
@@ -27,7 +26,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * IDE-1219 TODO: this should move to redhawk-ide-uitests repo to test against IDE product
+ * IDE-1219
  */
 public class ComponentWizardTest extends AbstractCreationWizardTest {
 
@@ -103,7 +102,7 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 
 		// Ensure SPD Editor is open and has correct content
 		SWTBotEditor editorBot = bot.activeEditor();
-		Assert.assertTrue(editorBot.getReference().getEditor(true) instanceof ComponentEditor);
+		Assert.assertEquals("gov.redhawk.ide.ui.editors.ComponentEditor", editorBot.getReference().getId());
 
 		Assert.assertEquals(name, editorBot.bot().textWithLabel("Name*:").getText());
 		editorBot.bot().cTabItem("Implementations").activate();
@@ -187,9 +186,8 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 	 */
 	@Test
 	public void testNamespacedObjectCreation() {
-		testProjectCreation("namespaced.component.IDE1111", "Python", null, null);
-		// IDE-1219 TODO: skip below check, until moved to redhawk-ide-uitests repo to test against IDE product
-		// Assert.assertEquals("code.entrypoint", "customOutput/IDE1111.py", bot.activeEditor().bot().textWithLabel("Entry Point:").getText());
+		testProjectCreation("namespaced.project.IDE1111", "Python", null, null);
+		Assert.assertEquals("code.entrypoint", "customOutput/IDE1111.py", bot.activeEditor().bot().textWithLabel("Entry Point:").getText());
 		verifyEditorTabPresent("IDE1111.prf.xml");
 		verifyEditorTabPresent("IDE1111.scd.xml");
 	}
