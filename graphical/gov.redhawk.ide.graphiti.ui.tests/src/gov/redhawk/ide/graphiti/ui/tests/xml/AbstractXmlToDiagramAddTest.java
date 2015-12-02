@@ -21,6 +21,8 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,6 +35,7 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
 import mil.jpeojtrs.sca.dcd.DcdComponentPlacement;
+import mil.jpeojtrs.sca.dcd.DcdConnectInterface;
 import mil.jpeojtrs.sca.dcd.DcdFactory;
 import mil.jpeojtrs.sca.dcd.DcdPackage;
 import mil.jpeojtrs.sca.dcd.DeviceConfiguration;
@@ -41,6 +44,7 @@ import mil.jpeojtrs.sca.partitioning.ComponentFileRef;
 import mil.jpeojtrs.sca.partitioning.PartitioningFactory;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 import mil.jpeojtrs.sca.sad.SadComponentPlacement;
+import mil.jpeojtrs.sca.sad.SadConnectInterface;
 import mil.jpeojtrs.sca.sad.SadFactory;
 import mil.jpeojtrs.sca.sad.SadPackage;
 import mil.jpeojtrs.sca.sad.SoftwareAssembly;
@@ -138,17 +142,50 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 		}
 	}
 
-	/*
+	/**
+	 * IDE-848, IDE-994
+	 * Add a connection to XML and have it reflected in the diagram.
+	 * @throws IOException
+	 */
 	@Test
-	public void addConnectionInXml() {
-		// TODO
+	public void addConnectionInXml() throws IOException {
+		final String TEST_NAME = "addComponentInXml";
+
+		RHBotGefEditor editor = createEditor(TEST_NAME);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, compA.getFullName(), 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, compB.getFullName(), 300, 0);
+
+		getModelFromEditorXml(editor, TEST_NAME);
+		if (getEditorType() == EditorType.SAD) {
+			if (sad.getConnections() == null) {
+				sad.setConnections(SadFactory.eINSTANCE.createSadConnections());
+			}
+			List<SadConnectInterface> connections = sad.getConnections().getConnectInterface();
+			SadConnectInterface connection = SadFactory.eINSTANCE.createSadConnectInterface("connection_1", compA.getOutPort(0), compA.getShortName(1),
+				compB.getInPort(0), compB.getShortName(1));
+			connections.add(connection);
+		} else {
+			if (dcd.getConnections() == null) {
+				dcd.setConnections(DcdFactory.eINSTANCE.createDcdConnections());
+			}
+			List<DcdConnectInterface> connections = dcd.getConnections().getConnectInterface();
+			DcdConnectInterface connection = DcdFactory.eINSTANCE.createDcdConnectInterface("connection_1", compA.getOutPort(0), compA.getShortName(1),
+				compB.getInPort(0), compB.getShortName(1));
+			connections.add(connection);
+		}
+		writeModelToXmlEditor(editor, TEST_NAME);
+		MenuUtils.save(editor);
+
+		// Confirm connections in the diagram
+		DiagramTestUtils.openTabInEditor(editor, "Diagram");
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, compA.getShortName(1), compA.getOutPort(0));
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, compB.getShortName(1), compB.getInPort(0));
+		List<SWTBotGefConnectionEditPart> usesConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
+		List<SWTBotGefConnectionEditPart> providesConnections = DiagramTestUtils.getTargetConnectionsFromPort(editor, providesEditPart);
+		Assert.assertEquals(1, usesConnections.size());
+		Assert.assertEquals(1, providesConnections.size());
+		Assert.assertEquals(usesConnections.get(0).part(), providesConnections.get(0).part());
 	}
-	
-	@Test
-	public void addHostCollocationInXml() {
-		// TODO
-	}
-	*/
 
 	private void getModelFromEditorXml(SWTBotEditor editor, String testName) throws IOException {
 		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();

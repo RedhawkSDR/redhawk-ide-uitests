@@ -19,9 +19,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.pictograms.Connection;
-import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
@@ -61,69 +59,11 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 	private static final String SIG_GEN_FLOAT_OUT = "dataFloat_out";
 	private static final String HARD_LIMIT = "rh.HardLimit";
 	private static final String HARD_LIMIT_1 = "HardLimit_1";
-	private static final String HARD_LIMIT_FLOAT_IN = "dataFloat_in";
 	private static final String HARD_LIMIT_FLOAT_OUT = "dataFloat_out";
 
 	private String waveformName;
 
 	private RHSWTGefBot gefBot = new RHSWTGefBot();
-
-	/**
-	 * IDE-848
-	 * Add a connection to the diagram via the sad.xml
-	 */
-	@Test
-	public void addConnectionInXmlTest() {
-		waveformName = "Add_Connection_Xml";
-
-		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
-		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
-
-		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 0);
-		MenuUtils.save(editor);
-
-		// Confirm that no connections currently exist
-		SWTBotGefEditPart sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
-		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, sigGenUsesEditPart);
-		Assert.assertTrue("No connections should exist", sourceConnections.isEmpty());
-
-		// Edit content of sad.xml
-		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
-		String editorText = editor.toTextEditor().getText();
-
-		String newConnection = "</assemblycontroller> <connections> <connectinterface id=\"connection_1\"> " + "<usesport> <usesidentifier>" + SIG_GEN_FLOAT_OUT
-			+ "</usesidentifier> <componentinstantiationref refid=\"" + SIG_GEN_1 + "\"/> </usesport> " + "<providesport> <providesidentifier>"
-			+ HARD_LIMIT_FLOAT_IN + "</providesidentifier> " + " <componentinstantiationref refid=\"" + HARD_LIMIT_1
-			+ "\"/> </providesport> </connectinterface> </connections>";
-		editorText = editorText.replace("</assemblycontroller>", newConnection);
-		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
-
-		// Confirm edits appear in the diagram
-		DiagramTestUtils.openTabInEditor(editor, "Diagram");
-
-		sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
-		SWTBotGefEditPart hardLimitProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
-
-		sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, sigGenUsesEditPart);
-		Assert.assertFalse("Connection should exist size=" + sourceConnections.size(), sourceConnections.isEmpty());
-
-		Connection connection = (Connection) sourceConnections.get(0).part().getModel();
-		UsesPortStub usesPort = (UsesPortStub) DUtil.getBusinessObject(connection.getStart());
-		Assert.assertEquals("Connection uses port not correct", usesPort, DUtil.getBusinessObject((ContainerShape) sigGenUsesEditPart.part().getModel()));
-
-		ProvidesPortStub providesPort = (ProvidesPortStub) DUtil.getBusinessObject(connection.getEnd());
-		Assert.assertEquals("Connect provides port not correct", providesPort,
-			DUtil.getBusinessObject((ContainerShape) hardLimitProvidesEditPart.part().getModel()));
-
-		Assert.assertTrue("Only arrowhead decorator should be present", connection.getConnectionDecorators().size() == 1);
-		for (ConnectionDecorator decorator : connection.getConnectionDecorators()) {
-			Assert.assertTrue("Only arrowhead decorator should be present", decorator.getGraphicsAlgorithm() instanceof Polyline);
-		}
-	}
 
 	/**
 	 * IDE-849
