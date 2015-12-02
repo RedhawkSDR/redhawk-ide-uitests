@@ -18,17 +18,17 @@ public class CollapseShapeTest extends CollapseShapeAbstractTest {
 
 	@Override
 	protected ComponentDescription getComponentADescription() {
-		return new ComponentDescription("DeviceStub", "DeviceStub", new String[0], new String[] { "dataFloat_out", "dataDouble_out" });
+		return new ComponentDescription("DeviceStub", new String[0], new String[] { "dataFloat_out", "dataDouble_out" });
 	}
 
 	@Override
 	protected ComponentDescription getComponentBDescription() {
-		return new ComponentDescription("DeviceStub2", "DeviceStub2", new String[] { "dataFloat_in", "dataDouble_in" }, new String[0]);
+		return new ComponentDescription("DeviceStub2", new String[] { "dataFloat_in", "dataDouble_in" }, new String[0]);
 	}
 
 	@Override
 	protected ComponentDescription getComponentCDescription() {
-		return new ComponentDescription("DeviceStub3", "DeviceStub3", new String[] { "dataShort_in" }, new String[] { "dataShort_out" });
+		return new ComponentDescription("DeviceStub3", new String[] { "dataShort_in" }, new String[] { "dataShort_out" });
 	}
 
 	@Override

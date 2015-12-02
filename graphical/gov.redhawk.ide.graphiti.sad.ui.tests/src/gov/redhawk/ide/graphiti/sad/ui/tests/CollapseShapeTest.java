@@ -18,17 +18,17 @@ public class CollapseShapeTest extends CollapseShapeAbstractTest {
 
 	@Override
 	protected ComponentDescription getComponentADescription() {
-		return new ComponentDescription("rh.SigGen", "SigGen", new String[0], new String[] { "dataFloat_out", "dataShort_out" });
+		return new ComponentDescription("rh.SigGen", new String[0], new String[] { "dataFloat_out", "dataShort_out" });
 	}
 
 	@Override
 	protected ComponentDescription getComponentBDescription() {
-		return new ComponentDescription("rh.DataConverter", "DataConverter", new String[] { "dataFloat", "dataShort" }, new String[0]);
+		return new ComponentDescription("rh.DataConverter", new String[] { "dataFloat", "dataShort" }, new String[0]);
 	}
 
 	@Override
 	protected ComponentDescription getComponentCDescription() {
-		return new ComponentDescription("rh.HardLimit", "HardLimit", new String[] { "dataFloat_in" }, new String[] { "dataFloat_out" });
+		return new ComponentDescription("rh.HardLimit", new String[] { "dataFloat_in" }, new String[] { "dataFloat_out" });
 	}
 
 	@Override

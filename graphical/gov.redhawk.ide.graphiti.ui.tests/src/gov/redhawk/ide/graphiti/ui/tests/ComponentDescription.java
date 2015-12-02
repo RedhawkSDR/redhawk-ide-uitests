@@ -10,22 +10,36 @@
  */
 package gov.redhawk.ide.graphiti.ui.tests;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ComponentDescription {
 
 	private String fullName;
 	private String shortName;
 	private String[] inPorts;
 	private String[] outPorts;
+	private Map<String, String> keys;
 
-	public ComponentDescription(String fullName, String shortName, String[] inPorts, String[] outPorts) {
+	public ComponentDescription(String fullName, String[] inPorts, String[] outPorts) {
 		this.fullName = fullName;
-		this.shortName = shortName;
+		int index = this.fullName.lastIndexOf('.');
+		if (index == -1) {
+			this.shortName = this.fullName;
+		} else {
+			this.shortName = this.fullName.substring(index + 1);
+		}
 		this.inPorts = inPorts;
 		this.outPorts = outPorts;
+		this.keys = new HashMap<String, String>();
 	}
 
 	public String getFullName() {
 		return fullName;
+	}
+
+	public String getShortName() {
+		return shortName;
 	}
 
 	public String getShortName(int number) {
@@ -38,5 +52,13 @@ public class ComponentDescription {
 
 	public String getOutPort(int index) {
 		return outPorts[index];
+	}
+
+	public void setKey(String key, String value) {
+		this.keys.put(key, value);
+	}
+
+	public String getKey(String key) {
+		return this.keys.get(key);
 	}
 }
