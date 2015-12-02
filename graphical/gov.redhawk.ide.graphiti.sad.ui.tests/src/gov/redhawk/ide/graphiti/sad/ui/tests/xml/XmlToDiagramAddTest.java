@@ -13,7 +13,6 @@ package gov.redhawk.ide.graphiti.sad.ui.tests.xml;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
@@ -32,18 +31,19 @@ import org.junit.Test;
 import gov.redhawk.ide.graphiti.sad.ext.ComponentShape;
 import gov.redhawk.ide.graphiti.sad.ui.tests.SadTestUtils;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
+import gov.redhawk.ide.graphiti.ui.tests.ComponentDescription;
+import gov.redhawk.ide.graphiti.ui.tests.xml.AbstractXmlToDiagramAddTest;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
-import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import mil.jpeojtrs.sca.partitioning.FindBy;
 import mil.jpeojtrs.sca.partitioning.FindByStub;
 import mil.jpeojtrs.sca.partitioning.PartitioningFactory;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 import mil.jpeojtrs.sca.sad.HostCollocation;
-import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 import mil.jpeojtrs.sca.sad.SadConnectInterface;
 import mil.jpeojtrs.sca.sad.SadFactory;
 import mil.jpeojtrs.sca.sad.SadPackage;
@@ -54,7 +54,7 @@ import mil.jpeojtrs.sca.sad.SoftwareAssembly;
 /**
  * Test class that deals with adding elements to the sad.xml and making sure they appear correctly in the diagram
  */
-public class XmlToDiagramAddTest extends AbstractGraphitiTest {
+public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 
 	private static final String SIG_GEN = "rh.SigGen";
 	private static final String SIG_GEN_1 = "SigGen_1";
@@ -66,48 +66,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 
 	private String waveformName;
 
-	/**
-	 * IDE-847
-	 * Add a component to the diagram via the sad.xml
-	 */
-	@Test
-	public void addComponentInXmlTest() {
-		waveformName = "Add_Component_Xml";
-
-		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
-		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
-
-		// Add component to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
-		MenuUtils.save(editor);
-
-		// Edit content of sad.xml
-		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
-		String editorText = editor.toTextEditor().getText();
-
-		String newComponentFile = "</componentfile> <componentfile id=\"HardLimit_304be23f-b97f-4371-b8bd-2d1922baf555\" type=\"SPD\"> "
-			+ "<localfile name=\"/components/rh/HardLimit/HardLimit.spd.xml\"/> </componentfile>";
-		editorText = editorText.replace("</componentfile>", newComponentFile);
-
-		String newComponentPlacement = "</componentplacement> <componentplacement> "
-			+ "<componentfileref refid=\"HardLimit_304be23f-b97f-4371-b8bd-2d1922baf555\"/> "
-			+ "<componentinstantiation id=\"" + HARD_LIMIT_1 + "\" startorder=\"1\"> <usagename>" + HARD_LIMIT_1 + "</usagename> "
-			+ "<findcomponent> <namingservice name=\"" + HARD_LIMIT_1 + "\"/> </findcomponent> </componentinstantiation> </componentplacement>";
-		editorText = editorText.replace("</componentplacement>", newComponentPlacement);
-		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
-
-		// Confirm edits appear in the diagram
-		DiagramTestUtils.openTabInEditor(editor, "Diagram");
-
-		SadComponentInstantiation componentObj = DiagramTestUtils.getComponentObject(editor, HARD_LIMIT_1);
-		Assert.assertNotNull(componentObj);
-		Assert.assertEquals("Usage Name did not create correctly", HARD_LIMIT_1, componentObj.getUsageName());
-		Assert.assertEquals("Component ID did not create correctly", HARD_LIMIT_1, componentObj.getId());
-		Assert.assertEquals("Naming Service did not create correctly", HARD_LIMIT_1, componentObj.getFindComponent().getNamingService().getName());
-		Assert.assertEquals("Start Order did not create correctly", BigInteger.valueOf(1), componentObj.getStartOrder());
-	}
+	private RHSWTGefBot gefBot = new RHSWTGefBot();
 
 	/**
 	 * IDE-848
@@ -135,10 +94,10 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
 		String editorText = editor.toTextEditor().getText();
 
-		String newConnection = "</assemblycontroller> <connections> <connectinterface id=\"connection_1\"> "
-			+ "<usesport> <usesidentifier>" + SIG_GEN_FLOAT_OUT + "</usesidentifier> <componentinstantiationref refid=\"" + SIG_GEN_1 + "\"/> </usesport> "
-			+ "<providesport> <providesidentifier>" + HARD_LIMIT_FLOAT_IN + "</providesidentifier> "
-			+ " <componentinstantiationref refid=\"" + HARD_LIMIT_1 + "\"/> </providesport> </connectinterface> </connections>";
+		String newConnection = "</assemblycontroller> <connections> <connectinterface id=\"connection_1\"> " + "<usesport> <usesidentifier>" + SIG_GEN_FLOAT_OUT
+			+ "</usesidentifier> <componentinstantiationref refid=\"" + SIG_GEN_1 + "\"/> </usesport> " + "<providesport> <providesidentifier>"
+			+ HARD_LIMIT_FLOAT_IN + "</providesidentifier> " + " <componentinstantiationref refid=\"" + HARD_LIMIT_1
+			+ "\"/> </providesport> </connectinterface> </connections>";
 		editorText = editorText.replace("</assemblycontroller>", newConnection);
 		editor.toTextEditor().setText(editorText);
 		MenuUtils.save(editor);
@@ -332,7 +291,7 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, false);
 
-		//switch to overview tab and verify there are no external ports
+		// switch to overview tab and verify there are no external ports
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
 		Assert.assertEquals("There are external ports", 0, bot.table(0).rowCount());
 
@@ -340,10 +299,8 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
 		String editorText = editor.toTextEditor().getText();
 
-		String externalports = "</assemblycontroller> <externalports><port>"
-			+ "<usesidentifier>" + HARD_LIMIT_FLOAT_OUT + "</usesidentifier>"
-			+ "<componentinstantiationref refid=\"" + HARD_LIMIT_1 + "\"/>"
-			+ "</port> </externalports>";
+		String externalports = "</assemblycontroller> <externalports><port>" + "<usesidentifier>" + HARD_LIMIT_FLOAT_OUT + "</usesidentifier>"
+			+ "<componentinstantiationref refid=\"" + HARD_LIMIT_1 + "\"/>" + "</port> </externalports>";
 		editorText = editorText.replace("</assemblycontroller>", externalports);
 		editor.toTextEditor().setText(editorText);
 		MenuUtils.save(editor);
@@ -351,11 +308,11 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 
-		//assert port set to external in diagram
+		// assert port set to external in diagram
 		hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, true);
 
-		//switch to overview tab and verify there are external ports
+		// switch to overview tab and verify there are external ports
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
 		Assert.assertEquals("There are no external ports", 1, bot.table(0).rowCount());
 	}
@@ -385,6 +342,31 @@ public class XmlToDiagramAddTest extends AbstractGraphitiTest {
 
 		SWTBotGefEditPart useDeviceEditPart = editor.getEditPart(SadTestUtils.USE_DEVICE);
 		SadTestUtils.assertUsesDevice(useDeviceEditPart);
+	}
+
+	@Override
+	protected ComponentDescription getComponentADescription() {
+		ComponentDescription description = new ComponentDescription("rh.SigGen", new String[0], new String[] { "dataFloat_out" });
+		description.setKey("path", "components");
+		return description;
+	}
+
+	@Override
+	protected ComponentDescription getComponentBDescription() {
+		ComponentDescription description = new ComponentDescription("rh.DataConverter", new String[] { "dataFloat" }, new String[0]);
+		description.setKey("path", "components");
+		return description;
+	}
+
+	@Override
+	protected RHBotGefEditor createEditor(String name) {
+		WaveformUtils.createNewWaveform(gefBot, name, null);
+		return gefBot.rhGefEditor(name);
+	}
+
+	@Override
+	protected EditorType getEditorType() {
+		return EditorType.SAD;
 	}
 
 }
