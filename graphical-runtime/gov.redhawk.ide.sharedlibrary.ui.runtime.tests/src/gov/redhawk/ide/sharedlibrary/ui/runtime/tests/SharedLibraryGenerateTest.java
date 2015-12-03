@@ -19,6 +19,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.EditorUtils;
 import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
@@ -39,7 +40,7 @@ public class SharedLibraryGenerateTest extends UIRuntimeTest {
 
 	// TODO: Do we need to include Octave project type for this test?
 	/**
-	 * IDE-1117
+	 * IDE-1117, IDE-1408
 	 * Softpackage (shared library) code generation test
 	 * Currently only checks case where code generation is initiated from the editor toolbar button
 	 */
@@ -50,6 +51,7 @@ public class SharedLibraryGenerateTest extends UIRuntimeTest {
 
 		SharedLibraryUtils.createSharedLibraryProject(bot, projectName, projectType);
 		editor = bot.editorByTitle(projectName);
+		EditorUtils.assertEditorTabOkay(editor, EditorUtils.SPD_EDITOR_OVERVIEW_TAB_ID);
 
 		StandardTestActions.generateProject(bot, editor);
 
