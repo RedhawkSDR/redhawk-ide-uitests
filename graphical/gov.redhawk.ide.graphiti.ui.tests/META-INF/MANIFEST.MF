@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: REDHAWK
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: gov.redhawk.ide.graphiti.ui.tests,
+ gov.redhawk.ide.graphiti.ui.tests.util,
  gov.redhawk.ide.graphiti.ui.tests.xml
 Require-Bundle: gov.redhawk.ide.graphiti.ui,
  gov.redhawk.ide.swtbot,
