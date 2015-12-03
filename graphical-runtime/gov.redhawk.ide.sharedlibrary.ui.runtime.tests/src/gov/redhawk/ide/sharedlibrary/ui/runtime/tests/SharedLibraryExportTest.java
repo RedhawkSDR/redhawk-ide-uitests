@@ -11,6 +11,13 @@
  */
 package gov.redhawk.ide.sharedlibrary.ui.runtime.tests;
 
+import org.eclipse.core.runtime.Path;
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.Test;
+
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
@@ -20,14 +27,14 @@ import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
-import org.junit.Test;
-
 /**
  * Test exporting a Shared Library project to the Target SDR
  */
 public class SharedLibraryExportTest extends UIRuntimeTest {
+
+	public static final String SHARED_LIB_PROJ_NAME = SharedLibraryExportTest.class.getSimpleName() + "_sharedLib";
+
+	public static final String WAVEFORM_PROJ_NAME = SharedLibraryExportTest.class.getSimpleName() + "_waveform";
 
 	/**
 	 * IDE-1141
@@ -35,29 +42,21 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void exportSharedLibraryTest() {
-		final String projectName = "SharedLibExportTest";
-		final String projectType = "C++ Library";
-		final String[] scaExpPath = { "Target SDR", "Shared Libraries" };
+		addSdrDomCleanupPath(new Path("/deps/" + SHARED_LIB_PROJ_NAME));
 
 		// Create and Generate
-		SharedLibraryUtils.createSharedLibraryProject(bot, projectName, projectType);
-		ProjectExplorerUtils.openProjectInEditor(bot, new String[] { projectName, projectName + ".spd.xml" });
-		SWTBotEditor editor = bot.editorByTitle(projectName);
+		SharedLibraryUtils.createSharedLibraryProject(bot, SHARED_LIB_PROJ_NAME, "C++ Library");
+		SWTBotEditor editor = bot.editorByTitle(SHARED_LIB_PROJ_NAME);
 		StandardTestActions.generateProject(bot, editor);
 
 		// Export to SDR
-		SWTBotTreeItem projectNode = ProjectExplorerUtils.waitUntilNodeAppears(bot, projectName);
+		SWTBotTreeItem projectNode = ProjectExplorerUtils.waitUntilNodeAppears(bot, SHARED_LIB_PROJ_NAME);
 		projectNode.contextMenu("Export to SDR").click();
 		bot.waitUntil(new WaitForBuild(), WaitForBuild.TIMEOUT);
 		bot.waitUntil(new WaitForLaunchTermination(), WaitForBuild.TIMEOUT);
 
 		// Confirm export worked
-		SWTBotTreeItem scaNode = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaExpPath, projectName);
-
-		// Delete project and make sure it is gone
-		scaNode.contextMenu("Delete").click();
-		bot.button("Yes").click();
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, scaExpPath, projectName);
+		findTreeItemAndDelete(new String[] { "Target SDR", "Shared Libraries" }, SHARED_LIB_PROJ_NAME);
 	}
 
 	/**
@@ -66,20 +65,19 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void dndExportTest() {
+		addSdrDomCleanupPath(new Path("/deps/" + SHARED_LIB_PROJ_NAME));
+		addSdrDomCleanupPath(new Path("/waveforms/" + WAVEFORM_PROJ_NAME));
 
 		// Create and generate shared library project
-		final String sharedLibName = "SharedLibExportTest";
-		final String projectType = "C++ Library";
-		SharedLibraryUtils.createSharedLibraryProject(bot, sharedLibName, projectType);
-		ProjectExplorerUtils.openProjectInEditor(bot, new String[] { sharedLibName, sharedLibName + ".spd.xml" });
-		SWTBotEditor editor = bot.editorByTitle(sharedLibName);
+		SharedLibraryUtils.createSharedLibraryProject(bot, SHARED_LIB_PROJ_NAME, "C++ Library");
+		SWTBotEditor editor = bot.editorByTitle(SHARED_LIB_PROJ_NAME);
 		StandardTestActions.generateProject(bot, editor);
 		bot.waitUntil(new WaitForBuild(), WaitForBuild.TIMEOUT);
 		bot.closeAllEditors();
 
 		// Create a waveform
-		final String waveformName = "WaveformExportTest";
-		WaveformUtils.createNewWaveform(bot, waveformName, null);
+		WaveformUtils.createNewWaveform(bot, WAVEFORM_PROJ_NAME, null);
+		bot.editorByTitle(WAVEFORM_PROJ_NAME);
 		bot.closeAllEditors();
 
 		// Drag-and-drop both projects onto the Shared Libraries container
@@ -87,21 +85,22 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 		// Clean up
 		SWTBotTreeItem sharedLibContainer = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Target SDR" }, "Shared Libraries");
 
-		SWTBotTreeItem sharedLibPrExpNode = ProjectExplorerUtils.selectNode(bot, sharedLibName);
+		SWTBotTreeItem sharedLibPrExpNode = ProjectExplorerUtils.selectNode(bot, SHARED_LIB_PROJ_NAME);
 		sharedLibPrExpNode.dragAndDrop(sharedLibContainer);
-		final String[] sharedLibPath = { "Target SDR", "Shared Libraries" };
-		SWTBotTreeItem sharedLibScaNode = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, sharedLibPath, sharedLibName);
-		sharedLibScaNode.contextMenu("Delete").click();
-		bot.button("Yes").click();
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, sharedLibPath, sharedLibName);
+		bot.waitUntil(new WaitForLaunchTermination(), WaitForBuild.TIMEOUT);
+		findTreeItemAndDelete(new String[] { "Target SDR", "Shared Libraries" }, SHARED_LIB_PROJ_NAME);
 
-		SWTBotTreeItem waveformPrExpNode = ProjectExplorerUtils.selectNode(bot, waveformName);
+		SWTBotTreeItem waveformPrExpNode = ProjectExplorerUtils.selectNode(bot, WAVEFORM_PROJ_NAME);
 		waveformPrExpNode.dragAndDrop(sharedLibContainer);
-		final String[] waveformPath = { "Target SDR", "Waveforms" };
-		SWTBotTreeItem waveformScaNode = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, waveformPath, waveformName);
-		waveformScaNode.contextMenu("Delete").click();
-		bot.button("Yes").click();
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, waveformPath, waveformName);
+		findTreeItemAndDelete(new String[] { "Target SDR", "Waveforms" }, WAVEFORM_PROJ_NAME);
+	}
 
+	private void findTreeItemAndDelete(String[] parentPath, String name) {
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, name);
+		treeItem.contextMenu("Delete").click();
+		SWTBotShell deleteShell = bot.shell("Delete");
+		deleteShell.bot().button("Yes").click();
+		bot.waitUntil(Conditions.shellCloses(deleteShell));
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, parentPath, name);
 	}
 }
