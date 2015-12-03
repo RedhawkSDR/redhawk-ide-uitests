@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
+import gov.redhawk.ide.ui.tests.projectCreation.util.ICodegenInfo;
+import gov.redhawk.ide.ui.tests.projectCreation.util.StandardCodegenInfo;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;

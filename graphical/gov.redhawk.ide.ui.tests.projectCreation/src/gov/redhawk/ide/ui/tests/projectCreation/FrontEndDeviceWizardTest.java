@@ -18,7 +18,9 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.ui.tests.projectCreation.FEICodegenInfo.TunerType;
+import gov.redhawk.ide.ui.tests.projectCreation.util.FEICodegenInfo;
+import gov.redhawk.ide.ui.tests.projectCreation.util.ICodegenInfo;
+import gov.redhawk.ide.ui.tests.projectCreation.util.FEICodegenInfo.TunerType;
 
 public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 

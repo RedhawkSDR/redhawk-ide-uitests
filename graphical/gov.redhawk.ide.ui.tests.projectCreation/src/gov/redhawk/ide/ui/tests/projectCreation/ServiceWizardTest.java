@@ -15,6 +15,8 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.ui.tests.projectCreation.util.StandardCodegenInfo;
+
 public class ServiceWizardTest extends ComponentWizardTest {
 	
 
