@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.FrameworkUtil;
 
-import gov.redhawk.ide.swtbot.EditorActions;
+import gov.redhawk.ide.swtbot.EditorUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
@@ -61,25 +61,25 @@ public class WaveformOverviewTabTest extends UITest {
 		String newID = bot.textWithLabel("ID:").getText();
 		Assert.assertNotEquals(oldID, newID);
 		Assert.assertTrue("Not valid DCE UUID", DceUuidUtil.isValid(newID));
-		EditorActions.assertEditorTabValid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals(newID, sad.getId());
 
 		// Test an invalid ID
 		editorBot.textWithLabel("ID:").setText("DCE");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabInvalid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabInvalid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 
 		// Back to a valid ID
 		editorBot.textWithLabel("ID:").setText("");
 		editorBot.textWithLabel("ID:").typeText("DCE:8745512e-cdaf-41ad-93e4-a404d5e8e6db");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabValid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals("DCE:8745512e-cdaf-41ad-93e4-a404d5e8e6db", sad.getId());
 
 		// Test empty ID
 		editorBot.textWithLabel("ID:").setText("");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabInvalid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabInvalid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class WaveformOverviewTabTest extends UITest {
 		editorBot.textWithLabel("Name:").setText("");
 		editorBot.textWithLabel("Name:").typeText("foo");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabValid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals("foo", sad.getName());
 	}
 
@@ -95,19 +95,19 @@ public class WaveformOverviewTabTest extends UITest {
 	public void version() {
 		editorBot.textWithLabel("Version:").typeText("1.2.3");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabValid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals("1.2.3", sad.getVersion());
 
 		editorBot.textWithLabel("Version:").setText("");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabValid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals(null, sad.getVersion());
 	}
 
 	@Test
 	public void controller() {
 		editorBot.ccomboBoxWithLabel("Controller:").setSelection("DataConverter_1");
-		EditorActions.assertEditorTabValid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals("DataConverter_1", sad.getAssemblyController().getComponentInstantiationRef().getRefid());
 
 		ScaModelCommand.execute(sad, new ScaModelCommand() {
@@ -116,10 +116,10 @@ public class WaveformOverviewTabTest extends UITest {
 				sad.setAssemblyController(null);
 			}
 		});
-		EditorActions.assertEditorTabInvalid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabInvalid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 
 		editorBot.ccomboBoxWithLabel("Controller:").setSelection("SigGen_1");
-		EditorActions.assertEditorTabValid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals("SigGen_1", sad.getAssemblyController().getComponentInstantiationRef().getRefid());
 	}
 
@@ -127,12 +127,12 @@ public class WaveformOverviewTabTest extends UITest {
 	public void description() {
 		editorBot.textWithLabel("Description:").typeText("A test description");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabValid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals("A test description", sad.getDescription());
 
 		editorBot.textWithLabel("Description:").setText("");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabValid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertNull(sad.getDescription());
 	}
 
@@ -158,7 +158,7 @@ public class WaveformOverviewTabTest extends UITest {
 		bot.waitUntil(Conditions.shellCloses(shell));
 
 		SWTBotTable table = editorBot.table();
-		EditorActions.assertEditorTabValid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals(1, table.rowCount());
 		Assert.assertEquals("DataConverter_1", table.getTableItem(0).getText(0));
 		Assert.assertEquals("dataDouble", table.getTableItem(0).getText(1));
@@ -173,11 +173,11 @@ public class WaveformOverviewTabTest extends UITest {
 		table.select(0);
 		StandardTestActions.writeToCell(editorBot, table, 0, 2, "extern");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabValid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals("extern", sad.getExternalPorts().getPort().get(0).getExternalName());
 
 		editorBot.button("Remove").click();
-		EditorActions.assertEditorTabValid(editor, EditorActions.SAD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals(0, table.rowCount());
 	}
 }

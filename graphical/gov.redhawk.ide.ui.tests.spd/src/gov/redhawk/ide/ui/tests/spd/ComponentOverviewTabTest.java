@@ -10,7 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.spd;
 
-import gov.redhawk.ide.swtbot.EditorActions;
+import gov.redhawk.ide.swtbot.EditorUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ui.editor.SCAFormEditor;
@@ -55,12 +55,12 @@ public class ComponentOverviewTabTest extends UITest {
 
 	private void assertFormValid() {
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabValid(editor, EditorActions.SPD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SPD_EDITOR_OVERVIEW_TAB_ID);
 	}
 
 	private void assertFormInvalid() {
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabInvalid(editor, EditorActions.SPD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabInvalid(editor, EditorUtils.SPD_EDITOR_OVERVIEW_TAB_ID);
 	}
 
 	@Test

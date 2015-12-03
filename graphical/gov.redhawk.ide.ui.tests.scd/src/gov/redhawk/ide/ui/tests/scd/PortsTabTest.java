@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ComponentUtils;
-import gov.redhawk.ide.swtbot.EditorActions;
+import gov.redhawk.ide.swtbot.EditorUtils;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 import gov.redhawk.ide.ui.tests.scd.conditions.SelectIDL;
@@ -86,12 +86,12 @@ public class PortsTabTest extends UITest {
 
 	protected void assertFormValid() {
 		this.bot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY); // Allow form to have time to validate
-		EditorActions.assertEditorTabValid(editor, EditorActions.SPD_EDITOR_PORTS_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SPD_EDITOR_PORTS_TAB_ID);
 	}
 
 	protected void assertFormInvalid() {
 		this.bot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY); // Allow form to have time to validate
-		EditorActions.assertEditorTabInvalid(editor, EditorActions.SPD_EDITOR_PORTS_TAB_ID);
+		EditorUtils.assertEditorTabInvalid(editor, EditorUtils.SPD_EDITOR_PORTS_TAB_ID);
 	}
 
 	@Test

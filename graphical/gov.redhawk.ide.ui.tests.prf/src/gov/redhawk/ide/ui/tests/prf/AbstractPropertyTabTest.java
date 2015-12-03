@@ -15,7 +15,7 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.junit.Before;
 import org.osgi.framework.FrameworkUtil;
 
-import gov.redhawk.ide.swtbot.EditorActions;
+import gov.redhawk.ide.swtbot.EditorUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -39,11 +39,11 @@ public abstract class AbstractPropertyTabTest extends UITest {
 	}
 
 	protected void assertFormValid() {
-		EditorActions.assertEditorTabValid(editor, EditorActions.SPD_EDITOR_PROPERTIES_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.SPD_EDITOR_PROPERTIES_TAB_ID);
 	}
 
 	protected void assertFormInvalid() {
-		EditorActions.assertEditorTabInvalid(editor, EditorActions.SPD_EDITOR_PROPERTIES_TAB_ID);
+		EditorUtils.assertEditorTabInvalid(editor, EditorUtils.SPD_EDITOR_PROPERTIES_TAB_ID);
 	}
 
 }

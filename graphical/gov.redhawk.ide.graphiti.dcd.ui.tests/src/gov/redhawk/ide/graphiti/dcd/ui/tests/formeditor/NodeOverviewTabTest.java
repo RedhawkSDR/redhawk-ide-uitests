@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.FrameworkUtil;
 
-import gov.redhawk.ide.swtbot.EditorActions;
+import gov.redhawk.ide.swtbot.EditorUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
@@ -57,25 +57,25 @@ public class NodeOverviewTabTest extends UITest {
 		String newID = bot.textWithLabel("ID:").getText();
 		Assert.assertNotEquals(oldID, newID);
 		Assert.assertTrue("Not valid DCE UUID", DceUuidUtil.isValid(newID));
-		EditorActions.assertEditorTabValid(editor, EditorActions.DCD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.DCD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals(newID, dcd.getId());
 
 		// Test an invalid ID
 		editorBot.textWithLabel("ID:").setText("DCE");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabInvalid(editor, EditorActions.DCD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabInvalid(editor, EditorUtils.DCD_EDITOR_OVERVIEW_TAB_ID);
 
 		// Back to a valid ID
 		editorBot.textWithLabel("ID:").setText("");
 		editorBot.textWithLabel("ID:").typeText("DCE:8745512e-cdaf-41ad-93e4-a404d5e8e6db");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabValid(editor, EditorActions.DCD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.DCD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals("DCE:8745512e-cdaf-41ad-93e4-a404d5e8e6db", dcd.getId());
 
 		// Test empty ID
 		editorBot.textWithLabel("ID:").setText("");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabInvalid(editor, EditorActions.DCD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabInvalid(editor, EditorUtils.DCD_EDITOR_OVERVIEW_TAB_ID);
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class NodeOverviewTabTest extends UITest {
 		editorBot.textWithLabel("Name:").setText("");
 		editorBot.textWithLabel("Name:").typeText("foo");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabValid(editor, EditorActions.DCD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.DCD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals("foo", dcd.getName());
 
 		/* TODO: Right now, it's valid XML to not have a name, although the CF has issues with it in all versions
@@ -97,12 +97,12 @@ public class NodeOverviewTabTest extends UITest {
 	public void testDescription() {
 		editorBot.textWithLabel("Description:").typeText("A test description");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabValid(editor, EditorActions.DCD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.DCD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals("A test description", dcd.getDescription());
 
 		editorBot.textWithLabel("Description:").setText("");
 		editorBot.sleep(600);
-		EditorActions.assertEditorTabValid(editor, EditorActions.DCD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabValid(editor, EditorUtils.DCD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertNull(dcd.getDescription());
 	}
 
