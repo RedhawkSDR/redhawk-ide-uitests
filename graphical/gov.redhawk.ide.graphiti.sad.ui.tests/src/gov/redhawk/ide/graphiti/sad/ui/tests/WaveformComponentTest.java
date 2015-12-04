@@ -457,7 +457,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	@Test
 	public void addRemoveExternalPortsInDiagram() {
 		waveformName = "AddRemove_ExternalPort_Diagram";
-		final String HARDLIMIT = "HardLimit";
+		final String HARDLIMIT = "rh.HardLimit";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);

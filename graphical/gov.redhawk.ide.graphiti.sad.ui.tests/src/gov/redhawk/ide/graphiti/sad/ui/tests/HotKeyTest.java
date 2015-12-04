@@ -69,7 +69,7 @@ public class HotKeyTest extends AbstractGraphitiTest {
 	@Test
 	public void undoRedoHotkeyTest() throws AWTException {
 		waveformName = "UndoRedo_Hotkey";
-		final String HARDLIMIT = "HardLimit";
+		final String HARDLIMIT = "rh.HardLimit";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);

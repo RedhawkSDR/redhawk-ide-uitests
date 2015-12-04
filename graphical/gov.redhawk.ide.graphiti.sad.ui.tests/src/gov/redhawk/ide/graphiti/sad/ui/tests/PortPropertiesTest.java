@@ -40,7 +40,7 @@ public class PortPropertiesTest extends AbstractGraphitiTest {
 	@Test
 	public void checkPortProperties() {
 		final String waveformName = "IDE-1050-test";
-		final String onlyComponent = "HardLimit";
+		final String onlyComponent = "rh.HardLimit";
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, onlyComponent, 0, 0);
