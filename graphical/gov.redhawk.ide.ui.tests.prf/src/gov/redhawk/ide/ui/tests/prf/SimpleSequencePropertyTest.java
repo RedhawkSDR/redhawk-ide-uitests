@@ -12,6 +12,8 @@ package gov.redhawk.ide.ui.tests.prf;
 
 import gov.redhawk.ide.swtbot.StandardTestActions;
 
+import java.io.IOException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
@@ -255,7 +257,7 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 	}
 
 	@Test
-	public void testKind() {
+	public void testKind() throws IOException {
 		assertFormValid();
 
 		testKind(false);

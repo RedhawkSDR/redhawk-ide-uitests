@@ -10,7 +10,13 @@
  */
 package gov.redhawk.ide.ui.tests.prf;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.junit.Before;
 import org.osgi.framework.FrameworkUtil;
@@ -19,6 +25,9 @@ import gov.redhawk.ide.swtbot.EditorUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import mil.jpeojtrs.sca.prf.PrfPackage;
+import mil.jpeojtrs.sca.prf.Properties;
+import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public abstract class AbstractPropertyTabTest extends UITest {
 
@@ -36,6 +45,17 @@ public abstract class AbstractPropertyTabTest extends UITest {
 		editor = bot.editorByTitle("PropTest_Comp");
 
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PROPERTIES_TAB);
+	}
+
+	protected Properties getModelFromXml() throws IOException {
+		DiagramTestUtils.openTabInEditor(editor, "PropTest_Comp.prf.xml");
+		String text = editor.bot().styledText().getText();
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PROPERTIES_TAB);
+
+		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
+		Resource resource = resourceSet.createResource(URI.createURI("mem://PropTest_Comp.prf.xml"), PrfPackage.eCONTENT_TYPE);
+		resource.load(new ByteArrayInputStream(text.getBytes()), null);
+		return Properties.Util.getProperties(resource);
 	}
 
 	protected void assertFormValid() {

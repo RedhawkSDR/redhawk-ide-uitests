@@ -10,6 +10,9 @@
  */
 package gov.redhawk.ide.ui.tests.prf;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
@@ -18,6 +21,16 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTableItem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import mil.jpeojtrs.sca.prf.AbstractProperty;
+import mil.jpeojtrs.sca.prf.ConfigurationKind;
+import mil.jpeojtrs.sca.prf.Kind;
+import mil.jpeojtrs.sca.prf.PrfPackage;
+import mil.jpeojtrs.sca.prf.PropertyConfigurationType;
+import mil.jpeojtrs.sca.prf.Simple;
+import mil.jpeojtrs.sca.prf.SimpleSequence;
+import mil.jpeojtrs.sca.prf.Struct;
+import mil.jpeojtrs.sca.prf.StructSequence;
 
 public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 
@@ -129,33 +142,83 @@ public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 		assertFormValid();
 	}
 
-	protected void testKind(boolean supportsExec) {
+	protected void testKind(boolean supportsExec) throws IOException {
 		assertFormValid();
 
 		SWTBotCombo kindCombo = editor.bot().comboBoxWithLabel("Kind:");
 		kindCombo.setSelection("property (default)");
 		assertFormValid();
+		assertKind(getModelFromXml().getProperty("ID"), PropertyConfigurationType.PROPERTY);
 
 		if (supportsExec) {
 			SWTBotCheckBox checkBox = editor.bot().checkBox("Pass on command line");
 			Assert.assertTrue(checkBox.isEnabled());
 			checkBox.click();
 			Assert.assertTrue(checkBox.isChecked());
+			AbstractProperty prop = getModelFromXml().getProperty("ID");
+			if (prop instanceof Simple) {
+				Assert.assertTrue(((Simple) prop).getCommandline());
+			}
 
 			kindCombo.setSelection("message");
 			Assert.assertFalse(checkBox.isEnabled());
 			Assert.assertFalse(checkBox.isChecked());
+			prop = getModelFromXml().getProperty("ID");
+			assertKind(prop, PropertyConfigurationType.MESSAGE);
+			if (prop instanceof Simple) {
+				Assert.assertFalse(((Simple) prop).getCommandline());
+			}
 
 			kindCombo.setSelection("property (default)");
 			Assert.assertTrue(checkBox.isEnabled());
 			Assert.assertFalse(checkBox.isChecked());
+			prop = getModelFromXml().getProperty("ID");
+			assertKind(prop, PropertyConfigurationType.PROPERTY);
+			if (prop instanceof Simple) {
+				Assert.assertFalse(((Simple) prop).getCommandline());
+			}
 		}
 
 		kindCombo.setSelection("allocation");
 		assertFormValid();
+		assertKind(getModelFromXml().getProperty("ID"), PropertyConfigurationType.ALLOCATION);
 
 		kindCombo.setSelection("message");
 		assertFormValid();
+		assertKind(getModelFromXml().getProperty("ID"), PropertyConfigurationType.MESSAGE);
+	}
+
+	private void assertKind(AbstractProperty prop, PropertyConfigurationType type) {
+		List<Kind> kinds;
+		List<ConfigurationKind> configurationKinds;
+		switch (prop.eClass().getClassifierID()) {
+		case PrfPackage.SIMPLE:
+			kinds = ((Simple) prop).getKind();
+			Assert.assertNotNull(kinds);
+			Assert.assertEquals(1, kinds.size());
+			Assert.assertEquals(type, kinds.get(0).getType());
+			break;
+		case PrfPackage.SIMPLE_SEQUENCE:
+			kinds = ((SimpleSequence) prop).getKind();
+			Assert.assertNotNull(kinds);
+			Assert.assertEquals(1, kinds.size());
+			Assert.assertEquals(type, kinds.get(0).getType());
+			break;
+		case PrfPackage.STRUCT:
+			configurationKinds = ((Struct) prop).getConfigurationKind();
+			Assert.assertNotNull(configurationKinds);
+			Assert.assertEquals(1, configurationKinds.size());
+			Assert.assertEquals(type, configurationKinds.get(0).getType().getPropertyConfigurationType());
+			break;
+		case PrfPackage.STRUCT_SEQUENCE:
+			configurationKinds = ((StructSequence) prop).getConfigurationKind();
+			Assert.assertNotNull(configurationKinds);
+			Assert.assertEquals(1, configurationKinds.size());
+			Assert.assertEquals(type, configurationKinds.get(0).getType().getPropertyConfigurationType());
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Test
