@@ -21,7 +21,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.sad.ui.SADUIGraphitiPlugin;
+import gov.redhawk.ide.graphiti.ui.GraphitiUIPlugin;
 import gov.redhawk.ide.graphiti.ui.diagram.preferences.DiagramPreferenceConstants;
 import gov.redhawk.ide.graphiti.ui.diagram.preferences.GraphitiPreferencesNLS;
 import gov.redhawk.ide.graphiti.ui.diagram.preferences.PortStatisticsPreferencePage;
@@ -79,7 +79,7 @@ public class PortStatsPrefPageTest extends AbstractGraphitiTest {
 
 		// RESTORE DEFUALTS
 		defaultButton.click();
-		IPreferenceStore store = SADUIGraphitiPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store = GraphitiUIPlugin.getDefault().getPreferenceStore();
 		Assert.assertNull("No error message should be present", getErrorMessage(prefShell));
 		Assert.assertTrue("Default value not reset for " + queueLevelText,
 			store.getDefaultDouble(DiagramPreferenceConstants.PREF_PORT_STATISTICS_QUEUE_LEVEL) == Double.valueOf(queueLevelText.getText()));
