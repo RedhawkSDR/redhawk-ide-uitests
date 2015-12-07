@@ -169,11 +169,11 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		final String newAllocationId = "678910";
 
 		// Add components to diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 200, 0);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 200, 250);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 500, 0);
 
 		// Add Uses Generic FrontEnd Device
-		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor, 200, 100);
+		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor, 225, 0);
 		String[] providesPorts = new String[] { "dataFloat_in", "dataFloat2_in" };
 		String[] usesPorts = new String[] { "dataFloat_out", "dataFloat2_out" };
 		UsesDeviceTestUtils.completeUsesFEDeviceWizard(gefBot, existingAllocationId, newAllocationId, providesPorts, usesPorts);
