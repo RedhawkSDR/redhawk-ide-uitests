@@ -30,7 +30,7 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 	static final String DOMAIN_NAME = "REDHAWK_DEV";
 	static final String DEVICE_MANAGER = "DevMgr_"; // start of Device Manager name
 	static final String DOMAIN_NAME_CONNECTED = DOMAIN_NAME + " CONNECTED";
-	
+
 	private SWTBot viewBot;
 	private SWTBotView explorerView;
 
@@ -47,7 +47,7 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		explorerView.setFocus();
 		viewBot = explorerView.bot();
 	}
-	
+
 	@AfterClass
 	public static void afterClassCleanup() throws Exception {
 		StandardTestActions.cleanUpLaunches();
@@ -88,6 +88,28 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN_NAME);
 		viewBot.tree().getTreeItem("REDHAWK_DEV CONNECTED").expand();
 		viewBot.tree().getTreeItem("REDHAWK_DEV CONNECTED").select();
+	}
+
+	/**
+	 * Test connecting to a running domain using a non-standard domain name
+	 */
+	@Test
+	public void testConnectWithAltDomainName() {
+		launchDomainManager("REDHAWK");
+		StandardTestActions.viewToolbarWithToolTip(explorerView, "New Domain Connection").click();
+
+		SWTBotShell shell = bot.activeShell();
+		Assert.assertEquals("New Domain Manager", shell.getText());
+		SWTBot wizardBot = shell.bot();
+
+		wizardBot.textWithLabel("Display Name:").setText("REDHAWK");
+		Assert.assertEquals("REDHAWK", wizardBot.textWithLabel("Domain Name:").getText());
+		Assert.assertTrue(wizardBot.button("Finish").isEnabled());
+		bot.button("Finish").click();
+
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, "REDHAWK");
+		viewBot.tree().getTreeItem("REDHAWK CONNECTED").expand();
+		viewBot.tree().getTreeItem("REDHAWK CONNECTED").select();
 	}
 
 	/**
@@ -309,7 +331,7 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 
 		SWTBotTreeItem deviceMangersTreeItem = viewBot.tree().expandNode(DOMAIN_NAME_CONNECTED, "Device Managers").expand();
 		deviceMangersTreeItem.getNode(0).expand();
-		
+
 		viewBot.tree().getTreeItem("Target SDR").select();
 		viewBot.tree().getTreeItem("Target SDR").contextMenu("Launch Domain ...").click();
 
