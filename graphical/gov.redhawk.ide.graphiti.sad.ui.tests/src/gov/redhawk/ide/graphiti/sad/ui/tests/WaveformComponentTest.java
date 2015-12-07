@@ -82,11 +82,11 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
-		assertHardLimit(editor.getEditPart(HARD_LIMIT_1));
+		assertHardLimit(editor.getEditPart(HARD_LIMIT_1), true);
 
 		// Add component to diagram from Target SDR
 		DiagramTestUtils.dragComponentFromTargetSDRToDiagram(gefBot, editor, HARD_LIMIT);
-		assertHardLimit(editor.getEditPart(HARD_LIMIT_2));
+		assertHardLimit(editor.getEditPart(HARD_LIMIT_2), false);
 	}
 
 	/**
@@ -555,10 +555,10 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	/**
 	 * Private helper method for {@link #checkComponentPictogramElements()} and
 	 * {@link #checkComponentPictogramElementsWithAssemblyController()}.
-	 * Asserts the given SWTBotGefEditPart is a HardLimit component and assembly controller
+	 * Asserts the given SWTBotGefEditPart is a HardLimit component and is/isn't assembly controller
 	 * @param gefEditPart
 	 */
-	private static void assertHardLimit(SWTBotGefEditPart gefEditPart) {
+	private static void assertHardLimit(SWTBotGefEditPart gefEditPart, boolean isAssemblyController) {
 		Assert.assertNotNull("gefEditPart is not null for HardLimit", gefEditPart);
 		// Drill down to graphiti component shape
 		ComponentShape componentShape = (ComponentShape) gefEditPart.part().getModel();
@@ -573,7 +573,8 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		Assert.assertEquals("inner text should match component usage name", ci.getUsageName(), ComponentUtils.getInnerText(componentShape).getValue());
 		Assert.assertNotNull("component supported interface graphic should not be null", ComponentUtils.getLollipop(componentShape));
 		Assert.assertNotNull("start order shape/text should not be null", ComponentUtils.getStartOrderText(componentShape));
-		Assert.assertTrue("should be assembly controller", ComponentUtils.isAssemblyController(componentShape));
+		String acMessage = "should" + (isAssemblyController ? "" : " not") + " be assembly controller";
+		Assert.assertTrue(acMessage, isAssemblyController == ComponentUtils.isAssemblyController(componentShape));
 
 		// HardLimit only has the two ports
 		Assert.assertTrue(componentShape.getUsesPortStubs().size() == 1 && componentShape.getProvidesPortStubs().size() == 1);
