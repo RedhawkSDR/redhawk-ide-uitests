@@ -10,6 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -17,7 +18,6 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Assert;
@@ -226,11 +226,10 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 	/**
 	 * IDE-748
-	 * Upon resizing Host Collocation components should be added/removed to/from Host Collocation
-	 * if they are contained within the boundaries of the new host collocation shape. Most of the location
-	 * checking appears to be the same which is what we expect. There is code in place that maintains the absolute
-	 * position
-	 * of components within the graph as they are transitioned to the hostCollocation and we don't want them shifting.
+	 * Upon resizing Host Collocation components should be added/removed to/from Host Collocation if they are
+	 * contained within the boundaries of the new host collocation shape. Most of the location checking appears to be
+	 * the same which is what we expect. There is code in place that maintains the absolute position of components
+	 * within the graph as they are transitioned to the hostCollocation and we don't want them shifting.
 	 */
 	@Test
 	public void hostCollocationResize() {
@@ -272,145 +271,98 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Expand Host Collocation, verify components are still part of Host Collocation and
 		// absolute position of components (in relation to diagram) has not changed
-		hostCollocationEditPart.click();
-		gefBot.sleep(1000);
-		int oldX = hostCollocationGa.getX() + hostCollocationGa.getWidth();
-		int oldY = hostCollocationGa.getY() + hostCollocationGa.getHeight();
-		int newX = oldX + 500;
-		int newY = oldY + 200;
-		editor.drag(oldX + 5, oldY + 5, newX, newY);
+		hostCollocationEditPart.select();
+		int newWidth = hostCollocationGa.getWidth() + 500;
+		int newHeight = hostCollocationGa.getHeight() + 200;
+		hostCollocationEditPart.resize(PositionConstants.SOUTH_WEST, newWidth, newHeight);
 		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
 		// Contract Host Collocation from the left thereby excluding the two components
-		oldX = hostCollocationGa.getX();
-		oldY = hostCollocationGa.getY() / 2;
-		newX = oldX + 500;
-		newY = oldY;
-		editor.drag(oldX + 2, oldY + 2, newX, newY);
+		newWidth -= 500;
+		hostCollocationEditPart.resize(PositionConstants.EAST, newWidth, newHeight);
 		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
 
 		// Expand Host Collocation from the left thereby including the two components
-		hostCollocationEditPart.click();
-		gefBot.sleep(1000);
-		oldX = hostCollocationGa.getX();
-		oldY = hostCollocationGa.getY() / 2;
-		newX = 0;
-		newY = oldY;
-		editor.drag(oldX - 1, oldY + 2, newX, newY);
+		newWidth += 500;
+		hostCollocationEditPart.resize(PositionConstants.EAST, newWidth, newHeight);
 		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
-		// Contract Host Collocation from the top-left coming down and to the right thereby including the two components
-		oldX = hostCollocationGa.getX();
-		oldY = hostCollocationGa.getY();
-		newX = oldX + 500;
-		newY = oldY + 200;
-		editor.drag(oldX, oldY + 2, newX, newY);
+		// Contract Host Collocation from the top-left coming down and to the right thereby excluding the two components
+		newWidth -= 500;
+		newHeight -= 200;
+		hostCollocationEditPart.resize(PositionConstants.NORTH_EAST, newWidth, newHeight);
 		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
 
 		// Expand Host Collocation from the top-left thereby including the two components
-		oldX = hostCollocationGa.getX();
-		oldY = hostCollocationGa.getY();
-		newX = 0;
-		newY = 0;
-		editor.drag(oldX, oldY, newX, newY);
+		newWidth += 500;
+		newHeight += 200;
+		hostCollocationEditPart.resize(PositionConstants.NORTH_EAST, newWidth, newHeight);
 		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
 		// Contract Host Collocation from the bottom-left to the right and up thereby excluding the two components
-		oldX = hostCollocationGa.getX();
-		oldY = hostCollocationGa.getY() + hostCollocationGa.getHeight();
-		newX = 500;
-		newY = oldY / 2;
-		editor.drag(oldX, oldY, newX, newY);
+		newWidth -= 500;
+		newHeight /= 2;
+		hostCollocationEditPart.resize(PositionConstants.SOUTH_EAST, newWidth, newHeight);
 		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
 
 		// Expand Host Collocation from the bottom-left to the left and down thereby including the two components
-		oldX = hostCollocationGa.getX();
-		oldY = hostCollocationGa.getY() + hostCollocationGa.getHeight();
-		newX = 0;
-		newY = oldY * 2;
-		editor.drag(oldX - 2, oldY - 1, newX, newY);
+		newWidth += 500;
+		newHeight *= 2;
+		hostCollocationEditPart.resize(PositionConstants.SOUTH_EAST, newWidth, newHeight);
 		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
-		// Collapse Host Collocation from the top-right downwards thereby excluding the two components
-		oldX = hostCollocationGa.getX() + hostCollocationGa.getWidth();
-		oldY = 0;
-		newX = oldX;
-		newY = (hostCollocationGa.getHeight() / 2) + 50;
-		editor.drag(oldX, oldY, newX, newY);
+		// Collapse Host Collocation from the top downwards thereby excluding the two components
+		newHeight = newHeight / 2 - 50;
+		hostCollocationEditPart.resize(PositionConstants.NORTH, newWidth, newHeight);
 		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
 
-		// Expand Host Collocation from the top-right upwards thereby including the two components
-		oldX = hostCollocationGa.getX() + hostCollocationGa.getWidth();
-		oldY = hostCollocationGa.getY();
-		newX = oldX;
-		newY = 0;
-		editor.drag(oldX, oldY, newX, newY);
+		// Expand Host Collocation from the top upwards thereby including the two components
+		newHeight = (newHeight + 50) * 2;
+		hostCollocationEditPart.resize(PositionConstants.NORTH, newWidth, newHeight);
 		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
-		// Collapse Host Collocation from the bottom-right upwards thereby including the one component (topmost)
-		oldX = hostCollocationGa.getX() + hostCollocationGa.getWidth();
-		oldY = hostCollocationGa.getY() + hostCollocationGa.getHeight();
-		newX = oldX;
-		newY = 130;
-		editor.drag(oldX, oldY, newX, newY);
+		// Collapse Host Collocation from the bottom upwards thereby including the one component (topmost)
+		newHeight = 130;
+		hostCollocationEditPart.resize(PositionConstants.SOUTH, newWidth, newHeight);
 		assertShapeLocationAndNumber(editor, hardLimitShape, 10, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
 
 		// Drag HardLimit to right
 		editor.drag(editor.getEditPart(HARD_LIMIT_1), 350, 15);
 
 		// Collapse Host Collocation from the right towards the left thereby excluding the all components
-		hostCollocationEditPart.click();
-		oldX = hostCollocationGa.getX() + hostCollocationGa.getWidth();
-		oldY = (hostCollocationGa.getY() + hostCollocationGa.getHeight()) / 2;
-		newX = 300;
-		newY = oldY;
-		editor.drag(oldX + 5, oldY + 2, newX, newY);
-		assertShapeLocationAndNumber(editor, hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
+		hostCollocationEditPart.select();
+		newWidth = 300;
+		hostCollocationEditPart.resize(PositionConstants.WEST, newWidth, newHeight);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 340, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 0);
 
 		// Expand Host Collocation from the right towards the right thereby including one component
-		hostCollocationEditPart.click();
-		oldX = hostCollocationGa.getX() + hostCollocationGa.getWidth();
-		oldY = (hostCollocationGa.getY() + hostCollocationGa.getHeight()) / 2;
-		newX = 750;
-		newY = oldY;
-		editor.drag(oldX + 5, oldY + 2, newX, newY);
-		assertShapeLocationAndNumber(editor, hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
+		newWidth = 750;
+		hostCollocationEditPart.resize(PositionConstants.WEST, newWidth, newHeight);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 340, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
 
 		// Expand Host Collocation from the bottom downward thereby adding one more component
-		oldX = (hostCollocationGa.getX() + hostCollocationGa.getWidth()) / 2;
-		oldY = hostCollocationGa.getY() + hostCollocationGa.getHeight();
-		newX = oldX;
-		newY = 400;
-		editor.drag(oldX + 5, oldY + 2, newX, newY);
-		assertShapeLocationAndNumber(editor, hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
+		newHeight = 400;
+		hostCollocationEditPart.resize(PositionConstants.SOUTH, newWidth, newHeight);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 340, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
 		// Collapse Host Collocation from the bottom upward thereby removing one component
-		oldX = (hostCollocationGa.getX() + hostCollocationGa.getWidth()) / 2;
-		oldY = hostCollocationGa.getY() + hostCollocationGa.getHeight();
-		newX = oldX;
-		newY = 130;
-		editor.drag(oldX + 5, oldY + 2, newX, newY);
-		assertShapeLocationAndNumber(editor, hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
+		newHeight = 130;
+		hostCollocationEditPart.resize(PositionConstants.SOUTH, newWidth, newHeight);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 340, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
 
-		// Drag Host Collocation Down below SigGenComponent
+		// Drag Host Collocation Down below SigGenComponent and check that it still contains one component
 		editor.drag(hostCollocationEditPart, 0, 300);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 340, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
 
 		// Expand Host Collocation from the top upwards thereby adding one more component
-		hostCollocationGa = DiagramTestUtils.getHostCollocationShape(editor, HOST_CO_NAME).getGraphicsAlgorithm();
-		oldX = (hostCollocationGa.getX() + hostCollocationGa.getWidth()) / 2;
-		oldY = hostCollocationGa.getY();
-		newX = oldX;
-		newY = 0;
-		editor.drag(oldX + 5, oldY, newX, newY);
-		assertShapeLocationAndNumber(editor, hardLimitShape, 350, 320, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
+		newHeight += 300;
+		hostCollocationEditPart.resize(PositionConstants.NORTH, newWidth, newHeight);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 340, 310, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 2);
 
 		// Collapse Host Collocation from the top downwards thereby removing one component
-		oldX = (hostCollocationGa.getX() + hostCollocationGa.getWidth()) / 2;
-		oldY = hostCollocationGa.getY();
-		newX = oldX;
-		newY = 300;
-		editor.drag(oldX + 5, oldY, newX, newY);
-		assertShapeLocationAndNumber(editor, hardLimitShape, 350, 20, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
+		newHeight -= 300;
+		hostCollocationEditPart.resize(PositionConstants.NORTH, newWidth, newHeight);
+		assertShapeLocationAndNumber(editor, hardLimitShape, 340, 10, sigGenShape, 10, 140, hostCo, HOST_CO_NAME, 1);
 	}
 
 	private void assertShapeLocationAndNumber(SWTBotGefEditor editor, ContainerShape shape1, int shape1X, int shape1Y, // SUPPRESS CHECKSTYLE INLINE
@@ -418,8 +370,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		MenuUtils.save(editor);
 		hostCo = DiagramTestUtils.getHostCollocationObject(editor, hostCoName);
-
-		gefBot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY);
 
 		// Test how many components are contained in the host collocation bounds
 		Assert.assertEquals(UNEXPECTED_NUM_COMPONENTS, numContainedShapes, hostCo.getComponentPlacement().size());
