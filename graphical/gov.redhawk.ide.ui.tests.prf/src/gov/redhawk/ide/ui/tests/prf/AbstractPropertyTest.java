@@ -158,6 +158,7 @@ public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 			AbstractProperty prop = getModelFromXml().getProperty("ID");
 			if (prop instanceof Simple) {
 				Assert.assertTrue(((Simple) prop).getCommandline());
+				Assert.assertTrue(((Simple) prop).isCommandLine());
 			}
 
 			kindCombo.setSelection("message");
@@ -166,7 +167,9 @@ public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 			prop = getModelFromXml().getProperty("ID");
 			assertKind(prop, PropertyConfigurationType.MESSAGE);
 			if (prop instanceof Simple) {
-				Assert.assertFalse(((Simple) prop).getCommandline());
+				Boolean commandLine = ((Simple) prop).getCommandline();
+				Assert.assertTrue(commandLine == null || commandLine == false);
+				Assert.assertFalse(((Simple) prop).isCommandLine());
 			}
 
 			kindCombo.setSelection("property (default)");
@@ -175,7 +178,9 @@ public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 			prop = getModelFromXml().getProperty("ID");
 			assertKind(prop, PropertyConfigurationType.PROPERTY);
 			if (prop instanceof Simple) {
-				Assert.assertFalse(((Simple) prop).getCommandline());
+				Boolean commandLine = ((Simple) prop).getCommandline();
+				Assert.assertTrue(commandLine == null || commandLine == false);
+				Assert.assertFalse(((Simple) prop).isCommandLine());
 			}
 		}
 
