@@ -18,8 +18,6 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -177,7 +175,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationContextMenuDelete() {
 		waveformName = "HC_Pictogram";
-		final String HOST_CO = "Host Collocation";
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
@@ -185,13 +182,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HOST_CO, 0, 0);
-		SWTBotShell hostCoShell = gefBot.shell("New " + HOST_CO);
-		hostCoShell.setFocus();
-		SWTBotText hostCoName = gefBot.textWithLabel("Name:");
-		hostCoName.setFocus();
-		hostCoName.typeText(HOST_CO_NAME);
-		gefBot.button("OK").click();
+		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
 
 		// Add component to the host collocation
 		editor.setFocus();

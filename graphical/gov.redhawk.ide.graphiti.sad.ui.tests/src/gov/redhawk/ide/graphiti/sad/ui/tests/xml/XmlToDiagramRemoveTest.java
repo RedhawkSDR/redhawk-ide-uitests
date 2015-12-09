@@ -13,7 +13,6 @@ package gov.redhawk.ide.graphiti.sad.ui.tests.xml;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -135,7 +134,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 	@Test
 	public void removeHostCollocationInXmlTest() {
 		waveformName = "Remove_HostCollocation_Xml";
-		final String HOSTCOLLOCATION_PALETTE = "Host Collocation";
 		final String HOSTCOLLOCATION_INSTANCE_NAME = "AAA";
 
 		// Create a new empty waveform
@@ -143,11 +141,8 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HOSTCOLLOCATION_PALETTE, 0, 0);
+		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOSTCOLLOCATION_INSTANCE_NAME);
 
-		gefBot.waitUntil(Conditions.shellIsActive("New Host Collocation"));
-		gefBot.textWithLabel("Name:").setText("AAA");
-		gefBot.button("OK").click();
 		//add component inside host collocation (so host collocation is valid)
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 5, 5);
 

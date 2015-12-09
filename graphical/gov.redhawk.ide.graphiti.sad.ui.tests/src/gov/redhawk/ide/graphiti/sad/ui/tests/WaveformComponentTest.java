@@ -45,7 +45,6 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
@@ -123,7 +122,6 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	@Test
 	public void checkComponentInHostCollocationContextMenuDelete() {
 		waveformName = "HC_Context_Menu_Delete";
-		final String HOST_CO = "Host Collocation";
 		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
@@ -131,13 +129,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HOST_CO, 0, 0);
-		SWTBotShell hostCoShell = gefBot.shell("New " + HOST_CO);
-		hostCoShell.setFocus();
-		SWTBotText hostCoName = gefBot.textWithLabel("Name:");
-		hostCoName.setFocus();
-		hostCoName.typeText(HOST_CO_NAME);
-		gefBot.button("OK").click();
+		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
 
 		// Add component to the host collocation
 		editor.setFocus();
