@@ -13,6 +13,8 @@ package gov.redhawk.ide.ui.tests.prf;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.condition.WaitForCellValue;
 
+import java.io.IOException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
@@ -197,7 +199,7 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 	}
 
 	@Test
-	public void testKind() {
+	public void testKind() throws IOException {
 		testKind(false);
 	}
 

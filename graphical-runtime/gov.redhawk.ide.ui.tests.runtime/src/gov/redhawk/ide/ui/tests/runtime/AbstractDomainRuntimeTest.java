@@ -10,22 +10,30 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.runtime;
 
+import java.net.URI;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ui.PlatformUI;
+import org.junit.Assert;
+
 import gov.redhawk.ide.sdr.ui.internal.handlers.LaunchDomainManagerWithOptions;
 import gov.redhawk.ide.sdr.ui.util.DebugLevel;
 import gov.redhawk.ide.sdr.ui.util.DomainManagerLaunchConfiguration;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 
-import java.io.File;
-
-import org.eclipse.ui.PlatformUI;
-import org.junit.Assert;
-
-/**
- * 
- */
 public abstract class AbstractDomainRuntimeTest extends UIRuntimeTest {
-	
-	protected void launchDomainManager(String name) {
+
+	/**
+	 * Launches a domain, but doesn't connect to it (i.e. it won't be in the explorer view, just in the console)
+	 * @param name
+	 * @throws CoreException
+	 */
+	protected void launchDomainManager(String name) throws CoreException {
+		IFileStore store = EFS.getStore(URI.create("sdrdom:///mgr/DomainManager.spd.xml"));
+		Assert.assertTrue("The domain manager profile was not found", store.fetchInfo().exists());
+
 		final DomainManagerLaunchConfiguration model = new DomainManagerLaunchConfiguration();
 		model.setArguments("");
 		model.setDebugLevel(DebugLevel.Error);
@@ -33,19 +41,12 @@ public abstract class AbstractDomainRuntimeTest extends UIRuntimeTest {
 		model.setLaunchConfigName(name);
 		model.setLocalDomainName(name);
 		model.setSpdPath("/mgr/DomainManager.spd.xml");
-		String sdrRoot = System.getenv("SDRROOT");
-		File dmdSpd = new File(new File(sdrRoot), "dom/mgr/DomainManager.spd.xml");
-		
-		Assert.assertTrue("${SDROOT}/mgr/DomainManager.spd.xml does not exist", dmdSpd.isFile());
-		
-		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
 				LaunchDomainManagerWithOptions.launchDomainManager(model, null);
 			}
-
 		});
 	}
-	
 }

@@ -10,6 +10,8 @@
  */
 package gov.redhawk.ide.ui.tests.prf;
 
+import java.io.IOException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.junit.Test;
@@ -22,7 +24,7 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 	}
 
 	@Test
-	public void testKind() {
+	public void testKind() throws IOException {
 		testKind(true);
 	}
 
