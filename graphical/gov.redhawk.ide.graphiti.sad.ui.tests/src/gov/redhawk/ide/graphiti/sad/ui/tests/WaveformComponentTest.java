@@ -565,7 +565,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		Assert.assertEquals("inner text should match component usage name", ci.getUsageName(), ComponentUtils.getInnerText(componentShape).getValue());
 		Assert.assertNotNull("component supported interface graphic should not be null", ComponentUtils.getLollipop(componentShape));
 		Assert.assertNotNull("start order shape/text should not be null", ComponentUtils.getStartOrderText(componentShape));
-		String acMessage = "should" + (isAssemblyController ? "" : " not") + " be assembly controller";
+		String acMessage = "should" + ((isAssemblyController) ? "" : " not") + " be assembly controller";
 		Assert.assertTrue(acMessage, isAssemblyController == ComponentUtils.isAssemblyController(componentShape));
 
 		// HardLimit only has the two ports
