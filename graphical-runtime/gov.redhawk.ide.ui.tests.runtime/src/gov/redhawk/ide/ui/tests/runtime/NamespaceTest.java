@@ -36,8 +36,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 import org.junit.Assert;
@@ -305,12 +306,12 @@ public class NamespaceTest extends UIRuntimeTest {
 	}
 
 	private void checkExistsInScaAndRemove(String[] scaPath, String projectName) {
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, projectName);
-		SWTBotTreeItem scaNode = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, scaPath, projectName);
+		SWTBotTreeItem scaNode = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, projectName);
 		scaNode.select();
-		SWTBotMenu deleteContext = scaNode.contextMenu("Delete");
-		deleteContext.click();
-		bot.button("Yes").click();
+		scaNode.contextMenu("Delete").click();
+		SWTBotShell shell = bot.shell("Delete");
+		shell.bot().button("Yes").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, scaPath, projectName);
 	}
 
