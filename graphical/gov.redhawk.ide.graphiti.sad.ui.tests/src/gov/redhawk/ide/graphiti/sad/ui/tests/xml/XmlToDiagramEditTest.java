@@ -225,8 +225,8 @@ bot.sleep(5000);
 
 			@Override
 			public boolean test() throws Exception {
-				return "1".equals(ComponentUtils.getStartOrderText(DiagramTestUtils.getComponentShape(editor, SIG_GEN_1)).getValue())
-					&& "0".equals(ComponentUtils.getStartOrderText(DiagramTestUtils.getComponentShape(editor, HARD_LIMIT_1)).getValue());
+				return !ComponentUtils.isAssemblyController(DiagramTestUtils.getComponentShape(editor, SIG_GEN_1))
+					&& ComponentUtils.isAssemblyController(DiagramTestUtils.getComponentShape(editor, HARD_LIMIT_1));
 			}
 
 			@Override
