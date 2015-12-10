@@ -168,6 +168,46 @@
                 <id>org.jacorb</id>
                 <versionRange>0.0.0</versionRange>
               </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>gov.redhawk.e4.platform</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>gov.redhawk.sdk</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>gov.redhawk.tailoredTools</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>org.eclipse.equinox.p2.user.ui</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>org.eclipse.equinox.p2.user.ui.source</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>org.eclipse.swtbot.forms</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>org.eclipse.swtbot.eclipse.gef</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>org.eclipse.swtbot</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
             </extraRequirements>
           </dependency-resolution>
         </configuration>
@@ -214,48 +254,6 @@
               <autoStart>true</autoStart>
             </bundle>
           </bundleStartLevel>
-          <dependencies>
-            <dependency>
-              <type>eclipse-feature</type>
-              <artifactId>gov.redhawk.e4.platform</artifactId>
-              <version>0.0.0</version>
-            </dependency>
-            <dependency>
-              <type>eclipse-feature</type>
-              <artifactId>gov.redhawk.sdk</artifactId>
-              <version>0.0.0</version>
-            </dependency>
-            <dependency>
-              <type>eclipse-feature</type>
-              <artifactId>gov.redhawk.tailoredTools</artifactId>
-              <version>0.0.0</version>
-            </dependency>
-            <dependency>
-              <type>eclipse-feature</type>
-              <artifactId>org.eclipse.equinox.p2.user.ui</artifactId>
-              <version>0.0.0</version>
-            </dependency>
-            <dependency>
-              <type>eclipse-feature</type>
-              <artifactId>org.eclipse.equinox.p2.user.ui.source</artifactId>
-              <version>0.0.0</version>
-            </dependency>
-            <dependency>
-              <type>eclipse-feature</type>
-              <artifactId>org.eclipse.swtbot.forms</artifactId>
-              <version>0.0.0</version>
-            </dependency>
-            <dependency>
-              <type>eclipse-feature</type>
-              <artifactId>org.eclipse.swtbot.eclipse.gef</artifactId>
-              <version>0.0.0</version>
-            </dependency>
-            <dependency>
-              <type>eclipse-feature</type>
-              <artifactId>org.eclipse.swtbot</artifactId>
-              <version>0.0.0</version>
-            </dependency>
-          </dependencies>
         </configuration>
       </plugin>
     </plugins>
