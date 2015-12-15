@@ -13,7 +13,8 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui.runtime.tests,
  gov.redhawk.ide.graphiti.dcd.ui,
  mil.jpeojtrs.sca.dcd,
  gov.redhawk.logging.ui,
- gov.redhawk.ide.debug
+ gov.redhawk.ide.debug,
+ gov.redhawk.ide.sdr
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.draw2d.geometry

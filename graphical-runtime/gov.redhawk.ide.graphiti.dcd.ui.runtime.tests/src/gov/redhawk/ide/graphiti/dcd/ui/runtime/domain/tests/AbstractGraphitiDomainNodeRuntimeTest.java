@@ -10,6 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.domain.tests;
 
+import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
@@ -55,6 +56,7 @@ public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTes
 	@After
 	public void afterTest() {
 		ScaExplorerTestUtils.deleteDomainInstance(bot, DOMAIN);
-		ConsoleUtils.terminateAllProcesses(gefBot);
+		NodeBooterLauncherUtil.getInstance().terminateAll();
+		ConsoleUtils.removeTerminatedLaunches(bot);
 	}
 }

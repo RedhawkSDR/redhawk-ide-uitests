@@ -15,12 +15,12 @@ import java.net.URI;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Assert;
 
-import gov.redhawk.ide.sdr.ui.internal.handlers.LaunchDomainManagerWithOptions;
-import gov.redhawk.ide.sdr.ui.util.DebugLevel;
-import gov.redhawk.ide.sdr.ui.util.DomainManagerLaunchConfiguration;
+import gov.redhawk.ide.sdr.nodebooter.DebugLevel;
+import gov.redhawk.ide.sdr.nodebooter.DomainManagerLauncherUtil;
+import gov.redhawk.ide.sdr.nodebooter.DomainManagerLaunchConfiguration;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 
 public abstract class AbstractDomainRuntimeTest extends UIRuntimeTest {
@@ -34,19 +34,14 @@ public abstract class AbstractDomainRuntimeTest extends UIRuntimeTest {
 		IFileStore store = EFS.getStore(URI.create("sdrdom:///mgr/DomainManager.spd.xml"));
 		Assert.assertTrue("The domain manager profile was not found", store.fetchInfo().exists());
 
-		final DomainManagerLaunchConfiguration model = new DomainManagerLaunchConfiguration();
-		model.setArguments("");
-		model.setDebugLevel(DebugLevel.Error);
-		model.setDomainName(name);
-		model.setLaunchConfigName(name);
-		model.setLocalDomainName(name);
-		model.setSpdPath("/mgr/DomainManager.spd.xml");
+		final DomainManagerLaunchConfiguration domMgr = new DomainManagerLaunchConfiguration();
+		domMgr.setArguments("");
+		domMgr.setDebugLevel(DebugLevel.Error);
+		domMgr.setDomainName(name);
+		domMgr.setLaunchConfigName(name);
+		domMgr.setLocalDomainName(name);
+		domMgr.setSpdPath("/mgr/DomainManager.spd.xml");
 
-		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				LaunchDomainManagerWithOptions.launchDomainManager(model, null);
-			}
-		});
+		DomainManagerLauncherUtil.launchDomainManager(domMgr, new NullProgressMonitor());
 	}
 }

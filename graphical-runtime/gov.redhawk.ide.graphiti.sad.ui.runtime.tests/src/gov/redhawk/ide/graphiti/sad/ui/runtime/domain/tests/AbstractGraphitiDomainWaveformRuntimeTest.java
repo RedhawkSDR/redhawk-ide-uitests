@@ -10,6 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.tests;
 
+import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
@@ -71,7 +72,8 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 		}
 
 		ScaExplorerTestUtils.deleteDomainInstance(bot, DOMAIN);
-		ConsoleUtils.terminateAllProcesses(gefBot);
+		NodeBooterLauncherUtil.getInstance().terminateAll();
+		ConsoleUtils.removeTerminatedLaunches(bot);
 	}
 
 	public String getWaveFormFullName() {
