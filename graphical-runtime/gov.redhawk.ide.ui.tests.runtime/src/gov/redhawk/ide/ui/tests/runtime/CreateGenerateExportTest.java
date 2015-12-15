@@ -1,13 +1,12 @@
 /**
- * This file is protected by Copyright. 
+ * This file is protected by Copyright.
  * Please refer to the COPYRIGHT file distributed with this source distribution.
- * 
+ *
  * This file is part of REDHAWK IDE.
- * 
- * All rights reserved.  This program and the accompanying materials are made available under 
+ *
+ * All rights reserved.  This program and the accompanying materials are made available under
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html.
- *
  */
 package gov.redhawk.ide.ui.tests.runtime;
 
@@ -48,7 +47,7 @@ import org.junit.Test;
  * These tests create projects that use a namespace, build them, and install them to SDRROOT. Their presence in the
  * explorer view is verified, and then they're deleted.
  */
-public class NamespaceTest extends UIRuntimeTest {
+public class CreateGenerateExportTest extends UIRuntimeTest {
 
 	private static final String PREFIX_DOTS = "runtime.test.";
 	private static final String SIGGEN = "rh.SigGen";
@@ -81,7 +80,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	 * They should also be represented in the REDHAWK Explorer.
 	 */
 	@Test
-	public void namespaceBehaviorComponents() {
+	public void componentProjects() {
 		final String componentBaseName = "component";
 
 		String projectName = PREFIX_DOTS + "cpp." + componentBaseName;
@@ -114,7 +113,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	 * @throws OperationCanceledException
 	 */
 	@Test
-	public void namespaceBehaviorDevices() throws OperationCanceledException, InterruptedException {
+	public void deviceProjects() throws OperationCanceledException, InterruptedException {
 		final String deviceBaseName = "dev";
 
 		String projectName = PREFIX_DOTS + "cpp." + deviceBaseName;
@@ -140,14 +139,17 @@ public class NamespaceTest extends UIRuntimeTest {
 	}
 
 	/**
-	 * IDE-1122, IDE-1182, IDE-1183, IDE-1185
+	 * IDE-1122, IDE-1182 - Namespace related
+	 * IDE-1183 - Extra next in C++ wizard
+	 * IDE-1185 - Code editor didn't open
+	 * IDE-1355 - Error markers on C++ service project
 	 * Check that a name-spaced service project can be created, generated and exported.
 	 * It should also be represented in the REDHAWK Explorer.
 	 */
 	@Test
-	public void namespaceBehaviorServices() {
+	public void serviceProjects() {
 		final String serviceBaseName = "service";
-		final String serviceInterface = "IDL:CF/LogEventConsumer:1.0";
+		final String serviceInterface = "IDL:BULKIO/dataShort:1.0"; // IDE-1355
 
 		String projectName = PREFIX_DOTS + "cpp." + serviceBaseName;
 		ServiceUtils.createServiceProject(bot, projectName, serviceInterface, "C++");
@@ -177,7 +179,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	 * It should install to the correct location (we install it), and also be represented in the REDHAWK Explorer.
 	 */
 	@Test
-	public void namespaceBehaviorWaveforms() {
+	public void waveformProjects() {
 		final String waveformBaseName = "waveform";
 
 		// Create with one name, change the XML to another
@@ -221,7 +223,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	 * It should install to the correct location (we install it), and also be represented in the REDHAWK Explorer.
 	 */
 	@Test
-	public void namespaceBehaviorNodes() {
+	public void nodeProjects() {
 		final String nodeBaseName = "node";
 		final String nodeDomain = "REDHAWK_DEV";
 
@@ -268,7 +270,7 @@ public class NamespaceTest extends UIRuntimeTest {
 	 * It should also be represented in the REDHAWK Explorer.
 	 */
 	@Test
-	public void namespaceBehaviorSharedLib() {
+	public void sharedLibProjects() {
 		final String sharedLibraryBaseName = "sharedLibrary";
 		final String sharedLibraryType = "C++ Library";
 
