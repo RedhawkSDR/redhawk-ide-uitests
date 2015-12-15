@@ -20,8 +20,8 @@ import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
@@ -60,7 +60,7 @@ public class WaveformTest extends UIRuntimeTest {
 		SWTBotTreeItem compTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodeParentPath, "SigGen_1");
 		compTreeItem.select();
 
-		MenuUtils.showPropertiesView(bot);
+		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
 		SWTBotTree propertiesTree = bot.viewByTitle("Properties").bot().tree();
 
 		SWTBotTreeItem[] allItems = propertiesTree.getAllItems();
@@ -79,8 +79,9 @@ public class WaveformTest extends UIRuntimeTest {
 		compTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodeParentPath, "HardLimit_1");
 		compTreeItem.select();
 
-		MenuUtils.showPropertiesView(bot);
-		propertiesTree = bot.viewByTitle("Properties").bot().tree();
+		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+		propView.show();
+		propertiesTree = propView.bot().tree();
 
 		SWTBotTreeItem limitsTreeItem = propertiesTree.expandNode("limits");
 		for (SWTBotTreeItem item : limitsTreeItem.getItems()) {
@@ -111,8 +112,9 @@ public class WaveformTest extends UIRuntimeTest {
 		SWTBotTreeItem compTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodeParentPath, "SigGen_1");
 		compTreeItem.select();
 
-		MenuUtils.showPropertiesView(bot);
-		SWTBotTree propertiesTree = bot.viewByTitle("Properties").bot().tree();
+		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+		propView.show();
+		SWTBotTree propertiesTree = propView.bot().tree();
 
 		SWTBotTreeItem[] allItems = propertiesTree.getAllItems();
 		for (SWTBotTreeItem item : allItems) {
@@ -130,8 +132,9 @@ public class WaveformTest extends UIRuntimeTest {
 		compTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodeParentPath, "HardLimit_1");
 		compTreeItem.select();
 
-		MenuUtils.showPropertiesView(bot);
-		propertiesTree = bot.viewByTitle("Properties").bot().tree();
+		propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+		propView.show();
+		propertiesTree = propView.bot().tree();
 
 		SWTBotTreeItem limitsTreeItem = propertiesTree.expandNode("limits");
 		for (SWTBotTreeItem item : limitsTreeItem.getItems()) {

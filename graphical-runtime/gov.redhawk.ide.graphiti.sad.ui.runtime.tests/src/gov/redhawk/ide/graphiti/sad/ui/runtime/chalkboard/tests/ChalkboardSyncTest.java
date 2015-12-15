@@ -19,7 +19,6 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -319,13 +318,12 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
-		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
+		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
 		
 		// Select component in REDHAWK explorer tree first
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1).select().click();
 		
-		SWTBotTree propTable = ViewUtils.activateFirstPropertiesTab(gefBot);
-		
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Component Properties").bot().tree();
 		SWTBotTreeItem magItem = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItem.cell(1), "100.0");
 		magItem.select().click(1);
@@ -351,14 +349,14 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
-		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
+		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
 		
 		// Click in diagram outside of component first
 		// Workaround for issue where diagram component does not populate 
 		// properties view if selected right after creation
 		editor.rootEditPart().click();
 		editor.click(SIGGEN_1);
-		SWTBotTree propTable = ViewUtils.activateFirstPropertiesTab(gefBot);
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Component Properties").bot().tree();
 		SWTBotTreeItem magItem = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItem.cell(1), "100.0");
 		magItem.select().click(1);
@@ -368,7 +366,6 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		propTable = gefBot.viewByTitle("Properties").bot().tree();
 		magItem = propTable.getTreeItem("magnitude");
 		Assert.assertEquals("Property has wrong value", "50.0", magItem.cell(1));
-		
 	}
 
 

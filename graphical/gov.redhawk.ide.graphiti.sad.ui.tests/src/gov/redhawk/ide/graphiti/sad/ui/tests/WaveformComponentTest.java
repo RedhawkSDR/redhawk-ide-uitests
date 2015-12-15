@@ -17,6 +17,7 @@ import gov.redhawk.ide.graphiti.sad.ui.diagram.patterns.HostCollocationPattern;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.sdr.ComponentsSubContainer;
 import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
@@ -182,10 +183,11 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		WaveformUtils.createNewWaveform(gefBot, waveformName, SIG_GEN);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.getEditPart(SIG_GEN_1).click();
-		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
-		String propertyname = gefBot.viewByTitle("Properties").bot().tree().cell(0, "Property").toString();
+		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+		propView.show();
+		String propertyname = propView.bot().tree().cell(0, "Property").toString();
 		String newValue = "0.0";
-		for (SWTBotTreeItem item : gefBot.viewByTitle("Properties").bot().tree().getAllItems()) {
+		for (SWTBotTreeItem item : propView.bot().tree().getAllItems()) {
 			if (item.getText().equals(propertyname)) {
 				item.click(1).pressShortcut(Keystrokes.create('0')[0]);
 				break;

@@ -11,24 +11,18 @@
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
 import org.eclipse.graphiti.mm.pictograms.Anchor;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
-import org.eclipse.ui.internal.views.properties.tabbed.view.TabbedPropertyList;
-import org.eclipse.ui.internal.views.properties.tabbed.view.TabbedPropertyList.ListElement;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
-@SuppressWarnings("restriction")
 public class PortPropertiesTest extends AbstractGraphitiTest {
 
 	public PortPropertiesTest() {
@@ -49,21 +43,22 @@ public class PortPropertiesTest extends AbstractGraphitiTest {
 		String description;
 
 		part = getAnchorPart(DiagramTestUtils.getDiagramProvidesPort(editor, onlyComponent));
-		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
+		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+		propView.show();
 		editor.select(part);
 		editor.click(part);
-		selectPropertiesTab("Port Details");
-		description = gefBot.viewByTitle("Properties").bot().textWithLabel("Description:").getText(); // IDE-1172
+		ViewUtils.selectPropertiesTab(bot, "Port Details");
+		description = propView.bot().textWithLabel("Description:").getText(); // IDE-1172
 		Assert.assertEquals("provides Port description", "Float input port for data before hard limit is applied. ", description);
 		tree = gefBot.viewByTitle("Properties").bot().tree();
 		tree.expandNode("dataFloat");
 		Assert.assertTrue("Properties view tree should have multiple nodes", tree.visibleRowCount() > 1);
 
 		part = getAnchorPart(DiagramTestUtils.getDiagramUsesPort(editor, onlyComponent));
-		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
+		propView.show();
 		editor.select(part);
 		editor.click(part);
-		selectPropertiesTab("Port Details");
+		ViewUtils.selectPropertiesTab(bot, "Port Details");
 		description = gefBot.viewByTitle("Properties").bot().textWithLabel("Description:").getText(); // IDE-1172
 		Assert.assertEquals("uses Port description", "Float output port for data after hard limit is applied. ", description);
 		tree = gefBot.viewByTitle("Properties").bot().tree();
@@ -83,37 +78,5 @@ public class PortPropertiesTest extends AbstractGraphitiTest {
 			}
 		}
 		return null;
-	}
-
-	private void selectPropertiesTab(String label) {
-		Matcher<TabbedPropertyList> matcher = new BaseMatcher<TabbedPropertyList>() {
-
-			@Override
-			public boolean matches(Object item) {
-				if (item instanceof TabbedPropertyList) {
-					return true;
-				}
-				return false;
-			}
-
-			@Override
-			public void describeTo(Description description) {
-			}
-
-		};
-		TabbedPropertyList list = (TabbedPropertyList) gefBot.viewByTitle("Properties").bot().widget(matcher);
-		int numElements = list.getNumberOfElements();
-		for (int index = 0; index < numElements; ++index) {
-			final TabbedPropertyList.ListElement element = (ListElement) list.getElementAt(index);
-			if (label.equals(element.getTabItem().getText())) {
-				Display.getDefault().syncExec(new Runnable() {
-
-					@Override
-					public void run() {
-						element.setSelected(true);
-					}
-				});
-			}
-		}
 	}
 }

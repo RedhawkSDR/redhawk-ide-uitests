@@ -10,13 +10,13 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.tests;
 
-import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForCellValue;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -157,16 +157,15 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		final String[] waveformPath = ScaExplorerTestUtils.joinPaths(DOMAIN_WAVEFORM_PARENT_PATH, new String[] { getWaveFormFullName() });
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), DiagramType.GRAPHITI_CHALKBOARD);
 		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
-		SWTBotTree propTable;
 		editor.setFocus();
 		
-		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
+		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+		propView.show();
 		
 		// Select component in REDHAWK explorer tree first
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, waveformPath, SIG_GEN_1).select().click();
 		
-		propTable = ViewUtils.activateFirstPropertiesTab(gefBot);
-
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Component Properties").bot().tree();
 		SWTBotTreeItem magItemExplorer = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItemExplorer.cell(1), "100.0");
 		magItemExplorer.select().click(1);
@@ -177,7 +176,7 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		// properties view if selected right after creation
 		editor.rootEditPart().click();
 		editor.click(SIG_GEN);
-		propTable = gefBot.viewByTitle("Properties").bot().tree();
+		propTable = propView.bot().tree();
 		final SWTBotTreeItem magItemDiagram = propTable.getTreeItem("magnitude");
 
 		// Wait for the property to update - there's a delay since we're going chalkboard -> explorer for a component in a domain
@@ -194,25 +193,24 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		final String[] waveformPath = ScaExplorerTestUtils.joinPaths(DOMAIN_WAVEFORM_PARENT_PATH, new String[] { getWaveFormFullName() });
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), DiagramType.GRAPHITI_CHALKBOARD);
 		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
-		SWTBotTree propTable;
 		editor.setFocus();
 		
-		MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
+		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+		propView.show();
 
 		// TODO: Click in diagram outside of component first
 		// Workaround for issue where diagram component does not populate 
 		// properties view if selected right after creation
 		editor.rootEditPart().click();		editor.click(SIG_GEN);
 
-		propTable = ViewUtils.activateFirstPropertiesTab(gefBot);
-
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Component Properties").bot().tree();
 		SWTBotTreeItem magItemDiagram = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItemDiagram.cell(1), "100.0");
 		magItemDiagram.select().click(1);
-		gefBot.viewByTitle("Properties").bot().text().setText("50");
+		propView.bot().text().setText("50");
 		
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, waveformPath, SIG_GEN_1).select().click();
-		propTable = gefBot.viewByTitle("Properties").bot().tree();
+		propTable = propView.bot().tree();
 		final SWTBotTreeItem magItemExplorer = propTable.getTreeItem("magnitude");
 		
 		// Wait for the property to update - there's a delay since we're going chalkboard -> explorer for a component in a domain

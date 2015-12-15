@@ -27,6 +27,7 @@ import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -132,16 +133,17 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 		editor = gefBot.rhGefEditor(projectName);
 		editor.setFocus();
 
-		SWTBotView view = MenuUtils.showView(gefBot, "org.eclipse.ui.views.PropertySheet");
+		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+		propView.show();
 		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
 
 		// Edit one of the property values
 		editor.getEditPart(GPP).click();
-		view.setFocus();
+		propView.setFocus();
 		String propertyname = "loadCapacityPerCore";
 		String newValue = "1.023";
 		boolean foundProp = false;
-		for (SWTBotTreeItem item : gefBot.viewByTitle("Properties").bot().tree().getAllItems()) {
+		for (SWTBotTreeItem item : propView.bot().tree().getAllItems()) {
 			if (item.getText().equals(propertyname)) {
 				foundProp = true;
 				item.click(1);
