@@ -148,20 +148,20 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("Python Code Generator");
 		wizardBot.button("Next >").click();
 		setupCodeGeneration(null);
-		Assert.assertTrue(wizardBot.button("Finish").isEnabled());
+		bot.waitUntil(Conditions.widgetIsEnabled(wizardBot.button("Finish")));
 		reverseFromCodeGeneration();
 		wizardBot.button("< Back").click();
 
 		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("Java");
 		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("Java Code Generator");
 		wizardBot.button("Next >").click();
-		Assert.assertTrue(wizardBot.button("Finish").isEnabled());
+		bot.waitUntil(Conditions.widgetIsEnabled(wizardBot.button("Finish")));
 		wizardBot.button("< Back").click();
 
 		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("C++");
 		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("C++ Code Generator");
 		wizardBot.button("Next >").click();
-		Assert.assertTrue(wizardBot.button("Finish").isEnabled());
+		bot.waitUntil(Conditions.widgetIsEnabled(wizardBot.button("Finish")));
 
 		wizardShell.close();
 	}
