@@ -179,7 +179,8 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 	}
 
 	/**
-	 * IDE-1111: test creation of component with dots in project name
+	 * IDE-1111, IDE-1359
+	 * Test creation of component with dots in project name
 	 */
 	@Test
 	public void testNamespacedObjectCreation() {

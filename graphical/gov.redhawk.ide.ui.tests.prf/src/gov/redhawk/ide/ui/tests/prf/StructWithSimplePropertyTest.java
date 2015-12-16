@@ -99,6 +99,9 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 		super.testUniqueID();
 	}
 
+	/**
+	 * IDE-1439
+	 */
 	@Test
 	public void testKind() throws IOException {
 		testKind(false);

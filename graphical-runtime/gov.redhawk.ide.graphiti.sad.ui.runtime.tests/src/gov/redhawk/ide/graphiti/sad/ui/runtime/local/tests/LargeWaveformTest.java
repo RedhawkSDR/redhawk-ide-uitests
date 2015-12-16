@@ -22,6 +22,9 @@ import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
+/**
+ * IDE-1451 - Error dialogs when opening sandbox waveform/components. Tested in all tests by virtue of opening the diagram.
+ */
 public class LargeWaveformTest extends UITest {
 
 	private static final String WAVEFORM_NAME = "LargeWaveform";
@@ -58,6 +61,7 @@ public class LargeWaveformTest extends UITest {
 	}
 
 	/**
+	 * IDE-1367
 	 * Terminate a large waveform with the explorer diagram open
 	 */
 	@Test
@@ -66,6 +70,7 @@ public class LargeWaveformTest extends UITest {
 	}
 
 	/**
+	 * IDE-1367
 	 * Terminate a large waveform with the chalkboard diagram open
 	 */
 	@Test

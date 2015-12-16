@@ -150,6 +150,9 @@ public class StructSequenceWithSimplePropertyTest extends SimplePropertyTest {
 		assertFormValid();
 	}
 
+	/**
+	 * IDE-1439
+	 */
 	@Test
 	public void testKind() throws IOException {
 		testKind(false);

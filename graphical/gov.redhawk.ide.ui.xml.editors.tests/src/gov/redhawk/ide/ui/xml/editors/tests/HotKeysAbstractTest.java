@@ -20,6 +20,10 @@ public abstract class HotKeysAbstractTest extends UITest {
 	 */
 	protected abstract void importProjectAndOpen() throws CoreException;
 	
+	/**
+	 * IDE-1342
+	 * @throws CoreException
+	 */
 	@Test
 	public void pressDeleteInSpdXml() throws CoreException {
 		importProjectAndOpen();

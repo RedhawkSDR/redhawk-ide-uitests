@@ -26,9 +26,6 @@ import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
-/**
- * 
- */
 public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 
 	private SWTBotView explorerView;
@@ -109,6 +106,7 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 	}
 
 	/**
+	 * IDE-1372
 	 * Ensure the user can't create two domain entries with the same display name (although they can target the same
 	 * domain).
 	 * @throws CoreException
@@ -253,7 +251,7 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		bot.waitUntil(Conditions.shellCloses(shell));
 
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
-		ConsoleUtils.assertConsoleTitleExists(bot, "Domain Manager " + domainName + " .*");
+		ConsoleUtils.assertConsoleTitleExists(bot, "Domain Manager " + domainName + " .*"); // IDE-1372
 		for (String deviceManager : deviceManagers) {
 			ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { domainName, "Device Managers" }, deviceManager);
 			ConsoleUtils.assertConsoleTitleExists(bot, "Device Manager " + deviceManager + " .*");

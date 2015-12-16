@@ -50,6 +50,7 @@ public abstract class ResourceLaunchingAbstractTest extends UITest {
 	private ILogListener listener;
 
 	/**
+	 * IDE-1045, IDE-1384
 	 * Ensure connections cannot be made while a resource is starting up
 	 */
 	@Test
@@ -58,7 +59,7 @@ public abstract class ResourceLaunchingAbstractTest extends UITest {
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, slowComp.getFullName(), 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, fastComp.getFullName(), 150, 0);
-		DiagramTestUtils.waitForComponentState(bot, editor, slowComp.getShortName(1), ComponentState.LAUNCHING);
+		DiagramTestUtils.waitForComponentState(bot, editor, slowComp.getShortName(1), ComponentState.LAUNCHING); // IDE-1384
 		DiagramTestUtils.waitForComponentState(bot, editor, fastComp.getShortName(1), ComponentState.STOPPED);
 
 		// Draw both possible port connections, in both forward and reverse directions
@@ -79,6 +80,7 @@ public abstract class ResourceLaunchingAbstractTest extends UITest {
 	}
 
 	/**
+	 * IDE-1384
 	 * Ensure some context menus are disabled while the resource is starting up
 	 */
 	@Test
@@ -86,7 +88,7 @@ public abstract class ResourceLaunchingAbstractTest extends UITest {
 		RHBotGefEditor editor = openDiagram();
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, slowComp.getFullName(), 0, 0);
-		DiagramTestUtils.waitForComponentState(bot, editor, slowComp.getShortName(1), ComponentState.LAUNCHING);
+		DiagramTestUtils.waitForComponentState(bot, editor, slowComp.getShortName(1), ComponentState.LAUNCHING); // IDE-1384
 		SWTBotGefEditPart editPart = editor.getEditPart(slowComp.getShortName(1)).select();
 
 		// We have to listen for log entries

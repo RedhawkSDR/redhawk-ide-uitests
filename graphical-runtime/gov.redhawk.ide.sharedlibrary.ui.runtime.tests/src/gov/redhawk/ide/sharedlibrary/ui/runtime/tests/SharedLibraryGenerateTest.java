@@ -51,7 +51,7 @@ public class SharedLibraryGenerateTest extends UIRuntimeTest {
 
 		SharedLibraryUtils.createSharedLibraryProject(bot, projectName, projectType);
 		editor = bot.editorByTitle(projectName);
-		EditorUtils.assertEditorTabOkay(editor, EditorUtils.SPD_EDITOR_OVERVIEW_TAB_ID);
+		EditorUtils.assertEditorTabOkay(editor, EditorUtils.SPD_EDITOR_OVERVIEW_TAB_ID); // IDE-1408
 
 		StandardTestActions.generateProject(bot, editor);
 

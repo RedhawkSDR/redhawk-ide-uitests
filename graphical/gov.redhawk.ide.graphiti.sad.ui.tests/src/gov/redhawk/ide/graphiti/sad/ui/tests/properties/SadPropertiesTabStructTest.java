@@ -18,11 +18,11 @@ import org.junit.Ignore;
 public class SadPropertiesTabStructTest extends SadAbstractPropertiesTabTest {
 
 	private static final String DATA_CONVERTER_STRUCT1 = "scaleOutput";
-	private static final String DATA_CONVERTER_STRUCT1_BOOLEAN = "charPort";
+	private static final String DATA_CONVERTER_STRUCT1_BOOLEAN = "charPort"; // IDE-1474
 	private static final String DATA_CONVERTER_STRUCT2 = "floatingPointRange";
-	private static final String DATA_CONVERTER_STRUCT2_DOUBLE = "minimum";
+	private static final String DATA_CONVERTER_STRUCT2_DOUBLE = "minimum"; // IDE-1474
 	private static final String DATA_CONVERTER_STRUCT3 = "transformProperties";
-	private static final String DATA_CONVERTER_STRUCT3_LONG = "fftSize";
+	private static final String DATA_CONVERTER_STRUCT3_LONG = "fftSize"; // IDE-1474
 
 	@Override
 	protected List<String> getBooleanPath() {

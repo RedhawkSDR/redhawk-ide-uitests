@@ -198,6 +198,9 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 		Assert.assertEquals("Remove button enablement", removeButtonEnabled, bot.button("Remove").isEnabled());
 	}
 
+	/**
+	 * IDE-1439
+	 */
 	@Test
 	public void testKind() throws IOException {
 		testKind(false);

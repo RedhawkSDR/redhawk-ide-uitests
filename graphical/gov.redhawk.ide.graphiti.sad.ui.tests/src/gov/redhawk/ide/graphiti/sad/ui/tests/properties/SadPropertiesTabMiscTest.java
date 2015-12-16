@@ -51,7 +51,8 @@ public class SadPropertiesTabMiscTest extends UITest {
 	}
 
 	/**
-	 * IDE-1075 Ensure the editor doesn't collapse everything between edits
+	 * IDE-1075
+	 * Ensure the editor doesn't collapse everything between edits
 	 */
 	@Test
 	public void noCollapseBetweenEdits() {

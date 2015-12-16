@@ -82,6 +82,9 @@ public abstract class SadAbstractPropertiesTabTest extends UITest {
 
 	protected abstract List<String> getEnumPath();
 
+	/**
+	 * IDE-1082
+	 */
 	@Test
 	public void setEnum() {
 		List<String> path = getEnumPath();

@@ -236,6 +236,7 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 	}
 
 	/**
+	 * IDE-1472
 	 * Make connections with both sides collapsed; ambiguous ports requiring the wizard
 	 */
 	@Test

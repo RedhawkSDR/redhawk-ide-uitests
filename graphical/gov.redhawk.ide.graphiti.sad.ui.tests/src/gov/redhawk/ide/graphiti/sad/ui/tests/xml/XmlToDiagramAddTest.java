@@ -50,6 +50,7 @@ import mil.jpeojtrs.sca.sad.SadUsesPort;
 import mil.jpeojtrs.sca.sad.SoftwareAssembly;
 
 /**
+ * IDE-1434
  * Test class that deals with adding elements to the sad.xml and making sure they appear correctly in the diagram
  */
 public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {

@@ -96,6 +96,9 @@ public class StructWithSimpleSequencePropertyTest extends SimpleSequenceProperty
 		super.testUniqueID();
 	}
 
+	/**
+	 * IDE-1439
+	 */
 	@Test
 	public void testKind() throws IOException {
 		testKind(false);

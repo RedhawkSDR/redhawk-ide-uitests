@@ -123,6 +123,9 @@ public class WaveformOverviewTabTest extends UITest {
 		Assert.assertEquals("SigGen_1", sad.getAssemblyController().getComponentInstantiationRef().getRefid());
 	}
 
+	/**
+	 * IDE-1240
+	 */
 	@Test
 	public void description() {
 		editorBot.textWithLabel("Description:").typeText("A test description");

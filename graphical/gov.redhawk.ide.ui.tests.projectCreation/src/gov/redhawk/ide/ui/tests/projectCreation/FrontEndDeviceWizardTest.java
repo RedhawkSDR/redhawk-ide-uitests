@@ -253,6 +253,10 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 		}
 	}
 
+	/**
+	 * IDE-1425
+	 * @param combo
+	 */
 	private void assertDataCharDeprecated(SWTBotCombo combo) {
 		if (combo.getText().contains("dataChar")) {
 			Assert.fail("Default was dataChar");

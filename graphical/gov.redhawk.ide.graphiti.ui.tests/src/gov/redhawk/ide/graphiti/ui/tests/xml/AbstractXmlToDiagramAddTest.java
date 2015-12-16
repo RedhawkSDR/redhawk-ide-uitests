@@ -84,7 +84,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 	private DeviceConfiguration dcd;
 
 	/**
-	 * IDE-847, IDE-994
+	 * IDE-847, IDE-994, IDE-1434
 	 * Add resources to the XML and have them reflected in the diagram
 	 * @throws IOException
 	 */
