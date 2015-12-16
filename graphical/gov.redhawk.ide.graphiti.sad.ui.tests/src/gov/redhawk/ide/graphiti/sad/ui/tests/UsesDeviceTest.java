@@ -205,7 +205,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 
 		// Open USE_FRONTEND_TUNER_DEVICE edit wizard and change name, remove existing port, and add a new one
 		editor.getEditPart(SadTestUtils.USE_FRONTEND_TUNER_DEVICE).select();
-		editor.clickContextMenu("Edit Uses FrontEnd Device");
+		editor.clickContextMenu("Edit Use FrontEnd Tuner Device");
 
 		// Change Name
 		gefBot.textWithLabel("Uses Device ID").setText(usesDeviceId + "x");
@@ -310,7 +310,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 
 		// Open edit wizard and change name, remove existing port, and add a new one
 		editor.getEditPart(SadTestUtils.USE_DEVICE).select();
-		editor.clickContextMenu("Edit Uses Device");
+		editor.clickContextMenu("Edit Use Device");
 
 		// Change Name
 		gefBot.textWithLabel("Uses Device Id").setText(usesDeviceId + "x");

@@ -208,7 +208,7 @@ public class FindByTest extends AbstractGraphitiTest {
 
 		// Open FindBy edit wizard and change name, remove existing port, and add a new one
 		editor.getEditPart(FIND_BY_NAME).select();
-		editor.clickContextMenu("Edit Find By");
+		editor.clickContextMenu("Edit Find By Name");
 
 		// Change Name
 		gefBot.textWithLabel("Component Name:").setText(newFindByName);
