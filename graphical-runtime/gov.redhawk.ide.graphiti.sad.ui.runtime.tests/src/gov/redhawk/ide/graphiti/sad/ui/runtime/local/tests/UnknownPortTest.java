@@ -25,6 +25,7 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 public class UnknownPortTest extends AbstractGraphitiTest {
 
 	private static final String COMP_NAME = "testIDE1095"; 
+	private static final String COMP_NAME_1 = "testIDE1095_1";
 	private static final String PORT1 = "a_out";
 	private static final String PORT2 = "b_in";
 	private static final String PORT3 = "b_out";
@@ -45,23 +46,23 @@ public class UnknownPortTest extends AbstractGraphitiTest {
 		// Launch from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, COMP_NAME, "python");
 		final String[] chalkboardPath = ScaExplorerTestUtils.joinPaths(CHALKBOARD_PARENT_PATH, new String[] {CHALKBOARD});
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, chalkboardPath, COMP_NAME);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, chalkboardPath, COMP_NAME_1);
 		SWTBotView scaExplorerView = bot.viewById(SCA_EXPLORER_VIEW_ID);
 		scaExplorerView.setFocus();
 		
 		// Check for the existence of each of the 3 ports which should be displayed
-		SWTBotTreeItem componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME, PORT1);
+		SWTBotTreeItem componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME_1, PORT1);
 		componentEntry.select();
-		componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME, PORT2);
+		componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME_1, PORT2);
 		componentEntry.select();
-		componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME, PORT3);
+		componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME_1, PORT3);
 		componentEntry.select();
 		
 		boolean widgetNotFound = false;
 
 		// Make sure the fourth port is not displayed, it is what returned the Unknown Port exception
 		try {
-			componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME, PORT4);
+			componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME_1, PORT4);
 		} catch (WidgetNotFoundException wnfe) {
 			widgetNotFound = true;
 		}
