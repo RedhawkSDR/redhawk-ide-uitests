@@ -164,11 +164,6 @@
           <dependency-resolution>
             <extraRequirements>
               <requirement>
-                <type>eclipse-plugin</type>
-                <id>org.jacorb</id>
-                <versionRange>0.0.0</versionRange>
-              </requirement>
-              <requirement>
                 <type>eclipse-feature</type>
                 <id>gov.redhawk.e4.platform</id>
                 <versionRange>0.0.0</versionRange>
