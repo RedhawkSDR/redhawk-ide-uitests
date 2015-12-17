@@ -27,7 +27,7 @@ import org.junit.Test;
 
 public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 
-	private static final String ROOT_SHELL_NAME = "REDHAWK IDE";
+	private static final String ROOT_SHELL_NAME = "REDHAWK - REDHAWK IDE";
 
 	private SWTBotGefEditor editor;
 
