@@ -13,6 +13,7 @@ package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.tests;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForCellValue;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
@@ -33,6 +34,8 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 	 */
 	@Test
 	public void startStopComponentsFromDiagram() {
+		final String[] waveformPath = ScaExplorerTestUtils.joinPaths(DOMAIN_WAVEFORM_PARENT_PATH, new String[] { getWaveFormFullName() });
+
 		// Open domain waveform with graphiti chalkboard editor
 		bot.closeAllEditors();
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), DiagramType.GRAPHITI_CHALKBOARD);
@@ -40,41 +43,41 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		editor.setFocus();
 
 		// verify hard limit stopped
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, waveformPath, HARD_LIMIT_1);
 
 		// start hard limit
 		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
 
 		// verify hardlimit started but siggen did not
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformPath, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, waveformPath, SIGGEN_1);
 
 		// start SigGen
 		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN);
 
 		// verify SigGen started but siggen did not
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformPath, SIGGEN_1);
 
 		// stop hard limit
 		DiagramTestUtils.stopComponentFromDiagram(editor, HARD_LIMIT);
 
 		// verify hardlimit stopped, SigGen started
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, waveformPath, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformPath, SIGGEN_1);
 
 		// stop SigGen
 		DiagramTestUtils.stopComponentFromDiagram(editor, SIGGEN);
 
 		// verify SigGen stopped
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, waveformPath, SIGGEN_1);
 
 		// start both components
 		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
 		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN);
 
 		// verify both started
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformPath, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformPath, SIGGEN_1);
 	}
 
 	/**
@@ -85,6 +88,8 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 	 */
 	@Test
 	public void startStopComponentsFromScaExplorer() {
+		final String[] waveformPath = ScaExplorerTestUtils.joinPaths(DOMAIN_WAVEFORM_PARENT_PATH, new String[] { getWaveFormFullName() });
+
 		// Open domain waveform with graphiti chalkboard editor
 		bot.closeAllEditors();
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), DiagramType.GRAPHITI_CHALKBOARD);
@@ -92,55 +97,55 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		editor.setFocus();
 
 		// verify hard limit stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT, ComponentState.STOPPED);
 
 		// start hard limit from REDHAWK explorer
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, waveformPath, HARD_LIMIT_1);
 
 		// verify hardlimit started but siggen did not
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STOPPED);
 
 		// start SigGen from REDHAWK explorer
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIGGEN_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, waveformPath, SIGGEN_1);
 
 		// verify SigGen started but siggen did not
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STARTED);
 
 		// stop hard limit from REDHAWK explorer
-		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, waveformPath, HARD_LIMIT_1);
 
 		// verify hardlimit stopped, SigGen started
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STARTED);
 
 		// stop SigGen from REDHAWK explorer
-		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIGGEN_1);
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, waveformPath, SIGGEN_1);
 
 		// verify SigGen stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STOPPED);
 
 		// start both components
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), HARD_LIMIT_1);
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), SIGGEN_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, waveformPath, HARD_LIMIT_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, waveformPath, SIGGEN_1);
 
 		// verify both started
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STARTED);
 
 		// stop waveform
-		ScaExplorerTestUtils.stopWaveformFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName());
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName());
 
 		// verify both components stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STOPPED);
 
 		// start waveform
-		ScaExplorerTestUtils.startWaveformFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName());
+		ScaExplorerTestUtils.startResourceInExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName());
 
 		// verify both components started
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STARTED);
 	}
 
 	/**
