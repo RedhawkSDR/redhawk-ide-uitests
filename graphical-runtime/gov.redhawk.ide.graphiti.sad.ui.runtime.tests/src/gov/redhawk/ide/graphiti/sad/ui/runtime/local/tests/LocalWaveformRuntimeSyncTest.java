@@ -17,6 +17,7 @@ import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
@@ -172,42 +173,42 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
 
 		// verify hard limit stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
 
 		// start hard limit from REDHAWK explorer
 		ScaExplorerTestUtils.startResourceInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STOPPED);
 
 		// start SigGen from REDHAWK explorer
 		ScaExplorerTestUtils.startResourceInExplorer(bot, getWaveformPath(), SIGGEN_1);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STARTED);
 
 		// stop hard limit from REDHAWK explorer
 		ScaExplorerTestUtils.stopResourceInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STARTED);
 
 		// stop SigGen from REDHAWK explorer
 		ScaExplorerTestUtils.stopResourceInExplorer(bot, getWaveformPath(), SIGGEN_1);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STOPPED);
 
 		// start both components
 		ScaExplorerTestUtils.startResourceInExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
 		ScaExplorerTestUtils.startResourceInExplorer(bot, getWaveformPath(), SIGGEN_1);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STARTED);
 
 		// stop chalkboard
 		ScaExplorerTestUtils.stopResourceInExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STOPPED);
 
 		// start chalkboard
 		ScaExplorerTestUtils.startResourceInExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STARTED);
 	}
 }

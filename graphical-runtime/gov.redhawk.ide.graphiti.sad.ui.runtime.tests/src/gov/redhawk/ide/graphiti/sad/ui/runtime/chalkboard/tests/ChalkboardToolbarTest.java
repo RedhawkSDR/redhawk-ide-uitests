@@ -14,6 +14,7 @@ package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
@@ -26,6 +27,8 @@ public class ChalkboardToolbarTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void checkChalkboardToolbarButtons() {
+		final String[] waveformPath = ScaExplorerTestUtils.joinPaths(CHALKBOARD_PARENT_PATH, new String[] { CHALKBOARD });
+
 		editor = openChalkboardDiagram(gefBot);
 
 		// Add component to diagram from palette
@@ -34,17 +37,17 @@ public class ChalkboardToolbarTest extends AbstractGraphitiChalkboardTest {
 
 		editor.setFocus();
 		bot.toolbarButtonWithTooltip("Start Waveform").click();
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, SIGGEN);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, HARD_LIMIT);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformPath, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformPath, HARD_LIMIT_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT, ComponentState.STARTED);
 
 		editor.setFocus();
 		bot.toolbarButtonWithTooltip("Stop Waveform").click();
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, SIGGEN);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, HARD_LIMIT);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, waveformPath, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, waveformPath, HARD_LIMIT_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT, ComponentState.STOPPED);
 
 		editor.setFocus();
 		bot.toolbarButtonWithTooltip("Release Waveform").click();
