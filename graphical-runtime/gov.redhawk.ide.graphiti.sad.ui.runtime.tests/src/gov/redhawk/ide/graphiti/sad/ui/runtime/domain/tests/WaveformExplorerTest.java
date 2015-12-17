@@ -150,7 +150,9 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 		ViewUtils.waitUntilSRIViewPopulates(bot);
 		SWTBotView sriView = ViewUtils.getSRIView(bot);
 		Assert.assertEquals("streamID property is missing for column 1", "streamID: ", sriView.bot().tree().cell(0, "Property: "));
-		Assert.assertEquals("streamID property is wrong", SIGGEN + " Stream", sriView.bot().tree().cell(0, "Value: "));
+		// Using the default stream ID, but it would be more correct to get it from component's properties
+		final String streamId = "SigGen Stream";
+		Assert.assertEquals("streamID property is wrong", streamId, sriView.bot().tree().cell(0, "Value: "));
 		sriView.close();
 
 		// Audio/Play port view test
@@ -160,7 +162,7 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 		// get audio view
 		SWTBotView audioView = ViewUtils.getAudioView(bot);
 		String item = audioView.bot().list().getItems()[0];
-		Assert.assertTrue("SigGen not found in Audio Port Playback", item.matches(SIGGEN + ".*"));
+		Assert.assertTrue("SigGen not found in Audio Port Playback", item.matches(SIGGEN_1 + ".*"));
 		audioView.close();
 
 		// open data list view
@@ -187,7 +189,7 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 		// Monitor ports test
 		DiagramTestUtils.displayPortMonitorViewOnComponentPort(editor, SIGGEN, null);
 		// wait until port monitor view appears
-		ViewUtils.waitUntilPortMonitorViewPopulates(bot, SIGGEN);
+		ViewUtils.waitUntilPortMonitorViewPopulates(bot, SIGGEN_1);
 		// close PortMonitor View
 		SWTBotView monitorView = ViewUtils.getPortMonitorView(bot);
 		monitorView.close();
