@@ -160,7 +160,9 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		// Select component in REDHAWK explorer tree first
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, waveformPath, SIGGEN_1).select().click();
 		
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Component Properties").bot().tree();
+		// Note: when the component is selected via the explorer view, the tab name is "Properties" instead of
+		// "Component Properties"
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties").bot().tree();
 		SWTBotTreeItem magItemExplorer = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItemExplorer.cell(1), "100.0");
 		magItemExplorer.select().click(1);
