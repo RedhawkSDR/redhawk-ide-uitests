@@ -60,6 +60,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	private static final String HARD_LIMIT_2 = "HardLimit_2";
 	private static final String DATA_CONVERTER = "rh.DataConverter";
 	private static final String DATA_CONVERTER_1 = "DataConverter_1";
+	private static final String HOST_CO_NAME = "collocation_1";
 
 	private String waveformName;
 
@@ -123,14 +124,13 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	@Test
 	public void checkComponentInHostCollocationContextMenuDelete() {
 		waveformName = "HC_Context_Menu_Delete";
-		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
-		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
 
 		// Add component to the host collocation
 		editor.setFocus();

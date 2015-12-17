@@ -13,6 +13,7 @@ package gov.redhawk.ide.graphiti.sad.ui.tests;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
+import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -39,6 +40,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	private static final String SIG_GEN_1 = "SigGen_1";
 	private static final String HARD_LIMIT = "rh.HardLimit";
 	private static final String HARD_LIMIT_1 = "HardLimit_1";
+	private static final String HOST_CO_NAME = "collocation_1";
 
 	private String waveformName;
 	static final String UNEXPECTED_NUM_COMPONENTS = "Incorrect number of components in Host Collocation";
@@ -52,14 +54,13 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void checkHostCollocationPictogramElements() {
 		waveformName = "HC_Pictogram";
-		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
-		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
 
 		// Add component to the host collocation
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 20, 20);
@@ -92,14 +93,13 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationRelativePosition() {
 		waveformName = "HC_Component_Position";
-		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
-		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
 
 		// Add component to the host collocation
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 20, 20);
@@ -133,14 +133,13 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationDnDComponents() {
 		waveformName = "HC_DragAndDrop";
-		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
-		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
 
 		// Add component to the host collocation
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 20, 20);
@@ -175,14 +174,13 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationContextMenuDelete() {
 		waveformName = "HC_Pictogram";
-		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
-		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
 
 		// Add component to the host collocation
 		editor.setFocus();
@@ -225,7 +223,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationResize() {
 		waveformName = "HC_Resize";
-		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
@@ -235,7 +232,12 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		DiagramTestUtils.maximizeActiveWindow(gefBot);
 
 		// Add host collocation to the waveform
-		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
+		// Test quirk: most of this test depends on hard-coded positions, which were determined based on the host
+		// collocation being slightly offset from the origin. However, since host collocation creation no longer
+		// triggers that move, explicitly clicking on it causes that adjustment so the rest of the test functions as
+		// expected.
+		editor.getEditPart(HOST_CO_NAME).click();
 
 		// Add component to the host collocation
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 20, 20);
@@ -377,7 +379,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationResizeOverFindBy() {
 		waveformName = "HC_Resize_FindBy";
-		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
@@ -387,7 +388,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		DiagramTestUtils.maximizeActiveWindow(gefBot);
 
 		// Add host collocation to the waveform
-		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
 
 		// Add component/findby to the host collocation
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
@@ -424,7 +425,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	@Test
 	public void hostCollocationResizeOverUsesDevice() {
 		waveformName = "HC_Resize_FindBy";
-		final String HOST_CO_NAME = "HC1";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
@@ -434,7 +434,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		DiagramTestUtils.maximizeActiveWindow(gefBot);
 
 		// Add host collocation to the waveform
-		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
 
 		// Add component/findby to the host collocation
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
@@ -463,5 +463,40 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 			hostCo.getComponentPlacement().size() == 1);
 		Assert.assertEquals("Expected component \'" + SIG_GEN_1 + "\' was not found", SIG_GEN_1,
 			hostCo.getComponentPlacement().get(0).getComponentInstantiation().get(0).getId());
+	}
+
+	/**
+	 * IDE-1471
+	 * Rename a host collocation via direct editing.
+	 */
+	@Test
+	public void hostCollocationRename() {
+		final String HOST_CO_NAME_2 = "renamed";
+		waveformName = "HC_Rename";
+
+		// Create a new empty waveform
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
+
+		// maximize window
+		DiagramTestUtils.maximizeActiveWindow(gefBot);
+
+		// Add host collocation to the waveform
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
+
+		// Add component to the host collocation
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
+		MenuUtils.save(editor);
+
+		ContainerShape collocationShape = DiagramTestUtils.getHostCollocationShape(editor, HOST_CO_NAME);
+		Text nameText = DiagramTestUtils.getHostCollocationText(collocationShape);
+
+		DiagramTestUtils.activateDirectEditing(editor, editor.getEditPart(HOST_CO_NAME), nameText);
+		editor.directEditType(HOST_CO_NAME_2);
+
+		Assert.assertTrue(editor.isDirty());
+		HostCollocation hostCollocation = DiagramTestUtils.getHostCollocationObject(editor, HOST_CO_NAME_2);
+		Assert.assertNotNull("Could not find host collocation with new name", hostCollocation);
+		Assert.assertEquals("Name value does not match expected value: " + HOST_CO_NAME_2, HOST_CO_NAME_2, hostCollocation.getName());
 	}
 }

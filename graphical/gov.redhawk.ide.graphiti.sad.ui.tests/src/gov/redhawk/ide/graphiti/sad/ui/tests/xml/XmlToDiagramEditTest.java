@@ -45,6 +45,7 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 	static final String HARD_LIMIT_2 = "HardLimit_2";
 	static final String DATA_CONVERTER = "rh.DataConverter";
 	static final String DATA_CONVERTER_1 = "DataConverter_1";
+	static final String HOST_CO_NAME = "collocation_1";
 
 	private String waveformName;
 
@@ -244,14 +245,13 @@ bot.sleep(5000);
 	@Test
 	public void editHostCoInXmlTest() {
 		waveformName = "Edit_Host_Co_XML";
-		final String HOST_CO_NAME = "HC";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		final RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the waveform
-		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOST_CO_NAME);
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 20);

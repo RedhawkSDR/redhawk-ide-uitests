@@ -36,6 +36,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 	private static final String SIG_GEN_1 = "SigGen_1";
 	private static final String HARD_LIMIT = "rh.HardLimit";
 	private static final String HARD_LIMIT_1 = "HardLimit_1";
+	private static final String HOSTCOLLOCATION_INSTANCE_NAME = "collocation_1";
 
 	private String waveformName;
 
@@ -134,14 +135,13 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 	@Test
 	public void removeHostCollocationInXmlTest() {
 		waveformName = "Remove_HostCollocation_Xml";
-		final String HOSTCOLLOCATION_INSTANCE_NAME = "AAA";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add host collocation to the diagram
-		DiagramTestUtils.addHostCollocationToDiagram(gefBot, editor, HOSTCOLLOCATION_INSTANCE_NAME);
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
 
 		//add component inside host collocation (so host collocation is valid)
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 5, 5);
