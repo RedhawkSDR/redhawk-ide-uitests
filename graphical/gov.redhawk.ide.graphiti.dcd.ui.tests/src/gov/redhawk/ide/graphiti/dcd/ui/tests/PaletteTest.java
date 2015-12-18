@@ -53,7 +53,7 @@ public class PaletteTest extends AbstractPaletteTest {
 
 	@Override
 	protected ComponentDescription getMultipleImplComponent() {
-		return new ComponentDescription("mutipleImplDevice", null, null);
+		return new ComponentDescription("multipleImplDevice", null, null);
 	}
 
 }
