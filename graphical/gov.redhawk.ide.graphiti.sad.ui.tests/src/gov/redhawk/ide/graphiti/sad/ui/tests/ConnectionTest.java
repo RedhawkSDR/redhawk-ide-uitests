@@ -149,35 +149,22 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 
-		// Draw redundant connections, save and close the editor
+		// Create the first connection, which should be normal
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
+		List<SWTBotGefConnectionEditPart> connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
+		ConnectionUtils.assertConnectionStyling(connections.get(0), ConnectionState.NORMAL);
+
+		// Draw redundant connection and check for warning indicators
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
-		MenuUtils.closeAll(gefBot, true);
-
-		// Open editor and confirm that error decorators are present
-		gefBot.tree().expandNode(waveformName);
-		gefBot.tree().getTreeItem(waveformName).getNode(waveformName + ".sad.xml").select().doubleClick();
-		gefBot.waitUntil(new WaitForEditorCondition());
-		editor = gefBot.rhGefEditor(waveformName);
-
-		// ...get target component edit parts and container shapes
-		SWTBotGefEditPart targetComponentEditPart = editor.getEditPart(HARD_LIMIT_1);
-		ContainerShape targetContainerShape = (ContainerShape) targetComponentEditPart.part().getModel();
-
-		// ...update uses port edit part references, since this is technically a new editor
-		usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
-		Connection connection = DUtil.getIncomingConnectionsContainedInContainerShape(targetContainerShape).get(0);
-		Assert.assertTrue("Error decorator should have been added", connection.getConnectionDecorators().size() == 2);
+		connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
+		ConnectionUtils.assertConnectionStyling(connections.get(0), ConnectionState.WARNING);
 
 		// Delete one of the connections
-		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
-		SWTBotGefConnectionEditPart connectionEditPart = sourceConnections.get(0);
-		DiagramTestUtils.deleteFromDiagram(editor, connectionEditPart);
-		gefBot.menu("File").menu("Save").click();
+		DiagramTestUtils.deleteFromDiagram(editor, connections.get(0));
 
-		// Confirm that error decorators do not exist for the remaining connection
-		connection = DUtil.getIncomingConnectionsContainedInContainerShape(targetContainerShape).get(0);
-		Assert.assertTrue("Only arrowhead decorator should exist", connection.getConnectionDecorators().size() == 1);
+		// Confirm that warning indicators do not exist for the remaining connection
+		connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
+		ConnectionUtils.assertConnectionStyling(connections.get(0), ConnectionState.NORMAL);
 	}
 
 	/**
