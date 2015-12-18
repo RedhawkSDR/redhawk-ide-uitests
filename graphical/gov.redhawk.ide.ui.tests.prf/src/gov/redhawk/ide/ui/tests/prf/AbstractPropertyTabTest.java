@@ -12,12 +12,14 @@ package gov.redhawk.ide.ui.tests.prf;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Before;
 import org.osgi.framework.FrameworkUtil;
 
@@ -38,10 +40,8 @@ public abstract class AbstractPropertyTabTest extends UITest {
 		super.before();
 
 		StandardTestActions.importProject(FrameworkUtil.getBundle(AbstractPropertyTabTest.class), new Path("workspace/PropTest_Comp"), null);
-
-		bot.tree().getTreeItem("PropTest_Comp").select();
-		bot.tree().getTreeItem("PropTest_Comp").expand();
-		bot.tree().getTreeItem("PropTest_Comp").getNode("PropTest_Comp.spd.xml").doubleClick();
+		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(bot, bot.tree(), Arrays.asList("PropTest_Comp", "PropTest_Comp.spd.xml"));
+		treeItem.doubleClick();
 		editor = bot.editorByTitle("PropTest_Comp");
 
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PROPERTIES_TAB);
