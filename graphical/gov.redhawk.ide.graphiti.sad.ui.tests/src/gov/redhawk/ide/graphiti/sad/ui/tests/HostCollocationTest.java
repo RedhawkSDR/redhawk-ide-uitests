@@ -41,8 +41,8 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	private static final String HARD_LIMIT = "rh.HardLimit";
 	private static final String HARD_LIMIT_1 = "HardLimit_1";
 	private static final String HOST_CO_NAME = "collocation_1";
+	private static final String FE_USES_1 = "FrontEndTuner_1";
 
-	private String waveformName;
 	static final String UNEXPECTED_NUM_COMPONENTS = "Incorrect number of components in Host Collocation";
 	static final String UNEXPECTED_SHAPE_LOCATION = "Shape location unexpected";
 
@@ -53,7 +53,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void checkHostCollocationPictogramElements() {
-		waveformName = "HC_Pictogram";
+		String waveformName = "HC_Pictogram";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
@@ -92,7 +92,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void hostCollocationRelativePosition() {
-		waveformName = "HC_Component_Position";
+		String waveformName = "HC_Component_Position";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
@@ -132,7 +132,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void hostCollocationDnDComponents() {
-		waveformName = "HC_DragAndDrop";
+		String waveformName = "HC_DragAndDrop";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
@@ -173,7 +173,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void hostCollocationContextMenuDelete() {
-		waveformName = "HC_Pictogram";
+		String waveformName = "HC_Pictogram";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
@@ -222,7 +222,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void hostCollocationResize() {
-		waveformName = "HC_Resize";
+		String waveformName = "HC_Resize";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
@@ -372,28 +372,27 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		Assert.assertTrue(UNEXPECTED_SHAPE_LOCATION, DiagramTestUtils.verifyShapeLocation(shape2, shape2X, shape2Y));
 	}
 
+	private RHBotGefEditor hostCollocationAndFindByWaveform(String waveformName) {
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
+		DiagramTestUtils.maximizeActiveWindow(gefBot);
+
+		// Add diagram shapes and save
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, FindByUtils.FIND_BY_DOMAIN_MANAGER, 450, 150);
+		MenuUtils.save(editor);
+
+		return editor;
+	}
+
 	/**
 	 * IDE-698
 	 * Host Collocation resize should not execute if a Find By object would end up inside the contained
 	 */
 	@Test
 	public void hostCollocationResizeOverFindBy() {
-		waveformName = "HC_Resize_FindBy";
-
-		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
-		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
-
-		// maximize window
-		DiagramTestUtils.maximizeActiveWindow(gefBot);
-
-		// Add host collocation to the waveform
-		DiagramTestUtils.addHostCollocationToDiagram(editor);
-
-		// Add component/findby to the host collocation
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, FindByUtils.FIND_BY_DOMAIN_MANAGER, 450, 150);
-		MenuUtils.save(editor);
+		RHBotGefEditor editor = hostCollocationAndFindByWaveform("HC_Resize_FindBy");
 
 		// HostCOllocation objects
 		HostCollocation hostCo = DiagramTestUtils.getHostCollocationObject(editor, HOST_CO_NAME);
@@ -419,28 +418,54 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	}
 
 	/**
+	 * IDE-1433
+	 * Moving a findby to overlap a host collocation shouldn't be allowed
+	 */
+	@Test
+	public void moveFindByOverHostCollocation() {
+		RHBotGefEditor editor = hostCollocationAndFindByWaveform("HC_Move_FindBy");
+
+		// Find the host collocation's right side
+		GraphicsAlgorithm hostCollocationGa = DiagramTestUtils.getHostCollocationShape(editor, HOST_CO_NAME).getGraphicsAlgorithm();
+		int rightX = hostCollocationGa.getX() + hostCollocationGa.getWidth();
+		int centerY = hostCollocationGa.getY() + hostCollocationGa.getHeight() / 2;
+
+		// Find the findby
+		SWTBotGefEditPart findByEditPart = editor.getEditPart(FindByUtils.FIND_BY_DOMAIN_MANAGER);
+		GraphicsAlgorithm findByGA = DiagramTestUtils.getRHContainerShape(editor, FindByUtils.FIND_BY_DOMAIN_MANAGER).getGraphicsAlgorithm();
+		int findByX = findByGA.getX();
+
+		// Move the findby so it barely overlaps the right side
+		// (Drag grabs the object a little inside their top-left corner)
+		editor.drag(findByEditPart, rightX - 1, centerY);
+
+		// findby should not have moved
+		Assert.assertFalse(editor.isDirty());
+		Assert.assertEquals("FindBy has moved", findByX, findByGA.getX());
+	}
+
+	private RHBotGefEditor hostCollocationAndUsesDeviceWaveform(String waveformName) {
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
+		DiagramTestUtils.maximizeActiveWindow(gefBot);
+
+		// Add diagram shapes and save
+		DiagramTestUtils.addHostCollocationToDiagram(editor);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
+		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor, 450, 150);
+		UsesDeviceTestUtils.completeUsesFEDeviceWizard(gefBot, "existingAllocId", "newAllocId", new String[] { "provides" }, new String[] { "uses" });
+		MenuUtils.save(editor);
+
+		return editor;
+	}
+
+	/**
 	 * IDE-698
 	 * Host Collocation resize should not execute if a Find By object would end up inside the contained
 	 */
 	@Test
 	public void hostCollocationResizeOverUsesDevice() {
-		waveformName = "HC_Resize_FindBy";
-
-		// Create a new empty waveform
-		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
-		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
-
-		// maximize window
-		DiagramTestUtils.maximizeActiveWindow(gefBot);
-
-		// Add host collocation to the waveform
-		DiagramTestUtils.addHostCollocationToDiagram(editor);
-
-		// Add component/findby to the host collocation
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
-		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor, 450, 150);
-		UsesDeviceTestUtils.completeUsesFEDeviceWizard(gefBot, "existingAllocId", "newAllocId", new String[] { "provides" }, new String[] { "uses" });
-		MenuUtils.save(editor);
+		RHBotGefEditor editor = hostCollocationAndUsesDeviceWaveform("HC_Resize_FindBy");
 
 		// HostCOllocation objects
 		HostCollocation hostCo = DiagramTestUtils.getHostCollocationObject(editor, HOST_CO_NAME);
@@ -466,13 +491,40 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	}
 
 	/**
+	 * IDE-1433
+	 * Moving a usesdevice to overlap a host collocation shouldn't be allowed
+	 */
+	@Test
+	public void moveUsesDeviceOverHostCollocation() {
+		RHBotGefEditor editor = hostCollocationAndUsesDeviceWaveform("HC_Move_UsesDevice");
+
+		// Find the host collocation's right side
+		GraphicsAlgorithm hostCollocationGa = DiagramTestUtils.getHostCollocationShape(editor, HOST_CO_NAME).getGraphicsAlgorithm();
+		int rightX = hostCollocationGa.getX() + hostCollocationGa.getWidth();
+		int centerY = hostCollocationGa.getY() + hostCollocationGa.getHeight() / 2;
+
+		// Find the UsesDevice
+		SWTBotGefEditPart usesDeviceEditPart = editor.getEditPart(FE_USES_1);
+		GraphicsAlgorithm usesDeviceGA = DiagramTestUtils.getRHContainerShape(editor, FE_USES_1).getGraphicsAlgorithm();
+		int usesDeviceX = usesDeviceGA.getX();
+
+		// Move the usesdevice so it barely overlaps the right side
+		// (Drag grabs the object a little inside their top-left corner)
+		editor.drag(usesDeviceEditPart, rightX - 1, centerY);
+
+		// usesdevice should not have moved
+		Assert.assertFalse(editor.isDirty());
+		Assert.assertEquals("UsesDevice has moved", usesDeviceX, usesDeviceGA.getX());
+	}
+
+	/**
 	 * IDE-1471
 	 * Rename a host collocation via direct editing.
 	 */
 	@Test
 	public void hostCollocationRename() {
 		final String HOST_CO_NAME_2 = "renamed";
-		waveformName = "HC_Rename";
+		String waveformName = "HC_Rename";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
