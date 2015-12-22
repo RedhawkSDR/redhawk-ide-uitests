@@ -8,4 +8,5 @@ Bundle-Vendor: REDHAWK
 Require-Bundle: gov.redhawk.ide.graphiti.ui,
  gov.redhawk.ide.swtbot,
  gov.redhawk.logging.ui;bundle-version="1.0.0"
-Export-Package: gov.redhawk.ide.graphiti.ui.runtime.tests
+Export-Package: gov.redhawk.ide.graphiti.ui.runtime.tests,
+ gov.redhawk.ide.graphiti.ui.runtime.tests.util

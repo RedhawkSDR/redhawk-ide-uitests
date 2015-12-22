@@ -8,7 +8,7 @@
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
+package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractPaletteTest;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.ComponentDescription;
@@ -17,21 +17,20 @@ import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
-public class ChalkboardPaletteTest extends AbstractPaletteTest {
+public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 
-	private static final String SIG_GEN = "rh.SigGen";
-	private static final String HARD_LIMIT = "rh.HardLimit";
-	private static final String NAME_SPACE_COMP = "name.space.comp";
+	private static final String NS_DEV = "name.space.device";
+	private static final String SIM_RX_DIGITIZER = "sim_RX_DIGITIZER";
 
 	@Override
 	protected RHBotGefEditor launchDiagram() {
-		return AbstractGraphitiChalkboardTest.openChalkboardDiagram(gefBot);
+		return AbstractDeviceManagerSandboxTest.openNodeChalkboardDiagram(gefBot);
 	}
 
 	@Override
 	public void after() throws Exception {
-		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, AbstractGraphitiChalkboardTest.CHALKBOARD_PARENT_PATH, AbstractGraphitiChalkboardTest.CHALKBOARD);
-		ScaExplorerTestUtils.waitUntilScaExplorerWaveformEmpty(gefBot, AbstractGraphitiChalkboardTest.CHALKBOARD_PARENT_PATH, AbstractGraphitiChalkboardTest.CHALKBOARD);
+		ScaExplorerTestUtils.terminateFromScaExplorer(gefBot, AbstractDeviceManagerSandboxTest.CHALKBOARD_PARENT_PATH, AbstractDeviceManagerSandboxTest.DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(gefBot, AbstractDeviceManagerSandboxTest.CHALKBOARD_PARENT_PATH, AbstractDeviceManagerSandboxTest.DEVICE_MANAGER);
 		ConsoleUtils.removeTerminatedLaunches(bot);
 		super.after();
 	}
@@ -39,28 +38,28 @@ public class ChalkboardPaletteTest extends AbstractPaletteTest {
 	@Override
 	protected ComponentDescription[] getComponentsToFilter() {
 		return new ComponentDescription[] {
-			new ComponentDescription(SIG_GEN, null, null),
-			new ComponentDescription(HARD_LIMIT, null, null),
-			new ComponentDescription(NAME_SPACE_COMP, null, null)
+			new ComponentDescription(AbstractDeviceManagerSandboxTest.GPP, null, null),
+			new ComponentDescription(AbstractDeviceManagerSandboxTest.DEVICE_STUB, null, null),
+			new ComponentDescription(NS_DEV, null, null)
 		};
 	}
 
 	@Override
 	protected FilterInfo[] getFilterInfo() {
 		return new FilterInfo[] {
-			new FilterInfo("s", true, false, true),
+			new FilterInfo("g", true, false, false),
 			new FilterInfo("sh", false, false, false),
-			new FilterInfo("h", true, true, false),
-			new FilterInfo("hA", false, true, false),
-			new FilterInfo(".", true, true, true),
-			new FilterInfo(".sI", true, false, false),
+			new FilterInfo("d", false, true, true),
+			new FilterInfo("dE", false, true, true),
+			new FilterInfo(".", false, false, true),
+			new FilterInfo(".sP", false, false, true),
 			new FilterInfo("", true, true, true)
 		};
 	}
 
 	@Override
 	protected ComponentDescription getMultipleImplComponent() {
-		return new ComponentDescription(SIG_GEN, null, null);
+		return new ComponentDescription(SIM_RX_DIGITIZER, null, null);
 	}
 
 }

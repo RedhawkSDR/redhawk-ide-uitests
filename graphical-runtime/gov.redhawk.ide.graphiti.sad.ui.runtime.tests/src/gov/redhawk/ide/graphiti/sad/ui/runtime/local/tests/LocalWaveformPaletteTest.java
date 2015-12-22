@@ -8,7 +8,9 @@
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
+package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
+
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractPaletteTest;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.ComponentDescription;
@@ -16,22 +18,34 @@ import gov.redhawk.ide.graphiti.ui.runtime.tests.util.FilterInfo;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
-public class ChalkboardPaletteTest extends AbstractPaletteTest {
+public class LocalWaveformPaletteTest extends AbstractPaletteTest {
 
-	private static final String SIG_GEN = "rh.SigGen";
 	private static final String HARD_LIMIT = "rh.HardLimit";
 	private static final String NAME_SPACE_COMP = "name.space.comp";
+	private String waveFormFullName;
 
 	@Override
 	protected RHBotGefEditor launchDiagram() {
-		return AbstractGraphitiChalkboardTest.openChalkboardDiagram(gefBot);
+		ScaExplorerTestUtils.launchWaveformFromTargetSDR(gefBot, AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM_PARENT_PATH,
+			AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM);
+		waveFormFullName = ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM_PARENT_PATH,
+			AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM, DiagramType.GRAPHITI_CHALKBOARD);
+		return gefBot.rhGefEditor(waveFormFullName);
 	}
 
 	@Override
 	public void after() throws Exception {
-		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, AbstractGraphitiChalkboardTest.CHALKBOARD_PARENT_PATH, AbstractGraphitiChalkboardTest.CHALKBOARD);
-		ScaExplorerTestUtils.waitUntilScaExplorerWaveformEmpty(gefBot, AbstractGraphitiChalkboardTest.CHALKBOARD_PARENT_PATH, AbstractGraphitiChalkboardTest.CHALKBOARD);
+		// Release the waveform if it exists
+		try {
+			ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM_PARENT_PATH, AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM);
+		} catch (WidgetNotFoundException ex) {
+			return;
+		}
+		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM_PARENT_PATH, AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM);
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(gefBot, AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM_PARENT_PATH, AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM);
 		ConsoleUtils.removeTerminatedLaunches(bot);
 		super.after();
 	}
@@ -39,7 +53,7 @@ public class ChalkboardPaletteTest extends AbstractPaletteTest {
 	@Override
 	protected ComponentDescription[] getComponentsToFilter() {
 		return new ComponentDescription[] {
-			new ComponentDescription(SIG_GEN, null, null),
+			new ComponentDescription(AbstractGraphitiLocalWaveformRuntimeTest.SIGGEN, null, null),
 			new ComponentDescription(HARD_LIMIT, null, null),
 			new ComponentDescription(NAME_SPACE_COMP, null, null)
 		};
@@ -60,7 +74,7 @@ public class ChalkboardPaletteTest extends AbstractPaletteTest {
 
 	@Override
 	protected ComponentDescription getMultipleImplComponent() {
-		return new ComponentDescription(SIG_GEN, null, null);
+		return new ComponentDescription(AbstractGraphitiLocalWaveformRuntimeTest.SIGGEN, null, null);
 	}
 
 }
