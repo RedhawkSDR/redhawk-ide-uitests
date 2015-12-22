@@ -21,12 +21,12 @@ public class DeviceLaunchingTest extends ResourceLaunchingAbstractTest {
 
 	@Override
 	protected ComponentDescription getSlowComponentDescription() {
-		return new ComponentDescription("SlowLaunchDevice", "SlowLaunchDevice", new String[] { "dataFloat_in" }, new String[] { "dataFloat_out" });
+		return new ComponentDescription("SlowLaunchDevice", new String[] { "dataFloat_in" }, new String[] { "dataFloat_out" });
 	}
 
 	@Override
 	protected ComponentDescription getFastComponentDescription() {
-		return new ComponentDescription("DeviceStub", "DeviceStub", new String[] { "dataFloat_in" }, new String[] { "dataFloat_out" });
+		return new ComponentDescription("DeviceStub", new String[] { "dataFloat_in" }, new String[] { "dataFloat_out" });
 	}
 
 	@Override
