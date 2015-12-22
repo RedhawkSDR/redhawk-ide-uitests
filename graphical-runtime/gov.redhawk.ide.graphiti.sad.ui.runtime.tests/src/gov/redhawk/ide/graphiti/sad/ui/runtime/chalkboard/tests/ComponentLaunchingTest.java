@@ -21,12 +21,12 @@ public class ComponentLaunchingTest extends ResourceLaunchingAbstractTest {
 
 	@Override
 	protected ComponentDescription getSlowComponentDescription() {
-		return new ComponentDescription("SlowLaunchComponent", "SlowLaunchComponent", new String[] { "dataFloat_in" }, new String[] { "dataFloat_out" });
+		return new ComponentDescription("SlowLaunchComponent", new String[] { "dataFloat_in" }, new String[] { "dataFloat_out" });
 	}
 
 	@Override
 	protected ComponentDescription getFastComponentDescription() {
-		return new ComponentDescription("rh.DataConverter", "DataConverter", new String[] { "dataFloat" }, new String[] { "dataFloat_out" });
+		return new ComponentDescription("rh.DataConverter", new String[] { "dataFloat" }, new String[] { "dataFloat_out" });
 	}
 
 	@Override
