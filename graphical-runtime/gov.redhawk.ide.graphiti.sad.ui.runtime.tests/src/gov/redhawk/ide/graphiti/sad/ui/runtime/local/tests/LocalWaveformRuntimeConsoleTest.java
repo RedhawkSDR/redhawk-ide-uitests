@@ -10,48 +10,26 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotLabel;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * 
- */
+import gov.redhawk.ide.swtbot.ConsoleUtils;
+
 public class LocalWaveformRuntimeConsoleTest extends AbstractGraphitiLocalWaveformRuntimeTest {
 
-	private static final String CONSOLE_VIEW_LABEL = "Console";
-	
 	/**
 	 * IDE-1054 Making sure Console title is set correctly for component process
 	 */
 	@Test
 	public void checkConsoleTitle() {
-		bot.cTabItem(CONSOLE_VIEW_LABEL).activate();
-		SWTBotView consoleView = bot.activeView(); //.viewByTitle(CONSOLE_VIEW_LABEL);
-		BaseMatcher<MenuItem> matcher = new BaseMatcher<MenuItem>() {
+		String[] titles = ConsoleUtils.getConsoleTitles(bot);
+		for (String title : titles) {
+			if (title.contains(SIGGEN_1)) {
+				Assert.assertTrue("Console title does not start with component and waveform name",
+					title.startsWith(SIGGEN_1 + " [" + getWaveFormFullName() + "] "));
+			}
+		}
 
-			@Override
-			public boolean matches(Object item) {
-				if (item instanceof MenuItem) {
-					MenuItem menuItem = (MenuItem) item;
-					String itemText = menuItem.getText();
-					return itemText.contains(SIGGEN_1);
-				}
-				return false;
-			}
-			@Override
-			public void describeTo(Description description) {
-			}
-		};
-		consoleView.toolbarDropDownButton("Display Selected Console").menuItem(matcher).click();
-		SWTBotLabel titleText = consoleView.bot().label();
-		String title = titleText.getText();
-		Assert.assertTrue("Console title does not start with component and waveform name", 
-			title.startsWith(SIGGEN_1 + " [" + getWaveFormFullName() + "] "));
 	}
-	
+
 }
