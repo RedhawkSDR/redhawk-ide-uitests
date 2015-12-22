@@ -18,6 +18,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
@@ -112,45 +113,46 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_1);
 
 		// verify GPP stopped
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, SANDBOX_DEVMGR_PATH, GPP_1);
 
 		// start GPP
 		DiagramTestUtils.startComponentFromDiagram(editor, GPP_1);
 
 		// verify GPP started but DeviceStub did not
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, GPP_1);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP_1, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(bot, editor, DEVICE_STUB_1, ComponentState.STOPPED);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, SANDBOX_DEVMGR_PATH, GPP_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 		// start DeviceStub
 		DiagramTestUtils.startComponentFromDiagram(editor, DEVICE_STUB_1);
 
 		// verify DeviceStub started
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, DEVICE_STUB_1);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, DEVICE_STUB_1, ComponentState.STARTED);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 		// stop GPP
 		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_1);
 
 		// verify GPP stopped, DeviceStub started
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, GPP_1);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP_1, ComponentState.STOPPED);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, SANDBOX_DEVMGR_PATH, GPP_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 		// stop DeviceStub
 		DiagramTestUtils.stopComponentFromDiagram(editor, DEVICE_STUB_1);
 
 		// verify DeviceStub stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, DEVICE_STUB_1);
-		ScaExplorerTestUtils.waitUntilNodeStoppedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, DEVICE_STUB_1, ComponentState.STOPPED);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 		// start both devices
 		DiagramTestUtils.startComponentFromDiagram(editor, GPP_1);
 		DiagramTestUtils.startComponentFromDiagram(editor, DEVICE_STUB_1);
 
 		// verify both started
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, SANDBOX_DEVMGR_PATH, GPP_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 	}
 
@@ -171,7 +173,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 
 		// delete device from REDHAWK Explorer dev manager chalkboard
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
-		ScaExplorerTestUtils.terminateDeviceInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		ScaExplorerTestUtils.terminateLocalResourceInExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 		// verify DeviceStub device not present in Diagram
 		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, DEVICE_STUB);
@@ -240,43 +242,43 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_1); // GPP starts when launched
 
 		// verify hard limit stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, DEVICE_STUB);
+		DiagramTestUtils.waitForComponentState(bot, editor, DEVICE_STUB, ComponentState.STOPPED);
 
 		// start hard limit from REDHAWK explorer
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 		// verify device stub started but GPP did not
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, DEVICE_STUB);
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, GPP);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, DEVICE_STUB, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP, ComponentState.STOPPED);
 
 		// start GPP from REDHAWK explorer
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, SANDBOX_DEVMGR_PATH, GPP_1);
 
 		// verify GPP started in explorer and diagram
-		ScaExplorerTestUtils.waitUntilNodeStartedInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, GPP);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, SANDBOX_DEVMGR_PATH, GPP_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP, ComponentState.STARTED);
 
 		// stop device stub from REDHAWK explorer
-		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 		// verify device stub stopped, GPP started
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, DEVICE_STUB);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, GPP);
+		DiagramTestUtils.waitForComponentState(bot, editor, DEVICE_STUB, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP, ComponentState.STARTED);
 
 		// stop GPP from REDHAWK explorer
-		ScaExplorerTestUtils.stopComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, SANDBOX_DEVMGR_PATH, GPP_1);
 
 		// verify GPP stopped
-		DiagramTestUtils.waitUntilComponentAppearsStoppedInDiagram(bot, editor, GPP);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP, ComponentState.STOPPED);
 
 		// start both devices
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
-		ScaExplorerTestUtils.startComponentFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, GPP_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, SANDBOX_DEVMGR_PATH, GPP_1);
 
 		// verify both started
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, DEVICE_STUB);
-		DiagramTestUtils.waitUntilComponentAppearsStartedInDiagram(bot, editor, GPP);
+		DiagramTestUtils.waitForComponentState(bot, editor, DEVICE_STUB, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP, ComponentState.STARTED);
 	}
 
 }

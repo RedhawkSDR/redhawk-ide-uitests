@@ -10,9 +10,11 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.junit.After;
 import org.junit.Before;
 
+import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
@@ -26,7 +28,7 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 
 	static final String[] CHALKBOARD_PARENT_PATH = { "Sandbox" };
 	static final String DEVICE_MANAGER = "Device Manager";
-	static final String[] SANDBOX_DEVMGR_PATH = { "Sandbox", "Device Manager" };
+	static final String[] SANDBOX_DEVMGR_PATH = new String[] { "Sandbox", "Device Manager" };
 	static final String DIAGRAM_TAB_TITLE = "Device Manager Chalkboard";
 
 	// Common Test Component Names
@@ -48,21 +50,16 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 	
 	@After
 	public void afterTest() {
-		ScaExplorerTestUtils.terminateFromScaExplorer(gefBot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER);
-		
-		//wait until waveform empty
-		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(gefBot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER);
-		
-		//close editors
-		gefBot.closeAllEditors();
-		gefBot = null;
+		ScaExplorerTestUtils.terminateFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER);
+		ConsoleUtils.removeTerminatedLaunches(bot);
+		bot.closeAllEditors();
 	}
 
 	/** Helper method to open Sandbox Device Manager Graphiti Chalkboard Diagram */
-	static RHBotGefEditor openNodeChalkboardDiagram(RHSWTGefBot gefBot) {
+	static RHBotGefEditor openNodeChalkboardDiagram(SWTWorkbenchBot gefBot) {
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DiagramType.GRAPHITI_CHALKBOARD);
-		RHBotGefEditor editor = gefBot.rhGefEditor(DIAGRAM_TAB_TITLE);
-		editor.setFocus();
+		RHBotGefEditor editor = new RHSWTGefBot().rhGefEditor(DIAGRAM_TAB_TITLE);
 		return editor;
 	}
 
