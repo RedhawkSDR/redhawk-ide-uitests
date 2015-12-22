@@ -146,7 +146,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, targetComponent, 300, 0);
 
 		// verify sigGen is python
-		SWTBotGefEditPart sigGenEditPart = editor.getEditPart(SIGGEN);
+		SWTBotGefEditPart sigGenEditPart = editor.getEditPart(SIGGEN_1);
 		// get graphiti shape
 		ComponentShape sigGenComponentShape = (ComponentShape) sigGenEditPart.part().getModel();
 		// Grab the associated business object and confirm it is a SadComponentInstantiation
@@ -154,7 +154,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		Assert.assertEquals("SigGen implementation was not python", "python", sigGenSadComponentInstantiation.getImplID());
 
 		// verify hardLimit is java
-		SWTBotGefEditPart hardLimitEditPart = editor.getEditPart(HARD_LIMIT);
+		SWTBotGefEditPart hardLimitEditPart = editor.getEditPart(HARD_LIMIT_1);
 		// get graphiti shape
 		ComponentShape hardLimitComponentShape = (ComponentShape) hardLimitEditPart.part().getModel();
 		// Grab the associated business object and confirm it is a SadComponentInstantiation
