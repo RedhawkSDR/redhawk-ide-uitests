@@ -27,7 +27,7 @@ public abstract class AbstractGraphitiLocalWaveformRuntimeTest extends UIRuntime
 
 	protected static final String[] LOCAL_WAVEFORM_PARENT_PATH = { "Sandbox" };
 	protected static final String LOCAL_WAVEFORM = "ExampleWaveform05";
-	protected static final String SIGGEN = "SigGen";
+	protected static final String SIGGEN = "rh.SigGen";
 	protected static final String SIGGEN_1 = SIGGEN + "_1";
 
 	protected RHSWTGefBot gefBot; // SUPPRESS CHECKSTYLE INLINE
