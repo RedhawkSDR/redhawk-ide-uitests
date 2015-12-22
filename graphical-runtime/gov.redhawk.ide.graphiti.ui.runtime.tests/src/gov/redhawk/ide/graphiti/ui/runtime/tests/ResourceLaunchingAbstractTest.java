@@ -35,7 +35,7 @@ public abstract class ResourceLaunchingAbstractTest extends UITest {
 	private boolean assertionError;
 
 	/**
-	 * Must have ports such that Slow_out[0] -> Fast_in[0] is possible, and Fast_out[0] -> Slow_out[0]
+	 * Must have ports such that Slow_out[0] -> Fast_in[0] is possible, and Fast_out[0] -> Slow_in[0]
 	 */
 	protected abstract ComponentDescription getSlowComponentDescription();
 
