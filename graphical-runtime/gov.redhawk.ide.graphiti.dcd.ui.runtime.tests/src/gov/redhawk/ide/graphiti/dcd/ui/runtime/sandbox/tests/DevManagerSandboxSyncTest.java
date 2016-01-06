@@ -233,7 +233,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		editor = openNodeChalkboardDiagram(gefBot);
 
 		// Launch two devices from TargetSDR
-		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, GPP, "DCE:7facfff8-afd1-4ccc-a0bf-7f249ae6addb");
+		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, GPP, "cpp");
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, DEVICE_STUB, "python");
 
 		// verify devices were added to the diagram
