@@ -230,7 +230,7 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 
 		// Confirm that no external ports exist in diagram
 		SWTBotGefEditPart hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
-		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, false);
+		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, false, HARD_LIMIT_1 + ":uses");
 
 		// switch to overview tab and verify there are no external ports
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
@@ -251,7 +251,7 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 
 		// assert port set to external in diagram
 		hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
-		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, true);
+		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, true, HARD_LIMIT_1 + ":uses");
 
 		// switch to overview tab and verify there are external ports
 		DiagramTestUtils.openTabInEditor(editor, "Overview");

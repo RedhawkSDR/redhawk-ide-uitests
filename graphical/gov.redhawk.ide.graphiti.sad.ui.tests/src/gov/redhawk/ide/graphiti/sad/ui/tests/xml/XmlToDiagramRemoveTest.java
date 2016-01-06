@@ -197,7 +197,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
 		//assert port set to external in diagram
 		SWTBotGefEditPart hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
-		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, true);
+		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, true, HARD_LIMIT_1 + ":uses");
 
 		//switch to overview tab and verify there are external ports
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.OVERVIEW_TAB);
@@ -216,7 +216,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		// Confirm that no external ports exist in diagram
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
 		hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
-		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, false);
+		DiagramTestUtils.assertExternalPort(hardLimitUsesEditPart, false, HARD_LIMIT_1 + ":uses");
 
 		//switch to overview tab and verify there are no external ports
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
