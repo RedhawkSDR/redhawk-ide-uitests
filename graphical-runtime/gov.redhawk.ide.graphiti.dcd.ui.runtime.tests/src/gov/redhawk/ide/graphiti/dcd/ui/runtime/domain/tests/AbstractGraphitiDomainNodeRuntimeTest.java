@@ -48,6 +48,7 @@ public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTes
 		String[] parentPath = new String[] { DOMAIN, "Device Managers" };
 		ScaExplorerTestUtils.launchDomain(bot, DOMAIN, deviceManager);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, deviceManager);
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, parentPath, deviceManager, DiagramType.GRAPHITI_NODE_EXPLORER);
 		DEV_MGR_PATH = Arrays.copyOf(parentPath, parentPath.length + 1);
 		DEV_MGR_PATH[parentPath.length] = deviceManager;
