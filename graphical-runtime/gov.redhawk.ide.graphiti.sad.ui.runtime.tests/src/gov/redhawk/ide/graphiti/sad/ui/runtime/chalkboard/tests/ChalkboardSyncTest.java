@@ -324,7 +324,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		// Select component in REDHAWK explorer tree first
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1).select().click();
 		
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties").bot().tree();
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
 		SWTBotTreeItem magItem = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItem.cell(1), "100.0");
 		magItem.select().click(1);
@@ -357,7 +357,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		// properties view if selected right after creation
 		editor.rootEditPart().click();
 		editor.click(SIGGEN_1);
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Component Properties").bot().tree();
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Component Properties");
 		SWTBotTreeItem magItem = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItem.cell(1), "100.0");
 		magItem.select().click(1);

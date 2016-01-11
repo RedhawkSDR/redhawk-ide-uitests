@@ -18,3 +18,5 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui.runtime.tests,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.draw2d.geometry
+Export-Package: gov.redhawk.ide.graphiti.dcd.ui.runtime.domain.tests,
+ gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests

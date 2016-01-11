@@ -167,7 +167,7 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		
 		// Note: when the component is selected via the explorer view, the tab name is "Properties" instead of
 		// "Component Properties"
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties").bot().tree();
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
 		SWTBotTreeItem magItemExplorer = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItemExplorer.cell(1), "100.0");
 		magItemExplorer.select().click(1);
@@ -205,7 +205,7 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		// properties view if selected right after creation
 		editor.rootEditPart().click();		editor.click(SIGGEN);
 
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Component Properties").bot().tree();
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Component Properties");
 		SWTBotTreeItem magItemDiagram = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItemDiagram.cell(1), "100.0");
 		magItemDiagram.select().click(1);

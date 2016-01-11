@@ -25,3 +25,4 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui.runtime.tests,
  gov.redhawk.ide.sdr
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: gov.redhawk.ide.graphiti.sad.ext.impl
+Export-Package: gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests

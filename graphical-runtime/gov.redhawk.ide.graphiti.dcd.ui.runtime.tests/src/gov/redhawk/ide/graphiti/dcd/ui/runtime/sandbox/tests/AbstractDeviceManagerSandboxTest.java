@@ -57,7 +57,7 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 	}
 
 	/** Helper method to open Sandbox Device Manager Graphiti Chalkboard Diagram */
-	static RHBotGefEditor openNodeChalkboardDiagram(SWTWorkbenchBot gefBot) {
+	public static RHBotGefEditor openNodeChalkboardDiagram(SWTWorkbenchBot gefBot) {
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DiagramType.GRAPHITI_CHALKBOARD);
 		RHBotGefEditor editor = new RHSWTGefBot().rhGefEditor(DIAGRAM_TAB_TITLE);
 		return editor;

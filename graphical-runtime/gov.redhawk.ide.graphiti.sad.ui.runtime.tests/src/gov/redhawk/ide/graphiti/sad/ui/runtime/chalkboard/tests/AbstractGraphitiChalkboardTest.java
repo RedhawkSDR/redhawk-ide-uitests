@@ -49,7 +49,7 @@ public abstract class AbstractGraphitiChalkboardTest extends UIRuntimeTest {
 	}
 
 	/** Helper method to open Sandbox "Waveform" Chalkboard Graphiti Diagram */
-	static RHBotGefEditor openChalkboardDiagram(RHSWTGefBot gefBot) {
+	public static RHBotGefEditor openChalkboardDiagram(RHSWTGefBot gefBot) {
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, CHALKBOARD_PARENT_PATH, CHALKBOARD, DiagramType.GRAPHITI_CHALKBOARD);
 		RHBotGefEditor editor = gefBot.rhGefEditor(CHALKBOARD_TAB_TITLE);
 		editor.setFocus();
