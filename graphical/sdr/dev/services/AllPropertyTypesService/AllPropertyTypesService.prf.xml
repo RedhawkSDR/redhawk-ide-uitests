@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
 <properties>
+  <simple id="readonlyString" mode="readonly" name="readonlyString" type="string">
+    <value>readonlyString1</value>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
   <simple id="simpleString" mode="readwrite" name="simpleString" type="string">
     <value>simpleStringTest</value>
     <kind kindtype="property"/>
@@ -112,7 +117,7 @@
   <structsequence id="structSeqString" mode="readwrite" name="structSeqString">
     <struct id="structSeqStructString" name="structSeqStructString">
       <simple id="structSeqStructSimpleString" name="structSeqStructSimpleString" type="string">
-        <value>structSeqStructSimpleStringTest</value>
+        <value>structSeqStructSimpleString</value>
       </simple>
       <simplesequence id="structSeqStructSimpleSeqString" name="structSeqStructSimpleSeqString" type="string">
         <values>
@@ -123,7 +128,7 @@
       </simplesequence>
     </struct>
     <structvalue>
-      <simpleref refid="structSeqStructSimpleString" value="structSeqStructSimpleStringTest"/>
+      <simpleref refid="structSeqStructSimpleString" value="structSeqStructSimpleString"/>
       <simplesequenceref refid="structSeqStructSimpleSeqString">
         <values>
           <value>structSeqStructSimpleStringTest1</value>
@@ -193,7 +198,7 @@
         <values>
           <value>23</value>
           <value>34</value>
-          <value>45</value>
+          <value>56</value>
         </values>
       </simplesequence>
     </struct>
@@ -203,15 +208,10 @@
         <values>
           <value>23</value>
           <value>34</value>
-          <value>45</value>
+          <value>56</value>
         </values>
       </simplesequenceref>
     </structvalue>
     <configurationkind kindtype="property"/>
   </structsequence>
-  <simple id="readOnlyString" mode="readonly" name="readOnlyString" type="string">
-    <value>doNotChangeMe</value>
-    <kind kindtype="property"/>
-    <action type="external"/>
-  </simple>
 </properties>

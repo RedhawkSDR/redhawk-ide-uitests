@@ -2,12 +2,12 @@
 #
 # AUTO-GENERATED CODE.  DO NOT MODIFY!
 #
-# Source: AllPropertyTypesComponent.spd.xml
+# Source: AllPropertyTypesDevice.spd.xml
 from ossie.cf import CF
 from ossie.cf import CF__POA
 from ossie.utils import uuid
 
-from ossie.component import Component
+from ossie.device import Device
 from ossie.threadedcomponent import *
 from ossie.properties import simple_property
 from ossie.properties import simpleseq_property
@@ -16,30 +16,29 @@ from ossie.properties import structseq_property
 
 import Queue, copy, time, threading
 
-class AllPropertyTypesComponent_base(CF__POA.Resource, Component, ThreadedComponent):
+class AllPropertyTypesDevice_base(CF__POA.Device, Device, ThreadedComponent):
         # These values can be altered in the __init__ of your derived class
 
         PAUSE = 0.0125 # The amount of time to sleep if process return NOOP
         TIMEOUT = 5.0 # The amount of time to wait for the process thread to die when stop() is called
         DEFAULT_QUEUE_SIZE = 100 # The number of BulkIO packets that can be in the queue before pushPacket will block
 
-        def __init__(self, identifier, execparams):
-            loggerName = (execparams['NAME_BINDING'].replace('/', '.')).rsplit("_", 1)[0]
-            Component.__init__(self, identifier, execparams, loggerName=loggerName)
+        def __init__(self, devmgr, uuid, label, softwareProfile, compositeDevice, execparams):
+            Device.__init__(self, devmgr, uuid, label, softwareProfile, compositeDevice, execparams)
             ThreadedComponent.__init__(self)
 
             # self.auto_start is deprecated and is only kept for API compatibility
-            # with 1.7.X and 1.8.0 components.  This variable may be removed
+            # with 1.7.X and 1.8.0 devices.  This variable may be removed
             # in future releases
             self.auto_start = False
-            # Instantiate the default implementations for all ports on this component
+            # Instantiate the default implementations for all ports on this device
 
         def start(self):
-            Component.start(self)
+            Device.start(self)
             ThreadedComponent.startThread(self, pause=self.PAUSE)
 
         def stop(self):
-            Component.stop(self)
+            Device.stop(self)
             if not ThreadedComponent.stopThread(self, self.TIMEOUT):
                 raise CF.Resource.StopError(CF.CF_NOTSET, "Processing thread did not die")
 
@@ -48,7 +47,7 @@ class AllPropertyTypesComponent_base(CF__POA.Resource, Component, ThreadedCompon
                 self.stop()
             except Exception:
                 self._log.exception("Error stopping")
-            Component.releaseObject(self)
+            Device.releaseObject(self)
 
         ######################################################################
         # PORTS
@@ -61,6 +60,24 @@ class AllPropertyTypesComponent_base(CF__POA.Resource, Component, ThreadedCompon
         # 
         # DO NOT ADD NEW PROPERTIES HERE.  You can add properties in your derived class, in the PRF xml file
         # or by using the IDE.
+        device_kind = simple_property(id_="device_kind",
+                                      name="device_kind",
+                                      type_="string",
+                                      defvalue="TestDevice",
+                                      mode="readonly",
+                                      action="eq",
+                                      kinds=("allocation",),
+                                      description="""This specifies the device kind""")
+        
+        device_model = simple_property(id_="device_model",
+                                       name="device_model",
+                                       type_="string",
+                                       defvalue="NotARealDevice",
+                                       mode="readonly",
+                                       action="eq",
+                                       kinds=("allocation",),
+                                       description=""" This specifies the specific device""")
+        
         simpleString = simple_property(id_="simpleString",
                                        name="simpleString",
                                        type_="string",
@@ -88,18 +105,10 @@ class AllPropertyTypesComponent_base(CF__POA.Resource, Component, ThreadedCompon
         simpleShort = simple_property(id_="simpleShort",
                                       name="simpleShort",
                                       type_="short",
-                                      defvalue=123,
+                                      defvalue=1,
                                       mode="readwrite",
                                       action="external",
                                       kinds=("property",))
-        
-        readOnlyString = simple_property(id_="readOnlyString",
-                                         name="readOnlyString",
-                                         type_="string",
-                                         defvalue="doNotChangeMe",
-                                         mode="readonly",
-                                         action="external",
-                                         kinds=("property",))
         
         simpleSeqString = simpleseq_property(id_="simpleSeqString",
                                              name="simpleSeqString",
@@ -128,7 +137,7 @@ class AllPropertyTypesComponent_base(CF__POA.Resource, Component, ThreadedCompon
         simpleSeqShort = simpleseq_property(id_="simpleSeqShort",
                                             name="simpleSeqShort",
                                             type_="short",
-                                            defvalue=[234, 345, 456                                             ],
+                                            defvalue=[2, 3, 4                                             ],
                                             mode="readwrite",
                                             action="external",
                                             kinds=("property",))
@@ -279,14 +288,14 @@ class AllPropertyTypesComponent_base(CF__POA.Resource, Component, ThreadedCompon
                                                 id_="structSimpleShort",
                                                 name="structSimpleShort",
                                                 type_="short",
-                                                defvalue=987
+                                                defvalue=9
                                                 )
         
             structSimpleSeqShort = simpleseq_property(
                                                       id_="structSimpleSeqShort",
                                                       name="structSimpleSeqShort",
                                                       type_="short",
-                                                      defvalue=[876, 765, 654]
+                                                      defvalue=[8, 7, 6]
                                                       )
         
             def __init__(self, **kw):
@@ -405,7 +414,7 @@ class AllPropertyTypesComponent_base(CF__POA.Resource, Component, ThreadedCompon
         structSeqBool = structseq_property(id_="structSeqBool",
                                            name="structSeqBool",
                                            structdef=StructSeqStructBool,
-                                           defvalue=[StructSeqStructBool(structSeqStructSimpleBool=True,structSeqStructSimpleSeqBool=[True,True,False])],
+                                           defvalue=[StructSeqStructBool(structSeqStructSimpleBool=False,structSeqStructSimpleSeqBool=[True,True,False])],
                                            configurationkind=("property",),
                                            mode="readwrite")
         
@@ -458,17 +467,17 @@ class AllPropertyTypesComponent_base(CF__POA.Resource, Component, ThreadedCompon
                                                          id_="structSeqStructSimpleShort",
                                                          name="structSeqStructSimpleShort",
                                                          type_="short",
-                                                         defvalue=12
+                                                         defvalue=22
                                                          )
         
             structSeqStructSimpleSeqShort = simpleseq_property(
                                                                id_="structSeqStructSimpleSeqShort",
                                                                name="structSeqStructSimpleSeqShort",
                                                                type_="short",
-                                                               defvalue=[23, 34, 45]
+                                                               defvalue=[23, 24, 25]
                                                                )
         
-            def __init__(self, structSeqStructSimpleShort=12, structSeqStructSimpleSeqShort=[23, 34, 45]):
+            def __init__(self, structSeqStructSimpleShort=22, structSeqStructSimpleSeqShort=[23, 24, 25]):
                 self.structSeqStructSimpleShort = structSeqStructSimpleShort
                 self.structSeqStructSimpleSeqShort = structSeqStructSimpleSeqShort
         

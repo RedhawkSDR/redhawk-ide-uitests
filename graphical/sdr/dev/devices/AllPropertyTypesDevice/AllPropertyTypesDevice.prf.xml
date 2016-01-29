@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
 <properties>
+  <simple id="device_kind" mode="readonly" name="device_kind" type="string">
+    <description>This specifies the device kind</description>
+    <value>TestDevice</value>
+    <kind kindtype="allocation"/>
+    <action type="eq"/>
+  </simple>
+  <simple id="device_model" mode="readonly" name="device_model" type="string">
+    <description> This specifies the specific device</description>
+    <value>NotARealDevice</value>
+    <kind kindtype="allocation"/>
+    <action type="eq"/>
+  </simple>
   <simple id="simpleString" mode="readwrite" name="simpleString" type="string">
     <value>simpleStringTest</value>
     <kind kindtype="property"/>
@@ -17,7 +29,7 @@
     <action type="external"/>
   </simple>
   <simple id="simpleShort" mode="readwrite" name="simpleShort" type="short">
-    <value>123</value>
+    <value>1</value>
     <kind kindtype="property"/>
     <action type="external"/>
   </simple>
@@ -50,9 +62,9 @@
   </simplesequence>
   <simplesequence id="simpleSeqShort" mode="readwrite" name="simpleSeqShort" type="short">
     <values>
-      <value>234</value>
-      <value>345</value>
-      <value>456</value>
+      <value>2</value>
+      <value>3</value>
+      <value>4</value>
     </values>
     <kind kindtype="property"/>
     <action type="external"/>
@@ -98,13 +110,13 @@
   </struct>
   <struct id="structShort" mode="readwrite" name="structShort">
     <simple id="structSimpleShort" name="structSimpleShort" type="short">
-      <value>987</value>
+      <value>9</value>
     </simple>
     <simplesequence id="structSimpleSeqShort" name="structSimpleSeqShort" type="short">
       <values>
-        <value>876</value>
-        <value>765</value>
-        <value>654</value>
+        <value>8</value>
+        <value>7</value>
+        <value>6</value>
       </values>
     </simplesequence>
     <configurationkind kindtype="property"/>
@@ -148,7 +160,7 @@
       </simplesequence>
     </struct>
     <structvalue>
-      <simpleref refid="structSeqStructSimpleBool" value="True"/>
+      <simpleref refid="structSeqStructSimpleBool" value="false"/>
       <simplesequenceref refid="structSeqStructSimpleSeqBool">
         <values>
           <value>True</value>
@@ -187,13 +199,13 @@
   <structsequence id="structSeqShort" mode="readwrite" name="structSeqShort">
     <struct id="structSeqStructShort" name="structSeqStructShort">
       <simple id="structSeqStructSimpleShort" name="structSeqStructSimpleShort" type="short">
-        <value>12</value>
+        <value>22</value>
       </simple>
       <simplesequence id="structSeqStructSimpleSeqShort" name="structSeqStructSimpleSeqShort" type="short">
         <values>
           <value>23</value>
-          <value>34</value>
-          <value>45</value>
+          <value>24</value>
+          <value>25</value>
         </values>
       </simplesequence>
     </struct>
@@ -209,9 +221,4 @@
     </structvalue>
     <configurationkind kindtype="property"/>
   </structsequence>
-  <simple id="readOnlyString" mode="readonly" name="readOnlyString" type="string">
-    <value>doNotChangeMe</value>
-    <kind kindtype="property"/>
-    <action type="external"/>
-  </simple>
 </properties>
