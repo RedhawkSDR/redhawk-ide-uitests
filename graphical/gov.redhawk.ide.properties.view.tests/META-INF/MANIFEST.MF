@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.ui,
  gov.redhawk.ide.debug.ui,
  gov.redhawk.sca,
  gov.redhawk.ide.graphiti.sad.ui
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: REDHAWK
 Export-Package: gov.redhawk.ide.properties.view.tests
