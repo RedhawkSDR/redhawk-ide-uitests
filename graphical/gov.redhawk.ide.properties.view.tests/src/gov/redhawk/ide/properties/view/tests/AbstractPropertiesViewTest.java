@@ -9,10 +9,10 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 import org.junit.Before;
 
-import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 
-public abstract class AbstractPropertiesViewTest extends UIRuntimeTest {
+public abstract class AbstractPropertiesViewTest extends UITest {
 	/**
 	 * Used in the property edit tests. Must be a String numeral, to be valid with both all property types. Booleans are
 	 * special cases.
