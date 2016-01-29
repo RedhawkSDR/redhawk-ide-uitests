@@ -9,12 +9,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.gef;bundle-version="3.10.1",
  gov.redhawk.ide.graphiti.ui,
  gov.redhawk.ide.sad.ui,
- gov.redhawk.ide.ui.tests.runtime,
- gov.redhawk.ide.graphiti.dcd.ui.runtime.tests,
  gov.redhawk.ide.debug,
  gov.redhawk.ide.debug.ui,
  gov.redhawk.sca,
- gov.redhawk.ide.graphiti.sad.ui.runtime.tests,
  gov.redhawk.ide.graphiti.sad.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
