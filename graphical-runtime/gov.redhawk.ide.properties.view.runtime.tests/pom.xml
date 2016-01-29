@@ -15,7 +15,7 @@
 
   <parent>
     <groupId>redhawk-ide-uitests</groupId>
-    <artifactId>releng-swtbot-design</artifactId>
+    <artifactId>releng-swtbot-runtime</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
