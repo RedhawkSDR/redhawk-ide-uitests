@@ -17,7 +17,6 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.properties.view.tests.AbstractPropertiesViewTest;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.model.sca.ScaAbstractProperty;
