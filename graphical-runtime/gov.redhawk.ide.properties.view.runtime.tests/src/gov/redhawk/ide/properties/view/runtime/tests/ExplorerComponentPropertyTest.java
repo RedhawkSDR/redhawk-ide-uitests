@@ -14,7 +14,6 @@ public class ExplorerComponentPropertyTest extends DomainComponentPropertyTest {
 	@Override
 	protected void prepareObject() {
 		super.prepareObject();
-		DOMAIN = ExplorerComponentPropertyTest.class.getSimpleName() + "_";
 		gefBot.gefEditor(waveformFullName).close();
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, DOMAIN_WAVEFORM_PARENT_PATH, WAVEFORM, DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
 		SWTBotGefEditor editor = gefBot.gefEditor(waveformFullName);
