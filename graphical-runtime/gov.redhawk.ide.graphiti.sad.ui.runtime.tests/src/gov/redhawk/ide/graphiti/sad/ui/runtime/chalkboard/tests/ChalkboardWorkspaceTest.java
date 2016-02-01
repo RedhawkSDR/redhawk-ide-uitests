@@ -18,6 +18,7 @@ import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.ServiceUtils;
 import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
@@ -48,7 +49,7 @@ public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 		final String wkspComponentName = "testComponentInWorkspace";
 		ComponentUtils.createComponentProject(bot, wkspComponentName, "Python");
 
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// validate that workspace Component is in Chalkboard palette
 		assertTrue("Workspace Component did not appear in Chalkboard Palette", isToolInPalette(editor, wkspComponentName));
@@ -69,7 +70,7 @@ public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 		final String wkspDeviceName = "testDeviceInWorkspace";
 		DeviceUtils.createDeviceProject(bot, wkspDeviceName, "Python");
 
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		assertFalse("Workspace Device wrongly appeared in Chalkboard Palette", isToolInPalette(editor, wkspDeviceName));
 
@@ -89,7 +90,7 @@ public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 		final String wkspServiceName = "testServiceInWorkspace";
 		ServiceUtils.createServiceProject(bot, wkspServiceName, "IDL:BULKIO/dataDouble:1.0", "Python");
 
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		assertFalse("Workspace Service wrongly appeared in Chalkboard Palette", isToolInPalette(editor, wkspServiceName));
 
@@ -109,7 +110,7 @@ public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 		final String wkspSftpkgName = "testSftpkgInWorkspace";
 		SharedLibraryUtils.createSharedLibraryProject(bot, wkspSftpkgName, "C++ Library");
 
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		assertFalse("Workspace Softpackage wrongly appeared in Chalkboard Palette", isToolInPalette(editor, wkspSftpkgName));
 

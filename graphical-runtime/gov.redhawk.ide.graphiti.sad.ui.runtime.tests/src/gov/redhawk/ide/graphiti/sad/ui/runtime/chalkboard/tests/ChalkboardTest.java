@@ -39,7 +39,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void checkChalkboardComponents() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
@@ -59,7 +59,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 
 		// Open the chalkboard with components already launched
 		editor.close();
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 		Assert.assertNotNull(editor.getEditPart(HARD_LIMIT));
 
 		// Check 'Show Console' context menu option functionality
@@ -107,7 +107,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 	public void checkNotInSandbox() {
 
 		// Check for Find Bys
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 		String[] findByList = { FindByUtils.FIND_BY_NAME, FindByUtils.FIND_BY_DOMAIN_MANAGER, FindByUtils.FIND_BY_EVENT_CHANNEL,
 			FindByUtils.FIND_BY_FILE_MANAGER, FindByUtils.FIND_BY_SERVICE };
 
@@ -137,7 +137,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void checkCorrectImplementationAddedToDiagram() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add two components to diagram from palette
 		final String sourceComponent = SIGGEN + " (python)";

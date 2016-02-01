@@ -36,7 +36,7 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 	 */
 	@Test
 	public void launchDevice() {
-		editor = openNodeChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 
 		// Add device to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
@@ -45,7 +45,7 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 
 		// Open the chalkboard with components already launched
 		editor.close();
-		editor = openNodeChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 		Assert.assertNotNull(editor.getEditPart(GPP));
 	}
 
@@ -54,7 +54,7 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 	 */
 	@Test
 	public void launchNamespacedDevice() {
-		editor = openNodeChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 
 		// Add namespaced component to the chalkboard
 		DiagramTestUtils.addFromPaletteToDiagram(editor, NSDEV, 200, 300);

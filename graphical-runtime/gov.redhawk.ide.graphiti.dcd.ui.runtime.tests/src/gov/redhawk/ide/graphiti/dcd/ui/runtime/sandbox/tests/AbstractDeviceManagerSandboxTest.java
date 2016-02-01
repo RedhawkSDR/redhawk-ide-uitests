@@ -10,16 +10,13 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.junit.After;
 import org.junit.Before;
 
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
-import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
 /**
  * 
@@ -29,7 +26,6 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 	static final String[] CHALKBOARD_PARENT_PATH = { "Sandbox" };
 	static final String DEVICE_MANAGER = "Device Manager";
 	static final String[] SANDBOX_DEVMGR_PATH = new String[] { "Sandbox", "Device Manager" };
-	static final String DIAGRAM_TAB_TITLE = "Device Manager Chalkboard";
 
 	// Common Test Component Names
 	static final String GPP = "GPP";
@@ -47,7 +43,7 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 	public void beforeTest() throws Exception {
 		gefBot = new RHSWTGefBot();
 	}
-	
+
 	@After
 	public void afterTest() {
 		ScaExplorerTestUtils.terminateFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER);
@@ -55,12 +51,4 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 		ConsoleUtils.removeTerminatedLaunches(bot);
 		bot.closeAllEditors();
 	}
-
-	/** Helper method to open Sandbox Device Manager Graphiti Chalkboard Diagram */
-	public static RHBotGefEditor openNodeChalkboardDiagram(SWTWorkbenchBot gefBot) {
-		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DiagramType.GRAPHITI_CHALKBOARD);
-		RHBotGefEditor editor = new RHSWTGefBot().rhGefEditor(DIAGRAM_TAB_TITLE);
-		return editor;
-	}
-
 }

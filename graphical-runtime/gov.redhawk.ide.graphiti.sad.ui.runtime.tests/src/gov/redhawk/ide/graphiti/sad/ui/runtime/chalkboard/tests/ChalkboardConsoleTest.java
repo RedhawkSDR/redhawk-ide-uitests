@@ -33,7 +33,7 @@ public class ChalkboardConsoleTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void checkConsoleTitle() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Prepare Graphiti diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);

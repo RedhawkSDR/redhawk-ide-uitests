@@ -33,7 +33,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	 */
 	@Test
 	public void addRemoveDeviceInDeviceManagerDiagram() {
-		editor = openNodeChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
@@ -51,7 +51,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	 */
 	@Test
 	public void addTerminateDeviceInChalkboardDiagram() {
-		editor = openNodeChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
@@ -69,7 +69,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	 */
 	@Test
 	public void addRemoveDeviceConnectionInChalkboardDiagram() {
-		editor = openNodeChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 
 		// Add a device stub to diagram from palette, which will connect to itself for this test
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
@@ -99,7 +99,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	 */
 	@Test
 	public void startStopDevicesFromChalkboardDiagram() {
-		editor = openNodeChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 
 		// Add two devices to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
@@ -163,7 +163,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	 */
 	@Test
 	public void addRemoveDeviceInScaExplorer() {
-		editor = openNodeChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 
 		// Launch device from TargetSDR
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, DEVICE_STUB, "python");
@@ -198,7 +198,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	 */
 	@Test
 	public void addRemoveDeviceConnectionInScaExplorer() {
-		editor = openNodeChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 
 		// Launch two devices from TargetSDR
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, DEVICE_STUB, "python");
@@ -230,7 +230,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	 */
 	@Test
 	public void startStopDevicesFromScaExplorer() {
-		editor = openNodeChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 
 		// Launch two devices from TargetSDR
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, GPP, "cpp");

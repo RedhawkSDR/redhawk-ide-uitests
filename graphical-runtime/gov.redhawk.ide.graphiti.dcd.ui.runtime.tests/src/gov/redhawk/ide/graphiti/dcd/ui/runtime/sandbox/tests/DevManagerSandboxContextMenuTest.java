@@ -30,7 +30,7 @@ public class DevManagerSandboxContextMenuTest extends AbstractDeviceManagerSandb
 	 */
 	@Test
 	public void runtimeContextMenuTest() {
-		RHBotGefEditor editor = openNodeChalkboardDiagram(gefBot);
+		RHBotGefEditor editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 		editor.setFocus();
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
@@ -90,7 +90,7 @@ public class DevManagerSandboxContextMenuTest extends AbstractDeviceManagerSandb
 	 */
 	@Test
 	public void terminate() {
-		RHBotGefEditor editor = openNodeChalkboardDiagram(gefBot);
+		RHBotGefEditor editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 		editor.setFocus();
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);

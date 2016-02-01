@@ -364,7 +364,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends AbstractProperti
 	/**
 	 * Checks to see that the model object has updated with the new value
 	 */
-	private void modelCheckSimple(String newValue, ScaSimpleProperty modelProp) {
+	private void modelCheckSimple(final String newValue, final ScaSimpleProperty modelProp) {
 		bot.waitUntil(new DefaultCondition() {
 
 			@Override
@@ -379,7 +379,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends AbstractProperti
 		}, 15000);
 	}
 
-	private void modelCheckSimpleSeq(String newValue, ScaSimpleSequenceProperty modelProp) {
+	private void modelCheckSimpleSeq(final String newValue, final ScaSimpleSequenceProperty modelProp) {
 		bot.waitUntil(new DefaultCondition() {
 
 			@Override
@@ -397,7 +397,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends AbstractProperti
 	/**
 	 * Checks to see that the respective Property View table cell has updated with the new value
 	 */
-	private void viewCheck(String newValue, SWTBotTreeItem treeItem) {
+	private void viewCheck(final String newValue, final SWTBotTreeItem treeItem) {
 		bot.waitUntil(new DefaultCondition() {
 
 			@Override

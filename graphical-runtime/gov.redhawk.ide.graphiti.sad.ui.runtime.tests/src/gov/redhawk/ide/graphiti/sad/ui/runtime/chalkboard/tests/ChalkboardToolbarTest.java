@@ -29,7 +29,7 @@ public class ChalkboardToolbarTest extends AbstractGraphitiChalkboardTest {
 	public void checkChalkboardToolbarButtons() {
 		final String[] waveformPath = ScaExplorerTestUtils.joinPaths(CHALKBOARD_PARENT_PATH, new String[] { CHALKBOARD });
 
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);

@@ -14,6 +14,7 @@ import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractPaletteTest;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.ComponentDescription;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.util.FilterInfo;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
@@ -25,7 +26,7 @@ public class ChalkboardPaletteTest extends AbstractPaletteTest {
 
 	@Override
 	protected RHBotGefEditor launchDiagram() {
-		return AbstractGraphitiChalkboardTest.openChalkboardDiagram(gefBot);
+		return DiagramTestUtils.openChalkboardDiagram(gefBot);
 	}
 
 	@Override

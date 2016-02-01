@@ -33,7 +33,7 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void runtimeContextMenuTest() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Prepare Graphiti diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
@@ -125,7 +125,7 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void removeDevelopmentContextOptionsTest() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Prepare Graphiti diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
@@ -144,7 +144,7 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void terminate() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);

@@ -43,7 +43,7 @@ public class SaveChalkboardTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void saveChalkboardAsWaveform() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
@@ -111,7 +111,7 @@ public class SaveChalkboardTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void saveAsHotkeyTest() throws AWTException {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);

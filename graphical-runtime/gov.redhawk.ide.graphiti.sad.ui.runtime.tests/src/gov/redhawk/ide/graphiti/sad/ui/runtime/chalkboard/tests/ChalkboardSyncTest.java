@@ -36,7 +36,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void addRemoveComponentInChalkboardDiagram() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
@@ -59,7 +59,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void addTerminateComponentInChalkboardDiagram() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
@@ -82,7 +82,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void addRemoveComponentConnectionInChalkboardDiagram() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add two components to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
@@ -123,7 +123,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void startStopComponentsFromChalkboardDiagram() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add two components to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
@@ -178,7 +178,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void addRemoveComponentInScaExplorer() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
@@ -204,7 +204,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void addRemoveComponentConnectionInScaExplorer() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Launch two components from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
@@ -232,7 +232,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void startStopComponentsFromScaExplorer() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Launch two components from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
@@ -314,7 +314,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void changePropertiesInScaExplorer() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 		
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
@@ -345,7 +345,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	 */
 	@Test
 	public void changePropertiesInChalkboardDiagram() {
-		editor = openChalkboardDiagram(gefBot);
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
