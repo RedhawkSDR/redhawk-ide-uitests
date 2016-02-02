@@ -1,12 +1,16 @@
 package gov.redhawk.ide.properties.view.runtime.tests;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.swtbot.swt.finder.keyboard.Keyboard;
+import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
@@ -14,11 +18,15 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.model.sca.ScaAbstractProperty;
 import gov.redhawk.model.sca.ScaPackage;
 import gov.redhawk.model.sca.ScaSimpleProperty;
@@ -31,9 +39,58 @@ import gov.redhawk.model.sca.impl.ScaStructPropertyImpl;
 import gov.redhawk.model.sca.impl.ScaStructSequencePropertyImpl;
 import mil.jpeojtrs.sca.prf.AccessType;
 
-public abstract class AbstractPropertiesViewRuntimeTest extends AbstractPropertiesViewTest {
+public abstract class AbstractPropertiesViewRuntimeTest extends UITest {
+
+	/**
+	 * Used in the property edit tests. Must be a String numeral, to be valid with both all property types. Booleans are
+	 * special cases.
+	 */
+	protected final String PREPENDER = "5";
+
+	/** A Map of all properties found in the IDE's property view */
+	protected String PROP_TAB_NAME;
+
+	protected Map<String, String> propertyMap = new HashMap<String, String>();
+	protected RHSWTGefBot gefBot;
+	protected Keyboard keyboard = KeyboardFactory.getSWTKeyboard();
+
+	/**
+	 * Method should take necessary steps to:
+	 * - launch the test object,
+	 * - select editor,
+	 * - set property tab name,
+	 * - do initial object selection
+	 */
+	protected abstract void prepareObject();
+
+	protected abstract void setPropTabName();
 
 	protected abstract EList<ScaAbstractProperty< ? >> getModelObjectProperties();
+
+	@Before
+	public void beforeTest() {
+		gefBot = new RHSWTGefBot();
+	}
+
+	@After
+	public void afterTest() {
+		propertyMap.clear();
+	}
+
+	/**
+	 * Wish we had an expand all button here...
+	 * @param treeItems
+	 * @param propTree
+	 */
+	protected void populatePropertyMap(SWTBotTreeItem[] treeItems) {
+
+		for (SWTBotTreeItem item : treeItems) {
+			propertyMap.put(item.cell(0), item.cell(1));
+			item.expand();
+			populatePropertyMap(item.getItems());
+		}
+
+	}
 
 	/**
 	 * Test that object selected in the SCA Explorer correctly displays properties in properties view
@@ -140,9 +197,6 @@ public abstract class AbstractPropertiesViewRuntimeTest extends AbstractProperti
 				editStructSeqModelProperty((ScaStructSequenceProperty) modelProp, treeItem);
 			}
 		}
-
-		// TODO:
-		// Compare values found in the properties view with those found in the model
 	}
 
 	// ################################ EDIT PROPERTY TESTS MODEL TO VIEW ##################################/

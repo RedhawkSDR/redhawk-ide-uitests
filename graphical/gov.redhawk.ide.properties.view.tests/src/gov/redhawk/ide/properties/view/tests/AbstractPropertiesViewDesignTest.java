@@ -2,21 +2,29 @@ package gov.redhawk.ide.properties.view.tests;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
+import org.eclipse.swtbot.swt.finder.keyboard.Keyboard;
+import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import mil.jpeojtrs.sca.partitioning.ComponentProperties;
 import mil.jpeojtrs.sca.prf.PrfFactory;
 import mil.jpeojtrs.sca.prf.SimpleRef;
@@ -26,9 +34,30 @@ import mil.jpeojtrs.sca.prf.StructSequenceRef;
 import mil.jpeojtrs.sca.prf.StructValue;
 import mil.jpeojtrs.sca.prf.Values;
 
-public abstract class AbstractPropertiesViewDesignTest extends AbstractPropertiesViewTest {
+public abstract class AbstractPropertiesViewDesignTest extends UITest {
+
+	/**
+	 * Used in the property edit tests. Must be a String numeral, to be valid with both all property types. Booleans are
+	 * special cases.
+	 */
+	protected final String PREPENDER = "5";
+
+	/** A Map of all properties found in the IDE's property view */
+	protected Map<String, String> propertyMap = new HashMap<String, String>();
 
 	SWTBotGefEditor editor;
+	protected String PROP_TAB_NAME;
+	protected RHSWTGefBot gefBot;
+	protected Keyboard keyboard = KeyboardFactory.getSWTKeyboard();
+
+	/**
+	 * Method should take necessary steps to:
+	 * - launch the test object,
+	 * - select editor,
+	 * - set property tab name,
+	 * - do initial object selection
+	 */
+	protected abstract void prepareObject();
 
 	protected abstract void selectObject();
 
@@ -37,6 +66,33 @@ public abstract class AbstractPropertiesViewDesignTest extends AbstractPropertie
 	protected abstract ComponentProperties getModelPropertiesFromEditor() throws IOException;
 
 	protected abstract void writeModelPropertiesToEditor(ComponentProperties componentProps) throws IOException;
+
+	protected abstract void setPropTabName();
+
+	@Before
+	public void beforeTest() {
+		gefBot = new RHSWTGefBot();
+	}
+
+	@After
+	public void afterTest() {
+		propertyMap.clear();
+	}
+
+	/**
+	 * Wish we had an expand all button here...
+	 * @param treeItems
+	 * @param propTree
+	 */
+	protected void populatePropertyMap(SWTBotTreeItem[] treeItems) {
+
+		for (SWTBotTreeItem item : treeItems) {
+			propertyMap.put(item.cell(0), item.cell(1));
+			item.expand();
+			populatePropertyMap(item.getItems());
+		}
+
+	}
 
 	// #################### TEST METHODS ############################### //
 	/**
