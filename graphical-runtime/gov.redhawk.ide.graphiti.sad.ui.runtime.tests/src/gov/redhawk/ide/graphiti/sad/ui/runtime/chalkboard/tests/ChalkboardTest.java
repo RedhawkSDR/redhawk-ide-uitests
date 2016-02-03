@@ -14,6 +14,7 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,6 +23,7 @@ import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
@@ -97,6 +99,35 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		String nameSpaceComp = "name.space.comp";
 		DiagramTestUtils.addFromPaletteToDiagram(editor, nameSpaceComp, 200, 300);
 		Assert.assertNotNull(editor.getEditPart(nameSpaceComp));
+	}
+
+	/**
+	 * IDE-1398 Chalkboard 'start' only starts the first component launched
+	 */
+	@Test
+	public void multiStartTest() {
+		final String[] comps = { "SigGen", "HardLimit", "DataConverter" };
+		
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+
+		for (String comp : comps) {
+			DiagramTestUtils.addFromPaletteToDiagram(editor, "rh." + comp, 0, 0);
+			DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, comp + "_1");
+			DiagramTestUtils.waitForComponentState(bot, editor, comp + "_1", ComponentState.STOPPED);
+		}
+
+		SWTBotTreeItem chalkboard = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox" }, "Chalkboard");
+		chalkboard.contextMenu("Start").click();
+
+		for (String comp : comps) {
+			DiagramTestUtils.waitForComponentState(bot, editor, comp + "_1", ComponentState.STARTED);
+		}
+		
+		chalkboard.contextMenu("Stop").click();
+		
+		for (String comp : comps) {
+			DiagramTestUtils.waitForComponentState(bot, editor, comp + "_1", ComponentState.STOPPED);
+		}
 	}
 
 	/**
