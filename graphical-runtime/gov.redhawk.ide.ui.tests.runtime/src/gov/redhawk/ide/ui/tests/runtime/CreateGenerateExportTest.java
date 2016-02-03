@@ -12,24 +12,6 @@ package gov.redhawk.ide.ui.tests.runtime;
 
 import java.io.File;
 
-import gov.redhawk.ide.sdr.ui.SdrUiPlugin;
-import gov.redhawk.ide.swtbot.ComponentUtils;
-import gov.redhawk.ide.swtbot.DeviceUtils;
-import gov.redhawk.ide.swtbot.NodeUtils;
-import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
-import gov.redhawk.ide.swtbot.ServiceUtils;
-import gov.redhawk.ide.swtbot.SharedLibraryUtils;
-import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.UIRuntimeTest;
-import gov.redhawk.ide.swtbot.WaveformUtils;
-import gov.redhawk.ide.swtbot.condition.WaitForBuild;
-import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
-import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.model.sca.util.ModelUtil;
-import mil.jpeojtrs.sca.spd.SoftPkg;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -42,6 +24,23 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+
+import gov.redhawk.ide.sdr.ui.SdrUiPlugin;
+import gov.redhawk.ide.swtbot.ComponentUtils;
+import gov.redhawk.ide.swtbot.DeviceUtils;
+import gov.redhawk.ide.swtbot.NodeUtils;
+import gov.redhawk.ide.swtbot.ServiceUtils;
+import gov.redhawk.ide.swtbot.SharedLibraryUtils;
+import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.condition.WaitForBuild;
+import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
+import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.model.sca.util.ModelUtil;
+import mil.jpeojtrs.sca.spd.SoftPkg;
 
 /**
  * These tests create projects that use a namespace, build them, and install them to SDRROOT. Their presence in the
@@ -303,8 +302,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	}
 
 	private void exportProject(String projectName) {
-		SWTBotTreeItem projectNode = ProjectExplorerUtils.selectNode(bot, projectName);
-		projectNode.contextMenu("Export to SDR").click();
+		StandardTestActions.exportProject(projectName, bot);
 	}
 
 	private void checkExistsInScaAndRemove(String[] scaPath, String projectName) {
