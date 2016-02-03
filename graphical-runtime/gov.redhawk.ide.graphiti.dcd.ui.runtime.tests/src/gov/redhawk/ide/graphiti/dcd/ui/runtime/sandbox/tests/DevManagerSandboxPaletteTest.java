@@ -71,7 +71,10 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 	protected ComponentDescription getMultipleImplComponent() {
 		return new ComponentDescription(SIM_RX_DIGITIZER, null, null);
 	}
-	
+
+	/**
+	 * IDE-1475 DCD diagram palette doesn't refresh with SDR root
+	 */
 	@Test
 	public void paletteRefreshTestDevice() {
 		final String DEVICE_NAME = "refreshTestDevice";
@@ -79,6 +82,9 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 		refreshTest(DEVICE_NAME);
 	}
 
+	/**
+	 * IDE-1475 DCD diagram palette doesn't refresh with SDR root
+	 */
 	@Test
 	public void paletteRefreshTestService() {
 		final String SERVICE_NAME = "refreshTestService";

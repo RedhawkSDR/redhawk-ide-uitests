@@ -31,6 +31,9 @@ public abstract class AbstractPropertiesViewTargetSdrTest extends UITest {
 		gefBot = new RHSWTGefBot();
 	}
 
+	/**
+	 * IDE-1326 Advanced tab shown in properties view for waveforms / nodes in the target SDR
+	 */
 	@Test
 	public void checkInnerTabs() {
 		selectResource();
