@@ -48,9 +48,9 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UITest {
 	protected final String PREPENDER = "5";
 
 	/** A Map of all properties found in the IDE's property view */
-	protected String PROP_TAB_NAME;
-
 	protected Map<String, String> propertyMap = new HashMap<String, String>();
+
+	protected String PROP_TAB_NAME;
 	protected RHSWTGefBot gefBot;
 	protected Keyboard keyboard = KeyboardFactory.getSWTKeyboard();
 
