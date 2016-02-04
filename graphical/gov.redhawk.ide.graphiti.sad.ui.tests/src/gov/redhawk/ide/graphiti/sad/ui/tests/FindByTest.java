@@ -10,8 +10,12 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
@@ -22,14 +26,20 @@ import org.junit.Test;
 import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import mil.jpeojtrs.sca.partitioning.FindBy;
 import mil.jpeojtrs.sca.partitioning.FindByStub;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesPortStub;
+import mil.jpeojtrs.sca.sad.SadConnectInterface;
+import mil.jpeojtrs.sca.sad.SadPackage;
+import mil.jpeojtrs.sca.sad.SoftwareAssembly;
+import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class FindByTest extends AbstractGraphitiTest {
 
@@ -174,9 +184,12 @@ public class FindByTest extends AbstractGraphitiTest {
 	 * IDE-652 & IDE-908
 	 * Edit existing FindBy Elements
 	 * Change names, add & remove ports
+	 * 
+	 * IDE-1403 Editing FindBy name creates duplicate item in diagram
+	 * @throws IOException
 	 */
 	@Test
-	public void editFindBy() {
+	public void editFindBy() throws IOException {
 		waveformName = "FindBy_Connection";
 		final String FIND_BY_NAME = "FindBy";
 		final String newFindByName = "NewFindByName";
@@ -206,12 +219,25 @@ public class FindByTest extends AbstractGraphitiTest {
 
 		MenuUtils.save(editor);
 
-		// Open FindBy edit wizard and change name, remove existing port, and add a new one
+		// IDE-1403 - Closing and opening the editor is required to check for this bug
+		editor.close();
+		ProjectExplorerUtils.openProjectInEditor(bot, waveformName, waveformName + ".sad.xml");
+		editor = gefBot.rhGefEditor(waveformName);
+
+		// Open FindBy edit wizard and change name
 		editor.getEditPart(FIND_BY_NAME).select();
 		editor.clickContextMenu("Edit Find By Name");
-
-		// Change Name
 		gefBot.textWithLabel("Component Name:").setText(newFindByName);
+		gefBot.button("Finish").click();
+
+		// IDE-1403 - Check XML to see if connection details were updated and make sure old fb object is gone
+		checkFindByName(editor, newFindByName);
+		SWTBotGefEditPart oldFbEditPart = editor.getEditPart(FIND_BY_NAME);
+		Assert.assertNull("Old FindBy Element not removed from diagram", oldFbEditPart);
+
+		// Open FindBy edit wizard and change name, remove existing port, and add a new one
+		editor.getEditPart(newFindByName).select();
+		editor.clickContextMenu("Edit Find By Name");
 
 		// Delete existing provides port
 		gefBot.listInGroup("Port(s) to use for connections", 0).select(provides[0]);
@@ -252,6 +278,26 @@ public class FindByTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Connection target incorrect", "dataFloat_in", connectionTarget.getName());
 	}
 
+	private void checkFindByName(RHBotGefEditor editor, String newFindByName) throws IOException {
+		editor.bot().cTabItem(waveformName + ".sad.xml").activate();
+		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
+		String editorText = editor.toTextEditor().getText();
+		Resource resource = resourceSet.createResource(org.eclipse.emf.common.util.URI.createURI("mem://temp.sad.xml"), SadPackage.eCONTENT_TYPE);
+		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
+		SoftwareAssembly sad = SoftwareAssembly.Util.getSoftwareAssembly(resource);
+		for (SadConnectInterface conn : sad.getConnections().getConnectInterface()) {
+			FindBy fb = conn.getProvidesPort().getFindBy();
+			if (fb == null) {
+				fb = conn.getUsesPort().getFindBy();
+				if (fb == null) {
+					continue;
+				}
+			}
+			Assert.assertEquals("FindBy Naming Service did not update", newFindByName, fb.getNamingService().getName());
+		}
+		editor.bot().cTabItem("Diagram").activate();
+	}
+
 	/**
 	 * IDE-738
 	 * Allow connections that include FindBy elements.
@@ -281,7 +327,7 @@ public class FindByTest extends AbstractGraphitiTest {
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, sigGenUsesPart, findByProvidesPart);
 		SWTBotGefEditPart findByUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, findByName);
 		SWTBotGefEditPart hardLimitProvidesPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
-		Assert.assertTrue("Failed to draw connection from FindBy uses port", 
+		Assert.assertTrue("Failed to draw connection from FindBy uses port",
 			DiagramTestUtils.drawConnectionBetweenPorts(editor, findByUsesPart, hardLimitProvidesPart));
 		MenuUtils.save(editor);
 
