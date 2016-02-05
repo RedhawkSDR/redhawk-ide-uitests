@@ -13,16 +13,22 @@ package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import gov.redhawk.ide.swtbot.ComponentUtils;
+import gov.redhawk.ide.swtbot.ComponentUtils.PortDirection;
 import gov.redhawk.ide.swtbot.DeviceUtils;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.ServiceUtils;
 import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -30,7 +36,7 @@ public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 
 	private static final String ROOT_SHELL_NAME = "REDHAWK - REDHAWK IDE";
 
-	private SWTBotGefEditor editor;
+	private RHBotGefEditor editor;
 
 	@BeforeClass
 	public static void beforeClassSetup() {
@@ -57,6 +63,56 @@ public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 		// cleanup
 		editor.close();
 		MenuUtils.deleteNodeInProjectExplorer(bot, wkspComponentName);
+	}
+	
+	/**
+	 * IDE-1409 New ports do not show up for workspace components on chalkboard
+	 */
+	@Test
+	public void checkUpdatedWorkspaceComponent() {
+		bot.shell(ROOT_SHELL_NAME).activate(); // This must be done to ensure right shell is active for menu selection
+		
+		final String wkspComponentName = "testWorkspaceComponent";
+		final String usesPortName = "usesPort";
+		final String providesPortName = "providesPort";
+		
+		// create test Component in workspace and generate
+		ComponentUtils.createComponentProject(bot, wkspComponentName, "Python");
+		SWTBotEditor designEditor = gefBot.editorByTitle(wkspComponentName);
+		StandardTestActions.generateProject(bot, designEditor);
+
+		// Bring the component into the chalkboard and confirm there is no provides or uses port 
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, wkspComponentName, 0, 0);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, wkspComponentName);
+		DiagramTestUtils.waitForComponentState(bot, editor, wkspComponentName, ComponentState.STOPPED);
+		Assert.assertNull("Component should not have any Uses ports", DiagramTestUtils.getDiagramUsesPort(editor, wkspComponentName));
+		Assert.assertNull("Component should not have any Provides ports", DiagramTestUtils.getDiagramProvidesPort(editor, wkspComponentName));
+		
+		// Remove the component
+		SWTBotGefEditPart componentEditPart = editor.getEditPart(wkspComponentName);
+		DiagramTestUtils.releaseFromDiagram(editor, componentEditPart);
+		editor.close();
+		
+		// Edit the component and add a new provides and uses port.  
+		designEditor.show();
+		ComponentUtils.addComponentPort(designEditor.bot(), providesPortName, PortDirection.IN);
+		ComponentUtils.addComponentPort(designEditor.bot(), usesPortName, PortDirection.OUT);
+		
+		// Regenerate
+		StandardTestActions.generateProject(bot, designEditor);
+		
+		// Bring the new component into the Chalkboard 
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, wkspComponentName, 0, 0);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, wkspComponentName);
+		DiagramTestUtils.waitForComponentState(bot, editor, wkspComponentName, ComponentState.STOPPED);
+		
+		// Check that the new ports are now displayed
+		SWTBotGefEditPart usesPort = DiagramTestUtils.getDiagramUsesPort(editor, wkspComponentName);
+		SWTBotGefEditPart providesPort = DiagramTestUtils.getDiagramProvidesPort(editor, wkspComponentName);
+		Assert.assertNotNull("Uses port not found", usesPort);
+		Assert.assertNotNull("Provides port not found", providesPort);
 	}
 
 	/**
