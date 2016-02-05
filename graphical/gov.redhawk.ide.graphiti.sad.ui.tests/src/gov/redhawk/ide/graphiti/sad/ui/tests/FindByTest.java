@@ -127,6 +127,47 @@ public class FindByTest extends AbstractGraphitiTest {
 	}
 
 	/**
+	 * IDE-1414 Collapsing and expanding FindBy causes duplicate ports
+	 */
+	@Test
+	public void collapseExpandFindBy() {
+		waveformName = "Collapse_Expand_FindBy";
+		final String findByName = "FindBy";
+		final String[] provides = { "data_in" };
+		final String[] uses = { "data_out" };
+
+		// Create a new empty waveform
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
+
+		// Add FindBy to the diagram
+		DiagramTestUtils.addFromPaletteToDiagram(editor, FindByUtils.FIND_BY_NAME, 0, 150);
+		FindByUtils.completeFindByWizard(gefBot, FindByUtils.FIND_BY_NAME, findByName, provides, uses);
+		MenuUtils.save(editor);
+
+		// Check that only two ports exist and what they are
+		Assert.assertNotNull(DiagramTestUtils.getDiagramProvidesPort(editor, findByName, provides[0]));
+		Assert.assertNotNull(DiagramTestUtils.getDiagramUsesPort(editor, findByName, uses[0]));
+
+		// Collapse the resource
+		editor.click(editor.rootEditPart());
+		editor.clickContextMenu("Collapse All Shapes");
+
+		// Check that only the global ports are now available
+		Assert.assertNotNull(DiagramTestUtils.getDiagramProvidesSuperPort(editor, findByName));
+		Assert.assertNotNull(DiagramTestUtils.getDiagramUsesSuperPort(editor, findByName));
+
+		// Expand the resource
+		editor.click(editor.rootEditPart());
+		editor.clickContextMenu("Expand All Shapes");
+
+		// Check that only two ports exist and what they are
+		Assert.assertNotNull(DiagramTestUtils.getDiagramProvidesPort(editor, findByName, provides[0]));
+		Assert.assertNotNull(DiagramTestUtils.getDiagramUsesPort(editor, findByName, uses[0]));
+
+	}
+
+	/**
 	 * Ensure that deleting a FindBy that is part of a connection removes the connection from the sad.xml
 	 */
 	@Test
