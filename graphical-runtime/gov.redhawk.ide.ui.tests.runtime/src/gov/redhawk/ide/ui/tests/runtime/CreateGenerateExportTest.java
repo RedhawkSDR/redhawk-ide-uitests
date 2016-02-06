@@ -20,6 +20,7 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 import org.junit.Assert;
@@ -50,6 +51,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 
 	private static final String PREFIX_DOTS = "runtime.test.";
 	private static final String SIGGEN = "rh.SigGen";
+	public static final String PROJECT_EXPLORER_VIEW_ID = "org.eclipse.ui.navigator.ProjectExplorer";
 
 	@After
 	public void after() {
@@ -65,7 +67,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 
 		IPath devPath = SdrUiPlugin.getDefault().getTargetSdrDevPath();
 		final String[] devSubdirs = new String[] { "devices/runtime", "services/runtime", "nodes/runtime" };
-		for (String subdir: devSubdirs) {
+		for (String subdir : devSubdirs) {
 			File dir = devPath.append(subdir).toFile();
 			if (dir.isDirectory()) {
 				dir.delete();
@@ -74,7 +76,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	}
 
 	/**
-	 * IDE-1122, IDE-1182, IDE-1183, IDE-1185
+	 * IDE-1122, IDE-1182, IDE-1183, IDE-1185, IDE-1413
 	 * Check that name-spaced component projects can be created, generated and exported.
 	 * They should also be represented in the REDHAWK Explorer.
 	 */
@@ -99,6 +101,14 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		exportProject(PREFIX_DOTS + "python." + componentBaseName);
 		bot.waitUntil(new WaitForLaunchTermination(), 30000);
 
+		checkExistsInScaAndRemove(new String[] { "Target SDR", "Components", "runtime", "test", "cpp" }, componentBaseName);
+		checkExistsInScaAndRemove(new String[] { "Target SDR", "Components", "runtime", "test", "java" }, componentBaseName);
+		checkExistsInScaAndRemove(new String[] { "Target SDR", "Components", "runtime", "test", "python" }, componentBaseName);
+
+		// IDE-1413 - Multiple component SDR export
+		SWTBotTree explorerTree = bot.viewById(PROJECT_EXPLORER_VIEW_ID).bot().tree();
+		explorerTree.select(0, 1, 2);
+		explorerTree.contextMenu("Export to SDR").click();
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Components", "runtime", "test", "cpp" }, componentBaseName);
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Components", "runtime", "test", "java" }, componentBaseName);
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Components", "runtime", "test", "python" }, componentBaseName);
