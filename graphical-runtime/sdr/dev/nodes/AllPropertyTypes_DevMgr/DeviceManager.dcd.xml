@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE deviceconfiguration PUBLIC "-//JTRS//DTD SCA V2.2.2 DCD//EN" "deviceconfiguration.dtd">
+<deviceconfiguration id="DCE:3840c6ae-c632-413e-a9b2-376c6ef37adb" name="AllPropertyTypes_DevMgr">
+  <devicemanagersoftpkg>
+    <localfile name="/mgr/DeviceManager.spd.xml"/>
+  </devicemanagersoftpkg>
+  <componentfiles>
+    <componentfile id="AllPropertyTypesDevice_d301139c-dc16-4e15-a0fc-ac47fb84053c" type="SPD">
+      <localfile name="/devices/AllPropertyTypesDevice/AllPropertyTypesDevice.spd.xml"/>
+    </componentfile>
+    <componentfile id="AllPropertyTypesService_24f39615-2bea-435d-99b2-1db658fa610a" type="SPD">
+      <localfile name="/services/AllPropertyTypesService/AllPropertyTypesService.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="AllPropertyTypesDevice_d301139c-dc16-4e15-a0fc-ac47fb84053c"/>
+      <componentinstantiation id="DCE:58e97ed6-fea8-4def-b4c1-ca1a1a5c76a8">
+        <usagename>AllPropertyTypesDevice_1</usagename>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="AllPropertyTypesService_24f39615-2bea-435d-99b2-1db658fa610a"/>
+      <componentinstantiation id="AllPropertyTypesService_1">
+        <usagename>AllPropertyTypesService_1</usagename>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <domainmanager>
+    <namingservice name="REDHAWK_DEV/REDHAWK_DEV"/>
+  </domainmanager>
+</deviceconfiguration>
