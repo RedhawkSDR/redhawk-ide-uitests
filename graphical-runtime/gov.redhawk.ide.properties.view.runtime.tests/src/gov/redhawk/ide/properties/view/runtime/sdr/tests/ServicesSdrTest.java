@@ -7,7 +7,7 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
 public class ServicesSdrTest extends AbstractPropertiesViewTargetSdrTest {
 	final private String[] NODE_PARENT_PATH = { "Target SDR", "Nodes" };
-	final private String NODE_NAME = "DevMgr_allPropertyTypes";
+	final private String NODE_NAME = "AllPropertyTypes_DevMgr";
 	final private String SERVICE_NAME = "AllPropertyTypesService";
 	
 	@Override

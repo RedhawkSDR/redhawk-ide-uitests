@@ -25,7 +25,7 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 	// domain property tests that is
 	// in charge of launch and tearing down the domain
 	protected static String DOMAIN = DomainDevicePropertyTest.class.getSimpleName() + "_" + (int) (1000.0 * Math.random());
-	protected static final String DEVICE_MANAGER = "DevMgr_allPropertyTypes";
+	protected static final String DEVICE_MANAGER = "AllPropertyTypes_DevMgr";
 	protected static final String DEVICE = "AllPropertyTypesDevice";
 	protected static final String DEVICE_NUM = DEVICE + "_1";
 	protected static final String DEVICE_STARTED = DEVICE_NUM + " STARTED";
