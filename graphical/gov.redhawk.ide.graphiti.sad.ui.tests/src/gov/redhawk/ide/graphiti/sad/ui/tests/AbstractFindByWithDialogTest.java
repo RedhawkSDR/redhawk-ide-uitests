@@ -27,7 +27,7 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import mil.jpeojtrs.sca.partitioning.FindByStub;
 
-public abstract class AbstractEditFindByWithDialogTest extends AbstractEditFindByTest {
+public abstract class AbstractFindByWithDialogTest extends AbstractFindByTest {
 
 	@Test
 	public void feedbackLoopTest() throws IOException {

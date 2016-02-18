@@ -10,12 +10,23 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import java.io.IOException;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 
-public class EditFindByNameTest extends AbstractEditFindByWithDialogTest {
+public class FindByFileMgrTest extends AbstractFindByTest {
+	private static final String FIND_BY_TYPE = FindByUtils.FIND_BY_FILE_MANAGER;
+	private static final String FIND_BY_NAME = FindByUtils.FIND_BY_FILE_MANAGER;
 
-	private static final String FIND_BY_TYPE = FindByUtils.FIND_BY_NAME;
-	private static final String FIND_BY_NAME = "FindByName";
+	@Ignore
+	@Test
+	@Override
+	public void editFindBy() throws IOException {
+		// PASS - This test is not applicable to FindByFileMgr
+	}
 
 	@Override
 	protected String getFindByType() {
@@ -29,6 +40,8 @@ public class EditFindByNameTest extends AbstractEditFindByWithDialogTest {
 
 	@Override
 	protected String getEditTextLabel() {
-		return "Component Name:";
+		// PASS - FindByDomainMgr does not have an edit dialog
+		return null;
 	}
+
 }

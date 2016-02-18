@@ -21,7 +21,7 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import mil.jpeojtrs.sca.partitioning.FindByStub;
 
-public class EditFindByEventChannelTest extends AbstractEditFindByTest {
+public class FindByEventChannelTest extends AbstractFindByTest {
 
 	private static final String FIND_BY_TYPE = FindByUtils.FIND_BY_EVENT_CHANNEL;
 	private static final String FIND_BY_NAME = "FindByEventChannel";

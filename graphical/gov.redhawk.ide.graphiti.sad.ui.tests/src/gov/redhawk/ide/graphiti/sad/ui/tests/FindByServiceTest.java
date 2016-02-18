@@ -12,10 +12,10 @@ package gov.redhawk.ide.graphiti.sad.ui.tests;
 
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 
-public class EditFindByServiceTest extends AbstractEditFindByWithDialogTest {
+public class FindByServiceTest extends AbstractFindByWithDialogTest {
 
 	private static final String FIND_BY_TYPE = FindByUtils.FIND_BY_SERVICE;
-	private static final String FIND_BY_NAME = "FindByService";
+	private static final String FIND_BY_NAME = "IDL:CF/AggregateExecutableDevice:1.0";
 
 	@Override
 	protected String getFindByType() {

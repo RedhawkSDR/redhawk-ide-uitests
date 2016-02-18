@@ -29,9 +29,11 @@ import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
+import gov.redhawk.ide.swtbot.diagram.ConnectionUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.ConnectionUtils.ConnectionState;
 import mil.jpeojtrs.sca.partitioning.FindBy;
 import mil.jpeojtrs.sca.partitioning.FindByStub;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
@@ -41,22 +43,23 @@ import mil.jpeojtrs.sca.sad.SadPackage;
 import mil.jpeojtrs.sca.sad.SoftwareAssembly;
 import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
-public abstract class AbstractEditFindByTest extends AbstractGraphitiTest {
+public abstract class AbstractFindByTest extends AbstractGraphitiTest {
 
 	protected static final String SIG_GEN = "rh.SigGen";
 	protected static final String SIG_GEN_1 = "SigGen_1";
 	protected static final String HARD_LIMIT = "rh.HardLimit";
 	protected static final String HARD_LIMIT_1 = "HardLimit_1";
+	protected static final String PORT_COMP = "AllPortTypesTestComponent";
+	protected static final String PORT_COMP_1 = "AllPortTypesTestComponent_1";
 
 	protected static final String[] PROVIDES_PORTS = { "provides_in" };
 	protected static final String[] USES_PORTS = { "uses_out" };
 	protected static final String NEW_USES_PORT = "dataFloat_out";
 
-
 	protected abstract String getFindByType();
 
 	protected abstract String getFindByName();
-	
+
 	protected abstract String getEditTextLabel();
 
 	// CHECKSTYLE:OFF - Direct access preferred
@@ -100,7 +103,7 @@ public abstract class AbstractEditFindByTest extends AbstractGraphitiTest {
 		final String newFindByName = "Edited" + getFindByName();
 		gefBot.textWithLabel(getEditTextLabel()).setText(newFindByName);
 		try {
-		    gefBot.button("Finish").click();
+			gefBot.button("Finish").click();
 		} catch (WidgetNotFoundException e) {
 			gefBot.button("OK").click();
 		}
@@ -124,6 +127,69 @@ public abstract class AbstractEditFindByTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Inner Text was not updated", newFindByName, findByShape.getInnerText().getValue());
 		String findByDomainName = FindByUtils.FIND_BY_NAME.equals(getFindByType()) ? findByObject.getNamingService().getName() : findByObject.getDomainFinder().getName();
 		Assert.assertEquals("Diagram object and domain object names don't match", newFindByName, findByDomainName);
+	}
+
+	@Test
+	public void componentSupportedInterfaceTest() {
+		waveformName = "FindBy_Lollipop_Connection";
+
+		// Create a new empty waveform
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
+		editor = gefBot.rhGefEditor(waveformName);
+
+		// Add components to the diagram
+		DiagramTestUtils.addFromPaletteToDiagram(editor, getFindByType(), 375, 50);
+		if (FindByUtils.FIND_BY_SERVICE.equals(getFindByType())) {
+			// Want to make sure the FindByService uses the ExecutableDevice IDL
+			FindByUtils.completeFindByWizard(gefBot, getFindByType(), getFindByName(), PROVIDES_PORTS, USES_PORTS, true);
+		} else {
+			FindByUtils.completeFindByWizard(gefBot, getFindByType(), getFindByName(), PROVIDES_PORTS, USES_PORTS);
+		}
+
+		DiagramTestUtils.addFromPaletteToDiagram(editor, PORT_COMP, 0, 0);
+
+		SWTBotGefEditPart findByLollipopPart = DiagramTestUtils.getComponentSupportedInterface(editor, getFindByName());
+		SWTBotGefEditPart portCompUsesPart = null;
+
+		switch (getFindByType()) {
+		case FindByUtils.FIND_BY_DOMAIN_MANAGER:
+			portCompUsesPart = DiagramTestUtils.getDiagramUsesPort(getEditor(), PORT_COMP_1, PortCompPorts.DOM_MGR.toString());
+			break;
+		case FindByUtils.FIND_BY_EVENT_CHANNEL:
+			portCompUsesPart = DiagramTestUtils.getDiagramUsesPort(getEditor(), PORT_COMP_1, PortCompPorts.EVENT_CHANNEL.toString());
+			break;
+		case FindByUtils.FIND_BY_FILE_MANAGER:
+			portCompUsesPart = DiagramTestUtils.getDiagramUsesPort(getEditor(), PORT_COMP_1, PortCompPorts.FILE_MGR.toString());
+			break;
+		case FindByUtils.FIND_BY_NAME:
+			portCompUsesPart = DiagramTestUtils.getDiagramUsesPort(getEditor(), PORT_COMP_1, PortCompPorts.RESOURCE.toString());
+			break;
+		case FindByUtils.FIND_BY_SERVICE:
+			portCompUsesPart = DiagramTestUtils.getDiagramUsesPort(getEditor(), PORT_COMP_1, PortCompPorts.EXECUTABLE_DEVICE.toString());
+			break;
+		default:
+			break;
+		}
+		DiagramTestUtils.drawConnectionBetweenPorts(editor, portCompUsesPart, findByLollipopPart);
+
+		// Check for normal (allowed) connections
+		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, portCompUsesPart);
+		Assert.assertEquals("Connection was not added", 1, sourceConnections.size());
+		ConnectionUtils.assertConnectionStyling(sourceConnections.get(0), ConnectionState.NORMAL);
+
+		// Check for illegal (error) connections
+		if (!(FindByUtils.FIND_BY_NAME.equals(getFindByType()))) {
+			portCompUsesPart = DiagramTestUtils.getDiagramUsesPort(getEditor(), PORT_COMP_1, PortCompPorts.BULKIO.toString());
+			DiagramTestUtils.drawConnectionBetweenPorts(editor, portCompUsesPart, findByLollipopPart);
+
+			sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, portCompUsesPart);
+			Assert.assertEquals("Connection was not added", 1, sourceConnections.size());
+			ConnectionUtils.assertConnectionStyling(sourceConnections.get(0), ConnectionState.ERROR);
+		}
+
+		// IDE-1032 && IDE-1521 - Deleting a Find By with a connection to the lollipop fails
+		DiagramTestUtils.deleteFromDiagram(editor, editor.getEditPart(getFindByName()));
+		Assert.assertNull("FindBy delete action failed", editor.getEditPart(getFindByName()));
 	}
 
 	protected void createFindByConnections() {
@@ -159,7 +225,7 @@ public abstract class AbstractEditFindByTest extends AbstractGraphitiTest {
 			} else {
 				fb = conn.getComponentSupportedInterface().getFindBy();
 			}
-			
+
 			if (fb != null) {
 				if (FindByUtils.FIND_BY_NAME.equals(getFindByType())) {
 					Assert.assertEquals("FindBy Naming Service did not update", newFindByName, fb.getNamingService().getName());
@@ -167,8 +233,7 @@ public abstract class AbstractEditFindByTest extends AbstractGraphitiTest {
 					Assert.assertEquals("FindBy Naming Service did not update", newFindByName, fb.getDomainFinder().getName());
 				}
 			}
-			
-			
+
 			fb = conn.getUsesPort().getFindBy();
 			if (fb == null) {
 				continue;
@@ -224,5 +289,27 @@ public abstract class AbstractEditFindByTest extends AbstractGraphitiTest {
 
 	public RHBotGefEditor getEditor() {
 		return editor;
+	}
+
+	private enum PortCompPorts {
+		DOM_MGR("dommgr_out"),
+		FILE_MGR("filemgr_out"),
+		EVENT_CHANNEL("eventchannel_out"),
+		RESOURCE("resource_out"),
+		DEVICE("device_out"),
+		AGGREGATE_DEVICE("aggdev_out"),
+		EXECUTABLE_DEVICE("execdev_out"),
+		BULKIO("dataFloatBIO_out");
+
+		private String portName;
+
+		PortCompPorts(String portName) {
+			this.portName = portName;
+		}
+
+		@Override
+		public String toString() {
+			return this.portName;
+		}
 	}
 }
