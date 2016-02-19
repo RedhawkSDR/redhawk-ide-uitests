@@ -12,20 +12,35 @@
 package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.tests;
 
 import static org.junit.Assert.assertEquals;
-import gov.redhawk.ide.swtbot.ViewUtils;
-import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.logging.ui.LogLevels;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.util.List;
+
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.PortUtils;
+import gov.redhawk.ide.swtbot.diagram.PortUtils.PortState;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
+import gov.redhawk.ide.swtbot.diagram.RHTestBotCanvas;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.logging.ui.LogLevels;
+import mil.jpeojtrs.sca.sad.SadConnectInterface;
 
 public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeTest {
 
@@ -83,7 +98,89 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 		int gridUnit = diagram.getGridUnit();
 		assertEquals("Grid is hidden on diagram", -1, gridUnit); // -1 means it is hidden
 	}
-	
+
+	/**
+	 * IDE-1136 & IDE-1524 SAD/DCD runtime explorers shouldn't allow connection changes
+	 * @throws AWTException
+	 */
+	@Test
+	public void waveformExplorerConnectionTest() throws AWTException {
+		final String DATA_CONVERTER_4 = "DataConverter_4";
+
+		final String waveformName = "LargeWaveform";
+		// Launch the 'LargeWaveform' to be used for this test
+		ScaExplorerTestUtils.launchWaveformFromDomain(bot, DOMAIN, waveformName);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, waveformName);
+		setWaveFormFullName(ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, waveformName));
+
+		// Test that connections cannot be deleted
+		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
+		SWTBotGefEditPart sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN_1);
+		SWTBotGefConnectionEditPart sigGenConnection = DiagramTestUtils.getSourceConnectionsFromPort(editor, sigGenUsesEditPart).get(0);
+		String connectionId = getConnectionId(sigGenConnection);
+
+		// Have to try and delete with the hot-key since the context menu for "delete" should not exist
+		sigGenConnection.select();
+		sigGenConnection.click();
+		Robot robot = new Robot();
+		robot.keyPress(KeyEvent.VK_DELETE);
+		robot.keyRelease(KeyEvent.VK_DELETE);
+
+		sigGenConnection = DiagramTestUtils.getSourceConnectionsFromPort(editor, sigGenUsesEditPart).get(0);
+		Assert.assertEquals("Expected connection ID was not found", connectionId, getConnectionId(sigGenConnection));
+
+		// Attempt to add a connection - Assumes the DataConverter_4 has no outgoing connections
+		SWTBotGefEditPart dataConverterUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER_4);
+		SWTBotGefEditPart hardimitProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
+		Assert.assertEquals("DATA_CONVERTER_4 is not expected to have any source connections", 0,
+			DiagramTestUtils.getSourceConnectionsFromPort(editor, dataConverterUsesEditPart).size());
+
+		DiagramTestUtils.drawConnectionBetweenPorts(editor, dataConverterUsesEditPart, hardimitProvidesEditPart);
+		dataConverterUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, DATA_CONVERTER_4);
+		Assert.assertEquals("DATA_CONVERTER_4 is not expected to have any source connections", 0,
+			DiagramTestUtils.getSourceConnectionsFromPort(editor, dataConverterUsesEditPart).size());
+	}
+
+	private String getConnectionId(SWTBotGefConnectionEditPart connection) {
+		SadConnectInterface modelObj = (SadConnectInterface) ((FreeFormConnection) connection.part().getModel()).getLink().getBusinessObjects().get(0);
+		return modelObj.getId();
+	}
+
+	/**
+	 * IDE-1136 & IDE-1524 Target ports should not highlight when a user clicks a port in the Waveform Explorer
+	 */
+	@Test
+	public void waveformExplorerPortStyleTest() {
+		final String sigGenPort = "dataFloat_out";
+
+		RHSWTGefBot rhGefBot = new RHSWTGefBot();
+		RHBotGefEditor editor = rhGefBot.rhGefEditor(getWaveFormFullName());
+
+		SWTBotGefEditPart usesPort = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN_1, sigGenPort).children().get(0);
+		usesPort.select();
+
+		// Mouse down on target port (direct mouse event)
+		RHTestBotCanvas canvas = editor.getDragViewer().getCanvas();
+		Point point = DiagramTestUtils.getDiagramRelativeCenter(usesPort);
+		canvas.mouseDown(point.x(), point.y());
+
+		// Check data converter ports for color change - (it's actually the anchor that changes color)
+		SWTBotGefEditPart hardLimitEditPart = editor.getEditPart(HARD_LIMIT_1);
+		List<SWTBotGefEditPart> providesPorts = PortUtils.getProvidesPortContainerBots(hardLimitEditPart);
+
+		for (SWTBotGefEditPart providesPort : providesPorts) {
+			PortUtils.assertPortStyling(providesPort, PortState.NORMAL_PROVIDES);
+		}
+
+		// Mouse up on target port
+		canvas.mouseUp(point.x(), point.y());
+
+		// Confirm ports return to default color
+		for (SWTBotGefEditPart providesPort : providesPorts) {
+			PortUtils.assertPortStyling(providesPort, PortState.NORMAL_PROVIDES);
+		}
+	}
+
 	/**
 	 * IDE-1187 Opens Graphiti diagram using the Waveform Explorer editor.
 	 * Diagram should contain namespaced components
@@ -92,14 +189,14 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 	public void waveformExplorerNamespaceComponentsTest() {
 		final String comp1 = "comp_1";
 		final String comp2 = "comp_2";
-		
+
 		bot.closeAllEditors();
-		
+
 		ScaExplorerTestUtils.launchWaveformFromDomain(bot, DOMAIN, NAMESPACE_DOMAIN_WAVEFORM);
 		bot.waitUntil(new WaitForEditorCondition());
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, NAMESPACE_DOMAIN_WAVEFORM);
 		setWaveFormFullName(ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, NAMESPACE_DOMAIN_WAVEFORM));
-		
+
 		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
 		editor.setFocus();
 
