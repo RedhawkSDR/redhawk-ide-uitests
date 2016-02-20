@@ -47,6 +47,8 @@ public class ConnectionTest extends AbstractGraphitiTest {
 	@Test
 	public void connectFeatureTest() {
 		projectName = "Connection-Test";
+		final String undoTooltip = "Undo connection creation (Ctrl+Z)";
+		final String redoTooltip = "Redo connection creation (Shift+Ctrl+Z)";
 
 		// Create an empty node project
 		NodeUtils.createNewNodeProject(gefBot, projectName, DOMAIN_NAME);
@@ -96,6 +98,19 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Connect provides port not correct", providesPort, DUtil.getBusinessObject((ContainerShape) providesEditPart.part().getModel()));
 
 		// Check dcd.xml new for connection
+		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
+		editorText = editor.toTextEditor().getText();
+		Assert.assertTrue("The dcd.xml should include a new connection", editorText.matches("(?s).*<connectinterface id=\"connection_1\">.*"));
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
+
+		// IDE-1523 Creating connections in design diagram should be undoable/redoable
+		bot.toolbarButtonWithTooltip(undoTooltip).click();
+		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
+		editorText = editor.toTextEditor().getText();
+		Assert.assertFalse("The dcd.xml should include a new connection", editorText.matches("(?s).*<connectinterface id=\"connection_1\">.*"));
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
+
+		bot.toolbarButtonWithTooltip(redoTooltip).click();
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
 		editorText = editor.toTextEditor().getText();
 		Assert.assertTrue("The dcd.xml should include a new connection", editorText.matches("(?s).*<connectinterface id=\"connection_1\">.*"));

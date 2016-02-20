@@ -30,12 +30,12 @@ import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.ConnectionUtils;
+import gov.redhawk.ide.swtbot.diagram.ConnectionUtils.ConnectionState;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils.PortState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHTestBotCanvas;
-import gov.redhawk.ide.swtbot.diagram.ConnectionUtils.ConnectionState;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
@@ -56,6 +56,8 @@ public class ConnectionTest extends AbstractGraphitiTest {
 	@Test
 	public void connectFeatureTest() {
 		waveformName = "IDE-731-Test";
+		final String undoTooltip = "Undo connection creation (Ctrl+Z)";
+		final String redoTooltip = "Redo connection creation (Shift+Ctrl+Z)";
 
 		// Create an empty waveform project
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
@@ -109,6 +111,19 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		}
 
 		// Check sad.xml new for connection
+		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
+		editorText = editor.toTextEditor().getText();
+		Assert.assertTrue("The sad.xml should include a new connection", editorText.matches("(?s).*<connectinterface id=\"connection_1\">.*"));
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
+
+		// IDE-1523 Creating connections in design diagram should be undoable/redoable
+		bot.toolbarButtonWithTooltip(undoTooltip).click();
+		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
+		editorText = editor.toTextEditor().getText();
+		Assert.assertFalse("The sad.xml should include a new connection", editorText.matches("(?s).*<connectinterface id=\"connection_1\">.*"));
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
+
+		bot.toolbarButtonWithTooltip(redoTooltip).click();
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
 		editorText = editor.toTextEditor().getText();
 		Assert.assertTrue("The sad.xml should include a new connection", editorText.matches("(?s).*<connectinterface id=\"connection_1\">.*"));
