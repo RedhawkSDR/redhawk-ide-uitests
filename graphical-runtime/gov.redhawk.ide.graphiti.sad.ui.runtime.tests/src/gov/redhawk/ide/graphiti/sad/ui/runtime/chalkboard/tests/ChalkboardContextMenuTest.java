@@ -104,7 +104,7 @@ public class ChalkboardContextMenuTest extends AbstractGraphitiChalkboardTest {
 		snapshotDialog.close();
 
 		// Monitor ports test
-		DiagramTestUtils.displayPortMonitorViewOnComponentPort(editor, SIGGEN_1, null);
+		DiagramTestUtils.displayPortMonitorViewOnUsesPort(editor, SIGGEN_1, null);
 		// wait until port monitor view appears
 		ViewUtils.waitUntilPortMonitorViewPopulates(bot, SIGGEN_1);
 		// close PortMonitor View

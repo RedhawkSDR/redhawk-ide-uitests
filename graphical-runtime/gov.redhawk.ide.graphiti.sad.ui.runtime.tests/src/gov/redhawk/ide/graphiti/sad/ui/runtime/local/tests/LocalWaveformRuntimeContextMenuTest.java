@@ -95,7 +95,7 @@ public class LocalWaveformRuntimeContextMenuTest extends AbstractGraphitiLocalWa
 		snapshotDialog.close();
 
 		// Monitor ports test
-		DiagramTestUtils.displayPortMonitorViewOnComponentPort(editor, SIGGEN_1, null);
+		DiagramTestUtils.displayPortMonitorViewOnUsesPort(editor, SIGGEN_1, null);
 		ViewUtils.waitUntilPortMonitorViewPopulates(bot, SIGGEN_1);
 		ViewUtils.getPortMonitorView(bot).close();
 

@@ -118,7 +118,7 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		dataListView.close();
 
 		// Test monitor ports context menu
-		DiagramTestUtils.displayPortMonitorViewOnComponentPort(editor, DEVICE_STUB, null);
+		DiagramTestUtils.displayPortMonitorViewOnUsesPort(editor, DEVICE_STUB, null);
 		ViewUtils.waitUntilPortMonitorViewPopulates(bot, DEVICE_STUB);
 		SWTBotView monitorView = ViewUtils.getPortMonitorView(bot);
 		monitorView.close();

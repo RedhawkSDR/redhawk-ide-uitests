@@ -76,7 +76,7 @@ public class DevManagerSandboxContextMenuTest extends AbstractDeviceManagerSandb
 		ViewUtils.getSnapshotDialog(bot).close();
 
 		// Monitor ports test
-		DiagramTestUtils.displayPortMonitorViewOnComponentPort(editor, DEVICE_STUB_1, null);
+		DiagramTestUtils.displayPortMonitorViewOnUsesPort(editor, DEVICE_STUB_1, null);
 		ViewUtils.waitUntilPortMonitorViewPopulates(bot, DEVICE_STUB_1);
 		ViewUtils.getPortMonitorView(bot).close();
 
