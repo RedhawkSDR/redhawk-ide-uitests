@@ -132,7 +132,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 				bot.wait(20000);
 				// Give the port enough time to turn red
 			} catch (InterruptedException e) {
-				// PADD
+				// PASS
 			}
 		}
 
