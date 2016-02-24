@@ -10,6 +10,11 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.tb.ColorDecorator;
+import org.eclipse.graphiti.tb.IDecorator;
+import org.eclipse.graphiti.util.IColorConstant;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -101,13 +106,68 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		Assert.assertNotNull(editor.getEditPart(nameSpaceComp));
 	}
 
+	@Test
+	public void monitorPortStyleTest() {
+		final String[] comps = { "SigGen", "DataConverter" };
+		final String[] dataConGreenPorts = { "dataChar", "dataOctet", "dataShort", "dataUshort", "dataDouble" };
+
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+
+		for (String comp : comps) {
+			DiagramTestUtils.addFromPaletteToDiagram(editor, "rh." + comp, 0, 0);
+			DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, comp + "_1");
+			DiagramTestUtils.waitForComponentState(bot, editor, comp + "_1", ComponentState.STOPPED);
+		}
+
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN_1, "dataFloat_out");
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, "DataConverter_1", "dataFloat");
+		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
+
+		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN_1);
+		SWTBotTreeItem chalkboard = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox" }, "Chalkboard");
+		chalkboard.contextMenu("Monitor Ports").click();
+
+		synchronized (bot) {
+			try {
+				bot.wait(20000);
+				// Give the port enough time to turn red
+			} catch (InterruptedException e) {
+				// PADD
+			}
+		}
+
+		// The following port should be red, the data will have backed up as the DataConverter component has not started
+		SWTBotGefEditPart redPort = DiagramTestUtils.getDiagramProvidesPort(editor, "DataConverter_1", "dataFloat");
+		ContainerShape portModel = (ContainerShape) redPort.part().getModel();
+		IDecorator[] decorators = DiagramTestUtils.getPictogramElementDecorators(editor, portModel.getChildren().get(0));
+		checkDecoratorColor(new RGB(255, 0, 0), decorators);
+
+		// All other ports should be green, as there is no data flowing through them
+		for (String portName : dataConGreenPorts) {
+			SWTBotGefEditPart port = DiagramTestUtils.getDiagramProvidesPort(editor, "DataConverter_1", portName);
+			portModel = (ContainerShape) port.part().getModel();
+			decorators = DiagramTestUtils.getPictogramElementDecorators(editor, portModel.getChildren().get(0));
+			checkDecoratorColor(new RGB(0, 255, 0), decorators);
+		}
+	}
+
+	private void checkDecoratorColor(final RGB rgb, IDecorator[] decorators) {
+		for (IDecorator decorator : decorators) {
+			if (decorator instanceof ColorDecorator) {
+				IColorConstant bgc = ((ColorDecorator) decorator).getBackgroundColor();
+				final RGB decoratorRgb = new RGB(bgc.getRed(), bgc.getGreen(), bgc.getBlue());
+				Assert.assertEquals("Port did not match expected color", rgb, decoratorRgb);
+			}
+		}
+	}
+
 	/**
 	 * IDE-1398 Chalkboard 'start' only starts the first component launched
 	 */
 	@Test
 	public void multiStartTest() {
 		final String[] comps = { "SigGen", "HardLimit", "DataConverter" };
-		
+
 		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		for (String comp : comps) {
@@ -122,9 +182,9 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		for (String comp : comps) {
 			DiagramTestUtils.waitForComponentState(bot, editor, comp + "_1", ComponentState.STARTED);
 		}
-		
+
 		chalkboard.contextMenu("Stop").click();
-		
+
 		for (String comp : comps) {
 			DiagramTestUtils.waitForComponentState(bot, editor, comp + "_1", ComponentState.STOPPED);
 		}
