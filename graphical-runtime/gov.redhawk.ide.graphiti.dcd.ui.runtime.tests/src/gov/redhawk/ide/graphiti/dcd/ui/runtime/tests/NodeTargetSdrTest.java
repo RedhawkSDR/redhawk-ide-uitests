@@ -1,14 +1,11 @@
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.tests;
 
-import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.dcd.ext.DeviceShape;
-import gov.redhawk.ide.graphiti.dcd.ext.ServiceShape;
 import gov.redhawk.ide.graphiti.ext.RHContainerShape;
 import gov.redhawk.ide.swtbot.DeviceUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
