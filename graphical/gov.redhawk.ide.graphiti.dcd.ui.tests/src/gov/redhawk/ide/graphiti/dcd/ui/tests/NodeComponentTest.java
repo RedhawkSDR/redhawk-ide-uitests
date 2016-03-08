@@ -92,13 +92,13 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 		MenuUtils.save(editor);
 
 		// Build expected xml string for device
-		final String componentFileString = "(?s).*<componentfile id=\"" + deviceBaseName + ".*";
+		final String componentFileString = "(?s).*<componentfile id=\"" + projectName + ":" + deviceBaseName + ".*";
 		final String deviceXmlString = DiagramTestUtils.regexStringForDevice((RHContainerShapeImpl) editor.getEditPart(deviceName).part().getModel());
 
 		// Check dcd.xml for string
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
 		String editorText = editor.toTextEditor().getText();
-		Assert.assertTrue("The componentfile should only include the basename_UUID", editorText.matches(componentFileString));
+		Assert.assertTrue("The componentfile should only include the NodeName:DeviceName", editorText.matches(componentFileString));
 		Assert.assertTrue("The dcd.xml should include " + deviceName + "'s device configuration", editorText.matches(deviceXmlString));
 	}
 
