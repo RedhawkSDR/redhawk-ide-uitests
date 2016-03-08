@@ -78,6 +78,9 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 	/**
 	 * IDE-1131
 	 * Name-spaced devices should have their component file id set to basename_UUID, not the fully qualified name
+	 * 
+	 * IDE-1506
+	 * Update how IDs are generated for new devices / services
 	 */
 	@Test
 	public void checkNameSpacedDeviceInDcd() {
@@ -92,8 +95,13 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 		MenuUtils.save(editor);
 
 		// Build expected xml string for device
-		final String componentFileString = "(?s).*<componentfile id=\"" + projectName + ":" + deviceBaseName + ".*";
-		final String deviceXmlString = DiagramTestUtils.regexStringForDevice((RHContainerShapeImpl) editor.getEditPart(deviceName).part().getModel());
+		RHContainerShapeImpl deviceShape = (RHContainerShapeImpl) editor.getEditPart(deviceName).part().getModel();
+		final String componentFileString = "(?s).*<componentfile id=\"" + deviceBaseName + ".*";
+		final String deviceXmlString = DiagramTestUtils.regexStringForDevice(deviceShape);
+		
+		// IDE-1506 - check to make sure componentInstantiationId follows pattern of NodeName:DeviceName
+		DcdComponentInstantiation ci = (DcdComponentInstantiation) DUtil.getBusinessObject(deviceShape);
+		Assert.assertTrue("Component instantiation ID does not follow expected pattern (NodeName:DeviceName)", ci.getId().startsWith(projectName + ":" + deviceBaseName + "_"));
 
 		// Check dcd.xml for string
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
