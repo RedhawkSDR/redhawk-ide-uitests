@@ -12,25 +12,25 @@
 -->
 <!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
 <properties>
-  <simple id="simple1" mode="readwrite" type="double">
+  <simple id="simpleConfigure" mode="readwrite" type="double">
     <kind kindtype="configure"/>
     <action type="external"/>
   </simple>
-  <simple id="simple2" mode="readwrite" type="double">
+  <simple id="simpleExecparamReadWrite" mode="readwrite" type="double">
     <kind kindtype="execparam"/>
     <action type="external"/>
   </simple>
-  <simplesequence id="simplesequence1" mode="readwrite" type="string">
+  <simplesequence id="simpleSeqConfigure" mode="readwrite" type="string">
     <kind kindtype="configure"/>
     <action type="external"/>
   </simplesequence>
-  <struct id="struct1" mode="readwrite">
+  <struct id="structConfigure" mode="readwrite">
     <simple id="simple3" type="string">
       <kind kindtype="configure"/>
     </simple>
     <configurationkind kindtype="configure"/>
   </struct>
-  <structsequence id="structseq1" mode="readwrite">
+  <structsequence id="structSeqConfigure" mode="readwrite">
     <struct id="struct2">
       <simple id="simple4" type="string">
         <kind kindtype="configure"/>

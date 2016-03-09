@@ -13,6 +13,9 @@ package gov.redhawk.ide.codegen.runtime.tests;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -29,30 +32,31 @@ import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import mil.jpeojtrs.sca.prf.AbstractProperty;
+import mil.jpeojtrs.sca.prf.AccessType;
+import mil.jpeojtrs.sca.prf.ConfigurationKind;
+import mil.jpeojtrs.sca.prf.Kind;
 import mil.jpeojtrs.sca.prf.PrfPackage;
 import mil.jpeojtrs.sca.prf.Properties;
 import mil.jpeojtrs.sca.prf.PropertyConfigurationType;
 import mil.jpeojtrs.sca.prf.Simple;
 import mil.jpeojtrs.sca.prf.SimpleSequence;
 import mil.jpeojtrs.sca.prf.Struct;
+import mil.jpeojtrs.sca.prf.StructPropertyConfigurationType;
 import mil.jpeojtrs.sca.prf.StructSequence;
 import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
-import mil.jpeojtrs.sca.util.collections.FeatureMapList;
 
+/**
+ * Test upgrading projects with deprecated properties (kinds 'configure' and 'execparam').
+ */
 public class DeprecatedPropertiesTest extends UITest {
 
 	private final String compName = "DeprecatedPropertiesTest";
 	private final String compLanguage = "Python";
 	private final String compPrf = compName + ".prf.xml";
 
-	/**
-	 * IDE-1235. Tests upgrading a project with 'configure' and 'execparam' properties. Tests both the cancel
-	 * functionality, and the upgrade functionality.
-	 * @throws IOException
-	 */
-	@Test
-	public void cancel_and_upgrade() throws IOException {
+	public void before() throws Exception {
+		super.before();
+
 		ComponentUtils.createComponentProject(bot, compName, compLanguage);
 		SWTBotEditor editor = bot.editorByTitle(compName);
 
@@ -64,16 +68,42 @@ public class DeprecatedPropertiesTest extends UITest {
 		editor.bot().styledText().setText(prfAsString);
 		MenuUtils.save(editor);
 
-		// Click the generate button, verify we get the dialog and can cancel it
+		// Go back to the overview
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.OVERVIEW_TAB);
+	}
+
+	/**
+	 * IDE-1235 Test canceling the upgrade
+	 * @throws IOException
+	 */
+	@Test
+	public void cancel() throws IOException {
+		// Click the generate button, verify we get the dialog and can cancel it
+		SWTBotEditor editor = bot.editorByTitle(compName);
 		editor.bot().toolbarButton(0).click();
 		SWTBotShell propShell = bot.shell("Deprecated property kinds");
 		propShell.bot().button("Cancel").click();
 		bot.waitUntil(Conditions.shellCloses(propShell));
 
+		// The properties should have 'configure' and 'execparam' still
+		editor.show();
+		DiagramTestUtils.openTabInEditor(editor, compPrf);
+		String newPrfText = editor.bot().styledText().getText();
+		Assert.assertTrue(newPrfText.contains("configure"));
+		Assert.assertTrue(newPrfText.contains("execparam"));
+	}
+
+	/**
+	 * IDE-1235 Tests upgrading deprecated properties
+	 * IDE-1532 Ensure that execparams which are read-write become read-only command-line properties
+	 * @throws IOException
+	 */
+	@Test
+	public void upgrade() throws IOException {
 		// Generate again, but allow the upgrade this time
+		SWTBotEditor editor = bot.editorByTitle(compName);
 		editor.bot().toolbarButton(0).click();
-		propShell = bot.shell("Deprecated property kinds");
+		SWTBotShell propShell = bot.shell("Deprecated property kinds");
 		propShell.bot().button("Yes").click();
 		bot.waitUntil(Conditions.shellCloses(propShell));
 
@@ -95,53 +125,106 @@ public class DeprecatedPropertiesTest extends UITest {
 		final Resource resource = resourceSet.createResource(URI.createURI("mem://DeprecatedPropertiesTest.prf.xml"), PrfPackage.eCONTENT_TYPE);
 		resource.load(new ByteArrayInputStream(newPrfText.getBytes()), null);
 		Properties props = Properties.Util.getProperties(resource);
-		for (AbstractProperty prop : new FeatureMapList<AbstractProperty>(props.getProperties(), AbstractProperty.class)) {
-			Assert.assertFalse("Property " + prop.getName() + " shouldn't contain configure kind", prop.isKind(PropertyConfigurationType.CONFIGURE));
-			Assert.assertFalse("Property " + prop.getName() + " shouldn't contain execparam kind", prop.isKind(PropertyConfigurationType.EXECPARAM));
-			switch (prop.eClass().getClassifierID()) {
-			case PrfPackage.STRUCT:
-				Struct struct = (Struct) prop;
-				for (Simple innerSimple : struct.getSimple()) {
-					Assert.assertTrue("Property " + prop.getName() + "." + innerSimple.getName() + " has kind(s)", innerSimple.getKind().isEmpty());
+
+		// Verify properties are correct
+		Simple simpleConfigure = (Simple) props.getProperty("simpleConfigure");
+		checkProperty(simpleConfigure, Arrays.asList(PropertyConfigurationType.PROPERTY), AccessType.READWRITE, false);
+
+		Simple simpleExecparamReadWrite = (Simple) props.getProperty("simpleExecparamReadWrite");
+		checkProperty(simpleExecparamReadWrite, Arrays.asList(PropertyConfigurationType.PROPERTY), AccessType.READONLY, true);
+
+		SimpleSequence simpleSeqConfigure = (SimpleSequence) props.getProperty("simpleSeqConfigure");
+		checkProperty(simpleSeqConfigure, Arrays.asList(PropertyConfigurationType.PROPERTY), AccessType.READWRITE);
+
+		Struct structConfigure = (Struct) props.getProperty("structConfigure");
+		checkProperty(structConfigure, Arrays.asList(StructPropertyConfigurationType.PROPERTY), AccessType.READWRITE);
+
+		StructSequence structSeqConfigure = (StructSequence) props.getProperty("structSeqConfigure");
+		checkProperty(structSeqConfigure, Arrays.asList(StructPropertyConfigurationType.PROPERTY), AccessType.READWRITE);
+	}
+
+	private void checkProperty(Simple property, Collection<PropertyConfigurationType> types, AccessType accessType, boolean commandLine) {
+		Assert.assertEquals(types.size(), property.getKind().size());
+		for (PropertyConfigurationType type : types) {
+			boolean found = false;
+			for (Kind kind : property.getKind()) {
+				if (type.equals(kind.getType())) {
+					found = true;
+					break;
 				}
-				for (SimpleSequence simpleSequence : struct.getSimpleSequence()) {
-					Assert.assertTrue("Property " + prop.getName() + "." + simpleSequence.getName() + " has kind(s)", simpleSequence.getKind().isEmpty());
-				}
-				break;
-			case PrfPackage.STRUCT_SEQUENCE:
-				StructSequence structSequence = (StructSequence) prop;
-				for (Simple innerSimple : structSequence.getStruct().getSimple()) {
-					Assert.assertTrue("Property " + prop.getName() + "." + innerSimple.getName() + " has kind(s)", innerSimple.getKind().isEmpty());
-				}
-				for (SimpleSequence simpleSequence : structSequence.getStruct().getSimpleSequence()) {
-					Assert.assertTrue("Property " + prop.getName() + "." + simpleSequence.getName() + " has kind(s)", simpleSequence.getKind().isEmpty());
-				}
-				break;
-			default:
-				break;
 			}
+			Assert.assertTrue("Could not find type " + type.getName() + " in property " + property.getName(), found);
 		}
-		Assert.assertTrue(((Simple) props.getProperty("simple2")).isCommandLine());
+		Assert.assertEquals(accessType, property.getMode());
+		Assert.assertEquals(commandLine, property.isCommandLine());
+	}
+
+	private void checkProperty(SimpleSequence property, Collection<PropertyConfigurationType> types, AccessType accessType) {
+		Assert.assertEquals(types.size(), property.getKind().size());
+		for (PropertyConfigurationType type : types) {
+			boolean found = false;
+			for (Kind kind : property.getKind()) {
+				if (type.equals(kind.getType())) {
+					found = true;
+					break;
+				}
+			}
+			Assert.assertTrue("Could not find type " + type.getName() + " in property " + property.getName(), found);
+		}
+		Assert.assertEquals(accessType, property.getMode());
+	}
+
+	private void checkProperty(Struct property, List<StructPropertyConfigurationType> types, AccessType accessType) {
+		Assert.assertEquals(types.size(), property.getConfigurationKind().size());
+		for (StructPropertyConfigurationType type : types) {
+			boolean found = false;
+			for (ConfigurationKind kind : property.getConfigurationKind()) {
+				if (type.equals(kind.getType())) {
+					found = true;
+					break;
+				}
+			}
+			Assert.assertTrue("Could not find type " + type.getName() + " in property " + property.getName(), found);
+		}
+		Assert.assertEquals(accessType, property.getMode());
+
+		for (Simple innerSimple : property.getSimple()) {
+			Assert.assertTrue("Property " + property.getName() + "." + innerSimple.getName() + " has kind(s)", innerSimple.getKind().isEmpty());
+		}
+		for (SimpleSequence simpleSequence : property.getSimpleSequence()) {
+			Assert.assertTrue("Property " + property.getName() + "." + simpleSequence.getName() + " has kind(s)", simpleSequence.getKind().isEmpty());
+		}
+	}
+
+	private void checkProperty(StructSequence property, List<StructPropertyConfigurationType> types, AccessType accessType) {
+		Assert.assertEquals(types.size(), property.getConfigurationKind().size());
+		for (StructPropertyConfigurationType type : types) {
+			boolean found = false;
+			for (ConfigurationKind kind : property.getConfigurationKind()) {
+				if (type.equals(kind.getType())) {
+					found = true;
+					break;
+				}
+			}
+			Assert.assertTrue("Could not find type " + type.getName() + " in property " + property.getName(), found);
+		}
+		Assert.assertEquals(accessType, property.getMode());
+
+		for (Simple innerSimple : property.getStruct().getSimple()) {
+			Assert.assertTrue("Property " + property.getName() + "." + innerSimple.getName() + " has kind(s)", innerSimple.getKind().isEmpty());
+		}
+		for (SimpleSequence simpleSequence : property.getStruct().getSimpleSequence()) {
+			Assert.assertTrue("Property " + property.getName() + "." + simpleSequence.getName() + " has kind(s)", simpleSequence.getKind().isEmpty());
+		}
 	}
 
 	/**
-	 * IDE-1235. Tests skipping upgrading a project with 'configure' and 'execparam' properties.
+	 * IDE-1387. Tests skipping upgrading a project with 'configure' and 'execparam' properties.
 	 */
 	@Test
-	public void skip_upgrade() {
-		ComponentUtils.createComponentProject(bot, compName, compLanguage);
-		SWTBotEditor editor = bot.editorByTitle(compName);
-
-		// Replace the PRF with one that has 'configure' and 'execparam' properties
-		DiagramTestUtils.openTabInEditor(editor, compPrf);
-		String prfAsString = FileUtils.read(this.getClass().getResourceAsStream("/testFiles/DeprecatedPropertiesTest.prf.xml"));
-		Assert.assertTrue(prfAsString.contains("configure"));
-		Assert.assertTrue(prfAsString.contains("execparam"));
-		editor.bot().styledText().setText(prfAsString);
-		MenuUtils.save(editor);
-
+	public void skipUpgrade() {
 		// Generate, but skip the upgrade
-		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.OVERVIEW_TAB);
+		SWTBotEditor editor = bot.editorByTitle(compName);
 		editor.bot().toolbarButton(0).click();
 		SWTBotShell propShell = bot.shell("Deprecated property kinds");
 		propShell.bot().button("No").click();
