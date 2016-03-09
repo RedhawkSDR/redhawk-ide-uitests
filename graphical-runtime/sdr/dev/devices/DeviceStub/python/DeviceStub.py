@@ -21,8 +21,8 @@ class DeviceStub_i(DeviceStub_base):
           self.some_port = MyPortImplementation()
         """
         DeviceStub_base.initialize(self)
-        # TODO add customization here.
-        
+        self.sampleSRIPushed = False
+
     def updateUsageState(self):
         """
         This is called automatically after allocateCapacity or deallocateCapacity are called.
@@ -162,9 +162,21 @@ class DeviceStub_i(DeviceStub_base):
             
         """
 
-        # TODO fill in your code here
-        self._log.debug("process() example log message")
-        return NOOP
+        packet = self.port_dataFloat_in.getPacket()
+        if packet.dataBuffer is None:
+            # Slow pushes of small sample data
+            if not self.sampleSRIPushed:
+                self.sampleSRIPushed = True
+                self.port_dataFloat_out.pushSRI(bulkio.sri.create("DeviceStub_sample"))
+            outData = [ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0 ]
+            self.port_dataFloat_out.pushPacket(outData, bulkio.timestamp.now(), False, "DeviceStub_sample")
+            return NOOP
+
+        # Feed through existing data
+        if packet.sriChanged:
+            self.port_dataFloat_out.pushSRI(packet.SRI)
+        self.port_dataFloat_out.pushPacket(packet.dataBuffer, packet.T, packet.EOS, packet.streamID)
+        return NORMAL
 
   
 if __name__ == '__main__':

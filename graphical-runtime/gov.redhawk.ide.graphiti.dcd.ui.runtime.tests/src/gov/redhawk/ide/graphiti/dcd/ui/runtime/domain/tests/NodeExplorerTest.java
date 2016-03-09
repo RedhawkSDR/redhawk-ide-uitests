@@ -15,18 +15,12 @@ import static org.junit.Assert.assertEquals;
 
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.logging.ui.LogLevels;
 
 public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
@@ -37,45 +31,18 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 	 * This editor is "look but don't touch". All design functionality should be disabled.
 	 * Runtime functionality (start/stop, plot, etc) should still work.
 	 * IDE-1001 Hide grid on runtime diagram.
-	 * IDE-1038 No undo for Start|Stop|Terminate|Do Command
-	 * IDE-1196 Ensure "Show Console" doesn't show up for domain nodes
+	 * IDE-1089 Editor title, missing XML tab
 	 */
 	@Test
 	public void nodeExplorerTest() {
 		launchDomainAndDevMgr(DEVICE_MANAGER);
 		SWTBotEditor nodeEditor = gefBot.editorByTitle(DEVICE_MANAGER);
-		
-		// IDE-1089 test
-		nodeEditor.bot().cTabItem("Diagram").activate();
 		editor = gefBot.gefEditor(DEVICE_MANAGER);
 		editor.setFocus();
 
-		// check for devices
-		SWTBotGefEditPart gpp = editor.getEditPart(GPP_LOCALHOST);
-		Assert.assertNotNull(GPP_LOCALHOST + " device not found in diagram", gpp);
-
-		// Check that some design-time options, and local-runtime options don't appear
-		gpp.select();
-		String[] removedContextOptions = { "Delete", "Release", "Terminate", "Show Console" };
-		for (String contextOption : removedContextOptions) {
-			try {
-				editor.clickContextMenu(contextOption);
-				Assert.fail(); // The only way to get here is if the undesired context menu option appears
-			} catch (WidgetNotFoundException e) {
-				Assert.assertEquals(e.getMessage(), contextOption, e.getMessage());
-			}
-		}
-
-		// check that start/stop works
-		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_LOCALHOST);
-		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
-		Assert.assertFalse("IDE-1038 No Undo Stop Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, GPP_LOCALHOST, "Undo Stop Command"));
-		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, GPP_LOCALHOST, "Undo Do Command"));
-
-		DiagramTestUtils.startComponentFromDiagram(editor, GPP_LOCALHOST);
-		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
-		Assert.assertFalse("IDE-1038 No Undo Start Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, GPP_LOCALHOST, "Undo Start Command"));
-		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, GPP_LOCALHOST, "Undo Do Command"));
+		// IDE-1089 test
+		nodeEditor.bot().cTabItem("DeviceManager.dcd.xml").activate();
+		nodeEditor.bot().cTabItem("Diagram").activate();
 
 		// check that device is removed from editor when released in the Sca Explorer
 		ScaExplorerTestUtils.releaseFromScaExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
@@ -88,58 +55,5 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
 		// Confirm that .dcd.xml is visible
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
-	}
-
-	@Test
-	public void nodeExplorerContextMenuTest() {
-		launchDomainAndDevMgr(DEVICE_MANAGER_W_BULKIO);
-		SWTBotGefEditor editor = gefBot.gefEditor(DEVICE_MANAGER_W_BULKIO);
-
-		// Start device stub
-		DiagramTestUtils.startComponentFromDiagram(editor, DEVICE_STUB);
-
-		// Test Log Levels
-		DiagramTestUtils.changeLogLevelFromDiagram(editor, DEVICE_STUB, LogLevels.TRACE);
-		DiagramTestUtils.confirmLogLevelFromDiagram(editor, DEVICE_STUB, LogLevels.TRACE);
-
-		DiagramTestUtils.changeLogLevelFromDiagram(editor, DEVICE_STUB, LogLevels.FATAL);
-		DiagramTestUtils.confirmLogLevelFromDiagram(editor, DEVICE_STUB, LogLevels.FATAL);
-
-		// Test plot context menu
-		editor.setFocus();
-		DiagramTestUtils.plotPortDataOnComponentPort(editor, DEVICE_STUB, null);
-		SWTBotView plotView = ViewUtils.getPlotView(bot);
-		plotView.close();
-
-		// Test data list context menu
-		DiagramTestUtils.displayDataListViewOnComponentPort(editor, DEVICE_STUB, null);
-		ViewUtils.waitUntilDataListViewDisplays(bot);
-		SWTBotView dataListView = ViewUtils.getDataListView(bot);
-		dataListView.close();
-
-		// Test monitor ports context menu
-		DiagramTestUtils.displayPortMonitorViewOnUsesPort(editor, DEVICE_STUB, null);
-		ViewUtils.waitUntilPortMonitorViewPopulates(bot, DEVICE_STUB);
-		SWTBotView monitorView = ViewUtils.getPortMonitorView(bot);
-		monitorView.close();
-
-		// Test SRI view context menu
-		DiagramTestUtils.displaySRIDataOnComponentPort(editor, DEVICE_STUB, null);
-		SWTBotView sriView = ViewUtils.getSRIView(bot);
-		sriView.close();
-
-		// Test audio/play port context menu
-		DiagramTestUtils.playPortDataOnComponentPort(editor, DEVICE_STUB, null);
-		ViewUtils.waitUntilAudioViewPopulates(bot);
-		SWTBotView audioView = ViewUtils.getAudioView(bot);
-		audioView.close();
-
-		// Test snapshot context menu
-		DiagramTestUtils.displaySnapshotDialogOnComponentPort(editor, DEVICE_STUB, null);
-		ViewUtils.waitUntilSnapshotDialogDisplays(bot);
-		SWTBotShell snapshotDialog = ViewUtils.getSnapshotDialog(bot);
-		Assert.assertNotNull(snapshotDialog);
-		snapshotDialog.close();
-
 	}
 }

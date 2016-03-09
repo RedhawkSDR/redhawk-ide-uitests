@@ -8,7 +8,7 @@
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html.
  */
-package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
+package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,16 +19,16 @@ import org.junit.After;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractLocalContextMenuTest;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.ComponentDescription;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
-public class ChalkboardContextMenuTest extends AbstractLocalContextMenuTest {
+public class LocalWaveformContextMenuTest extends AbstractLocalContextMenuTest {
 
-	private static final String[] CHALKBOARD_PARENT_PATH = { "Sandbox" };
-	private static final String CHALKBOARD = "Chalkboard";
-	private static final String[] CHALKBOARD_PATH = { "Sandbox", CHALKBOARD };
+	private static final String[] LOCAL_WAVEFORM_PARENT_PATH = { "Sandbox" };
+	private static final String LOCAL_WAVEFORM = "ExampleWaveform05";
+	private static final String[] SIG_GEN_PARENT_PATH = { "Sandbox", LOCAL_WAVEFORM };
 
 	private static final String SIG_GEN = "rh.SigGen";
 	private static final String SIG_GEN_OUT = "dataFloat_out";
@@ -45,20 +45,22 @@ public class ChalkboardContextMenuTest extends AbstractLocalContextMenuTest {
 
 	@Override
 	protected RHBotGefEditor launchDiagram() {
-		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(new RHSWTGefBot());
+		// Launch Local Waveform From Target SDR
+		RHSWTGefBot gefBot = new RHSWTGefBot();
+		ScaExplorerTestUtils.launchWaveformFromTargetSDR(new RHSWTGefBot(), LOCAL_WAVEFORM);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM).collapse();
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SIG_GEN_PARENT_PATH, getTestComponent().getShortName(1));
 
-		DiagramTestUtils.addFromPaletteToDiagram(editor, getTestComponent().getFullName(), 0, 0);
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, getTestComponent().getShortName(1));
-
-		return editor;
+		// Open Local Waveform Diagram
+		String waveFormFullName = ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, DiagramType.GRAPHITI_CHALKBOARD);
+		return gefBot.rhGefEditor(waveFormFullName);
 	}
 
 	@After
 	public void after() {
-		ScaExplorerTestUtils.terminateFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
-		ScaExplorerTestUtils.waitUntilScaExplorerWaveformEmpty(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
 		ConsoleUtils.removeTerminatedLaunches(bot);
-		bot.closeAllEditors();
 	}
 
 	/**

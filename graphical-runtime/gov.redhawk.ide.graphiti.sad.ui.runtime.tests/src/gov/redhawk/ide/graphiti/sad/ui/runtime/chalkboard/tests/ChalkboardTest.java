@@ -15,17 +15,14 @@ import org.eclipse.graphiti.tb.ColorDecorator;
 import org.eclipse.graphiti.tb.IDecorator;
 import org.eclipse.graphiti.util.IColorConstant;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.graphiti.sad.ext.ComponentShape;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
-import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
@@ -41,7 +38,6 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 	/**
 	 * IDE-884 Create the chalkboard waveform diagram. Add components to diagram from palette and TargetSDR.
 	 * IDE-658 Open chalkboard with components already launched in the Sandbox.
-	 * IDE-960 Show Console Feature.
 	 * IDE-1187 Add namespaced component to chalkboard
 	 */
 	@Test
@@ -68,37 +64,6 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		editor.close();
 		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 		Assert.assertNotNull(editor.getEditPart(HARD_LIMIT));
-
-		// Check 'Show Console' context menu option functionality
-		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
-		String[] components = { HARD_LIMIT, SIGGEN };
-
-		for (final String component : components) {
-			editor.getEditPart(component).select();
-			editor.clickContextMenu("Show Console");
-			final String[] consoleLabelTexts = { null };
-			bot.waitUntil(new DefaultCondition() {
-
-				@Override
-				public boolean test() throws Exception {
-					SWTBotView consoleView = ViewUtils.getConsoleView(gefBot);
-					String text = consoleView.bot().label(0).getText();
-					if (text.matches(".*" + component + ".*")) {
-						consoleLabelTexts[0] = text;
-						return true;
-					}
-					return false;
-				}
-
-				@Override
-				public String getFailureMessage() {
-					return "Console view label never loaded for " + component;
-				}
-			});
-			String consoleLabelText = consoleLabelTexts[0];
-			Assert.assertNotNull("console label text for " + component, consoleLabelText);
-			Assert.assertTrue("Console view for " + component + " did not display", consoleLabelText.matches(".*" + component + ".*"));
-		}
 
 		// Add namespaced component to the chalkboard
 		String nameSpaceComp = "name.space.comp";
