@@ -35,4 +35,9 @@ public class CollapseShapeTest extends CollapseShapeAbstractTest {
 	protected void createNewDiagram(String diagramName) {
 		NodeUtils.createNewNodeProject(bot, diagramName, "REDHAWK_DEV");
 	}
+	
+	@Override
+	protected EditorType getEditorType() {
+		return EditorType.DCD;
+	}
 }

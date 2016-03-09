@@ -35,4 +35,9 @@ public class CollapseShapeTest extends CollapseShapeAbstractTest {
 	protected void createNewDiagram(String diagramName) {
 		WaveformUtils.createNewWaveform(bot, diagramName, null);
 	}
+	
+	@Override
+	protected EditorType getEditorType() {
+		return EditorType.SAD;
+	}
 }

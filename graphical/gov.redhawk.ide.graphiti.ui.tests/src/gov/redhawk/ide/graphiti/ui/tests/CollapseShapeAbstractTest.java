@@ -60,6 +60,12 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 	protected abstract ComponentDescription getComponentCDescription();
 
 	private ComponentDescription compC = getComponentCDescription();
+	
+	protected enum EditorType {
+		SAD,
+		DCD
+	};
+	protected abstract EditorType getEditorType();
 
 	@Before
 	@After
@@ -254,10 +260,20 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 
 			SWTBotShell shell = bot.shell("Connect");
 			Assert.assertFalse(bot.button("Finish").isEnabled());
-			SWTBotList sourceGroup = bot.listInGroup(projectName + ":" + compA.getShortName(1) + " (Source)");
+			
+			SWTBotList sourceGroup = null;
+			SWTBotList targetGroup = null;
+			if (getEditorType() == EditorType.SAD) {
+				sourceGroup = bot.listInGroup(compA.getShortName(1) + " (Source)");
+				targetGroup = bot.listInGroup(compB.getShortName(1) + " (Target)");			
+			} else {
+				sourceGroup = bot.listInGroup(projectName + ":" + compA.getShortName(1) + " (Source)");
+				targetGroup = bot.listInGroup(projectName + ":" + compB.getShortName(1) + " (Target)");
+			}
+			
 			sourceGroup.select(compA.getOutPort(i));
-			SWTBotList targetGroup = bot.listInGroup(projectName + ":" + compB.getShortName(1) + " (Target)");
 			targetGroup.select(compB.getInPort(i));
+			
 			bot.button("Finish").click();
 			bot.waitUntil(Conditions.shellCloses(shell));
 		}
