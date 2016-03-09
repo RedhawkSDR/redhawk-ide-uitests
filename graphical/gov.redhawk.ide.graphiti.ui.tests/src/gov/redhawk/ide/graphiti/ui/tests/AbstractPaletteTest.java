@@ -24,7 +24,9 @@ public abstract class AbstractPaletteTest extends UITest {
 	protected RHSWTGefBot gefBot = new RHSWTGefBot(); // SUPPRESS CHECKSTYLE shared variable
 
 	/**
-	 * IDE-1112
+	 * IDE-1112 Support a tree view of namespaced components (this is tested by the way we check that a resource is
+	 * present)
+	 * IDE-1436 Filter should work on full resource name (with dots)
 	 * Test the diagram palette filter
 	 */
 	@Test
