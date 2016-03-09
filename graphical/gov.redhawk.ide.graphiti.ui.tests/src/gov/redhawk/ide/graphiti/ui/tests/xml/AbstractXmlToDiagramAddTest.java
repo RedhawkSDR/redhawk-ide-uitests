@@ -169,8 +169,8 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 				dcd.setConnections(DcdFactory.eINSTANCE.createDcdConnections());
 			}
 			List<DcdConnectInterface> connections = dcd.getConnections().getConnectInterface();
-			DcdConnectInterface connection = DcdFactory.eINSTANCE.createDcdConnectInterface("connection_1", compA.getOutPort(0), compA.getShortName(1),
-				compB.getInPort(0), compB.getShortName(1));
+			DcdConnectInterface connection = DcdFactory.eINSTANCE.createDcdConnectInterface("connection_1", compA.getOutPort(0),
+				TEST_NAME + ":" + compA.getShortName(1), compB.getInPort(0), TEST_NAME + ":" + compB.getShortName(1));
 			connections.add(connection);
 		}
 		writeModelToXmlEditor(editor, TEST_NAME);

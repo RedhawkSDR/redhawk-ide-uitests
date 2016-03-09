@@ -37,6 +37,7 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 
 	private RHBotGefEditor editor;
+	private String projectName = "CollapseShapeAbstractTest";
 
 	/**
 	 * There must be two ports such that A[0] -> B[0], A[1] -> B[1] are possible. There shouldn't
@@ -253,9 +254,9 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 
 			SWTBotShell shell = bot.shell("Connect");
 			Assert.assertFalse(bot.button("Finish").isEnabled());
-			SWTBotList sourceGroup = bot.listInGroup(compA.getShortName(1) + " (Source)");
+			SWTBotList sourceGroup = bot.listInGroup(projectName + ":" + compA.getShortName(1) + " (Source)");
 			sourceGroup.select(compA.getOutPort(i));
-			SWTBotList targetGroup = bot.listInGroup(compB.getShortName(1) + " (Target)");
+			SWTBotList targetGroup = bot.listInGroup(projectName + ":" + compB.getShortName(1) + " (Target)");
 			targetGroup.select(compB.getInPort(i));
 			bot.button("Finish").click();
 			bot.waitUntil(Conditions.shellCloses(shell));
@@ -316,8 +317,8 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 	@Test
 	public void addComponent_collapsePreference() {
 		// Create new waveform
-		createNewDiagram("CollapseShapeAbstractTest");
-		editor = gefBot.rhGefEditor("CollapseShapeAbstractTest");
+		createNewDiagram(projectName);
+		editor = gefBot.rhGefEditor(projectName);
 		DiagramTestUtils.maximizeActiveWindow(gefBot);
 
 		// Check adding with preference = collapsed
@@ -340,8 +341,8 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 
 	private void setup(ComponentDescription description1, ComponentDescription description2) {
 		// Create new waveform with our two components
-		createNewDiagram("CollapseShapeAbstractTest");
-		editor = gefBot.rhGefEditor("CollapseShapeAbstractTest");
+		createNewDiagram(projectName);
+		editor = gefBot.rhGefEditor(projectName);
 		DiagramTestUtils.maximizeActiveWindow(gefBot);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, description1.getFullName(), 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, description2.getFullName(), 150, 0);
