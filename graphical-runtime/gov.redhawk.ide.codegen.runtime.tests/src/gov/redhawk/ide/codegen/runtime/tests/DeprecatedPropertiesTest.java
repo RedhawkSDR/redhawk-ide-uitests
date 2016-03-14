@@ -52,6 +52,7 @@ public class DeprecatedPropertiesTest extends UITest {
 
 	private final String compName = "DeprecatedPropertiesTest";
 	private final String compLanguage = "Python";
+	private final String compScd = compName + ".scd.xml";
 	private final String compPrf = compName + ".prf.xml";
 
 	public void before() throws Exception {
@@ -59,6 +60,12 @@ public class DeprecatedPropertiesTest extends UITest {
 
 		ComponentUtils.createComponentProject(bot, compName, compLanguage);
 		SWTBotEditor editor = bot.editorByTitle(compName);
+
+		// Replace the SCD with one that has event port/interface
+		DiagramTestUtils.openTabInEditor(editor, compScd);
+		String scdAsString = FileUtils.read(this.getClass().getResourceAsStream("/testFiles/DeprecatedPropertiesTest.scd.xml"));
+		editor.bot().styledText().setText(scdAsString);
+		MenuUtils.save(editor);
 
 		// Replace the PRF with one that has 'configure' and 'execparam' properties
 		DiagramTestUtils.openTabInEditor(editor, compPrf);
@@ -96,6 +103,7 @@ public class DeprecatedPropertiesTest extends UITest {
 	/**
 	 * IDE-1235 Tests upgrading deprecated properties
 	 * IDE-1532 Ensure that execparams which are read-write become read-only command-line properties
+	 * IDE-1534 Ensure properties with 'event' kind-type upgrade properly
 	 * @throws IOException
 	 */
 	@Test
@@ -129,6 +137,9 @@ public class DeprecatedPropertiesTest extends UITest {
 		// Verify properties are correct
 		Simple simpleConfigure = (Simple) props.getProperty("simpleConfigure");
 		checkProperty(simpleConfigure, Arrays.asList(PropertyConfigurationType.PROPERTY), AccessType.READWRITE, false);
+
+		Simple simpleConfigureEvent = (Simple) props.getProperty("simpleConfigureEvent");
+		checkProperty(simpleConfigureEvent, Arrays.asList(PropertyConfigurationType.PROPERTY), AccessType.READWRITE, false);
 
 		Simple simpleExecparamReadWrite = (Simple) props.getProperty("simpleExecparamReadWrite");
 		checkProperty(simpleExecparamReadWrite, Arrays.asList(PropertyConfigurationType.PROPERTY), AccessType.READONLY, true);
