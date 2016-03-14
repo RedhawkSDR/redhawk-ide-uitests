@@ -16,6 +16,11 @@
     <kind kindtype="configure"/>
     <action type="external"/>
   </simple>
+  <simple id="simpleConfigureEvent" mode="readwrite" type="string">
+    <kind kindtype="configure"/>
+    <kind kindtype="event"/>
+    <action type="external"/>
+  </simple>
   <simple id="simpleExecparamReadWrite" mode="readwrite" type="double">
     <kind kindtype="execparam"/>
     <action type="external"/>
