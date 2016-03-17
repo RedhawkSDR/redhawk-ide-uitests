@@ -1,13 +1,13 @@
-/*******************************************************************************
- * This file is protected by Copyright. 
+/**
+ * This file is protected by Copyright.
  * Please refer to the COPYRIGHT file distributed with this source distribution.
  *
  * This file is part of REDHAWK IDE.
  *
- * All rights reserved.  This program and the accompanying materials are made available under 
- * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at 
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+ */
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.domain.tests;
 
 import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
@@ -33,8 +33,8 @@ public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTes
 	protected static final String DEVICE_STUB = "DeviceStub";
 	protected static final String NAME_SPACE_DEVICE_1 = "device_1";
 
-	private final String DOMAIN = "SWTBOT_TEST_" + (int) (1000.0 * Math.random());
-	protected String[] DEV_MGR_PATH = null;
+	private final String domain = "SWTBOT_TEST_" + (int) (1000.0 * Math.random());
+	protected String[] devMgrPath = null; // SUPPRESS CHECKSTYLE VisibilityModifier
 
 	protected SWTGefBot gefBot; // SUPPRESS CHECKSTYLE VisibilityModifier
 
@@ -45,18 +45,18 @@ public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTes
 	}
 
 	protected void launchDomainAndDevMgr(String deviceManager) {
-		String[] parentPath = new String[] { DOMAIN, "Device Managers" };
-		ScaExplorerTestUtils.launchDomain(bot, DOMAIN, deviceManager);
-		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN);
+		String[] parentPath = new String[] { domain, "Device Managers" };
+		ScaExplorerTestUtils.launchDomain(bot, domain, deviceManager);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, deviceManager);
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, parentPath, deviceManager, DiagramType.GRAPHITI_NODE_EXPLORER);
-		DEV_MGR_PATH = Arrays.copyOf(parentPath, parentPath.length + 1);
-		DEV_MGR_PATH[parentPath.length] = deviceManager;
+		devMgrPath = Arrays.copyOf(parentPath, parentPath.length + 1);
+		devMgrPath[parentPath.length] = deviceManager;
 	}
 
 	@After
 	public void afterTest() {
-		ScaExplorerTestUtils.deleteDomainInstance(bot, DOMAIN);
+		ScaExplorerTestUtils.deleteDomainInstance(bot, domain);
 		NodeBooterLauncherUtil.getInstance().terminateAll();
 		ConsoleUtils.removeTerminatedLaunches(bot);
 	}

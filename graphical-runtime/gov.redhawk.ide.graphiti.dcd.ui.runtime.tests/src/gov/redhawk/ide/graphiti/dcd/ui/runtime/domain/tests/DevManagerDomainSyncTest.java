@@ -32,17 +32,17 @@ public class DevManagerDomainSyncTest extends AbstractGraphitiDomainNodeRuntimeT
 		// Stop GPP
 		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_LOCALHOST);
 		DiagramTestUtils.waitForComponentState(bot, editor, GPP_LOCALHOST, ComponentState.STOPPED);
-		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, devMgrPath, GPP_LOCALHOST);
 
 		// Start GPP
 		DiagramTestUtils.startComponentFromDiagram(editor, GPP_LOCALHOST);
 		DiagramTestUtils.waitForComponentState(bot, editor, GPP_LOCALHOST, ComponentState.STARTED);
-		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, devMgrPath, GPP_LOCALHOST);
 
 		// Stop GPP
 		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_LOCALHOST);
 		DiagramTestUtils.waitForComponentState(bot, editor, GPP_LOCALHOST, ComponentState.STOPPED);
-		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, devMgrPath, GPP_LOCALHOST);
 	}
 
 	/**
@@ -56,18 +56,18 @@ public class DevManagerDomainSyncTest extends AbstractGraphitiDomainNodeRuntimeT
 		SWTBotGefEditor editor = gefBot.gefEditor(DEVICE_MANAGER);
 
 		// Stop GPP
-		ScaExplorerTestUtils.stopResourceInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
-		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, devMgrPath, GPP_LOCALHOST);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, devMgrPath, GPP_LOCALHOST);
 		DiagramTestUtils.waitForComponentState(bot, editor, GPP_LOCALHOST, ComponentState.STOPPED);
 
 		// Start GPP
-		ScaExplorerTestUtils.startResourceInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
-		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, devMgrPath, GPP_LOCALHOST);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, devMgrPath, GPP_LOCALHOST);
 		DiagramTestUtils.waitForComponentState(bot, editor, GPP_LOCALHOST, ComponentState.STARTED);
 
 		// Stop GPP
-		ScaExplorerTestUtils.stopResourceInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
-		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		ScaExplorerTestUtils.stopResourceInExplorer(bot, devMgrPath, GPP_LOCALHOST);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, devMgrPath, GPP_LOCALHOST);
 		DiagramTestUtils.waitForComponentState(bot, editor, GPP_LOCALHOST, ComponentState.STOPPED);
 	}
 }

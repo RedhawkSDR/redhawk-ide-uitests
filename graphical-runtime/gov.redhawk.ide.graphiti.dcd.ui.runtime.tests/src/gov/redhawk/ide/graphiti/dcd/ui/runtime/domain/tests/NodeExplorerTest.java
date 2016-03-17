@@ -45,7 +45,7 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		nodeEditor.bot().cTabItem("Diagram").activate();
 
 		// check that device is removed from editor when released in the Sca Explorer
-		ScaExplorerTestUtils.releaseFromScaExplorer(bot, DEV_MGR_PATH, GPP_LOCALHOST);
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, devMgrPath, GPP_LOCALHOST);
 
 		// IDE-1001 check that grid is hidden on runtime diagram
 		Diagram diagram = DiagramTestUtils.getDiagram(editor);
