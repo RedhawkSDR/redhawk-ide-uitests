@@ -1,0 +1,1 @@
+Tests for waveforms launched in a Redhawk domain and opened with the Graphiti explorer diagram.
