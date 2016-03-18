@@ -19,6 +19,9 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
+/**
+ * IDE-1506 Devices were launching with id 'null'
+ */
 public class DevManagerSandboxContextMenuTest extends AbstractLocalContextMenuTest {
 
 	private static final String[] SANDBOX_PATH = { "Sandbox" };
