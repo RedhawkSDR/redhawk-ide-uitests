@@ -25,8 +25,6 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,7 +37,6 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.ide.swtbot.diagram.RHTestBotCanvas;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.logging.ui.LogLevels;
 import mil.jpeojtrs.sca.sad.SadConnectInterface;
 
 public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeTest {
@@ -49,7 +46,6 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 	 * This editor is "look but don't touch". All design functionality should be disabled.
 	 * Runtime functionality (start/stop, plot, etc) should still work.
 	 * IDE-1001 Hide grid on runtime diagram.
-	 * IDE-1196 Ensure "Show Console" doesn't show up for domain waveforms
 	 */
 	@Test
 	public void waveformExplorerTest() {
@@ -61,18 +57,6 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 		// check for components
 		SWTBotGefEditPart hardLimit = editor.getEditPart(HARD_LIMIT);
 		Assert.assertNotNull(HARD_LIMIT + " component not found in diagram", hardLimit);
-
-		// Check that some design-time options, options we've removed, and local-runtime options don't appear
-		hardLimit.select();
-		String[] removedContextOptions = { "Delete", "Release", "Terminate", "Show Console", "Set As Assembly Controller", "Move Start Order Earlier", "Move Start Order Later" };
-		for (String contextOption : removedContextOptions) {
-			try {
-				editor.clickContextMenu(contextOption);
-				Assert.fail(); // The only way to get here is if the undesired context menu option appears
-			} catch (WidgetNotFoundException e) {
-				Assert.assertEquals(e.getMessage(), contextOption, e.getMessage());
-			}
-		}
 
 		// check that start/plot/stop works
 		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
@@ -207,96 +191,4 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 		SWTBotGefEditPart providesAnchor = DiagramTestUtils.getDiagramPortAnchor(providesPort);
 		Assert.assertTrue(providesAnchor.targetConnections().size() == 1);
 	}
-
-	@Test
-	public void runtimeExplorerContextMenuTest() {
-		final String[] waveformPath = ScaExplorerTestUtils.joinPaths(DOMAIN_WAVEFORM_PARENT_PATH, new String[] { getWaveFormFullName() });
-
-		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
-		editor.setFocus();
-
-		// Start the component
-		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformPath, SIGGEN_1);
-
-		// Check that we can't undo certain actions
-		Assert.assertFalse("IDE-1038 No Undo Start Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Start Command"));
-		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Do Command"));
-
-		// Test Log Levels
-		DiagramTestUtils.changeLogLevelFromDiagram(editor, SIGGEN, LogLevels.TRACE);
-		DiagramTestUtils.confirmLogLevelFromDiagram(editor, SIGGEN, LogLevels.TRACE);
-
-		DiagramTestUtils.changeLogLevelFromDiagram(editor, SIGGEN, LogLevels.FATAL);
-		DiagramTestUtils.confirmLogLevelFromDiagram(editor, SIGGEN, LogLevels.FATAL);
-
-		// plot port data for SIGGEN
-		editor.setFocus();
-		try {
-			DiagramTestUtils.plotPortDataOnComponentPort(editor, SIGGEN, null);
-			SWTBotView plotView = ViewUtils.getPlotView(bot);
-			plotView.close();
-		} catch (WidgetNotFoundException e) {
-			SWTBotView plotView = ViewUtils.getPlotView(bot);
-			plotView.close();
-		}
-
-		// SRI view test
-		DiagramTestUtils.displaySRIDataOnComponentPort(editor, SIGGEN, null);
-		// verify sriView displayed
-		ViewUtils.waitUntilSRIViewPopulates(bot);
-		SWTBotView sriView = ViewUtils.getSRIView(bot);
-		Assert.assertEquals("streamID property is missing for column 1", "streamID: ", sriView.bot().tree().cell(0, "Property: "));
-		// Using the default stream ID, but it would be more correct to get it from component's properties
-		final String streamId = "SigGen Stream";
-		Assert.assertEquals("streamID property is wrong", streamId, sriView.bot().tree().cell(0, "Value: "));
-		sriView.close();
-
-		// Audio/Play port view test
-		DiagramTestUtils.playPortDataOnComponentPort(editor, SIGGEN, null);
-		// wait until audio view populates
-		ViewUtils.waitUntilAudioViewPopulates(bot);
-		// get audio view
-		SWTBotView audioView = ViewUtils.getAudioView(bot);
-		String item = audioView.bot().list().getItems()[0];
-		Assert.assertTrue("SigGen not found in Audio Port Playback", item.matches(SIGGEN_1 + ".*"));
-		audioView.close();
-
-		// open data list view
-		DiagramTestUtils.displayDataListViewOnComponentPort(editor, SIGGEN, null);
-		// verify data list view opens
-		ViewUtils.waitUntilDataListViewDisplays(bot);
-		// start acquire
-		ViewUtils.startAquireOnDataListView(bot);
-		// wait until view populates
-		ViewUtils.waitUntilDataListViewPopulates(bot);
-		// close data list view
-		SWTBotView dataListView = ViewUtils.getDataListView(bot);
-		dataListView.close();
-
-		// Snapshot view test
-		DiagramTestUtils.displaySnapshotDialogOnComponentPort(editor, SIGGEN, null);
-		// wait until Snapshot dialog appears
-		ViewUtils.waitUntilSnapshotDialogDisplays(bot);
-		// get snapshot dialog
-		SWTBotShell snapshotDialog = ViewUtils.getSnapshotDialog(bot);
-		Assert.assertNotNull(snapshotDialog);
-		snapshotDialog.close();
-
-		// Monitor ports test
-		DiagramTestUtils.displayPortMonitorViewOnUsesPort(editor, SIGGEN, null);
-		// wait until port monitor view appears
-		ViewUtils.waitUntilPortMonitorViewPopulates(bot, SIGGEN_1);
-		// close PortMonitor View
-		SWTBotView monitorView = ViewUtils.getPortMonitorView(bot);
-		monitorView.close();
-
-		// stop component
-		DiagramTestUtils.stopComponentFromDiagram(editor, SIGGEN);
-		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, waveformPath, SIGGEN_1);
-
-		Assert.assertFalse("IDE-1038 No Undo Stop Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Stop Command"));
-		Assert.assertFalse("IDE-1065 No Undo Do Command context menu item", DiagramTestUtils.hasContentMenuItem(editor, SIGGEN, "Undo Do Command"));
-	}
-
 }
