@@ -138,6 +138,7 @@ public abstract class AbstractFindByTest extends AbstractGraphitiTest {
 		editor = gefBot.rhGefEditor(waveformName);
 
 		// Add components to the diagram
+		DiagramTestUtils.addFromPaletteToDiagram(editor, PORT_COMP, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, getFindByType(), 375, 50);
 		if (FindByUtils.FIND_BY_SERVICE.equals(getFindByType())) {
 			// Want to make sure the FindByService uses the ExecutableDevice IDL
@@ -146,7 +147,6 @@ public abstract class AbstractFindByTest extends AbstractGraphitiTest {
 			FindByUtils.completeFindByWizard(gefBot, getFindByType(), getFindByName(), PROVIDES_PORTS, USES_PORTS);
 		}
 
-		DiagramTestUtils.addFromPaletteToDiagram(editor, PORT_COMP, 0, 0);
 
 		SWTBotGefEditPart findByLollipopPart = DiagramTestUtils.getComponentSupportedInterface(editor, getFindByName());
 		SWTBotGefEditPart portCompUsesPart = null;
