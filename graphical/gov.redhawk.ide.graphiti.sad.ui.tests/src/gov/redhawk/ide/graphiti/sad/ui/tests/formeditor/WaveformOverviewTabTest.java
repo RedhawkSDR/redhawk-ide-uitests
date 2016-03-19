@@ -174,7 +174,7 @@ public class WaveformOverviewTabTest extends UITest {
 		Assert.assertEquals("my desc", sad.getExternalPorts().getPort().get(0).getDescription());
 
 		table.select(0);
-		StandardTestActions.writeToCell(editorBot, table, 0, 2, "extern");
+		StandardTestActions.writeToCell(editorBot, table, 0, 2, "extern", false);
 		editorBot.sleep(600);
 		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals("extern", sad.getExternalPorts().getPort().get(0).getExternalName());

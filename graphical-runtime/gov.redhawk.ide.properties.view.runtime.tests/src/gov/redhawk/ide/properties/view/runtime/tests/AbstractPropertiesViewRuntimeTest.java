@@ -331,37 +331,27 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UITest {
 
 		if (modelValues[0] instanceof Boolean) {
 			for (int i = 0; i < modelValues.length; ++i) {
-				table.click(i, 0);
+				table.doubleClick(i, 0);
 				boolean boolValue = (Boolean) modelValues[i];
 				if (boolValue) {
+					bot.sleep(250);
 					keyboard.pressShortcut(Keystrokes.UP);
 					newValueArray[i] = Boolean.FALSE.toString();
 				} else {
+					bot.sleep(250);
 					keyboard.pressShortcut(Keystrokes.DOWN);
 					newValueArray[i] = Boolean.TRUE.toString();
 				}
 				keyboard.pressShortcut(Keystrokes.CR);
-				synchronized (bot) {
-					try {
-						bot.wait(500);
-					} catch (InterruptedException e) {
-						Assert.fail();
-					}
-				}
+				bot.sleep(500);
 			}
 		} else {
 			for (int i = 0; i < table.rowCount(); ++i) {
 				String text = table.getTableItem(i).getText();
 				newValueArray[i] = PREPENDER + text;
-				StandardTestActions.writeToCell(gefBot, table, i, 0, newValueArray[i]);
+				StandardTestActions.writeToCell(gefBot, table, i, 0, newValueArray[i], true);
 			}
-			synchronized (bot) {
-				try {
-					bot.wait(500);
-				} catch (InterruptedException e) {
-					Assert.fail();
-				}
-			}
+			bot.sleep(500);
 		}
 
 		editShell.bot().button("Finish").click();

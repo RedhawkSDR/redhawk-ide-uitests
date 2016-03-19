@@ -333,19 +333,21 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 			String newValue;
 
 			if ("true".equals(oldValue)) {
-				table.click(i, 0);
+				table.doubleClick(i, 0);
+				bot.sleep(250);
 				keyboard.pressShortcut(Keystrokes.UP);
 				newValue = Boolean.FALSE.toString();
 				keyboard.pressShortcut(Keystrokes.CR);
 			} else if ("false".equals(oldValue)) {
-				table.click(i, 0);
+				table.doubleClick(i, 0);
+				bot.sleep(250);
 				keyboard.pressShortcut(Keystrokes.DOWN);
 				newValue = Boolean.TRUE.toString();
 				keyboard.pressShortcut(Keystrokes.CR);
 			} else {
-				table.click(i, 0);
+				table.doubleClick(i, 0);
 				newValue = PREPENDER + oldValue;
-				StandardTestActions.writeToCell(gefBot, table, i, 0, newValue);
+				StandardTestActions.writeToCell(gefBot, table, i, 0, newValue, true);
 			}
 			seqValues[i] = newValue;
 		}

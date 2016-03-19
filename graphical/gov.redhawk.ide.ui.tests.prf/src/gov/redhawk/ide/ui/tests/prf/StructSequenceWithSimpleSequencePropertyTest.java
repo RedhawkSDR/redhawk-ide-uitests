@@ -138,11 +138,11 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 		new SWTBot(structValueTable.widget).button("...").click();
 
 		SWTBotShell shell = bot.shell("Values");
-		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "hello");
+		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "hello", false);
 		assertValuesDialogState(bot, new String[] { "hello" }, false, false, true);
 
 		shell.bot().button("Add").click();
-		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 1, 0, "world");
+		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 1, 0, "world", false);
 		assertValuesDialogState(bot, new String[] { "hello", "world" }, true, false, true);
 
 		shell.bot().table().select(0);
@@ -178,9 +178,9 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 		new SWTBot(structValueTable.widget).button("...").click();
 
 		shell = bot.shell("Values");
-		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "1.1");
+		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "1.1", false);
 		bot.waitUntil(new WaitForCellValue(shell.bot().table(), 0, 0, "1.1"));
-		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "abc");
+		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "abc", false);
 		bot.waitUntil(new WaitForCellValue(shell.bot().table(), 0, 0, "1.1"));
 
 		shell.bot().button("Finish").click();
