@@ -17,7 +17,6 @@ import java.util.List;
 import org.junit.After;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractContextMenuTest;
-import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractLocalContextMenuTest;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.ComponentDescription;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
