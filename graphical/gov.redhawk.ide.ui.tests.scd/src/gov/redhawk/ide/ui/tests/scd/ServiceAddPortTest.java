@@ -16,7 +16,6 @@ import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -24,7 +23,7 @@ import org.junit.Test;
  * port in the component editor will be enabled.
  */
 public class ServiceAddPortTest extends UITest {
-	
+
 	static final String PORTS_TAB_NAME = "Ports";
 
 	/**
@@ -54,9 +53,9 @@ public class ServiceAddPortTest extends UITest {
 	/**
 	 * Tests that the add button is disabled for a service project with an IDL type that does not inherit from
 	 * CF/PortSupplier.
+	 * IDE-1272
 	 */
 	@Test
-	@Ignore("IDE-1272 known issue")
 	public void testAddForNonPortSupplier() {
 		ServiceUtils.createServiceProject(bot, "TestProject", "IDL:CF/LifeCycle:1.0", "Java");
 		bot.waitUntil(new WaitForEditorCondition());
