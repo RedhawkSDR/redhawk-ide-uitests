@@ -3,11 +3,17 @@ package gov.redhawk.ide.properties.view.tests;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
@@ -107,5 +113,49 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 		Assert.assertNotNull("Property window does not populate", propTree);
 		SWTBotTreeItem[] items = propTree.getAllItems();
 		Assert.assertTrue("No property values are displayed", items.length > 0);
+	}
+
+	/**
+	 * IDE-831 - Can't delete sequence values in runtime property dialog when in edit mode
+	 */
+	@Test
+	public void editSimpleSequenceSize() {
+		final String simpleSeqDouble = "simpleSeqDouble";
+
+		prepareObject();
+		setEditor();
+		selectObject();
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+
+		SWTBotTreeItem treeItem = propTree.getTreeItem(simpleSeqDouble);
+		treeItem.select();
+		treeItem.click(1);
+		keyboard.pressShortcut(Keystrokes.SPACE);
+
+		SWTBotShell editShell = bot.shell("Edit Property Value");
+		editShell.setFocus();
+		bot.waitUntil(Conditions.shellIsActive("Edit Property Value"));
+		SWTBotTable table = editShell.bot().table();
+
+		List<String> seqValues = new ArrayList<String>();
+		int tableSize = table.rowCount();
+		for (int i = 0; i < tableSize; ++i) {
+			seqValues.add(table.cell(i, 0));
+		}
+
+		table.click(0, 0);
+		editShell.bot().buttonWithTooltip("Remove").click();
+
+		Assert.assertEquals("Item was not removed from properties table", (tableSize - 1), editShell.bot().table().rowCount());
+		editShell.bot().button("Finish").click();
+
+		treeItem = propTree.getTreeItem(simpleSeqDouble);
+
+		// This command creates a String array of simpleSeq values in the properties view
+		String[] values = treeItem.cell(1).substring(1, treeItem.cell(1).length() - 1).split(", ");
+		Assert.assertEquals("Properties view did not update", tableSize - 1, values.length);
+
+		Assert.assertTrue(true);
+
 	}
 }
