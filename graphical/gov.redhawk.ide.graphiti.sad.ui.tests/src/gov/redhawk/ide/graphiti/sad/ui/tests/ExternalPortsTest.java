@@ -10,7 +10,13 @@
  */
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
@@ -23,6 +29,9 @@ import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils.PortState;
+import mil.jpeojtrs.sca.sad.SadPackage;
+import mil.jpeojtrs.sca.sad.SoftwareAssembly;
+import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
 /**
@@ -145,6 +154,62 @@ public class ExternalPortsTest extends AbstractGraphitiTest {
 
 			DiagramTestUtils.openTabInEditor(editor, "Diagram");
 		}
+	}
+
+	/**
+	 * IDE-1510
+	 * Deleting a component from the SAD diagram doesn't delete its external properties or external ports
+	 * @throws IOException
+	 */
+	@Test
+	public void deleteComponentWithExternalPorts() throws IOException {
+		String waveformName = "DeleteWithExternalPort";
+		final String HARDLIMIT = "rh.HardLimit";
+
+		// Create a new empty waveform
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
+
+		// Add component to the diagram
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARDLIMIT, 200, 0);
+		MenuUtils.save(editor);
+
+		SWTBotGefEditPart hardLimit1UsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
+		SWTBotGefEditPart hardLimit1ProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
+
+		SWTBotGefEditPart hardLimit1UsesAnchor = DiagramTestUtils.getDiagramPortAnchor(hardLimit1UsesEditPart);
+		SWTBotGefEditPart hardLimit1ProvidesAnchor = DiagramTestUtils.getDiagramPortAnchor(hardLimit1ProvidesEditPart);
+
+		SWTBotGefEditPart[] portEditParts = { hardLimit1UsesEditPart, hardLimit1ProvidesEditPart };
+		SWTBotGefEditPart[] portAnchors = { hardLimit1UsesAnchor, hardLimit1ProvidesAnchor };
+
+		// Mark each port as external, and check all ports after each change
+		for (int i = 0; i < portEditParts.length; i++) {
+			portAnchors[i].select();
+			editor.clickContextMenu("Mark External Port");
+		}
+
+		// Check that model includes external ports
+		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
+		String editorText = editor.toTextEditor().getText();
+		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
+		Resource resource = resourceSet.createResource(URI.createURI("mem://temp.sad.xml"), SadPackage.eCONTENT_TYPE);
+		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
+		SoftwareAssembly sad = SoftwareAssembly.Util.getSoftwareAssembly(resource);
+		Assert.assertTrue("External ports were not updated in .sad.xml", sad.getExternalPorts().getPort().size() == 2);
+
+		// Delete component
+		DiagramTestUtils.openTabInEditor(editor, "Diagram");
+		DiagramTestUtils.deleteFromDiagram(editor, editor.getEditPart(HARD_LIMIT_1));
+
+		// Check that external ports were removed from model
+		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
+		editorText = editor.toTextEditor().getText();
+		resourceSet = ScaResourceFactoryUtil.createResourceSet();
+		resource = resourceSet.createResource(URI.createURI("mem://temp.sad.xml"), SadPackage.eCONTENT_TYPE);
+		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
+		sad = SoftwareAssembly.Util.getSoftwareAssembly(resource);
+		Assert.assertNull("External ports were not removed from .sad.xml", sad.getExternalPorts());
 	}
 
 	/**
