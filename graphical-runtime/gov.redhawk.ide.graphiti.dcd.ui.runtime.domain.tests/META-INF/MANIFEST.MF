@@ -9,7 +9,9 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui.runtime.tests,
  org.eclipse.gef,
  gov.redhawk.ide.swtbot,
  org.eclipse.graphiti,
- gov.redhawk.ide.sdr,
- gov.redhawk.ide.debug
+ gov.redhawk.ide.graphiti.dcd.ui,
+ gov.redhawk.logging.ui,
+ gov.redhawk.ide.debug,
+ gov.redhawk.ide.sdr
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
