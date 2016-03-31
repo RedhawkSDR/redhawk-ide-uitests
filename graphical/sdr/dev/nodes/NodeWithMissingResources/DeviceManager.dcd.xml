@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE deviceconfiguration PUBLIC "-//JTRS//DTD SCA V2.2.2 DCD//EN" "deviceconfiguration.dtd">
+<deviceconfiguration id="DCE:4363f741-03eb-46d8-8f65-c23ac8a6ae20" name="NodeWithMissingResources">
+  <devicemanagersoftpkg>
+    <localfile name="/mgr/DeviceManager.spd.xml"/>
+  </devicemanagersoftpkg>
+  <componentfiles>
+    <componentfile id="TestDevice_6f4b1c92-fe14-4766-b8ce-dc108fce3afa" type="SPD">
+      <localfile name="/devices/TestDevice/TestDevice.spd.xml"/>
+    </componentfile>
+    <componentfile id="TestService_097968b4-1b31-4cac-a508-c3d549611bbb" type="SPD">
+      <localfile name="/services/TestService/TestService.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="TestDevice_6f4b1c92-fe14-4766-b8ce-dc108fce3afa"/>
+      <componentinstantiation id="NodeWithMissingResources:TestDevice_1">
+        <usagename>TestDevice_1</usagename>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="TestService_097968b4-1b31-4cac-a508-c3d549611bbb"/>
+      <componentinstantiation id="NodeWithMissingResources:TestService_1">
+        <usagename>TestService_1</usagename>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <domainmanager>
+    <namingservice name="REDHAWK_DEV/REDHAWK_DEV"/>
+  </domainmanager>
+</deviceconfiguration>

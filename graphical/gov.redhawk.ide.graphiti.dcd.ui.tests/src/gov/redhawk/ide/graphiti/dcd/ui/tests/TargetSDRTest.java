@@ -16,8 +16,10 @@ import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.graphiti.ext.RHContainerShape;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
@@ -30,6 +32,33 @@ public class TargetSDRTest extends AbstractGraphitiTest {
 	private static final String NODE_NAME = "DevMgr_with_bulkio";
 	private static final String DEVICESTUB_1 = "DeviceStub_1";
 	private static final String DEVICESTUB_PORT_FLOAT_OUT = "dataFloat_out";
+
+	/**
+	 * IDE-1530 NPE When trying to open a Node Diagram containing a device/service not in the SDR</br>
+	 * If a device/service is not found in the Target SDR, it should still be drawn on the diagram,
+	 * with an appropriate error marker.
+	 */
+	@Test
+	public void deviceNotInSdrTest() {
+		final String nodeName = "NodeWithMissingResources";
+		final String[] nodeParentPath = { "Target SDR", "Nodes" };
+		final String deviceName = "TestDevice";
+		final String serviceName = "TestService";
+
+		// Confirm that device and service still show up in the diagram (with expected error messages)
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodeParentPath, nodeName);
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, nodeParentPath, nodeName, DiagramType.GRAPHITI_NODE_EDITOR);
+		RHBotGefEditor editor = gefBot.rhGefEditor(nodeName);
+
+		final String errorText = "< Component Bad Reference >";
+		SWTBotGefEditPart devicePart = editor.getEditPart(deviceName + "_1");
+		RHContainerShape deviceModel = (RHContainerShape) devicePart.part().getModel();
+		Assert.assertEquals("Expected error text not found", errorText, deviceModel.getOuterText().getValue());
+
+		SWTBotGefEditPart servicePart = editor.getEditPart(serviceName + "_1");
+		RHContainerShape serviceModel = (RHContainerShape) servicePart.part().getModel();
+		Assert.assertEquals("Expected error text not found", errorText, serviceModel.getOuterText().getValue());
+	}
 
 	/**
 	 * IDE-1324
@@ -51,7 +80,7 @@ public class TargetSDRTest extends AbstractGraphitiTest {
 			ensureContextMenuNotPresent(editor, menuText);
 		}
 
-		// Check that design-time editor options are present, but disabled on the device.  We'll attempt to click the
+		// Check that design-time editor options are present, but disabled on the device. We'll attempt to click the
 		// menu, but then have to make sure nothing actually happened to know the menu was present, but disabled.
 		editor.clickContextMenu("Delete");
 		Assert.assertNotNull("Device should not have been deleted", editor.getEditPart(DEVICESTUB_1));
