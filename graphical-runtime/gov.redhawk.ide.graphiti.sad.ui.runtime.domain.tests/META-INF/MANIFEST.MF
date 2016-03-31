@@ -1,9 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Runtime SAD Graphiti Tests
-Bundle-SymbolicName: gov.redhawk.ide.graphiti.sad.ui.runtime.tests;singleton:=true
+Bundle-Name: Tests
+Bundle-SymbolicName: gov.redhawk.ide.graphiti.sad.ui.runtime.domain.tests
 Bundle-Version: 1.0.0.qualifier
-Eclipse-BundleShape: dir
 Require-Bundle: gov.redhawk.ide.graphiti.ui.runtime.tests,
  org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -24,5 +23,4 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui.runtime.tests,
  gov.redhawk.logging.ui,
  gov.redhawk.ide.sdr
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: gov.redhawk.ide.graphiti.sad.ext.impl
-Export-Package: gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests
+Bundle-ActivationPolicy: lazy
