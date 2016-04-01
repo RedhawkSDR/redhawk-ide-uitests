@@ -2,7 +2,7 @@ package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 
-import gov.redhawk.ide.properties.view.runtime.sdr.tests.AbstractPropertiesViewTargetSdrTest;
+import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractPropertiesViewTargetSdrTest;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 

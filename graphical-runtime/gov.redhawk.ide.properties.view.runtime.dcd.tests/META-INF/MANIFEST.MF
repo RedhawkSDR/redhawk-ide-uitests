@@ -11,6 +11,6 @@ Require-Bundle: org.eclipse.ui,
  gov.redhawk.sca,
  gov.redhawk.ide.sdr,
  gov.redhawk.ide.debug,
- gov.redhawk.ide.properties.view.runtime.tests
+ gov.redhawk.ide.graphiti.ui.runtime.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
