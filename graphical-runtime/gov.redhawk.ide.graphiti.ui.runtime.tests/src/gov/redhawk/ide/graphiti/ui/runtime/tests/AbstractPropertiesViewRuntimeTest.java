@@ -58,11 +58,11 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UITest {
 	protected final String PREPENDER = "5"; // SUPPRESS CHECKSTYLE shared variable
 
 	/** A Map of all properties found in the IDE's property view */
-	protected Map<String, String> propertyMap = new HashMap<String, String>();  // SUPPRESS CHECKSTYLE shared variable
+	protected Map<String, String> propertyMap = new HashMap<String, String>(); // SUPPRESS CHECKSTYLE shared variable
 
 	protected String PROP_TAB_NAME; // SUPPRESS CHECKSTYLE shared variable
-	protected RHSWTGefBot gefBot;  // SUPPRESS CHECKSTYLE shared variable
-	protected Keyboard keyboard = KeyboardFactory.getSWTKeyboard();  // SUPPRESS CHECKSTYLE shared variable
+	protected RHSWTGefBot gefBot; // SUPPRESS CHECKSTYLE shared variable
+	protected Keyboard keyboard = KeyboardFactory.getSWTKeyboard(); // SUPPRESS CHECKSTYLE shared variable
 
 	/**
 	 * Method should take necessary steps to:
@@ -146,6 +146,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UITest {
 	 */
 	@Test
 	public void editPropertyViewToModel() {
+		StandardTestActions.setRefreshInterval(bot, 1000);
 		prepareObject();
 		setPropTabName();
 
@@ -171,6 +172,8 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UITest {
 				editStructSeqViewProperty(treeItem, (ScaStructSequenceProperty) modelProp);
 			}
 		}
+		
+		StandardTestActions.setRefreshInterval(bot, 10000);
 	}
 
 	/**
@@ -180,6 +183,8 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UITest {
 	 */
 	@Test
 	public void editPropertyModelToView() {
+		StandardTestActions.setRefreshInterval(bot, 1000);
+
 		prepareObject();
 		setPropTabName();
 
@@ -207,6 +212,8 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UITest {
 				editStructSeqModelProperty((ScaStructSequenceProperty) modelProp, treeItem);
 			}
 		}
+		
+		StandardTestActions.setRefreshInterval(bot, 10000);
 	}
 
 	// ################################ EDIT PROPERTY TESTS MODEL TO VIEW ##################################/
@@ -344,16 +351,16 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UITest {
 				table.doubleClick(i, 0);
 				boolean boolValue = (Boolean) modelValues[i];
 				if (boolValue) {
-					bot.sleep(250);
+					bot.sleep(100);
 					keyboard.pressShortcut(Keystrokes.UP);
 					newValueArray[i] = Boolean.FALSE.toString();
 				} else {
-					bot.sleep(250);
+					bot.sleep(100);
 					keyboard.pressShortcut(Keystrokes.DOWN);
 					newValueArray[i] = Boolean.TRUE.toString();
 				}
 				keyboard.pressShortcut(Keystrokes.CR);
-				bot.sleep(500);
+				bot.sleep(100);
 			}
 		} else {
 			for (int i = 0; i < table.rowCount(); ++i) {
@@ -361,7 +368,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UITest {
 				newValueArray[i] = PREPENDER + text;
 				StandardTestActions.writeToCell(gefBot, table, i, 0, newValueArray[i], true);
 			}
-			bot.sleep(500);
+			bot.sleep(100);
 		}
 
 		editShell.bot().button("Finish").click();
