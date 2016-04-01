@@ -8,7 +8,7 @@ import org.junit.After;
 import gov.redhawk.ide.debug.LocalSca;
 import gov.redhawk.ide.debug.ScaDebugPlugin;
 import gov.redhawk.ide.properties.view.runtime.tests.AbstractPropertiesViewRuntimeTest;
-import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.ScaAbstractProperty;
 import gov.redhawk.model.sca.ScaComponent;
@@ -32,7 +32,7 @@ public class LocalComponentPropertyTest extends AbstractPropertiesViewRuntimeTes
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, COMP_NAME, "python");
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, new String[] { "Sandbox" }, "Chalkboard", COMP_NAME + "_1");
 		
-		ViewUtils.disableConsoleView(gefBot);
+		ConsoleUtils.disableAutoShowConsole(gefBot);
 		
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMP_NAME + "_1");
 		treeItem.select();

@@ -9,7 +9,6 @@ import org.junit.After;
 import gov.redhawk.ide.properties.view.runtime.tests.AbstractPropertiesViewRuntimeTest;
 import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
-import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.ScaAbstractProperty;
 import gov.redhawk.model.sca.ScaDevice;
@@ -51,7 +50,7 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN);
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DEVICE_PARENT_PATH, DEVICE_NUM);
 		
-		ViewUtils.disableConsoleView(gefBot);
+		ConsoleUtils.disableAutoShowConsole(gefBot);
 		treeItem.select();
 	}
 	

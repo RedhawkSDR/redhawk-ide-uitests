@@ -13,7 +13,6 @@ import org.junit.Assert;
 import gov.redhawk.ide.properties.view.runtime.tests.AbstractPropertiesViewRuntimeTest;
 import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
-import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.ScaAbstractProperty;
 import gov.redhawk.model.sca.ScaComponent;
@@ -58,7 +57,7 @@ public class DomainComponentPropertyTest extends AbstractPropertiesViewRuntimeTe
 		ArrayList<String> componentParentPath = new ArrayList<>(Arrays.asList(DOMAIN_WAVEFORM_PARENT_PATH));
 		componentParentPath.add(waveformFullName);
 		
-		ViewUtils.disableConsoleView(gefBot);
+		ConsoleUtils.disableAutoShowConsole(gefBot);
 		
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, componentParentPath.toArray(new String[] {}), COMPONENT_NUM);
 		treeItem.select();

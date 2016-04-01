@@ -1,6 +1,6 @@
 package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
-import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -17,7 +17,7 @@ public class LocalComponentDiagramPropertyTest extends LocalComponentPropertyTes
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, COMP_NAME + "_1");
 		DiagramTestUtils.waitForComponentState(bot, editor, COMP_NAME + "_1", ComponentState.STOPPED);
 
-		ViewUtils.disableConsoleView(gefBot);
+		ConsoleUtils.disableAutoShowConsole(gefBot);
 
 		editor.click(COMP_NAME);
 	}
