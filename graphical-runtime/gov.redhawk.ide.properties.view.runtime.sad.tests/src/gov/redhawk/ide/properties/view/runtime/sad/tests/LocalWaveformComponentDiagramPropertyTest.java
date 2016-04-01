@@ -1,4 +1,4 @@
-package gov.redhawk.ide.properties.view.runtime.tests;
+package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;

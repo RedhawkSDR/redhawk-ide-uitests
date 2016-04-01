@@ -1,4 +1,4 @@
-package gov.redhawk.ide.properties.view.runtime.tests;
+package gov.redhawk.ide.properties.view.runtime.dcd.tests;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 

@@ -1,4 +1,4 @@
-package gov.redhawk.ide.properties.view.runtime.tests;
+package gov.redhawk.ide.properties.view.runtime.dcd.tests;
 
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;

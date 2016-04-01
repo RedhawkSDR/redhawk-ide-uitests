@@ -1,4 +1,4 @@
-package gov.redhawk.ide.properties.view.runtime.tests;
+package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +10,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 import org.junit.Assert;
 
+import gov.redhawk.ide.properties.view.runtime.tests.AbstractPropertiesViewRuntimeTest;
 import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.ViewUtils;
