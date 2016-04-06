@@ -215,7 +215,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN_1);
 
 		// create connection between components via REDHAWK Explorer
-		ScaExplorerTestUtils.connectComponentPortsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, "connection_1", SIGGEN_1, "dataFloat_out", HARD_LIMIT_1,
+		ScaExplorerTestUtils.connectPortsInScaExplorer(bot, CHALKBOARD_PATH, "connection_1", SIGGEN_1, "dataFloat_out", HARD_LIMIT_1,
 			"dataFloat_in");
 		DiagramTestUtils.waitUntilConnectionDisplaysInDiagram(bot, editor, HARD_LIMIT);
 

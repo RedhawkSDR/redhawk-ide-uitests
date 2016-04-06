@@ -210,7 +210,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 
 		// create connection between devices via REDHAWK Explorer
 		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
-		ScaExplorerTestUtils.connectComponentPortsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, "connection_1", DEVICE_STUB_1, "dataDouble_out",
+		ScaExplorerTestUtils.connectPortsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, "connection_1", DEVICE_STUB_1, "dataDouble_out",
 			DEVICE_STUB_2, "dataDouble_in");
 
 		// verify connection exists in diagram

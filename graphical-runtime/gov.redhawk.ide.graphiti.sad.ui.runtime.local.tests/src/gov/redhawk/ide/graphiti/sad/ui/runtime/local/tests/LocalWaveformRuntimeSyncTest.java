@@ -10,6 +10,8 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
@@ -22,11 +24,13 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 /**
- * Tests that actions performed on a local sandbox waveform in the diagram get reflected in the REDHAWK Explorer view, and
+ * Tests that actions performed on a local sandbox waveform in the diagram get reflected in the REDHAWK Explorer view,
+ * and
  * vice versa.
  */
 public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformRuntimeTest {
 
+	private static final String SIGGEN_1 = "SigGen_1";
 	private static final String HARD_LIMIT = "rh.HardLimit";
 	private static final String HARD_LIMIT_1 = "HardLimit_1";
 
@@ -74,7 +78,8 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
 
 		// wait for connection to show up in REDHAWK Explorer
-		ScaExplorerTestUtils.waitUntilConnectionDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1, "dataFloat_out", "connection_1");
+		ScaExplorerTestUtils.waitUntilConnectionDisplaysInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1, "dataFloat_out",
+			"connection_1");
 
 		// Delete connection
 		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
@@ -83,7 +88,8 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 		}
 
 		// wait until connection not present in REDHAWK Explorer
-		ScaExplorerTestUtils.waitUntilConnectionDisappearsInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1, "dataFloat_out", "connection_1");
+		ScaExplorerTestUtils.waitUntilConnectionDisappearsInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, SIGGEN_1, "dataFloat_out",
+			"connection_1");
 	}
 
 	/**
@@ -144,14 +150,18 @@ public class LocalWaveformRuntimeSyncTest extends AbstractGraphitiLocalWaveformR
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
 
 		// create connection between components via REDHAWK Explorer
-		ScaExplorerTestUtils.connectComponentPortsInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, getWaveFormFullName(), "connection_1", SIGGEN_1, "dataFloat_out",
+		List<String> parentPath = new ArrayList<String>();
+		Collections.addAll(parentPath, LOCAL_WAVEFORM_PARENT_PATH);
+		parentPath.add(getWaveFormFullName());
+		ScaExplorerTestUtils.connectPortsInScaExplorer(bot, parentPath.toArray(new String[parentPath.size()]), "connection_1", SIGGEN_1, "dataFloat_out",
 			HARD_LIMIT_1, "dataFloat_in");
 
 		// verify connection exists in diagram
 		DiagramTestUtils.waitUntilConnectionDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
 
 		// disconnect connection_1 via REDHAWK Explorer
-		ScaExplorerTestUtils.disconnectConnectionInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, getWaveFormFullName(), "connection_1", SIGGEN_1, "dataFloat_out");
+		ScaExplorerTestUtils.disconnectConnectionInScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, getWaveFormFullName(), "connection_1", SIGGEN_1,
+			"dataFloat_out");
 
 		// verify connection does NOT exist in diagram
 		DiagramTestUtils.waitUntilConnectionDisappearsInDiagram(bot, editor, HARD_LIMIT_1);
