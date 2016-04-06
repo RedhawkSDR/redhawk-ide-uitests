@@ -13,14 +13,22 @@ package gov.redhawk.ide.graphiti.dcd.ui.runtime.domain.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import mil.jpeojtrs.sca.dcd.DcdConnectInterface;
 
 public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
@@ -55,5 +63,63 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
 		// Confirm that .dcd.xml is visible
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
+	}
+
+	/**
+	 * IDE-1563 & IDE-1564 DCD runtime explorers should display connections,
+	 * User should not be allowed to edit connections via the diagram
+	 * Connections added via the ScaExplorer should appear
+	 * @throws AWTException
+	 */
+	@Test
+	public void nodeExplorerConnectionTest() throws AWTException {
+		final String connectionDeviceManager = "NodeWithConnections";
+		final String dOne = "DeviceStub_1";
+		final String dTwo = "DeviceStub_2";
+		final String doubleInPort = "dataDouble_in";
+		final String doubleOutPort = "dataDouble_out";
+
+		// Launch the node to be used for this test
+		launchDomainAndDevMgr(connectionDeviceManager);
+
+		// Test that connections cannot be deleted
+		editor = gefBot.gefEditor(connectionDeviceManager);
+		editor.setFocus();
+		SWTBotGefEditPart dOneUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, dOne, doubleOutPort);
+		SWTBotGefConnectionEditPart dOneConn = DiagramTestUtils.getSourceConnectionsFromPort(editor, dOneUsesEditPart).get(0);
+		String connectionId = getConnectionId(dOneConn);
+
+		// Have to try and delete with the hot-key since the context menu for "delete" should not exist
+		dOneConn.select();
+		dOneConn.click();
+		Robot robot = new Robot();
+		robot.keyPress(KeyEvent.VK_DELETE);
+		robot.keyRelease(KeyEvent.VK_DELETE);
+
+		dOneConn = DiagramTestUtils.getSourceConnectionsFromPort(editor, dOneUsesEditPart).get(0);
+		Assert.assertEquals("Expected connection ID was not found", connectionId, getConnectionId(dOneConn));
+
+		// Attempt to add a connection - Assumes the DeviceStub_2 has no outgoing connections
+		SWTBotGefEditPart dTwoUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, dTwo, doubleOutPort);
+		SWTBotGefEditPart dOneProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, dOne, doubleInPort);
+		Assert.assertEquals(dTwo + " is not expected to have any source connections", 0,
+			DiagramTestUtils.getSourceConnectionsFromPort(editor, dTwoUsesEditPart).size());
+
+		DiagramTestUtils.drawConnectionBetweenPorts(editor, dTwoUsesEditPart, dOneProvidesEditPart);
+		dTwoUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, dTwo, doubleOutPort);
+		Assert.assertEquals(dTwo + " is not expected to have any source connections", 0,
+			DiagramTestUtils.getSourceConnectionsFromPort(editor, dTwoUsesEditPart).size());
+
+		devMgrPath[0] = devMgrPath[0] + " CONNECTED";
+		ScaExplorerTestUtils.connectPortsInScaExplorer(bot, devMgrPath, "newConnection", dTwo, doubleOutPort, dOne, doubleInPort);
+
+		dTwoUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, dTwo, doubleOutPort);
+		Assert.assertEquals("The connection for " + dTwo + " was not created", 1,
+			DiagramTestUtils.getSourceConnectionsFromPort(editor, dTwoUsesEditPart).size());
+	}
+
+	private String getConnectionId(SWTBotGefConnectionEditPart connection) {
+		DcdConnectInterface modelObj = (DcdConnectInterface) ((FreeFormConnection) connection.part().getModel()).getLink().getBusinessObjects().get(0);
+		return modelObj.getId();
 	}
 }

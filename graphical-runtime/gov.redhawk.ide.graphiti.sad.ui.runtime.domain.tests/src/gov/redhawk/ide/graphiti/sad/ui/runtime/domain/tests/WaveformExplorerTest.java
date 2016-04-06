@@ -84,7 +84,7 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 	}
 
 	/**
-	 * IDE-1136 & IDE-1524 SAD/DCD runtime explorers shouldn't allow connection changes
+	 * IDE-1136 & IDE-1524 SAD runtime explorers shouldn't allow connection changes
 	 * @throws AWTException
 	 */
 	@Test

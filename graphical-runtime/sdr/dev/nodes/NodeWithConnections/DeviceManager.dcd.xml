@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE deviceconfiguration PUBLIC "-//JTRS//DTD SCA V2.2.2 DCD//EN" "deviceconfiguration.dtd">
+<deviceconfiguration id="DCE:bceac12b-e4b1-40dc-a8fa-6451bac3f1a3" name="NodeWithConnections">
+  <devicemanagersoftpkg>
+    <localfile name="/mgr/DeviceManager.spd.xml"/>
+  </devicemanagersoftpkg>
+  <componentfiles>
+    <componentfile id="DeviceStub_1a75e81f-c6f2-4936-a2d0-6f2da9650ff9" type="SPD">
+      <localfile name="/devices/DeviceStub/DeviceStub.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="DeviceStub_1a75e81f-c6f2-4936-a2d0-6f2da9650ff9"/>
+      <componentinstantiation id="NodeWithConnections:DeviceStub_1">
+        <usagename>DeviceStub_1</usagename>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="DeviceStub_1a75e81f-c6f2-4936-a2d0-6f2da9650ff9"/>
+      <componentinstantiation id="NodeWithConnections:DeviceStub_2">
+        <usagename>DeviceStub_2</usagename>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <connections>
+    <connectinterface id="connection_1">
+      <usesport>
+        <usesidentifier>dataDouble_out</usesidentifier>
+        <componentinstantiationref refid="NodeWithConnections:DeviceStub_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataDouble_in</providesidentifier>
+        <componentinstantiationref refid="NodeWithConnections:DeviceStub_2"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_2">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="NodeWithConnections:DeviceStub_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="NodeWithConnections:DeviceStub_2"/>
+      </providesport>
+    </connectinterface>
+  </connections>
+  <domainmanager>
+    <namingservice name="REDHAWK_DEV/REDHAWK_DEV"/>
+  </domainmanager>
+</deviceconfiguration>
