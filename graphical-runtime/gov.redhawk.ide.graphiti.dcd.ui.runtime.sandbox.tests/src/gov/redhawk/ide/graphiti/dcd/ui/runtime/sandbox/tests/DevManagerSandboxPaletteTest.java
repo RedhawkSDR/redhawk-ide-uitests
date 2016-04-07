@@ -112,7 +112,7 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 			public String getFailureMessage() {
 				return String.format("Palette did not refresh to display '%s' resource", projectName);
 			}
-		});
+		}, 10000);
 	}
 
 }
