@@ -51,7 +51,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
 		Assert.assertNull(editor.getEditPart(HARD_LIMIT_1));
 	}
-	
+
 	/**
 	 * IDE-659
 	 * Adds, then terminates a component via chalkboard diagram. Verify it's no
@@ -182,7 +182,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1, 10000);
 
 		// delete component from REDHAWK Explorer
 		ScaExplorerTestUtils.terminateLocalResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
@@ -190,7 +190,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1, 10000);
 
 		// terminate chalkboard
 		ScaExplorerTestUtils.terminateWaveformFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
@@ -215,8 +215,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN_1);
 
 		// create connection between components via REDHAWK Explorer
-		ScaExplorerTestUtils.connectPortsInScaExplorer(bot, CHALKBOARD_PATH, "connection_1", SIGGEN_1, "dataFloat_out", HARD_LIMIT_1,
-			"dataFloat_in");
+		ScaExplorerTestUtils.connectPortsInScaExplorer(bot, CHALKBOARD_PATH, "connection_1", SIGGEN_1, "dataFloat_out", HARD_LIMIT_1, "dataFloat_in");
 		DiagramTestUtils.waitUntilConnectionDisplaysInDiagram(bot, editor, HARD_LIMIT);
 
 		// disconnect connection_1 via REDHAWK Explorer
@@ -308,30 +307,30 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		// wait for Chalkboard to be stopped
 		ScaExplorerTestUtils.waitUntilScaExplorerWaveformStopped(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
 	}
-	
+
 	/**
 	 * IDE-1205 Make sure properties match whether component is selected in diagram or REDHAWK Explorer.
 	 */
 	@Test
 	public void changePropertiesInScaExplorer() {
 		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
-		
+
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
-		
+
 		// Select component in REDHAWK explorer tree first
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1).select().click();
-		
+
 		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
 		SWTBotTreeItem magItem = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItem.cell(1), "100.0");
 		magItem.select().click(1);
 		gefBot.viewByTitle("Properties").bot().text().setText("50");
-		
+
 		// Click in diagram outside of component first
-		// Workaround for issue where diagram component does not populate 
+		// Workaround for issue where diagram component does not populate
 		// properties view if selected right after creation
 		editor.rootEditPart().click();
 		editor.click(SIGGEN_1);
@@ -351,9 +350,9 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
-		
+
 		// Click in diagram outside of component first
-		// Workaround for issue where diagram component does not populate 
+		// Workaround for issue where diagram component does not populate
 		// properties view if selected right after creation
 		editor.rootEditPart().click();
 		editor.click(SIGGEN_1);
@@ -362,12 +361,11 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		Assert.assertEquals(magItem.cell(1), "100.0");
 		magItem.select().click(1);
 		gefBot.viewByTitle("Properties").bot().text().setText("50");
-		
+
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1).select().click();
 		propTable = gefBot.viewByTitle("Properties").bot().tree();
 		magItem = propTable.getTreeItem("magnitude");
 		Assert.assertEquals("Property has wrong value", "50.0", magItem.cell(1));
 	}
-
 
 }
