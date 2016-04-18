@@ -211,8 +211,8 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
 
 		// verify components were added to the diagram
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN_1);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1, 10000);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN_1, 10000);
 
 		// create connection between components via REDHAWK Explorer
 		ScaExplorerTestUtils.connectPortsInScaExplorer(bot, CHALKBOARD_PATH, "connection_1", SIGGEN_1, "dataFloat_out", HARD_LIMIT_1, "dataFloat_in");
@@ -238,9 +238,9 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
 
 		// verify components were added to the diagram
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1, 10000);
 		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN, 10000);
 		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// verify hard limit stopped
