@@ -10,8 +10,14 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,7 +50,7 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
-		//verify existing component exists
+		// verify existing component exists
 		Assert.assertNotNull(editor.getEditPart(SIGGEN_1));
 
 		// Add component to diagram from palette
@@ -64,6 +70,78 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, DiagramType.GRAPHITI_CHALKBOARD);
 		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		Assert.assertNotNull(editor.getEditPart(HARD_LIMIT_1));
+	}
+
+	/**
+	 * IDE-1556
+	 * Verify that user can open diagram editors for multiple running instances of the same waveform
+	 */
+	@Test
+	public void multipleWaveforms() {
+
+		// Start with all editors closed
+		bot.closeAllEditors();
+
+		// Launch a second waveform in addition to the default launched via the abstract parent class
+		// Need to perform some magic, since all of the utility methods assume only one instance of a waveform will be
+		// launched at any one time
+		SWTBotView scaExplorerView = bot.viewByTitle("REDHAWK Explorer");
+		final SWTBotTreeItem sandbox = scaExplorerView.bot().tree().getTreeItem("Sandbox");
+		final int origSize = sandbox.getNodes().size();
+
+		ScaExplorerTestUtils.launchWaveformFromTargetSDR(gefBot, LOCAL_WAVEFORM);
+
+		bot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				if (sandbox.getNodes().size() > origSize) {
+					return true;
+				}
+				return false;
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Second waveform never launched";
+			}
+		}, 10000);
+
+		List<String> waveformFullNames = new ArrayList<String>();
+		for (String node : sandbox.getNodes()) {
+			if (node.contains(LOCAL_WAVEFORM)) {
+				waveformFullNames.add(node);
+			}
+		}
+
+		Assert.assertTrue("There should be two instances of the test waveform launched", waveformFullNames.size() == 2);
+		for (String waveform : waveformFullNames) {
+			ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveform, DiagramType.GRAPHITI_CHALKBOARD);
+		}
+
+		for (final String waveform : waveformFullNames) {
+			bot.waitUntil(new DefaultCondition() {
+
+				@Override
+				public boolean test() throws Exception {
+					try {
+						gefBot.gefEditor(waveform);
+						return true;
+					} catch (WidgetNotFoundException e) {
+						return false;
+					}
+				}
+
+				@Override
+				public String getFailureMessage() {
+					return "Editor failed to open for " + waveform;
+				}
+			});
+		}
+
+		// Release the second waveform so that the aftertest assertion doesn't fail
+		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveformFullNames.get(1));
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveformFullNames.get(1));
 	}
 
 	/**
@@ -88,7 +166,7 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 		editor.setFocus();
 
-		//verify waveform elements exist
+		// verify waveform elements exist
 		Assert.assertNotNull(editor.getEditPart(comp1));
 		Assert.assertNotNull(editor.getEditPart(comp2));
 		SWTBotGefEditPart providesPort = DiagramTestUtils.getDiagramProvidesPort(editor, comp2);
