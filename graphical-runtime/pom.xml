@@ -234,8 +234,6 @@
             <SDRROOT>${SDRROOT}</SDRROOT>
             <OSSIEHOME>${env.OSSIEHOME}</OSSIEHOME>
           </environmentVariables>
-          <argLine>${test-argLine}</argLine>
-          <appArgLine>-nl en</appArgLine>
           <bundleStartLevel>
             <bundle>
               <id>org.eclipse.equinox.ds</id>
