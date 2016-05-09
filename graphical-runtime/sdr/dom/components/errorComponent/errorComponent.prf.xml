@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="errorOnConfigure" mode="readwrite" type="string">
+    <description>Triggers an InvalidConfiguration or PartialConfiguration exception (depending on if combined with other properties)</description>
+    <value>abc</value>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="partialConfigError" mode="readwrite" type="string">
+    <description>If a configure call includes this property, you'll get a PartialConfiguration exception for ONLY this property.</description>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="okToConfigure" mode="readwrite" type="string">
+    <value>def</value>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="enableErrors" mode="readwrite" type="boolean">
+    <description>Enable/disable reporting errors</description>
+    <value>false</value>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+</properties>
