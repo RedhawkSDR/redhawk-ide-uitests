@@ -10,6 +10,7 @@
  */
 package gov.redhawk.ide.ui.tests.runtime;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
@@ -76,7 +77,7 @@ public class PropertyErrorTest extends UITest {
 	}
 
 	@After
-	public void after() throws Exception {
+	public void after() throws CoreException {
 		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMP_1);
 		super.after();
 	}

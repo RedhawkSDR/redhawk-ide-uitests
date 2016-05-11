@@ -10,6 +10,8 @@
  */
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
+import org.eclipse.core.runtime.CoreException;
+
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractPaletteTest;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.ComponentDescription;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.util.FilterInfo;
@@ -30,7 +32,7 @@ public class ChalkboardPaletteTest extends AbstractPaletteTest {
 	}
 
 	@Override
-	public void after() throws Exception {
+	public void after() throws CoreException {
 		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, AbstractGraphitiChalkboardTest.CHALKBOARD_PARENT_PATH, AbstractGraphitiChalkboardTest.CHALKBOARD);
 		ScaExplorerTestUtils.waitUntilScaExplorerWaveformEmpty(gefBot, AbstractGraphitiChalkboardTest.CHALKBOARD_PARENT_PATH, AbstractGraphitiChalkboardTest.CHALKBOARD);
 		ConsoleUtils.removeTerminatedLaunches(bot);

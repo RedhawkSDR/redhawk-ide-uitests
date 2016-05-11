@@ -10,6 +10,7 @@
  */
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.After;
@@ -37,7 +38,7 @@ public class LargeWaveformTest extends UITest {
 	}
 
 	@After
-	public void after() throws Exception {
+	public void after() throws CoreException {
 		waitUntilEditorsClose();
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox" }, WAVEFORM_NAME);
 		bot.waitUntil(new WaitForLaunchTermination());

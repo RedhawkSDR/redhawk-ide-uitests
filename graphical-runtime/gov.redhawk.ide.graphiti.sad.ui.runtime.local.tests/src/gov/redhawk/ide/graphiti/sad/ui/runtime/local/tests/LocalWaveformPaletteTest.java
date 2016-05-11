@@ -10,6 +10,7 @@
  */
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractPaletteTest;
@@ -37,7 +38,7 @@ public class LocalWaveformPaletteTest extends AbstractPaletteTest {
 	}
 
 	@Override
-	public void after() throws Exception {
+	public void after() throws CoreException {
 		// Release the waveform if it exists
 		try {
 			ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM_PARENT_PATH, AbstractGraphitiLocalWaveformRuntimeTest.LOCAL_WAVEFORM);

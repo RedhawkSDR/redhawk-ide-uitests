@@ -10,6 +10,7 @@
  */
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.Assert;
@@ -38,7 +39,7 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 	}
 
 	@Override
-	public void after() throws Exception {
+	public void after() throws CoreException {
 		ScaExplorerTestUtils.terminateFromScaExplorer(gefBot, AbstractDeviceManagerSandboxTest.CHALKBOARD_PARENT_PATH, AbstractDeviceManagerSandboxTest.DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(gefBot, AbstractDeviceManagerSandboxTest.CHALKBOARD_PARENT_PATH, AbstractDeviceManagerSandboxTest.DEVICE_MANAGER);
 		ConsoleUtils.removeTerminatedLaunches(bot);

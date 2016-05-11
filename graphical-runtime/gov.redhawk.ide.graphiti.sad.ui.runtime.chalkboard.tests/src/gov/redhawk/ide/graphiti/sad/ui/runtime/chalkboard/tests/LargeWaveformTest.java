@@ -10,6 +10,7 @@
  */
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.gef.finder.SWTGefBot;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
@@ -57,7 +58,7 @@ public class LargeWaveformTest extends UITest {
 	}
 
 	@After
-	public void after() throws Exception {
+	public void after() throws CoreException {
 		waitUntilEditorEmpty();
 		waitUntilChalkboardTreeEmpty();
 		bot.waitUntil(new WaitForLaunchTermination());

@@ -10,6 +10,7 @@
  */
 package gov.redhawk.ide.ui.tests.runtime;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
@@ -40,7 +41,7 @@ public class WaveformTest extends UIRuntimeTest {
 	}
 	
 	@Override
-	public void after() throws Exception {
+	public void after() throws CoreException {
 		this.scaExplorerViewBot = null;
 
 		super.after();
