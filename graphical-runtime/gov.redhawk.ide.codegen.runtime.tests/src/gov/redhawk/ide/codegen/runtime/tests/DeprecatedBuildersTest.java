@@ -20,9 +20,9 @@ import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 
-public class DeprecatedBuildersTest extends UITest {
+public class DeprecatedBuildersTest extends UIRuntimeTest {
 
 	/**
 	 * Tests that deprecated builders are removed from a project when we perform code generation.

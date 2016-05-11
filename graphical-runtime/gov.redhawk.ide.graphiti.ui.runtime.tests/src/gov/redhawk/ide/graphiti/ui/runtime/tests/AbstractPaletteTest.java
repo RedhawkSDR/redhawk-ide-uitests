@@ -14,12 +14,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.util.FilterInfo;
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.diagram.PaletteUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 
-public abstract class AbstractPaletteTest extends UITest {
+public abstract class AbstractPaletteTest extends UIRuntimeTest {
 
 	protected RHSWTGefBot gefBot = new RHSWTGefBot(); // SUPPRESS CHECKSTYLE shared variable
 

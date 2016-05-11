@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.model.sca.ScaAbstractProperty;
@@ -49,7 +49,7 @@ import gov.redhawk.model.sca.impl.ScaStructPropertyImpl;
 import gov.redhawk.model.sca.impl.ScaStructSequencePropertyImpl;
 import mil.jpeojtrs.sca.prf.AccessType;
 
-public abstract class AbstractPropertiesViewRuntimeTest extends UITest {
+public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 
 	/**
 	 * Used in the property edit tests. Must be a String numeral, to be valid with both all property types. Booleans are

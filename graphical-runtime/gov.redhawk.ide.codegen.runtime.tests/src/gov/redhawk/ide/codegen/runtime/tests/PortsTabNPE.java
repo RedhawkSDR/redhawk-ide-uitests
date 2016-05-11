@@ -22,10 +22,10 @@ import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 
-public class PortsTabNPE extends UITest {
+public class PortsTabNPE extends UIRuntimeTest {
 
 	private boolean jfaceError;
 

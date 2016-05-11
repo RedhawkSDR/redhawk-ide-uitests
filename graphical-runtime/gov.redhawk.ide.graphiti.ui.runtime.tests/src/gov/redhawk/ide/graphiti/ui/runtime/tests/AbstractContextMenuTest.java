@@ -21,14 +21,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.MenuUtils;
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.logging.ui.LogLevels;
 
-public abstract class AbstractContextMenuTest extends UITest {
+public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 
 	/**
 	 * The test component should be capable of standard runtime operations (start, stop, logging, etc). It should also

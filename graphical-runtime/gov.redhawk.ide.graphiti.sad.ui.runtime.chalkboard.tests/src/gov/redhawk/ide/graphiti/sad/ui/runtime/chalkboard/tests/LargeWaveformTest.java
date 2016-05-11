@@ -20,14 +20,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
-public class LargeWaveformTest extends UITest {
+public class LargeWaveformTest extends UIRuntimeTest {
 
 	private static final String SIG_GEN = "rh.SigGen";
 	private static final String HARD_LIMIT = "rh.HardLimit";

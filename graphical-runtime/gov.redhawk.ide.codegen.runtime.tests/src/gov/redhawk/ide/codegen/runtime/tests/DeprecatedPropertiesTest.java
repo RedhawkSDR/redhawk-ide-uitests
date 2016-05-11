@@ -30,7 +30,7 @@ import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.MenuUtils;
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import mil.jpeojtrs.sca.prf.AccessType;
 import mil.jpeojtrs.sca.prf.ConfigurationKind;
@@ -48,7 +48,7 @@ import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 /**
  * Test upgrading projects with deprecated properties (kinds 'configure' and 'execparam').
  */
-public class DeprecatedPropertiesTest extends UITest {
+public class DeprecatedPropertiesTest extends UIRuntimeTest {
 
 	private final String compName = "DeprecatedPropertiesTest";
 	private final String compLanguage = "Python";

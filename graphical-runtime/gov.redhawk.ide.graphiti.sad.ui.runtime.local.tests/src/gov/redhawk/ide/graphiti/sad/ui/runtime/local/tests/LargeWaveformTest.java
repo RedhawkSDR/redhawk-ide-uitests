@@ -17,7 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
@@ -26,7 +26,7 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 /**
  * IDE-1451 - Error dialogs when opening sandbox waveform/components. Tested in all tests by virtue of opening the diagram.
  */
-public class LargeWaveformTest extends UITest {
+public class LargeWaveformTest extends UIRuntimeTest {
 
 	private static final String WAVEFORM_NAME = "LargeWaveform";
 

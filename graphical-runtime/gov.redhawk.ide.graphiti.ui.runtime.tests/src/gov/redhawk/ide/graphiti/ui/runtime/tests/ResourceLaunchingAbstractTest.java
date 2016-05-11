@@ -23,14 +23,14 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.logging.ui.LogLevels;
 
-public abstract class ResourceLaunchingAbstractTest extends UITest {
+public abstract class ResourceLaunchingAbstractTest extends UIRuntimeTest {
 
 	private boolean assertionError;
 

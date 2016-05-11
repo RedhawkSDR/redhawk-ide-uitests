@@ -21,12 +21,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 
 @SuppressWarnings("restriction")
-public abstract class AbstractPropertiesViewTargetSdrTest extends UITest {
+public abstract class AbstractPropertiesViewTargetSdrTest extends UIRuntimeTest {
 
 	protected RHSWTGefBot gefBot; // SUPPRESS CHECKSTYLE shared variable
 	protected String PROP_TAB_NAME; // SUPPRESS CHECKSTYLE shared variable

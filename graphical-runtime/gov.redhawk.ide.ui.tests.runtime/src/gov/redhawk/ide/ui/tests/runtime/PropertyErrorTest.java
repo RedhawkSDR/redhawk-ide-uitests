@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
@@ -30,7 +30,7 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
  * IDE-1581
  * Tests error scenarios with setting/changing properties.
  */
-public class PropertyErrorTest extends UITest {
+public class PropertyErrorTest extends UIRuntimeTest {
 
 	private static final String COMP = "errorComponent";
 	private static final String COMP_INST = "python";

@@ -25,10 +25,10 @@ import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 
-public class CodeGeneratorVersionTest extends UITest {
+public class CodeGeneratorVersionTest extends UIRuntimeTest {
 
 	private final String compName = "CodegenVersionTest";
 	private final String compSpd = compName + ".spd.xml";
