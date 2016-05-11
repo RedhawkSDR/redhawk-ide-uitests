@@ -96,8 +96,8 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 		// Rebuild the project with the new modifications
 		StandardTestActions.buildAll();
 
-		// Wait for the build to finish and any error markers to go away, then close editors
-		// One second sleep to make sure the error markers have shown up
+		// Wait for the build to finish
+		// One second sleep to make sure the build has started
 		try {
 			Thread.sleep(1000);
 			textEditor.bot().waitUntil(new WaitForBuild(), 30000);
@@ -107,13 +107,10 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 			Assert.fail("Failed while waiting for the build to complete for: " + projectName);
 		}
 
-		// One second sleep to make sure the error markers have shown up
+		// Wait for any error markers to go away
 		try {
-			Thread.sleep(1000);
 			textEditor.bot().waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), 120000);
 		} catch (TimeoutException e) {
-			Assert.fail("Failed due severity markers being present on: " + projectName);
-		} catch (InterruptedException e) {
 			Assert.fail("Failed due severity markers being present on: " + projectName);
 		}
 
