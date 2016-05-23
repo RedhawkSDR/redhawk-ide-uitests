@@ -26,8 +26,10 @@ import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.graphiti.dcd.internal.ui.editor.GraphitiDcdExplorerEditor;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.model.sca.impl.ScaDeviceManagerImpl;
 import mil.jpeojtrs.sca.dcd.DcdConnectInterface;
 
 public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
@@ -47,6 +49,13 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		SWTBotEditor nodeEditor = gefBot.editorByTitle(DEVICE_MANAGER);
 		editor = gefBot.gefEditor(DEVICE_MANAGER);
 		editor.setFocus();
+
+		// IDE-1194
+		Assert.assertEquals("Editor class should be GraphitiDcdExplorerEditor", GraphitiDcdExplorerEditor.class,
+			editor.getReference().getPart(false).getClass());
+		GraphitiDcdExplorerEditor editorPart = (GraphitiDcdExplorerEditor) editor.getReference().getPart(false);
+		Assert.assertEquals("DcdExplorer editors should have ScaDeviceManager as their input", ScaDeviceManagerImpl.class,
+			editorPart.getDeviceManager().getClass());
 
 		// IDE-1089 test
 		nodeEditor.bot().cTabItem("DeviceManager.dcd.xml").activate();

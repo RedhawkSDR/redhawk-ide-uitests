@@ -16,7 +16,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.debug.ScaDebugPlugin;
+import gov.redhawk.ide.debug.impl.LocalScaDeviceManagerImpl;
 import gov.redhawk.ide.graphiti.dcd.ext.impl.DeviceShapeImpl;
+import gov.redhawk.ide.graphiti.dcd.internal.ui.editor.GraphitiDcdSandboxEditor;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
@@ -37,6 +39,12 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 	@Test
 	public void launchDevice() {
 		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
+
+		// IDE-1194
+		Assert.assertEquals("Editor class should be GraphitiDcdSandboxEditor", GraphitiDcdSandboxEditor.class, editor.getReference().getPart(false).getClass());
+		GraphitiDcdSandboxEditor editorPart = (GraphitiDcdSandboxEditor) editor.getReference().getPart(false);
+		Assert.assertEquals("Dcd Sandbox editors should have LocalScaDeviceManager as their input", LocalScaDeviceManagerImpl.class,
+			editorPart.getDeviceManager().getClass());
 
 		// Add device to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
