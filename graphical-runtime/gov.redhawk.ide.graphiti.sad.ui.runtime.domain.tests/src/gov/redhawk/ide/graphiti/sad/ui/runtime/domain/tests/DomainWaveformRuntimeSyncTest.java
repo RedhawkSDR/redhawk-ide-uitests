@@ -10,13 +10,6 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.tests;
 
-import gov.redhawk.ide.swtbot.ViewUtils;
-import gov.redhawk.ide.swtbot.condition.WaitForCellValue;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
-
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
@@ -24,12 +17,22 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.debug.impl.LocalScaWaveformImpl;
+import gov.redhawk.ide.graphiti.sad.internal.ui.editor.GraphitiWaveformSandboxEditor;
+import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.condition.WaitForCellValue;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
+
 public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWaveformRuntimeTest {
 
 	/**
 	 * IDE-672
-	 * Starts/stops them from Diagram and verifies
-	 * components in REDHAWK Explorer reflect changes
+	 * Starts/stops them from Diagram and verifies components in REDHAWK Explorer reflect changes
+	 * 
+	 * IDE-1120 - Ensure check that class hierarchy and input type are as expected
 	 * 
 	 */
 	@Test
@@ -40,6 +43,14 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		bot.closeAllEditors();
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), DiagramType.GRAPHITI_CHALKBOARD);
 		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
+
+		// IDE-1120
+		Assert.assertEquals("Editor class should be GraphitiWaveformSandboxEditor", GraphitiWaveformSandboxEditor.class,
+			editor.getReference().getPart(false).getClass());
+		GraphitiWaveformSandboxEditor editorPart = (GraphitiWaveformSandboxEditor) editor.getReference().getPart(false);
+		Assert.assertEquals("Chalkboard editors in a domain should have LocalScaWaveform as their input", LocalScaWaveformImpl.class,
+			editorPart.getWaveform().getClass());
+
 		editor.setFocus();
 
 		// verify hard limit stopped
@@ -158,13 +169,13 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), DiagramType.GRAPHITI_CHALKBOARD);
 		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
 		editor.setFocus();
-		
+
 		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
 		propView.show();
-		
+
 		// Select component in REDHAWK explorer tree first
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, waveformPath, SIGGEN_1).select().click();
-		
+
 		// Note: when the component is selected via the explorer view, the tab name is "Properties" instead of
 		// "Component Properties"
 		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
@@ -174,14 +185,15 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		gefBot.viewByTitle("Properties").bot().text().setText("50");
 
 		// Click in diagram outside of component first
-		// Workaround for issue where diagram component does not populate 
+		// Workaround for issue where diagram component does not populate
 		// properties view if selected right after creation
 		editor.rootEditPart().click();
 		editor.click(SIGGEN);
 		propTable = propView.bot().tree();
 		final SWTBotTreeItem magItemDiagram = propTable.getTreeItem("magnitude");
 
-		// Wait for the property to update - there's a delay since we're going chalkboard -> explorer for a component in a domain
+		// Wait for the property to update - there's a delay since we're going chalkboard -> explorer for a component in
+		// a domain
 		bot.waitUntil(new WaitForCellValue(magItemDiagram, 1, "50.0"), 15000);
 	}
 
@@ -196,26 +208,28 @@ public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWavefor
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveFormFullName(), DiagramType.GRAPHITI_CHALKBOARD);
 		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
 		editor.setFocus();
-		
+
 		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
 		propView.show();
 
 		// TODO: Click in diagram outside of component first
-		// Workaround for issue where diagram component does not populate 
+		// Workaround for issue where diagram component does not populate
 		// properties view if selected right after creation
-		editor.rootEditPart().click();		editor.click(SIGGEN);
+		editor.rootEditPart().click();
+		editor.click(SIGGEN);
 
 		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Component Properties");
 		SWTBotTreeItem magItemDiagram = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItemDiagram.cell(1), "100.0");
 		magItemDiagram.select().click(1);
 		propView.bot().text().setText("50");
-		
+
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, waveformPath, SIGGEN_1).select().click();
 		propTable = propView.bot().tree();
 		final SWTBotTreeItem magItemExplorer = propTable.getTreeItem("magnitude");
-		
-		// Wait for the property to update - there's a delay since we're going chalkboard -> explorer for a component in a domain
+
+		// Wait for the property to update - there's a delay since we're going chalkboard -> explorer for a component in
+		// a domain
 		bot.waitUntil(new WaitForCellValue(magItemExplorer, 1, "50.0"), 15000);
 	}
 }
