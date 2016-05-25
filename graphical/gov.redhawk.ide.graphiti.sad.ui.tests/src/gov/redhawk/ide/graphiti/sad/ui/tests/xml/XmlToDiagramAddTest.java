@@ -30,6 +30,7 @@ import gov.redhawk.ide.graphiti.sad.ext.ComponentShape;
 import gov.redhawk.ide.graphiti.sad.ui.tests.SadTestUtils;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.graphiti.ui.tests.ComponentDescription;
+import gov.redhawk.ide.graphiti.ui.tests.util.XmlTestUtils;
 import gov.redhawk.ide.graphiti.ui.tests.xml.AbstractXmlToDiagramAddTest;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
@@ -306,8 +307,8 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 	}
 
 	@Override
-	protected EditorType getEditorType() {
-		return EditorType.SAD;
+	protected XmlTestUtils.EditorType getEditorType() {
+		return XmlTestUtils.EditorType.SAD;
 	}
 
 }

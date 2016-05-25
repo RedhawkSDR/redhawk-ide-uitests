@@ -10,17 +10,11 @@
  */
 package gov.redhawk.ide.graphiti.ui.tests.xml;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.junit.Assert;
@@ -29,6 +23,7 @@ import org.junit.Test;
 import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
 import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
 import gov.redhawk.ide.graphiti.ui.tests.ComponentDescription;
+import gov.redhawk.ide.graphiti.ui.tests.util.XmlTestUtils;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -37,7 +32,6 @@ import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
 import mil.jpeojtrs.sca.dcd.DcdComponentPlacement;
 import mil.jpeojtrs.sca.dcd.DcdConnectInterface;
 import mil.jpeojtrs.sca.dcd.DcdFactory;
-import mil.jpeojtrs.sca.dcd.DcdPackage;
 import mil.jpeojtrs.sca.dcd.DeviceConfiguration;
 import mil.jpeojtrs.sca.partitioning.ComponentFile;
 import mil.jpeojtrs.sca.partitioning.ComponentFileRef;
@@ -46,9 +40,7 @@ import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 import mil.jpeojtrs.sca.sad.SadComponentPlacement;
 import mil.jpeojtrs.sca.sad.SadConnectInterface;
 import mil.jpeojtrs.sca.sad.SadFactory;
-import mil.jpeojtrs.sca.sad.SadPackage;
 import mil.jpeojtrs.sca.sad.SoftwareAssembly;
-import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public abstract class AbstractXmlToDiagramAddTest extends UITest {
 
@@ -73,12 +65,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 	 */
 	protected abstract RHBotGefEditor createEditor(String name);
 
-	protected enum EditorType {
-		SAD,
-		DCD
-	};
-
-	protected abstract EditorType getEditorType();
+	protected abstract XmlTestUtils.EditorType getEditorType();
 
 	private SoftwareAssembly sad;
 	private DeviceConfiguration dcd;
@@ -93,12 +80,17 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 		final String TEST_NAME = "addComponentInXml";
 
 		RHBotGefEditor editor = createEditor(TEST_NAME);
-		getModelFromEditorXml(editor, TEST_NAME);
+
+		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
+			sad = (SoftwareAssembly) XmlTestUtils.getModelFromEditorXml(editor, TEST_NAME, getEditorType());
+		} else {
+			dcd = (DeviceConfiguration) XmlTestUtils.getModelFromEditorXml(editor, TEST_NAME, getEditorType());
+		}
 
 		// Add two components
 		ComponentFile compFileA = createComponentFile(compA);
 		ComponentFile compFileB = createComponentFile(compB);
-		if (getEditorType() == EditorType.SAD) {
+		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
 			if (sad.getComponentFiles() == null) {
 				sad.setComponentFiles(PartitioningFactory.eINSTANCE.createComponentFiles());
 			}
@@ -108,6 +100,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 			List<SadComponentPlacement> placements = sad.getPartitioning().getComponentPlacement();
 			placements.add(createSadPlacement(compFileA, compA.getShortName(1), 0));
 			placements.add(createSadPlacement(compFileB, compB.getShortName(1), 1));
+			XmlTestUtils.writeModelToXmlEditor(editor, TEST_NAME, getEditorType(), sad);
 		} else {
 			if (dcd.getComponentFiles() == null) {
 				dcd.setComponentFiles(PartitioningFactory.eINSTANCE.createComponentFiles());
@@ -118,8 +111,8 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 			List<DcdComponentPlacement> placements = dcd.getPartitioning().getComponentPlacement();
 			placements.add(createDcdPlacement(compFileA, compA.getShortName(1)));
 			placements.add(createDcdPlacement(compFileB, compB.getShortName(1)));
+			XmlTestUtils.writeModelToXmlEditor(editor, TEST_NAME, getEditorType(), dcd);
 		}
-		writeModelToXmlEditor(editor, TEST_NAME);
 		MenuUtils.save(editor);
 
 		// Confirm shapes in the diagram
@@ -134,7 +127,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 		Assert.assertEquals(compB.getFullName(), shapeB.getOuterText().getValue());
 		Assert.assertEquals(compB.getShortName(1), shapeB.getInnerText().getValue());
 		Assert.assertTrue(shapeB.getProvidesPortsContainerShape().getChildren().size() > 1);
-		if (getEditorType() == EditorType.SAD) {
+		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
 			ComponentShapeImpl componentShapeA = (ComponentShapeImpl) shapeA;
 			Assert.assertEquals("0", componentShapeA.getStartOrderText().getValue());
 			ComponentShapeImpl componentShapeB = (ComponentShapeImpl) shapeB;
@@ -155,8 +148,13 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, compA.getFullName(), 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, compB.getFullName(), 300, 0);
 
-		getModelFromEditorXml(editor, TEST_NAME);
-		if (getEditorType() == EditorType.SAD) {
+		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
+			sad = (SoftwareAssembly) XmlTestUtils.getModelFromEditorXml(editor, TEST_NAME, getEditorType());
+		} else {
+			dcd = (DeviceConfiguration) XmlTestUtils.getModelFromEditorXml(editor, TEST_NAME, getEditorType());
+		}
+
+		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
 			if (sad.getConnections() == null) {
 				sad.setConnections(SadFactory.eINSTANCE.createSadConnections());
 			}
@@ -164,6 +162,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 			SadConnectInterface connection = SadFactory.eINSTANCE.createSadConnectInterface("connection_1", compA.getOutPort(0), compA.getShortName(1),
 				compB.getInPort(0), compB.getShortName(1));
 			connections.add(connection);
+			XmlTestUtils.writeModelToXmlEditor(editor, TEST_NAME, getEditorType(), sad);
 		} else {
 			if (dcd.getConnections() == null) {
 				dcd.setConnections(DcdFactory.eINSTANCE.createDcdConnections());
@@ -172,8 +171,8 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 			DcdConnectInterface connection = DcdFactory.eINSTANCE.createDcdConnectInterface("connection_1", compA.getOutPort(0),
 				TEST_NAME + ":" + compA.getShortName(1), compB.getInPort(0), TEST_NAME + ":" + compB.getShortName(1));
 			connections.add(connection);
+			XmlTestUtils.writeModelToXmlEditor(editor, TEST_NAME, getEditorType(), dcd);
 		}
-		writeModelToXmlEditor(editor, TEST_NAME);
 		MenuUtils.save(editor);
 
 		// Confirm connections in the diagram
@@ -187,37 +186,8 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 		Assert.assertEquals(usesConnections.get(0).part(), providesConnections.get(0).part());
 	}
 
-	private void getModelFromEditorXml(SWTBotEditor editor, String testName) throws IOException {
-		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
-		if (getEditorType() == EditorType.SAD) {
-			DiagramTestUtils.openTabInEditor(editor, testName + ".sad.xml");
-			String editorText = editor.toTextEditor().getText();
-			Resource resource = resourceSet.createResource(URI.createURI("mem://temp.sad.xml"), SadPackage.eCONTENT_TYPE);
-			resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
-			sad = SoftwareAssembly.Util.getSoftwareAssembly(resource);
-		} else {
-			DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
-			String editorText = editor.toTextEditor().getText();
-			Resource resource = resourceSet.createResource(URI.createURI("mem://DeviceManager.dcd.xml"), DcdPackage.eCONTENT_TYPE);
-			resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
-			dcd = DeviceConfiguration.Util.getDeviceConfiguration(resource);
-		}
-	}
-
-	private void writeModelToXmlEditor(SWTBotEditor editor, String testName) throws IOException {
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		if (getEditorType() == EditorType.SAD) {
-			DiagramTestUtils.openTabInEditor(editor, testName + ".sad.xml");
-			sad.eResource().save(outputStream, null);
-		} else {
-			DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
-			dcd.eResource().save(outputStream, null);
-		}
-		editor.toTextEditor().setText(outputStream.toString());
-	}
-
 	private ComponentFile createComponentFile(ComponentDescription description) {
-		if (getEditorType() == EditorType.SAD) {
+		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
 			return SadFactory.eINSTANCE.createComponentFile(description.getShortName(), getPath(description));
 		} else {
 			return DcdFactory.eINSTANCE.createComponentFile(description.getShortName(), getPath(description));

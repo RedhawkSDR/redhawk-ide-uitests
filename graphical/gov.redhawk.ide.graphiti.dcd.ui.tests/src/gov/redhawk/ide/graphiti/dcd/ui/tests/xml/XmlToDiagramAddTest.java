@@ -11,6 +11,7 @@
 package gov.redhawk.ide.graphiti.dcd.ui.tests.xml;
 
 import gov.redhawk.ide.graphiti.ui.tests.ComponentDescription;
+import gov.redhawk.ide.graphiti.ui.tests.util.XmlTestUtils;
 import gov.redhawk.ide.graphiti.ui.tests.xml.AbstractXmlToDiagramAddTest;
 import gov.redhawk.ide.swtbot.NodeUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -46,7 +47,7 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 	}
 
 	@Override
-	protected EditorType getEditorType() {
-		return EditorType.DCD;
+	protected XmlTestUtils.EditorType getEditorType() {
+		return XmlTestUtils.EditorType.DCD;
 	}
 }
