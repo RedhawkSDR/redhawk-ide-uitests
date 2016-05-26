@@ -40,10 +40,8 @@
       <componentinstantiation id="HardLimit_1" startorder="1">
         <usagename>HardLimit_1</usagename>
         <componentproperties>
-          <structref refid="limits">
-            <simpleref refid="limits::upper_limit" value="90.0"/>
-            <simpleref refid="limits::lower_limit" value="-30.0"/>
-          </structref>
+          <simpleref refid="upper_limit" value="90.0"/>
+          <simpleref refid="lower_limit" value="-30.0"/>
         </componentproperties>
         <findcomponent>
           <namingservice name="HardLimit_1"/>
@@ -84,7 +82,6 @@
     </port>
   </externalports>
   <externalproperties>
-    <property comprefid="HardLimit_1" propid="limits" externalpropid="external_limits"/>
     <property comprefid="SigGen_1" propid="sri_blocking" externalpropid="external_sri_blocking"/>
     <property comprefid="SigGen_1" propid="frequency" externalpropid="external_frequency"/>
   </externalproperties>

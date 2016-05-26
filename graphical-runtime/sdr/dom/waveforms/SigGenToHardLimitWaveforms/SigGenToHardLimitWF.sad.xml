@@ -40,10 +40,8 @@
       <componentinstantiation id="HardLimit_1" startorder="1">
         <usagename>HardLimit_1</usagename>
         <componentproperties>
-          <structref refid="limits">
-            <simpleref refid="limits::upper_limit" value="90.0"/>
-            <simpleref refid="limits::lower_limit" value="-30.0"/>
-          </structref>
+          <simpleref refid="upper_limit" value="90.0"/>
+          <simpleref refid="lower_limit" value="-30.0"/>
         </componentproperties>
         <findcomponent>
           <namingservice name="HardLimit_1"/>
