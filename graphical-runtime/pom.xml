@@ -33,7 +33,7 @@
     <swt-bot>http://download.eclipse.org/technology/swtbot/releases/latest/</swt-bot>
     <jacorb>http://download.redhawksdr.org/jacorb/updates/stable</jacorb>
     <pydev>http://pydev.org/updates/</pydev>
-    <nebula>http://download.eclipse.org/technology/nebula/archives/Q32014/release</nebula>
+    <nebula>http://archive.eclipse.org/technology/nebula/Q32014/release/</nebula>
     <idl-editor>http://download.redhawksdr.org/idl-editor</idl-editor>
     <svn-connector>http://pinkman/nexus/content/repositories/subversive-connector</svn-connector>
     <subversive>http://pinkman/nexus/content/repositories/subversive</subversive>
