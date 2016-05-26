@@ -21,6 +21,7 @@ import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
@@ -56,43 +57,51 @@ public class WaveformTest extends UIRuntimeTest {
 		String waveformNameInSandbox = waveformTreeItem.getText();
 		String[] nodeParentPath = { "Sandbox", waveformNameInSandbox };
 		waveformTreeItem.expand(); // must expand otherwise will not see sub-items (e.g. Components) underneath this TreeItem)
+		ConsoleUtils.disableAutoShowConsole(bot);
+
+		SWTBotView propertiesView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+		propertiesView.show();
 
 		// check first Component's (SigGen) properties
 		SWTBotTreeItem compTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodeParentPath, "SigGen_1");
 		compTreeItem.select();
 
-		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
-		SWTBotTree propertiesTree = bot.viewByTitle("Properties").bot().tree();
-
+		SWTBotTree propertiesTree = propertiesView.bot().tree();
 		SWTBotTreeItem[] allItems = propertiesTree.getAllItems();
+		int found = 0;
 		for (SWTBotTreeItem item : allItems) {
 			String cellValue = item.cell(1);
 			if ("frequency".equals(item.getText())) {
+				found++;
 				Assert.assertEquals("SAD overridden value for frequency", "400.0 Hz", cellValue);
 			} else if ("magnitude".equals(item.getText())) {
+				found++;
 				Assert.assertEquals("SAD overridden value for magnitude", "120.0", cellValue);
 			} else if ("stream_id".equals(item.getText())) {
+				found++;
 				Assert.assertEquals("SAD overridden value for stream_id", "SigGenStreamFromWF", cellValue);
 			}
 		}
+		Assert.assertEquals(3, found);
 
 		// check second Component's (HardLimit) properties
 		compTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodeParentPath, "HardLimit_1");
 		compTreeItem.select();
 
-		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
-		propView.show();
-		propertiesTree = propView.bot().tree();
-
-		SWTBotTreeItem limitsTreeItem = propertiesTree.expandNode("limits");
-		for (SWTBotTreeItem item : limitsTreeItem.getItems()) {
+		propertiesTree = propertiesView.bot().tree();
+		allItems = propertiesTree.getAllItems();
+		found = 0;
+		for (SWTBotTreeItem item : allItems) {
 			String cellValue = item.cell(1);
 			if ("lower_limit".equals(item.getText())) {
+				found++;
 				Assert.assertEquals("SAD overridden value for lower_limit", "-30.0", cellValue);
 			} else if ("upper_limit".equals(item.getText())) {
+				found++;
 				Assert.assertEquals("SAD overridden value for upper_limit", "90.0", cellValue);
 			}
 		}
+		Assert.assertEquals(2, found);
 
 		// cleanup
 		releaseWaveform(waveformTreeItem);
@@ -108,44 +117,51 @@ public class WaveformTest extends UIRuntimeTest {
 		String waveformNameInSandbox = waveformTreeItem.getText();
 		String[] nodeParentPath = { "Sandbox", waveformNameInSandbox };
 		waveformTreeItem.expand(); // must expand otherwise will not see sub-items (e.g. Components) underneath this TreeItem)
+		ConsoleUtils.disableAutoShowConsole(bot);
+
+		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+		propView.show();
 
 		// check first Component's (SigGen) properties
 		SWTBotTreeItem compTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodeParentPath, "SigGen_1");
 		compTreeItem.select();
 
-		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
-		propView.show();
 		SWTBotTree propertiesTree = propView.bot().tree();
-
 		SWTBotTreeItem[] allItems = propertiesTree.getAllItems();
+		int found = 0;
 		for (SWTBotTreeItem item : allItems) {
 			String cellValue = item.cell(1);
 			if ("frequency".equals(item.getText())) {
+				found++;
 				Assert.assertEquals("SAD overridden value for frequency", "400.0 Hz", cellValue);
 			} else if ("magnitude".equals(item.getText())) {
+				found++;
 				Assert.assertEquals("SAD overridden value for magnitude", "120.0", cellValue);
 			} else if ("stream_id".equals(item.getText())) {
+				found++;
 				Assert.assertEquals("SAD overridden value for stream_id", "SigGenStreamFromWF", cellValue);
 			}
 		}
+		Assert.assertEquals(3, found);
 
 		// check second Component's (HardLimit) properties
 		compTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodeParentPath, "HardLimit_1");
 		compTreeItem.select();
 
-		propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
-		propView.show();
 		propertiesTree = propView.bot().tree();
-
-		SWTBotTreeItem limitsTreeItem = propertiesTree.expandNode("limits");
-		for (SWTBotTreeItem item : limitsTreeItem.getItems()) {
+		allItems = propertiesTree.getAllItems();
+		found = 0;
+		for (SWTBotTreeItem item : allItems) {
 			String cellValue = item.cell(1);
 			if ("lower_limit".equals(item.getText())) {
+				found++;
 				Assert.assertEquals("SAD overridden value for lower_limit", "-30.0", cellValue);
 			} else if ("upper_limit".equals(item.getText())) {
+				found++;
 				Assert.assertEquals("SAD overridden value for upper_limit", "90.0", cellValue);
 			}
 		}
+		Assert.assertEquals(2, found);
 
 		// cleanup
 		releaseWaveform(waveformTreeItem);
