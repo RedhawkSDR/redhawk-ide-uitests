@@ -11,15 +11,22 @@
  */
 package gov.redhawk.ide.codegen.runtime.tests;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
+import org.osgi.framework.Version;
 
 import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.MenuUtils;
@@ -27,6 +34,9 @@ import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import mil.jpeojtrs.sca.spd.SoftPkg;
+import mil.jpeojtrs.sca.spd.SpdPackage;
+import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class CodeGeneratorVersionTest extends UIRuntimeTest {
 
@@ -34,12 +44,11 @@ public class CodeGeneratorVersionTest extends UIRuntimeTest {
 	private final String compSpd = compName + ".spd.xml";
 	private final String compLanguage = "Python";
 	private final String defaultTypeText = "sca_compliant";
-	private final String expectedVersion = "2.0.0";
 	private SWTBotEditor editor;
 	private SWTBotText typeText;
 
 	@Test
-	public void generatorVersionTest() {
+	public void generatorVersionTest() throws IOException {
 		ComponentUtils.createComponentProject(bot, compName, compLanguage);
 
 		typeText = bot.textWithLabel("Type:");
@@ -110,42 +119,44 @@ public class CodeGeneratorVersionTest extends UIRuntimeTest {
 		}
 	}
 
-	private void assertCodegenVersionUpdated() {
+	private void assertCodegenVersionUpdated() throws IOException {
+		// Type should have changed, and should be parsable by Version
 		editor.show();
 		typeText = bot.textWithLabel("Type:");
-		bot.waitUntil(new DefaultCondition() {			
-			@Override
-			public boolean test() throws Exception {
-				SWTBotShell[] shells = bot.shells();
-				for (SWTBotShell shell : shells) {
-					if ("File Changed".equals(shell.getText())) {
-						shell.bot().button("OK").click();
-						break;
-					}
-				}
-				return expectedVersion.equals(typeText.getText());
-			}
-			
-			@Override
-			public String getFailureMessage() {
-				return "Generator version type was not updated";
-			}
-		});
-		DiagramTestUtils.openTabInEditor(editor, compSpd);
-		String editorText = editor.bot().styledText().getText();
-		final String versionXmlString = "(?s).* type=\"" + expectedVersion + "\">" + ".*";
-		Assert.assertTrue("The spd.xml text does not reflect the updated code generator version", editorText.matches(versionXmlString));
+		Assert.assertNotEquals(defaultTypeText, typeText.getText());
+		new Version(typeText.getText());
+
+		SoftPkg spd = getModelFromXml(compSpd);
+		Assert.assertNotEquals(defaultTypeText, spd.getType());
+		new Version(spd.getType());
 	}
 
-	private void resetTypeToDefault() {
-		String editorText = editor.bot().styledText().getText();
-		editorText = editorText.replace(expectedVersion, defaultTypeText);
-		editor.bot().styledText().setText(editorText);
+	private void resetTypeToDefault() throws IOException {
+		SoftPkg spd = getModelFromXml(compSpd);
+		spd.setType(defaultTypeText);
+		String xml = getXmlFromModel(spd);
+		editor.bot().styledText().setText(xml);
 		MenuUtils.save(editor);
 		bot.closeAllEditors();
 
 		// TODO: This avoids a weird issue where the generator button becomes disabled.
 		// Have not been able to reproduce manually
 		ProjectExplorerUtils.selectNode(bot, compName, compSpd).contextMenu("Refresh").click();
+	}
+
+	private SoftPkg getModelFromXml(String spdTab) throws IOException {
+		DiagramTestUtils.openTabInEditor(editor, spdTab);
+		String text = editor.bot().styledText().getText();
+
+		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
+		Resource resource = resourceSet.createResource(URI.createURI("mem://PropTest_Comp.prf.xml"), SpdPackage.eCONTENT_TYPE);
+		resource.load(new ByteArrayInputStream(text.getBytes()), null);
+		return SoftPkg.Util.getSoftPkg(resource);
+	}
+
+	private String getXmlFromModel(SoftPkg spd) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		spd.eResource().save(outputStream, null);
+		return outputStream.toString();
 	}
 }
