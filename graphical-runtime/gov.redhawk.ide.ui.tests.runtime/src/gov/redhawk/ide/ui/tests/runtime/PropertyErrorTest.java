@@ -37,8 +37,8 @@ public class PropertyErrorTest extends UIRuntimeTest {
 	private static final String COMP_1 = "errorComponent_1";
 
 	private static final String PROP_ENABLE = "enableErrors";
-	private static final String PROP_INVALID = "errorOnConfigure";
-	private static final String PROP_PARTIAL = "partialConfigError";
+	private static final String PROP_INVALID = "invalidConfigProp";
+	private static final String PROP_PARTIAL = "partialConfigProp";
 
 	@Test
 	public void changePropertyError() {
@@ -58,7 +58,7 @@ public class PropertyErrorTest extends UIRuntimeTest {
 
 			treeItem = propTree.getTreeItem(PROP_INVALID);
 			StandardTestActions.writeToCell(bot, treeItem, 1, "configure attempt");
-			checkShellAndClose("CF.PropertySetPackage.InvalidConfiguration: Test invalid configuration. Properties: " + PROP_INVALID);
+			checkShellAndClose("CF.PropertySetPackage.InvalidConfiguration: Error from configure method. Properties: " + PROP_INVALID);
 
 			treeItem = propTree.getTreeItem(PROP_PARTIAL);
 			StandardTestActions.writeToCell(bot, treeItem, 1, "configure attempt");

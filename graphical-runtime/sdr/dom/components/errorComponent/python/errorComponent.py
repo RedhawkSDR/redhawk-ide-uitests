@@ -15,42 +15,48 @@ from errorComponent_base import *
 
 class errorComponent_i(errorComponent_base):
     """Generates errors for common CF operations"""
-    def initialize(self):
-        errorComponent_base.initialize(self)
+    def constructor(self):
+        if (self.enableErrors):
+            raise Exception("Error from constructor method")
+
+    def initializeProperties(self, props):
+        self._log.info("initializeProperties called with props " + str([prop.id for prop in props]))
+        if not self.enableErrors:
+            errorComponent_base.initializeProperties(self, props)
+            return
+
+        for prop in props:
+            if prop.id == 'partialConfigProp':
+                raise CF.PropertySet.PartialConfiguration([prop])
+            elif prop.id == 'invalidConfigProp':
+                raise CF.PropertySet.InvalidConfiguration("Error from initializeProperties method", [prop])
+            elif prop.id == 'alreadyInitProp':
+                raise CF.PropertyEmitter.AlreadyInitialized()
+
+        errorComponent_base.configure(self, props)
 
     def configure(self, props):
+        self._log.info("configure called with props " + str([prop.id for prop in props]))
         if not self.enableErrors:
             errorComponent_base.configure(self, props)
             return
 
-        ok = None
-        err = None
         for prop in props:
-            if prop.id == 'partialConfigError':
+            if prop.id in ('partialConfigConfig', 'partialConfigProp'):
                 raise CF.PropertySet.PartialConfiguration([prop])
-            elif prop.id == 'errorOnConfigure':
-                err = prop
-            elif prop.id == 'okToConfigure':
-                ok = prop
-        if ok:
-            if err:
-                errorComponent_base.configure(self, [prop for prop in props if prop.id != err.id])
-                raise CF.PropertySet.PartialConfiguration(err)
-            else:
-                errorComponent_base.configure(self, props)
-        elif err:
-            raise CF.PropertySet.InvalidConfiguration("Test invalid configuration", props)
-        else:
-            errorComponent_base.configure(self, props)
+            elif prop.id in ('invalidConfigConfig', 'invalidConfigProp'):
+                raise CF.PropertySet.InvalidConfiguration("Error from configure method", [prop])
+
+        errorComponent_base.configure(self, props)
 
     def start(self):
         if self.enableErrors:
-            raise CF.Resource.StartError(CF.CF_EINVAL, "Test start failure")
+            raise CF.Resource.StartError(CF.CF_EINVAL, "Error from start method")
         errorComponent_base.start(self)
 
     def stop(self):
         if self.enableErrors:
-            raise CF.Resource.StopError(CF.CF_EBUSY, "Test stop failure")
+            raise CF.Resource.StopError(CF.CF_EBUSY, "Error from stop method")
         errorComponent_base.stop(self)
 
     def process(self):

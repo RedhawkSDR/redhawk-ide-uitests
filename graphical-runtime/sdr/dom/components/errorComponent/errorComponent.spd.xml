@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
-<softpkg id="DCE:8862039a-880f-4c3f-82b3-c860a3966df9" name="errorComponent" type="2.0.1" version="1.0.0">
+<softpkg id="DCE:8862039a-880f-4c3f-82b3-c860a3966df9" name="errorComponent" type="2.0.2" version="1.0.0">
   <title>Error generating component</title>
   <author>
     <name>null</name>

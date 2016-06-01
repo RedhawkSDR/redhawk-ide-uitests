@@ -58,29 +58,44 @@ class errorComponent_base(CF__POA.Resource, Component, ThreadedComponent):
         # 
         # DO NOT ADD NEW PROPERTIES HERE.  You can add properties in your derived class, in the PRF xml file
         # or by using the IDE.
-        errorOnConfigure = simple_property(id_="errorOnConfigure",
-                                           type_="string",
-                                           defvalue="abc",
-                                           mode="readwrite",
-                                           action="external",
-                                           kinds=("property",),
-                                           description="""Triggers an InvalidConfiguration or PartialConfiguration exception (depending on if combined with other properties)""")
+        invalidConfigConfig = simple_property(id_="invalidConfigConfig",
+                                              type_="string",
+                                              mode="readwrite",
+                                              action="external",
+                                              kinds=("configure",),
+                                              description="""Triggers an InvalidConfiguration error for this property""")
 
 
-        partialConfigError = simple_property(id_="partialConfigError",
-                                             type_="string",
-                                             mode="readwrite",
-                                             action="external",
-                                             kinds=("property",),
-                                             description="""If a configure call includes this property, you'll get a PartialConfiguration exception for ONLY this property.""")
+        partialConfigConfig = simple_property(id_="partialConfigConfig",
+                                              type_="string",
+                                              mode="readwrite",
+                                              action="external",
+                                              kinds=("configure",),
+                                              description="""Triggers a PartialConfiguration error for this property""")
+
+
+        invalidConfigProp = simple_property(id_="invalidConfigProp",
+                                            type_="string",
+                                            mode="readwrite",
+                                            action="external",
+                                            kinds=("property",),
+                                            description="""Triggers an InvalidConfiguration error for this property""")
+
+
+        partialConfigProp = simple_property(id_="partialConfigProp",
+                                            type_="string",
+                                            mode="readwrite",
+                                            action="external",
+                                            kinds=("property",),
+                                            description="""Triggers a PartialConfiguration error for this property""")
 
 
         okToConfigure = simple_property(id_="okToConfigure",
                                         type_="string",
-                                        defvalue="def",
                                         mode="readwrite",
                                         action="external",
-                                        kinds=("property",))
+                                        kinds=("property",),
+                                        description="""Can be configured successfully""")
 
 
         enableErrors = simple_property(id_="enableErrors",
@@ -90,6 +105,14 @@ class errorComponent_base(CF__POA.Resource, Component, ThreadedComponent):
                                        action="external",
                                        kinds=("property",),
                                        description="""Enable/disable reporting errors""")
+
+
+        alreadyInitProp = simple_property(id_="alreadyInitProp",
+                                          type_="string",
+                                          mode="readwrite",
+                                          action="external",
+                                          kinds=("property",),
+                                          description="""Triggers an AlreadyInitialized error for this property""")
 
 
 
