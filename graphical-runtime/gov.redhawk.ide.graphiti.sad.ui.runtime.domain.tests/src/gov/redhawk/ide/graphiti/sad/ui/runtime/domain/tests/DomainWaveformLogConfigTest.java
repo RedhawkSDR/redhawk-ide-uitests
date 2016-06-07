@@ -1,3 +1,13 @@
+/**
+ * This file is protected by Copyright.
+ * Please refer to the COPYRIGHT file distributed with this source distribution.
+ *
+ * This file is part of REDHAWK IDE.
+ *
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html.
+ */
 package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.tests;
 
 import java.util.ArrayList;
@@ -21,7 +31,7 @@ public class DomainWaveformLogConfigTest extends AbstractLogConfigTest {
 	private static final String SIGGEN_1 = "SigGen_1";
 
 	private final String domain = "SWTBOT_TEST_" + (int) (1000.0 * Math.random());
-	private final String[] WAVEFORM_PARENT_PATH = { domain, "Waveforms" }; // SUPPRESS CHECKSTYLE
+	private final String[] waveformParentPath = { domain, "Waveforms" };
 	private String waveformFullName;
 
 	@Override
@@ -31,11 +41,11 @@ public class DomainWaveformLogConfigTest extends AbstractLogConfigTest {
 
 		ScaExplorerTestUtils.launchWaveformFromDomain(bot, domain, TEST_WAVEFORM);
 		bot.waitUntil(new WaitForEditorCondition(), WaitForEditorCondition.DEFAULT_WAIT_FOR_EDITOR_TIME);
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, WAVEFORM_PARENT_PATH, TEST_WAVEFORM);
-		waveformFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, WAVEFORM_PARENT_PATH, TEST_WAVEFORM);
-		List<String> SIGGEN_PARENT_PATH = new ArrayList<String>(Arrays.asList(WAVEFORM_PARENT_PATH));
-		SIGGEN_PARENT_PATH.add(waveformFullName);
-		return ScaExplorerTestUtils.getTreeItemFromScaExplorer(gefBot, SIGGEN_PARENT_PATH.toArray(new String[0]), SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, waveformParentPath, TEST_WAVEFORM);
+		waveformFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, waveformParentPath, TEST_WAVEFORM);
+		List<String> sigGenParentPath = new ArrayList<String>(Arrays.asList(waveformParentPath));
+		sigGenParentPath.add(waveformFullName);
+		return ScaExplorerTestUtils.getTreeItemFromScaExplorer(gefBot, sigGenParentPath.toArray(new String[0]), SIGGEN_1);
 	}
 
 	@Override
@@ -45,7 +55,7 @@ public class DomainWaveformLogConfigTest extends AbstractLogConfigTest {
 
 	@Override
 	protected SWTBotGefEditPart openResourceDiagram() {
-		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, WAVEFORM_PARENT_PATH, waveformFullName, DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, waveformParentPath, waveformFullName, DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
 		return gefBot.gefEditor(waveformFullName).getEditPart(SIGGEN_1);
 	}
 

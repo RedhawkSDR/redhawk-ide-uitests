@@ -38,9 +38,9 @@ public class LocalWaveformLogConfigTest extends AbstractLogConfigTest {
 		ScaExplorerTestUtils.launchWaveformFromTargetSDR(gefBot, TEST_WAVEFORM);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, WAVEFORM_PARENT_PATH, TEST_WAVEFORM);
 		waveformFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(gefBot, WAVEFORM_PARENT_PATH, TEST_WAVEFORM);
-		List<String> SIGGEN_PARENT_PATH = new ArrayList<String>(Arrays.asList(WAVEFORM_PARENT_PATH));
-		SIGGEN_PARENT_PATH.add(waveformFullName);
-		return ScaExplorerTestUtils.getTreeItemFromScaExplorer(gefBot, SIGGEN_PARENT_PATH.toArray(new String[0]), SIGGEN_1);
+		List<String> sigGenParentPath = new ArrayList<String>(Arrays.asList(WAVEFORM_PARENT_PATH));
+		sigGenParentPath.add(waveformFullName);
+		return ScaExplorerTestUtils.getTreeItemFromScaExplorer(gefBot, sigGenParentPath.toArray(new String[0]), SIGGEN_1);
 	}
 
 	@Override
