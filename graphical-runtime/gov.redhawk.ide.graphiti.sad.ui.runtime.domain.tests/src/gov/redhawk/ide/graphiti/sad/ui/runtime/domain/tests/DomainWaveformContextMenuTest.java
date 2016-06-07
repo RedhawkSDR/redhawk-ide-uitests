@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.junit.After;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractContextMenuTest;
@@ -35,12 +36,13 @@ public class DomainWaveformContextMenuTest extends AbstractContextMenuTest {
 	}
 
 	@After
-	public void after() {
+	public void after() throws CoreException {
 		if (domainName != null) {
 			String localDomainName = domainName;
 			domainName = null;
 			DomainWaveformTestUtils.cleanup(bot, localDomainName);
 		}
+		super.after();
 	}
 
 	@Override
