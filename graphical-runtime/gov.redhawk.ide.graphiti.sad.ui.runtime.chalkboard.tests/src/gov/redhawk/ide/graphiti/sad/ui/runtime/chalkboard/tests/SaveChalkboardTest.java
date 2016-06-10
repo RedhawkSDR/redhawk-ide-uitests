@@ -30,6 +30,7 @@ import org.junit.Test;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
@@ -45,11 +46,14 @@ public class SaveChalkboardTest extends AbstractGraphitiChalkboardTest {
 	public void saveChalkboardAsWaveform() {
 		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
-		// Add component to diagram from palette
+		// Add components to diagram and wait to start
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 0);
-		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
-		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
+
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN_1);
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
 
 		// Save waveform
@@ -85,15 +89,15 @@ public class SaveChalkboardTest extends AbstractGraphitiChalkboardTest {
 		
 		// confirm that components and connection exist
 		editor = gefBot.rhGefEditor(WAVEFORM_NAME);
-		Assert.assertNotNull(SIGGEN + " component was not found", editor.getEditPart(SIGGEN));
-		Assert.assertNotNull(HARD_LIMIT + " component was not found", editor.getEditPart(HARD_LIMIT));
+		Assert.assertNotNull(SIGGEN_1 + " component was not found", editor.getEditPart(SIGGEN_1));
+		Assert.assertNotNull(HARD_LIMIT_1 + " component was not found", editor.getEditPart(HARD_LIMIT_1));
 		
-		usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN);
-		providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT);
+		usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN_1);
+		providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertFalse("Source connections should not be empty for this test", sourceConnections.isEmpty());
 		
-		ContainerShape hardLimitContainerShape = (ContainerShape) editor.getEditPart(HARD_LIMIT).part().getModel();
+		ContainerShape hardLimitContainerShape = (ContainerShape) editor.getEditPart(HARD_LIMIT_1).part().getModel();
 		Connection connection = DUtil.getIncomingConnectionsContainedInContainerShape(hardLimitContainerShape).get(0);
 		
 		UsesPortStub usesPort = (UsesPortStub) DUtil.getBusinessObject(connection.getStart());
@@ -101,7 +105,6 @@ public class SaveChalkboardTest extends AbstractGraphitiChalkboardTest {
 
 		ProvidesPortStub providesPort = (ProvidesPortStub) DUtil.getBusinessObject(connection.getEnd());
 		Assert.assertEquals("Connect provides port not correct", providesPort, DUtil.getBusinessObject((ContainerShape) providesEditPart.part().getModel()));
-		
 	}
 	
 	/**
