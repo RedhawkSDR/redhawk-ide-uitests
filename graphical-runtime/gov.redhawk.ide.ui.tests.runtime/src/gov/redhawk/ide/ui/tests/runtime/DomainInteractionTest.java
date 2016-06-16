@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import gov.redhawk.ide.sdr.ui.internal.handlers.LaunchDomainManagerWithOptionsDialog;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
@@ -73,7 +74,8 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 
 	/**
 	 * IDE-1372
-	 * Test using the launch domain wizard to launch a domain, and then the  to launch a domain and then later launch a node in that domain.
+	 * Test using the launch domain wizard to launch a domain, and then the to launch a domain and then later launch a
+	 * node in that domain.
 	 */
 	@Test
 	public void launchDomMgrThenDevMgrViaWizards() {
@@ -181,13 +183,21 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		treeItem.contextMenu("Launch Domain ...").click();
 		SWTBotShell shell = bot.shell("Launch Domain Manager");
 
+		// Check error message for blank domain name entry
+		shell.bot().textWithLabel("Domain Name: ").setText("");
+		bot.waitWhile(Conditions.widgetIsEnabled(shell.bot().button("OK")));
+		Assert.assertEquals("Expected error message did not display", LaunchDomainManagerWithOptionsDialog.INVALID_DOMAIN_NAME_ERR,
+			shell.bot().clabel(0).getText());
+
 		// Choose an acceptable domain name. The OK button should enable.
 		shell.bot().textWithLabel("Domain Name: ").setText("REDHAWK_DEV_2");
 		bot.waitUntil(Conditions.widgetIsEnabled(shell.bot().button("OK")));
+		Assert.assertEquals("Error message should have disappeared", "", shell.bot().clabel(0).getText());
 
 		// Choose an unacceptable domain name. The OK button should disable.
 		shell.bot().textWithLabel("Domain Name: ").setText(DOMAIN_NAME);
 		bot.waitWhile(Conditions.widgetIsEnabled(shell.bot().button("OK")));
+		Assert.assertEquals("Expected error message did not display", LaunchDomainManagerWithOptionsDialog.DUPLICATE_NAME, shell.bot().clabel(0).getText());
 
 		shell.bot().button("Cancel").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
