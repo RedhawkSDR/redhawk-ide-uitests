@@ -57,7 +57,8 @@ public class WaveformReleaseTest extends UIRuntimeTest {
 			found = false;
 		}
 		Assert.assertFalse(found);
-
 		connectWizard.close();
+
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMPONENT_1);
 	}
 }
