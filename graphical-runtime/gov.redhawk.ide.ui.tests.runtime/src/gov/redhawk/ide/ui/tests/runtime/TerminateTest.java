@@ -13,7 +13,6 @@ public class TerminateTest extends UIRuntimeTest {
 
 	private static final String SIG_GEN = "rh.SigGen";
 	private static final String SIG_GEN_1 = "SigGen_1";
-	private static final String SIG_GEN_PROCESS_NAME = "SigGen";
 
 	/**
 	 * IDE-946 Ensure there's details about the process exit in the terminal
@@ -27,7 +26,7 @@ public class TerminateTest extends UIRuntimeTest {
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SIG_GEN_1);
 
 		// Check the console output
-		SWTBotView consoleView = ConsoleUtils.showConsole(bot, SIG_GEN_PROCESS_NAME);
+		SWTBotView consoleView = ConsoleUtils.showConsole(bot, SIG_GEN_1 + " [Sandbox Component]");
 		String consoleText = consoleView.bot().styledText().getText();
 		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("The IDE detected"));
 		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("SIGTERM"));
