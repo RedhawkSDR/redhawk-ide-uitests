@@ -34,8 +34,6 @@
     <pydev>http://pydev.org/updates/</pydev>
     <nebula>http://archive.eclipse.org/technology/nebula/Q32014/release/</nebula>
     <idl-editor>http://download.redhawksdr.org/idl-editor</idl-editor>
-    <svn-connector>http://pinkman/nexus/content/repositories/subversive-connector</svn-connector>
-    <subversive>http://pinkman/nexus/content/repositories/subversive</subversive>
     <eclipse>http://download.eclipse.org/releases/luna/</eclipse>
   </properties>
 
@@ -44,18 +42,6 @@
       <id>eclipse</id>
       <layout>p2</layout>
       <url>${eclipse}</url>
-    </repository>
-
-    <repository>
-      <id>svn-connector</id>
-      <layout>p2</layout>
-      <url>${svn-connector}</url>
-    </repository>
-
-    <repository>
-      <id>subversive</id>
-      <layout>p2</layout>
-      <url>${subversive}</url>
     </repository>
 
     <repository>
