@@ -72,4 +72,9 @@ public class LocalWaveformContextMenuTest extends AbstractLocalContextMenuTest {
 		Collections.addAll(newList, "Set As Assembly Controller", "Move Start Order Earlier", "Move Start Order Later");
 		return newList;
 	}
+
+	@Override
+	protected boolean supportsTailLog() {
+		return false;
+	}
 }

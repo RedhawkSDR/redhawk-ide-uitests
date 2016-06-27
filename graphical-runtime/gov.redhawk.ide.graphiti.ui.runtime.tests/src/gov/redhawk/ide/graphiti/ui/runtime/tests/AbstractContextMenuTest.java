@@ -20,6 +20,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
@@ -52,6 +53,7 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 	 * IDE-665 Monitor port
 	 * IDE-666 Snapshot
 	 * IDE-667 Data list
+	 * IDE-1010 Tail log
 	 * IDE-1325 Log level
 	 */
 	@Test
@@ -63,12 +65,19 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 		// Start
 		DiagramTestUtils.startComponentFromDiagram(editor, componentName);
 
-		// Test Log Levels
+		// Test Log Levels (IDE-1325)
 		DiagramTestUtils.changeLogLevelFromDiagram(editor, componentName, LogLevels.TRACE);
 		DiagramTestUtils.confirmLogLevelFromDiagram(editor, componentName, LogLevels.TRACE);
 
 		DiagramTestUtils.changeLogLevelFromDiagram(editor, componentName, LogLevels.FATAL);
 		DiagramTestUtils.confirmLogLevelFromDiagram(editor, componentName, LogLevels.FATAL);
+
+		// Test tail log (IDE-1010)
+		if (supportsTailLog()) {
+			DiagramTestUtils.tailLog(editor, componentName, "", LogLevels.DEBUG);
+			ConsoleUtils.waitForConsole(bot, "Log events on channel");
+			ConsoleUtils.stopLogging(bot, "Log events on channel");
+		}
 
 		// Test plot context menu
 		editor.setFocus();
@@ -176,5 +185,14 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 	 */
 	protected List<String> getAbsentContextMenuOptions() {
 		return Arrays.asList("Delete", "Release", "Terminate", "Show Console");
+	}
+
+	/**
+	 * If the test supports tailing the log (used by {@link #standardRuntimeContextMenuOptions()} only).
+	 * IDE-1010 Tail log
+	 * @return True if supported
+	 */
+	protected boolean supportsTailLog() {
+		return true;
 	}
 }

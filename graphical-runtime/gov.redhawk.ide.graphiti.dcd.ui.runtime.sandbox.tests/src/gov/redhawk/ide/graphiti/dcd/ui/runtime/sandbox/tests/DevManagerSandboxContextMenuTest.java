@@ -58,4 +58,9 @@ public class DevManagerSandboxContextMenuTest extends AbstractLocalContextMenuTe
 		ConsoleUtils.removeTerminatedLaunches(bot);
 		bot.closeAllEditors();
 	}
+
+	@Override
+	protected boolean supportsTailLog() {
+		return false;
+	}
 }

@@ -84,8 +84,11 @@ public abstract class AbstractLocalContextMenuTest extends AbstractContextMenuTe
 		Assert.assertTrue("Console title doesn't contain the resource's usage name", firstTitle.contains(localTestComponent.getShortName(1)));
 	}
 
+	/**
+	 * IDE-1010 No "Tail Log" if local
+	 */
 	@Override
 	protected List<String> getAbsentContextMenuOptions() {
-		return Arrays.asList("Delete");
+		return Arrays.asList("Delete", "Tail Log");
 	}
 }
