@@ -28,6 +28,11 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
 public class DomainWaveformRuntimeSyncTest extends AbstractGraphitiDomainWaveformRuntimeTest {
 
+	@Override
+	protected String getWaveformName() {
+		return "ExampleWaveform06";
+	}
+
 	/**
 	 * IDE-672
 	 * Starts/stops them from Diagram and verifies components in REDHAWK Explorer reflect changes

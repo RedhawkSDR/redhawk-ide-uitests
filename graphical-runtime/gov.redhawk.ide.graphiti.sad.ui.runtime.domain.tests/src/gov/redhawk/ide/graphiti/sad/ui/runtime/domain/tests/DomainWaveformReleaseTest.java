@@ -26,6 +26,11 @@ import org.junit.Test;
 
 public class DomainWaveformReleaseTest extends AbstractGraphitiDomainWaveformRuntimeTest {
 
+	@Override
+	protected String getWaveformName() {
+		return "ExampleWaveform06";
+	}
+
 	/**
 	 * Test to make sure the domain waveform and the hidden local copy are both correctly released. 
 	 * This test assumes a domain and a domain waveform are launched in the super beforeTest method

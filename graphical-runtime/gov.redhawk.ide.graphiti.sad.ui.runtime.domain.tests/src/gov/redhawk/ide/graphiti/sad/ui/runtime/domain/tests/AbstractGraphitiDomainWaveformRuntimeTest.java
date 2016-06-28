@@ -28,7 +28,6 @@ import org.junit.Before;
  */
 public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntimeTest {
 
-	protected static final String NAMESPACE_DOMAIN_WAVEFORM = "namespaceWF"; // Contains namespaced components
 	protected static final String DOMAIN_MANAGER_PROCESS = "Domain Manager";
 	protected static final String DEVICE_MANAGER_PROCESS = "Device Manager";
 	protected static final String DEVICE_MANAGER = "DevMgr";
@@ -57,9 +56,7 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 		waveFormFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveformName());
 	}
 
-	protected String getWaveformName() {
-		return "ExampleWaveform06";
-	}
+	protected abstract String getWaveformName();
 
 	@After
 	public void afterTest() {
@@ -78,10 +75,6 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 
 	public String getWaveFormFullName() {
 		return waveFormFullName;
-	}
-
-	public void setWaveFormFullName(String waveFormFullName) {
-		this.waveFormFullName = waveFormFullName;
 	}
 
 }
