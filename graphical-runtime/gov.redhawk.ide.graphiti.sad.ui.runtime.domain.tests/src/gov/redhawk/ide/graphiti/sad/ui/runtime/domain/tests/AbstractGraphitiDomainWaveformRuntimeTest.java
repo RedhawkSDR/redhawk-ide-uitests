@@ -38,8 +38,8 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 	protected static final String HARD_LIMIT_1 = "HardLimit_1";
 	protected static final String DATA_CONVERTER = "rh.DataConverter";
 
-	final String DOMAIN = "SWTBOT_SAD_TEST_" + (int) (1000.0 * Math.random()); // SUPPRESS CHECKSTYLE VisibilityModifier
-	final String[] DOMAIN_WAVEFORM_PARENT_PATH = { DOMAIN, "Waveforms" }; // SUPPRESS CHECKSTYLE VisibilityModifier
+	protected final String DOMAIN = "SWTBOT_SAD_TEST_" + (int) (1000.0 * Math.random()); // SUPPRESS CHECKSTYLE VisibilityModifier
+	protected final String[] DOMAIN_WAVEFORM_PARENT_PATH = { DOMAIN, "Waveforms" }; // SUPPRESS CHECKSTYLE VisibilityModifier
 	protected SWTGefBot gefBot = new RHSWTGefBot(); // SUPPRESS CHECKSTYLE VisibilityModifier
 	private String waveFormFullName; // full name of waveform that is launched
 
