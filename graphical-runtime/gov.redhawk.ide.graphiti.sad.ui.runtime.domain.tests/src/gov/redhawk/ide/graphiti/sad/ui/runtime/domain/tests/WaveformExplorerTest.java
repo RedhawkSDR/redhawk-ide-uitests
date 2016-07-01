@@ -63,26 +63,26 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 		editor.setFocus();
 
 		// check for components
-		SWTBotGefEditPart hardLimit = editor.getEditPart(HARD_LIMIT);
-		Assert.assertNotNull(HARD_LIMIT + " component not found in diagram", hardLimit);
+		SWTBotGefEditPart hardLimit = editor.getEditPart(HARD_LIMIT_1);
+		Assert.assertNotNull(HARD_LIMIT_1 + " component not found in diagram", hardLimit);
 
 		// check that start/plot/stop works
-		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
+		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT_1);
 		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformPath, HARD_LIMIT_1);
 
 		editor.setFocus();
-		DiagramTestUtils.plotPortDataOnComponentPort(editor, HARD_LIMIT, null);
+		DiagramTestUtils.plotPortDataOnComponentPort(editor, HARD_LIMIT_1, null);
 		SWTBotView plotView = ViewUtils.getPlotView(bot);
 		plotView.close();
 
-		DiagramTestUtils.stopComponentFromDiagram(editor, HARD_LIMIT);
+		DiagramTestUtils.stopComponentFromDiagram(editor, HARD_LIMIT_1);
 		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, waveformPath, HARD_LIMIT_1);
 
 		// check that DnD does not work - From Target SDR
 		DiagramTestUtils.dragComponentFromTargetSDRToDiagram(gefBot, editor, DATA_CONVERTER);
 		editor.setFocus();
-		SWTBotGefEditPart dataReader = editor.getEditPart(DATA_CONVERTER);
-		Assert.assertNull(DATA_CONVERTER + " component should not have be drawn in diagram", dataReader);
+		SWTBotGefEditPart dataReader = editor.getEditPart(DATA_CONVERTER_1);
+		Assert.assertNull(DATA_CONVERTER_1 + " component should not have be drawn in diagram", dataReader);
 
 		// IDE-1001 check that grid is hidden on runtime diagram
 		Diagram diagram = DiagramTestUtils.getDiagram(editor);

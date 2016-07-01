@@ -149,7 +149,7 @@ public abstract class AbstractSyncText extends UIRuntimeTest {
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
 
 		// Select resource in REDHAWK explorer tree
-		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, PARENT_PATH, resourceA().getShortName(1)).select().click();
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, PARENT_PATH, resourceA().getShortName(1)).select().click();
 
 		// Verify value; change it to double that value
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties");
@@ -198,7 +198,7 @@ public abstract class AbstractSyncText extends UIRuntimeTest {
 		StandardTestActions.writeToCell(bot, magItemDiagram, 1, newValue);
 
 		// Select resource in REDHAWK explorer tree
-		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, PARENT_PATH, resourceA().getShortName(1)).select().click();
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, PARENT_PATH, resourceA().getShortName(1)).select().click();
 
 		// Wait for the property to update (currently domain objects opened with the chalkboard editor have a delay)
 		propTree = ViewUtils.selectPropertiesTab(bot, "Properties");

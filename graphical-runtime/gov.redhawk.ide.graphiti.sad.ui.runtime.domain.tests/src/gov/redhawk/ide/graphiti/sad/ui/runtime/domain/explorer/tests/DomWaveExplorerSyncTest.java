@@ -81,6 +81,7 @@ public class DomWaveExplorerSyncTest extends AbstractSyncText {
 
 	/**
 	 * IDE-1120 Check the editor's type and input
+	 * IDE-1593 Ensure the right editor opens after launching a domain waveform
 	 */
 	@Test
 	public void checkEditorTypeAndInput() {
