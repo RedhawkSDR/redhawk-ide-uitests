@@ -16,7 +16,9 @@ import java.util.List;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -45,25 +47,22 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 	protected abstract RHBotGefEditor launchDiagram();
 
 	/**
-	 * Ensure the "standard" runtime context menu items are present and appear to do something.
+	 * Ensure the "standard" runtime context menu items are present on a resource and appear to do something.
 	 * IDE-661 Start/stop
-	 * IDE-662 Plotting
-	 * IDE-663 Play port
-	 * IDE-664 Display SRI
-	 * IDE-665 Monitor port
-	 * IDE-666 Snapshot
-	 * IDE-667 Data list
+	 * IDE-665 Monitor ports
 	 * IDE-1010 Tail log
 	 * IDE-1325 Log level
+	 * IDE-1423 Show Properties
+	 * IDE-1648 Monitor ports
 	 */
 	@Test
-	public void standardRuntimeContextMenuOptions() {
+	public void standardResourceRuntimeContextMenu() {
 		RHBotGefEditor editor = launchDiagram();
 		String componentName = testComponent.getShortName(1);
-		String portName = testComponent.getOutPort(0);
 
 		// Start
 		DiagramTestUtils.startComponentFromDiagram(editor, componentName);
+		DiagramTestUtils.waitForComponentState(bot, editor, componentName, ComponentState.STARTED);
 
 		// Test Log Levels (IDE-1325)
 		DiagramTestUtils.changeLogLevelFromDiagram(editor, componentName, LogLevels.TRACE);
@@ -78,6 +77,59 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 			ConsoleUtils.waitForConsole(bot, "Log events on channel");
 			ConsoleUtils.stopLogging(bot, "Log events on channel");
 		}
+
+		// Test monitor ports context menu
+		DiagramTestUtils.displayPortMonitorView(editor, componentName);
+		ViewUtils.waitUntilPortMonitorViewPopulates(bot, componentName);
+		SWTBotView monitorView = ViewUtils.getPortMonitorView(bot);
+		monitorView.close();
+
+		// Show Properties
+		DiagramTestUtils.showProperties(editor, componentName);
+		SWTBotView view = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+		Assert.assertTrue(view.isActive());
+
+		// Stop
+		DiagramTestUtils.stopComponentFromDiagram(editor, componentName);
+		DiagramTestUtils.waitForComponentState(bot, editor, componentName, ComponentState.STOPPED);
+	}
+
+	/**
+	 * Ensure the "standard" runtime context menu items are present on a port and appear to do something.
+	 * IDE-662 Plotting
+	 * IDE-663 Play port
+	 * IDE-664 Display SRI
+	 * IDE-665 Monitor port
+	 * IDE-666 Snapshot
+	 * IDE-667 Data list
+	 * IDE-1189 Connect port
+	 * IDE-1423 Show properties
+	 * IDE-1648 Monitor ports
+	 */
+	@Test
+	public void standardPortRuntimeContextMenu() {
+		RHBotGefEditor editor = launchDiagram();
+		bot.sleep(1000);
+		String componentName = testComponent.getShortName(1);
+		String portName = testComponent.getOutPort(0);
+
+		// Connect port
+		DiagramTestUtils.showConnectionWizardForUsesPort(editor, componentName, portName);
+		SWTBotShell shell = bot.shell("Connect");
+		SWTBotTreeItem[] items = shell.bot().tree().getAllItems();
+		Assert.assertEquals(1, items.length);
+		Assert.assertEquals(portName, items[0].getText());
+		shell.bot().button("Cancel").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+
+		// Show properties from port
+		DiagramTestUtils.showProperties(editor, componentName, portName);
+		SWTBotView view = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+		Assert.assertTrue(view.isActive());
+
+		// Start so we'll have data flowing
+		DiagramTestUtils.startComponentFromDiagram(editor, componentName);
+		DiagramTestUtils.waitForComponentState(bot, editor, componentName, ComponentState.STARTED);
 
 		// Test plot context menu
 		editor.setFocus();
@@ -123,9 +175,6 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 		SWTBotShell snapshotDialog = ViewUtils.getSnapshotDialog(bot);
 		Assert.assertNotNull(snapshotDialog);
 		snapshotDialog.close();
-
-		// Stop
-		DiagramTestUtils.stopComponentFromDiagram(editor, componentName);
 	}
 
 	/**
