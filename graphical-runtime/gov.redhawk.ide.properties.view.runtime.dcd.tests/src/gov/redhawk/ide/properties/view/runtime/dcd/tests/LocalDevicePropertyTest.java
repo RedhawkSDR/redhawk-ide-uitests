@@ -28,9 +28,8 @@ import gov.redhawk.model.sca.ScaDevice;
  */
 public class LocalDevicePropertyTest extends AbstractPropertiesViewRuntimeTest {
 
-	final static String DEVICE_NAME = "AllPropertyTypesDevice";
-	final static String DEVICE_NAME_NUM = DEVICE_NAME + "_1";
-	final static String DEVICE_NAME_STARTED = DEVICE_NAME_NUM + " STARTED";
+	protected static final String DEVICE_NAME = "AllPropertyTypesDevice";
+	protected static final String DEVICE_NAME_NUM = DEVICE_NAME + "_1";
 
 	@After
 	@Override

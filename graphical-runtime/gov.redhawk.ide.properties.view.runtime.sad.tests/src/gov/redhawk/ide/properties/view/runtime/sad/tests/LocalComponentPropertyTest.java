@@ -28,8 +28,8 @@ import gov.redhawk.model.sca.ScaComponent;
  */
 public class LocalComponentPropertyTest extends AbstractPropertiesViewRuntimeTest {
 
-	protected final static String COMP_NAME = "AllPropertyTypesComponent";
-	
+	protected static final String COMP_NAME = "AllPropertyTypesComponent";
+
 	@After
 	@Override
 	public void afterTest() {

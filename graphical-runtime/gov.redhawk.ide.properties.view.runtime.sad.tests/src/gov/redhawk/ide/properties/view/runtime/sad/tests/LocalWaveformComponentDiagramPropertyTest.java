@@ -32,7 +32,7 @@ import gov.redhawk.model.sca.ScaWaveform;
  */
 public class LocalWaveformComponentDiagramPropertyTest extends LocalComponentDiagramPropertyTest {
 
-	public final static String WAVEFORM_NAME = "AllPropertyTypesWaveform";
+	public static final String WAVEFORM_NAME = "AllPropertyTypesWaveform";
 	private String waveformFullName;
 
 	@After

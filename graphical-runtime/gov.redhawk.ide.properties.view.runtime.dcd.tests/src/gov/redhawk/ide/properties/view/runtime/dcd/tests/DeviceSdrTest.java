@@ -17,9 +17,9 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
 public class DeviceSdrTest extends AbstractPropertiesViewTargetSdrTest {
-	final private String[] NODE_PARENT_PATH = { "Target SDR", "Nodes" };
-	final private String NODE_NAME = "AllPropertyTypes_DevMgr";
-	final private String DEVICE_NAME = "AllPropertyTypesDevice";
+	private static final String[] NODE_PARENT_PATH = { "Target SDR", "Nodes" };
+	private static final String NODE_NAME = "AllPropertyTypes_DevMgr";
+	private static final String DEVICE_NAME = "AllPropertyTypesDevice";
 	
 	@Override
 	protected void selectResource() {

@@ -16,7 +16,7 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
 public class DesignServicePropertyTest extends DesignDevicePropertyTest {
 
-	private final String SERVICE_NAME = "AllPropertyTypesService";
+	private static final String SERVICE_NAME = "AllPropertyTypesService";
 
 	@Override
 	protected void prepareObject() {
@@ -34,7 +34,7 @@ public class DesignServicePropertyTest extends DesignDevicePropertyTest {
 
 	@Override
 	protected void setPropTabName() {
-		PROP_TAB_NAME = "Service Properties";
+		propTabName = "Service Properties";
 	}
 
 	@Override

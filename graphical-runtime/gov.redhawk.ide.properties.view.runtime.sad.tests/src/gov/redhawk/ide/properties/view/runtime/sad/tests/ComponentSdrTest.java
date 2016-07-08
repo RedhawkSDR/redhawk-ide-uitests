@@ -17,9 +17,9 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
 public class ComponentSdrTest extends AbstractPropertiesViewTargetSdrTest {
-	final private String[] WAVEFORM_PARENT_PATH = { "Target SDR", "Waveforms" };
-	final private String WAVEFORM_NAME = "AllPropertyTypesWaveform";
-	final private String COMPONENT_NAME = "AllPropertyTypesComponent";
+	private static final String[] WAVEFORM_PARENT_PATH = { "Target SDR", "Waveforms" };
+	private static final String WAVEFORM_NAME = "AllPropertyTypesWaveform";
+	private static final String COMPONENT_NAME = "AllPropertyTypesComponent";
 
 	@Override
 	protected void selectResource() {

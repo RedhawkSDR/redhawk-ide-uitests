@@ -50,13 +50,13 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 	 * Used in the property edit tests. Must be a String numeral, to be valid with both all property types. Booleans are
 	 * special cases.
 	 */
-	protected final String PREPENDER = "5";
+	private static final String PREPENDER = "5";
 
 	/** A Map of all properties found in the IDE's property view */
 	protected Map<String, String> propertyMap = new HashMap<String, String>();
 
 	SWTBotGefEditor editor;
-	protected String PROP_TAB_NAME;
+	protected String propTabName;
 	protected RHSWTGefBot gefBot;
 	protected Keyboard keyboard = KeyboardFactory.getSWTKeyboard();
 
@@ -116,7 +116,7 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 		prepareObject();
 
 		// Just using this to expand everything, we will populate later in the test
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, propTabName);
 		populatePropertyMap(propTree.getAllItems());
 		propertyMap.clear();
 
@@ -162,7 +162,7 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 		prepareObject();
 
 		// TODO: Just using this to expand everything, we will populate later in the test
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, propTabName);
 		populatePropertyMap(propTree.getAllItems());
 		propertyMap.clear();
 
@@ -174,7 +174,7 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 		selectObject();
 
 		// Update property map and Check property view to see if all values are accurate
-		propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		propTree = ViewUtils.selectPropertiesTab(bot, propTabName);
 		populatePropertyMap(propTree.getAllItems());
 		checkProps(xmlPropertyMap);
 	}

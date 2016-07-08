@@ -20,7 +20,7 @@ public class ExplorerDevicePropertyTest extends DomainDevicePropertyTest {
 	@Override
 	protected void prepareObject() {
 		super.prepareObject();
-		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[]{DOMAIN, "Device Managers"}, DEVICE_MANAGER, DiagramType.GRAPHITI_NODE_EXPLORER);
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[]{domain, "Device Managers"}, DEVICE_MANAGER, DiagramType.GRAPHITI_NODE_EXPLORER);
 		SWTBotGefEditor editor = gefBot.gefEditor(DEVICE_MANAGER);
 		editor.click(DEVICE_NUM);
 	}

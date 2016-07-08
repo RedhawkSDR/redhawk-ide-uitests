@@ -29,9 +29,9 @@ import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class DesignDevicePropertyTest extends AbstractPropertiesViewDesignTest {
 
-	protected final String DOMAIN_NAME = "REDHAWK_DEV";
-	protected final String NODE_NAME = "AllPropertyTypesNode";
-	private final String DEVICE_NAME = "AllPropertyTypesDevice";
+	protected static final String DOMAIN_NAME = "REDHAWK_DEV";
+	protected static final String NODE_NAME = "AllPropertyTypesNode";
+	private static final String DEVICE_NAME = "AllPropertyTypesDevice";
 	private DeviceConfiguration dcd = null;
 
 	@Override
@@ -50,7 +50,7 @@ public class DesignDevicePropertyTest extends AbstractPropertiesViewDesignTest {
 
 	@Override
 	protected void setPropTabName() {
-		PROP_TAB_NAME = "Device Properties";
+		propTabName = "Device Properties";
 	}
 
 	@Override
