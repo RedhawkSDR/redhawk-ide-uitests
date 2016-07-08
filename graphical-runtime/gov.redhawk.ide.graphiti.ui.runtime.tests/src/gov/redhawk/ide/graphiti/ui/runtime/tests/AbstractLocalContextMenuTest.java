@@ -13,7 +13,6 @@ package gov.redhawk.ide.graphiti.ui.runtime.tests;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -73,9 +72,7 @@ public abstract class AbstractLocalContextMenuTest extends AbstractContextMenuTe
 		RHBotGefEditor editor = launchDiagram();
 
 		ConsoleUtils.disableAutoShowConsole(bot);
-		SWTBotGefEditPart editPart = editor.getEditPart(localTestComponent.getShortName(1));
-		editPart.select();
-		editor.clickContextMenu("Show Console");
+		DiagramTestUtils.showConsole(editor, localTestComponent.getShortName(1));
 		bot.sleep(500);
 
 		// Wait for the view, then ensure the first title is what we expect
