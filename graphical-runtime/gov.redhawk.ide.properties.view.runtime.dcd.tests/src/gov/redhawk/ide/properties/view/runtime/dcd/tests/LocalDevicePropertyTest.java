@@ -1,3 +1,13 @@
+/**
+ * This file is protected by Copyright.
+ * Please refer to the COPYRIGHT file distributed with this source distribution.
+ *
+ * This file is part of REDHAWK IDE.
+ *
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package gov.redhawk.ide.properties.view.runtime.dcd.tests;
 
 import org.eclipse.emf.common.util.BasicEList;
@@ -18,9 +28,8 @@ import gov.redhawk.model.sca.ScaDevice;
  */
 public class LocalDevicePropertyTest extends AbstractPropertiesViewRuntimeTest {
 
-	final static String DEVICE_NAME = "AllPropertyTypesDevice";
-	final static String DEVICE_NAME_NUM = DEVICE_NAME + "_1";
-	final static String DEVICE_NAME_STARTED = DEVICE_NAME_NUM + " STARTED";
+	protected static final String DEVICE_NAME = "AllPropertyTypesDevice";
+	protected static final String DEVICE_NAME_NUM = DEVICE_NAME + "_1";
 
 	@After
 	@Override

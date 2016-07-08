@@ -1,3 +1,13 @@
+/**
+ * This file is protected by Copyright.
+ * Please refer to the COPYRIGHT file distributed with this source distribution.
+ *
+ * This file is part of REDHAWK IDE.
+ *
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package gov.redhawk.ide.properties.view.runtime.dcd.tests;
 
 import org.eclipse.emf.common.util.BasicEList;
@@ -24,18 +34,18 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 	// Pulled this from AbstractGraphitiDomainNodeRuntimeTest -- Should be able to make another abstract test for all
 	// domain property tests that is
 	// in charge of launch and tearing down the domain
-	protected static String DOMAIN = DomainDevicePropertyTest.class.getSimpleName() + "_" + (int) (1000.0 * Math.random());
+	protected String domain = DomainDevicePropertyTest.class.getSimpleName() + "_" + (int) (1000.0 * Math.random());
 	protected static final String DEVICE_MANAGER = "AllPropertyTypes_DevMgr";
 	protected static final String DEVICE = "AllPropertyTypesDevice";
 	protected static final String DEVICE_NUM = DEVICE + "_1";
 	protected static final String DEVICE_STARTED = DEVICE_NUM + " STARTED";
 	
-	protected String[] DEVICE_PARENT_PATH;
+	protected String[] deviceParentPath;
 
 	@After
 	@Override
 	public void afterTest() {
-		ScaExplorerTestUtils.deleteDomainInstance(bot, DOMAIN);
+		ScaExplorerTestUtils.deleteDomainInstance(bot, domain);
 		NodeBooterLauncherUtil.getInstance().terminateAll();
 		ConsoleUtils.removeTerminatedLaunches(bot);
 
@@ -44,11 +54,11 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 
 	@Override
 	protected void prepareObject() {
-		DOMAIN = DOMAIN + (int) (1000.0 * Math.random());
-		DEVICE_PARENT_PATH = new String[] { DOMAIN, "Device Managers", DEVICE_MANAGER };
-		ScaExplorerTestUtils.launchDomain(bot, DOMAIN, DEVICE_MANAGER);
-		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN);
-		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DEVICE_PARENT_PATH, DEVICE_NUM);
+		domain = domain + (int) (1000.0 * Math.random());
+		deviceParentPath = new String[] { domain, "Device Managers", DEVICE_MANAGER };
+		ScaExplorerTestUtils.launchDomain(bot, domain, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, deviceParentPath, DEVICE_NUM);
 		
 		ConsoleUtils.disableAutoShowConsole(gefBot);
 		treeItem.select();
@@ -62,7 +72,7 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 	@Override
 	protected EList<ScaAbstractProperty< ? >> getModelObjectProperties() {
 		ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(Display.getCurrent());
-		ScaDomainManager dom = registry.findDomain(DOMAIN);
+		ScaDomainManager dom = registry.findDomain(domain);
 		EList<ScaDeviceManager> devMgrs = dom.getDeviceManagers();
 		EList<ScaDevice< ? >> devs = devMgrs.get(0).getAllDevices();
 		for (ScaDevice< ? > dev : devs) {

@@ -1,3 +1,13 @@
+/**
+ * This file is protected by Copyright.
+ * Please refer to the COPYRIGHT file distributed with this source distribution.
+ *
+ * This file is part of REDHAWK IDE.
+ *
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package gov.redhawk.ide.properties.view.tests;
 
 import java.io.ByteArrayInputStream;
@@ -19,9 +29,9 @@ import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class DesignDevicePropertyTest extends AbstractPropertiesViewDesignTest {
 
-	protected final String DOMAIN_NAME = "REDHAWK_DEV";
-	protected final String NODE_NAME = "AllPropertyTypesNode";
-	private final String DEVICE_NAME = "AllPropertyTypesDevice";
+	protected static final String DOMAIN_NAME = "REDHAWK_DEV";
+	protected static final String NODE_NAME = "AllPropertyTypesNode";
+	private static final String DEVICE_NAME = "AllPropertyTypesDevice";
 	private DeviceConfiguration dcd = null;
 
 	@Override
@@ -40,7 +50,7 @@ public class DesignDevicePropertyTest extends AbstractPropertiesViewDesignTest {
 
 	@Override
 	protected void setPropTabName() {
-		PROP_TAB_NAME = "Device Properties";
+		propTabName = "Device Properties";
 	}
 
 	@Override

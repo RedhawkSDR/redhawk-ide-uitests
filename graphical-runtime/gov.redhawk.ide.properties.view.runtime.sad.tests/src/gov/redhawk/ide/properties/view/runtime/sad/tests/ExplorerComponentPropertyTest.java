@@ -1,3 +1,13 @@
+/**
+ * This file is protected by Copyright.
+ * Please refer to the COPYRIGHT file distributed with this source distribution.
+ *
+ * This file is part of REDHAWK IDE.
+ *
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
@@ -15,7 +25,7 @@ public class ExplorerComponentPropertyTest extends DomainComponentPropertyTest {
 	protected void prepareObject() {
 		super.prepareObject();
 		gefBot.gefEditor(waveformFullName).close();
-		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, DOMAIN_WAVEFORM_PARENT_PATH, WAVEFORM, DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, domainWaveformParentPath, WAVEFORM, DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
 		SWTBotGefEditor editor = gefBot.gefEditor(waveformFullName);
 		
 		// Need to do this, or the Console view keeps popping up

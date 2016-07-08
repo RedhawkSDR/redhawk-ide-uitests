@@ -1,3 +1,13 @@
+/**
+ * This file is protected by Copyright.
+ * Please refer to the COPYRIGHT file distributed with this source distribution.
+ *
+ * This file is part of REDHAWK IDE.
+ *
+ * All rights reserved.  This program and the accompanying materials are made available under
+ * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package gov.redhawk.ide.properties.view.tests;
 
 import java.io.ByteArrayInputStream;
@@ -30,8 +40,8 @@ import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTest {
 
-	private final String WAVEFORM_NAME = "AllPropertyTypesDesignWf";
-	private final String COMPONENT_NAME = "AllPropertyTypesComponent";
+	private static final String WAVEFORM_NAME = "AllPropertyTypesDesignWf";
+	private static final String COMPONENT_NAME = "AllPropertyTypesComponent";
 	private SoftwareAssembly sad = null;
 
 	@Override
@@ -49,7 +59,7 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 
 	@Override
 	protected void setPropTabName() {
-		PROP_TAB_NAME = "Component Properties";
+		propTabName = "Component Properties";
 	}
 
 	@Override
@@ -109,7 +119,7 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 
 		setEditor();
 		selectObject();
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, propTabName);
 		Assert.assertNotNull("Property window does not populate", propTree);
 		SWTBotTreeItem[] items = propTree.getAllItems();
 		Assert.assertTrue("No property values are displayed", items.length > 0);
@@ -125,7 +135,7 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 		prepareObject();
 		setEditor();
 		selectObject();
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, propTabName);
 
 		SWTBotTreeItem treeItem = propTree.getTreeItem(simpleSeqDouble);
 		treeItem.select();
