@@ -220,8 +220,11 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 		for (String contextOption : removedContextOptions) {
 			try {
 				editor.clickContextMenu(contextOption);
-				Assert.fail(); // The only way to get here is if the undesired context menu option appears
+
+				// The only way to get here is if the undesired context menu option appears
+				Assert.fail("Context menu item was present, but should not be: " + contextOption);
 			} catch (WidgetNotFoundException e) {
+				// Expected - an error because the context menu item is not present
 				Assert.assertEquals(contextOption, e.getMessage());
 			}
 		}
