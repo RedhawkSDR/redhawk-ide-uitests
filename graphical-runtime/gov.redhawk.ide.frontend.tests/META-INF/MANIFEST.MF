@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests which exercise runtime FRONTEND functionality
+Bundle-SymbolicName: gov.redhawk.ide.frontend.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: REDHAWK
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit,
+ gov.redhawk.ide.swtbot,
+ org.jacorb;bundle-version="3.3.0"
