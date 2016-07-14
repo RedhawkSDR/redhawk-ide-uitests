@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests which exercise runtime FRONTEND functionality
-Bundle-SymbolicName: gov.redhawk.ide.frontend.tests
+Bundle-SymbolicName: gov.redhawk.ide.frontend.runtime.tests
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: REDHAWK
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
