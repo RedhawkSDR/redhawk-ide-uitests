@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -162,8 +164,17 @@ public class ComponentOverviewTabTest extends UITest {
 		Assert.assertTrue("Generate button should not be disabled.", editorBot.toolbarButtonWithTooltip("Generate All Implementations").isEnabled());
 	}
 
+	/**
+	 * Test that the control panel button is present, enabled, and that there's a confirmation dialog before it does
+	 * anything.
+	 * IDE-1404 Confirmation dialog for creating a new control panel
+	 */
 	@Test
 	public void testControlPanelButton() {
-		Assert.assertTrue("Control panel button should not be disabled.", editorBot.toolbarButtonWithTooltip("New Control Panel Project").isEnabled());
+		SWTBotToolbarButton button = editorBot.toolbarButtonWithTooltip("New Control Panel Project");
+		Assert.assertTrue("Control panel button should not be disabled.", button.isEnabled());
+		button.click();
+		SWTBotShell shell = bot.shell("Create control panel");
+		shell.bot().button("Cancel").click();
 	}
 }
