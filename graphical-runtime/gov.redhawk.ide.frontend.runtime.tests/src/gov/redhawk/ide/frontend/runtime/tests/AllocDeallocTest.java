@@ -208,7 +208,7 @@ public class AllocDeallocTest extends UIRuntimeTest {
 	}
 
 	private void completeAllocateWizard() {
-		SWTBotShell shell = bot.shell("");
+		SWTBotShell shell = bot.shell("Allocate Tuner");
 		SWTBot wizardBot = shell.bot();
 		wizardBot.textWithLabel("Center Frequency (MHz)").setText(CENTER_FREQ);
 		wizardBot.checkBox("Any Value", 0).click();
@@ -218,7 +218,7 @@ public class AllocDeallocTest extends UIRuntimeTest {
 	}
 
 	private void completeListenerWizard() {
-		SWTBotShell shell = bot.shell("");
+		SWTBotShell shell = bot.shell("Allocate Listener");
 		SWTBot wizardBot = shell.bot();
 		wizardBot.button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
