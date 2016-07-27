@@ -10,6 +10,7 @@
  */
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
+import org.eclipse.core.runtime.CoreException;
 import org.junit.After;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractLocalContextMenuTest;
@@ -52,11 +53,12 @@ public class DevManagerSandboxContextMenuTest extends AbstractLocalContextMenuTe
 	}
 
 	@After
-	public void after() {
-		ScaExplorerTestUtils.terminateFromScaExplorer(bot, SANDBOX_PATH, DEVICE_MANAGER);
+	public void after() throws CoreException {
+		ScaExplorerTestUtils.terminate(bot, SANDBOX_PATH, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(bot, SANDBOX_PATH, DEVICE_MANAGER);
 		ConsoleUtils.removeTerminatedLaunches(bot);
 		bot.closeAllEditors();
+		super.after();
 	}
 
 	@Override

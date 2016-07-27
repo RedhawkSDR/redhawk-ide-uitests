@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.junit.After;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractLocalContextMenuTest;
@@ -57,10 +58,11 @@ public class LocalWaveformContextMenuTest extends AbstractLocalContextMenuTest {
 	}
 
 	@After
-	public void after() {
+	public void after() throws CoreException {
 		ScaExplorerTestUtils.releaseFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM);
 		ConsoleUtils.removeTerminatedLaunches(bot);
+		super.after();
 	}
 
 	/**

@@ -10,6 +10,7 @@
  */
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.domain.tests;
 
+import org.eclipse.core.runtime.CoreException;
 import org.junit.After;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractContextMenuTest;
@@ -30,12 +31,13 @@ public class DevMgrDomainContextMenuTest extends AbstractContextMenuTest {
 	}
 
 	@After
-	public void after() {
+	public void after() throws CoreException {
 		if (domainName != null) {
 			String localDomainName = domainName;
 			domainName = null;
 			DevMgrDomainTestUtils.cleanup(bot, localDomainName);
 		}
+		super.after();
 	}
 
 	@Override

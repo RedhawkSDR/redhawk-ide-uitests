@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.junit.After;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractLocalContextMenuTest;
@@ -54,11 +55,12 @@ public class ChalkboardContextMenuTest extends AbstractLocalContextMenuTest {
 	}
 
 	@After
-	public void after() {
-		ScaExplorerTestUtils.terminateFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
+	public void after() throws CoreException {
+		ScaExplorerTestUtils.terminate(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
 		ScaExplorerTestUtils.waitUntilScaExplorerWaveformEmpty(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
 		ConsoleUtils.removeTerminatedLaunches(bot);
 		bot.closeAllEditors();
+		super.after();
 	}
 
 	/**
