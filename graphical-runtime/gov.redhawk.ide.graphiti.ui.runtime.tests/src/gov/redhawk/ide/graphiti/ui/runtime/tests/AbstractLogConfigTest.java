@@ -17,7 +17,6 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -51,6 +50,9 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 		gefBot = new RHSWTGefBot();
 	}
 
+	/**
+	 * IDE-1639 Test editing a running resource's logging configuration
+	 */
 	@Test
 	public void logConfigEditorTest() {
 		////////////////
@@ -69,7 +71,7 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 		warningShell.bot().button("Yes").click();
 
 		// Make sure the editor comes up (check for tab title)
-		SWTBotEditor editor = waitForEditorToOpen("Edit Log Config");
+		SWTBotEditor editor = bot.editorByTitle("Edit Log Config");
 
 		// Open the console view and make sure that no TRACE messages show up (5 seconds)
 		final SWTBotView consoleView = showConsole();
@@ -121,8 +123,8 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 		// TEST FROM GRAPHITI DIAGRAM
 		SWTBotGefEditPart resourceEditPart = openResourceDiagram();
 		resourceEditPart.select().click();
-		getDiagramEditor().clickContextMenu("Logging").clickContextMenu("Edit Log Config");
-		editor = waitForEditorToOpen("Edit Log Config");
+		getDiagramEditor().clickContextMenu("Edit Log Config");
+		editor = bot.editorByTitle("Edit Log Config");
 		editor.setFocus();
 
 		// Confirm that the previous edit is still in effect
@@ -160,29 +162,7 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 		}
 
 		editor.close();
-	}
-
-	// Convenience method to pause test until log config editor finishes opening
-	private SWTBotEditor waitForEditorToOpen(String string) {
-		bot.waitUntil(new DefaultCondition() {
-
-			@Override
-			public boolean test() throws Exception {
-				try {
-					gefBot.editorByTitle("Edit Log Config");
-					return true;
-				} catch (WidgetNotFoundException e) {
-					return false;
-				}
-			}
-
-			@Override
-			public String getFailureMessage() {
-				return "Editor failed to open for " + resourceTreeItem.getText();
-			}
-		});
-
-		return gefBot.editorByTitle("Edit Log Config");
+		getDiagramEditor().close();
 	}
 
 	/**

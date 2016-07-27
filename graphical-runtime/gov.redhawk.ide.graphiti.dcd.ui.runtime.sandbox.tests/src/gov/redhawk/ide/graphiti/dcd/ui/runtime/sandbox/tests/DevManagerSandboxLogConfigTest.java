@@ -10,10 +10,12 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.After;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractLogConfigTest;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
@@ -24,12 +26,22 @@ public class DevManagerSandboxLogConfigTest extends AbstractLogConfigTest {
 
 	private static final String GPP = "GPP";
 	private static final String GPP_1 = "GPP_1";
+	private static final String[] SANDBOX_PATH = { "Sandbox" };
+	private static final String DEVICE_MANAGER = "Device Manager";
 	private static final String[] GPP_PARENT_PATH = { "Sandbox", "Device Manager" };
 
 	@Override
 	protected SWTBotTreeItem launchLoggingResource() {
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, GPP, "cpp");
 		return ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, GPP_PARENT_PATH, GPP_1 + " STARTED");
+	}
+
+	@After
+	public void after() throws CoreException {
+		ScaExplorerTestUtils.terminate(bot, SANDBOX_PATH, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(bot, SANDBOX_PATH, DEVICE_MANAGER);
+		ConsoleUtils.removeTerminatedLaunches(bot);
+		super.after();
 	}
 
 	@Override

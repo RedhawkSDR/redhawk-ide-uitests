@@ -10,8 +10,6 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.domain.tests;
 
-import java.util.Arrays;
-
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
@@ -19,29 +17,33 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractLogConfigTest;
-import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
 public class DevManagerLogConfigTest extends AbstractLogConfigTest {
 
 	private static final String DEVICE_MANAGER = "DevMgr_localhost";
 	private static final String GPP_LOCALHOST = "GPP_localhost";
-	private final String domain = "SWTBOT_TEST_" + (int) (1000.0 * Math.random());
-	private String[] devMgrParentPath = null;
-	private String[] devMgrPath = null;
+
+	private String domainName = null;
+	private RHBotGefEditor resourceDiagram = null;
 
 	@Override
 	protected SWTBotTreeItem launchLoggingResource() {
-		devMgrParentPath = new String[] { domain, "Device Managers" };
-		ScaExplorerTestUtils.launchDomain(bot, domain, DEVICE_MANAGER);
-		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, devMgrParentPath, DEVICE_MANAGER);
-		devMgrPath = Arrays.copyOf(devMgrParentPath, devMgrParentPath.length + 1);
-		devMgrPath[devMgrParentPath.length] = DEVICE_MANAGER;
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, devMgrPath, GPP_LOCALHOST + " STARTED");
-		return ScaExplorerTestUtils.getTreeItemFromScaExplorer(gefBot, devMgrPath, GPP_LOCALHOST + " STARTED");
+		domainName = DevMgrDomainTestUtils.generateDomainName();
+		resourceDiagram = DevMgrDomainTestUtils.launchDomainAndDevMgr(bot, domainName, DEVICE_MANAGER);
+		String[] parentPath = new String[] { domainName, "Device Managers", DEVICE_MANAGER };
+		return ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, GPP_LOCALHOST);
+	}
+
+	@After
+	public void after() {
+		if (domainName != null) {
+			String localDomainName = domainName;
+			domainName = null;
+			DevMgrDomainTestUtils.cleanup(bot, localDomainName);
+		}
 	}
 
 	@Override
@@ -51,20 +53,12 @@ public class DevManagerLogConfigTest extends AbstractLogConfigTest {
 
 	@Override
 	protected SWTBotGefEditPart openResourceDiagram() {
-		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, devMgrParentPath, DEVICE_MANAGER, DiagramType.GRAPHITI_NODE_EXPLORER);
-		return gefBot.gefEditor(DEVICE_MANAGER).getEditPart(GPP_LOCALHOST);
+		resourceDiagram.setFocus();
+		return resourceDiagram.getEditPart(GPP_LOCALHOST);
 	}
 
 	@Override
 	protected SWTBotGefEditor getDiagramEditor() {
-		return gefBot.gefEditor(DEVICE_MANAGER);
+		return resourceDiagram;
 	}
-
-	@After
-	public void afterTest() {
-		ScaExplorerTestUtils.deleteDomainInstance(bot, domain);
-		NodeBooterLauncherUtil.getInstance().terminateAll();
-		ConsoleUtils.removeTerminatedLaunches(bot);
-	}
-
 }

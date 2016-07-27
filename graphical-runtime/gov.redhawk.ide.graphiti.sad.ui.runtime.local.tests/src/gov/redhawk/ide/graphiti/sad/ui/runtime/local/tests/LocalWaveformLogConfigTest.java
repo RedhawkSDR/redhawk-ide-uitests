@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.After;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractLogConfigTest;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
@@ -41,6 +43,14 @@ public class LocalWaveformLogConfigTest extends AbstractLogConfigTest {
 		List<String> sigGenParentPath = new ArrayList<String>(Arrays.asList(WAVEFORM_PARENT_PATH));
 		sigGenParentPath.add(waveformFullName);
 		return ScaExplorerTestUtils.getTreeItemFromScaExplorer(gefBot, sigGenParentPath.toArray(new String[0]), SIGGEN_1);
+	}
+
+	@After
+	public void after() throws CoreException {
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, WAVEFORM_PARENT_PATH, TEST_WAVEFORM);
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, WAVEFORM_PARENT_PATH, TEST_WAVEFORM);
+		ConsoleUtils.removeTerminatedLaunches(bot);
+		super.after();
 	}
 
 	@Override
