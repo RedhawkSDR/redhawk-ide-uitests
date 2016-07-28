@@ -10,6 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.projectCreation;
 
+import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 
 import java.io.IOException;
@@ -17,7 +18,6 @@ import java.io.IOException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ public class NodeCreationWizardTest extends AbstractCreationWizardTest {
 	@Test
 	public void testNamespacedNodeCreation() {
 		final String nodeName = "namespaced.node.IDE1111";
-		createNodeWithDevice(nodeName, null, "name.spaced.device");
+		createNodeWithDevice(nodeName, null, "name.space.device");
 
 		checkFiles(nodeName);
 	}
@@ -73,17 +73,7 @@ public class NodeCreationWizardTest extends AbstractCreationWizardTest {
 		bot.textWithLabel("&Project name:").setText(projectName);
 		setDomainName(domainName);
 		bot.button("Next >").click();
-		SWTBotTable deviceTable = bot.table();
-		if (deviceName != null) {
-			for (int index = 0; index < deviceTable.rowCount(); ++index) {
-				if (deviceTable.getTableItem(index).getText().startsWith(deviceName)) {
-					deviceTable.select(index);
-					break;
-				}
-			}
-		} else {
-			bot.table().select(0);
-		}
+		StandardTestActions.selectNamespacedTreeItem(bot, bot.tree(), deviceName);
 		bot.button("Finish").click();
 	}
 
