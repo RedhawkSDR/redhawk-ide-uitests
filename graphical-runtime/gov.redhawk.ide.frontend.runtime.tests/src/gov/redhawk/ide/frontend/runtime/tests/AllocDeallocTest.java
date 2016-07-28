@@ -25,6 +25,9 @@ import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
+/**
+ * Tests relating to allocating/deallocating tuners and listeners.
+ */
 public class AllocDeallocTest extends UIRuntimeTest {
 
 	private static final String SANDBOX = "Sandbox";
