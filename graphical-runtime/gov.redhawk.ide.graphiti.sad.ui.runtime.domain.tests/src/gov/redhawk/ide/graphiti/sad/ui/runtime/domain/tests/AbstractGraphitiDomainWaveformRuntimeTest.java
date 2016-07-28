@@ -30,7 +30,7 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 
 	protected static final String DOMAIN_MANAGER_PROCESS = "Domain Manager";
 	protected static final String DEVICE_MANAGER_PROCESS = "Device Manager";
-	protected static final String DEVICE_MANAGER = "DevMgr";
+	protected static final String DEVICE_MANAGER = "DevMgr_localhost";
 
 	protected static final String SIGGEN = "rh.SigGen";
 	protected static final String SIGGEN_1 = "SigGen_1";
