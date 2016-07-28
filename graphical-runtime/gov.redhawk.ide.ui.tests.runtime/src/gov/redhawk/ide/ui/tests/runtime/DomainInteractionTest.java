@@ -249,14 +249,7 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 
 		shell.bot().textWithLabel("Domain Name: ").setText(domainName);
 		bot.waitWhile(Conditions.treeHasRows(shell.bot().tree(), 0));
-		SWTBotTreeItem[] nodes = shell.bot().tree().getAllItems();
-		for (String deviceManager : deviceManagers) {
-			for (SWTBotTreeItem node : nodes) {
-				if (node.getText().startsWith(deviceManager + " ")) {
-					node.check();
-				}
-			}
-		}
+		StandardTestActions.selectNamespacedTreeItems(viewBot, shell.bot().tree(), deviceManagers);
 		shell.bot().button("OK").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 
