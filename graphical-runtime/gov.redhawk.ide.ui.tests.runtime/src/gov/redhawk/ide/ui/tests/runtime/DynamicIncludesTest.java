@@ -10,6 +10,16 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.runtime;
 
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
+import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
+import org.junit.Assert;
+import org.junit.Test;
+
 import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.DeviceUtils;
 import gov.redhawk.ide.swtbot.SharedLibraryUtils;
@@ -19,24 +29,13 @@ import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
-import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
-import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
  * Tests component, device, and shared library projects by adding a shared library dependency (libdsp)
  * and including a header from libdsp (RealFIRFilter.h)
  */
 public class DynamicIncludesTest extends UIRuntimeTest {
 
-	private static final String DSP = "dsp";
+	private static final String DSP = "rh.dsp";
 
 	@Test
 	public void componentWithSharedLibDep() {
@@ -130,19 +129,7 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 		depWizardBot.comboBoxWithLabel("Kind:").setSelection("Shared Library (SoftPkg) Reference");
 		depWizardBot.comboBoxWithLabel("Type:").setSelection("other");
 		SWTBotTree depTree = depWizardBot.treeInGroup("Shared Library (SoftPkg) Reference");
-		depTree.expandNode("Shared Libraries");
-		SWTBotTreeItem[] items = depTree.getTreeItem("Shared Libraries").getItems();
-		SWTBotTreeItem selectedItem = null;
-		for (SWTBotTreeItem item : items) {
-			if (sharedLibraryName.equals(item.getText())) {
-				selectedItem = item;
-				break;
-			}
-		}
-
-		Assert.assertNotNull("Could not find shared library: " + sharedLibraryName, selectedItem);
-		selectedItem.select();
-
+		StandardTestActions.selectNamespacedTreeItem(depWizardBot, depTree, sharedLibraryName);
 		depWizardBot.button("Finish").click();
 		bot.saveAllEditors();
 	}
