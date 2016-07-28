@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
+import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.model.sca.util.ModelUtil;
 import mil.jpeojtrs.sca.sad.SoftwareAssembly;
 
@@ -80,19 +81,18 @@ public class WaveformWizardTest extends AbstractCreationWizardTest {
 	
 	@Test
 	public void testWithAssemblyController() throws IOException {
-		testSelectAssemblyController("rh.SigGen (/components/rh/SigGen/)", "SigGen_1");
+		testSelectAssemblyController("rh.SigGen", "SigGen_1");
 	}
 
 	@Test
 	public void testWithNamespacedAssemblyController() throws IOException {
-		testSelectAssemblyController("ide1112.test.name.spaced.comp1 (/components/ide1112/test/name/spaced/comp1/)", "comp1_1");
+		testSelectAssemblyController("ide1112.test.name.spaced.comp1", "comp1_1");
 	}
 
 	protected void testSelectAssemblyController(String acName, String ciName) throws IOException {
 		bot.textWithLabel("&Project name:").setText("WaveformProj01");
 		bot.button("Next >").click();
-
-		bot.activeShell().bot().table().select(acName);
+		StandardTestActions.selectNamespacedTreeItem(bot, bot.tree(), acName);
 		bot.button("Finish").click();
 
 		// Ensure SAD file was created
