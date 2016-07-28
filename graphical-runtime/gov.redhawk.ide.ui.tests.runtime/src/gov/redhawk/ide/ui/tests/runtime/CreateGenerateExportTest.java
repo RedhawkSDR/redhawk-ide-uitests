@@ -38,6 +38,7 @@ import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
+import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.util.ModelUtil;
@@ -96,10 +97,11 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		ComponentUtils.createComponentProject(bot, projectName, "Python");
 		generateProjectAndBuild(projectName, componentBaseName);
 
-		exportProject(PREFIX_DOTS + "cpp." + componentBaseName);
-		exportProject(PREFIX_DOTS + "java." + componentBaseName);
-		exportProject(PREFIX_DOTS + "python." + componentBaseName);
+		StandardTestActions.exportProject(PREFIX_DOTS + "cpp." + componentBaseName, bot);
+		StandardTestActions.exportProject(PREFIX_DOTS + "java." + componentBaseName, bot);
+		StandardTestActions.exportProject(PREFIX_DOTS + "python." + componentBaseName, bot);
 		bot.waitUntil(new WaitForLaunchTermination(), 30000);
+		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Components", "runtime", "test", "cpp" }, componentBaseName);
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Components", "runtime", "test", "java" }, componentBaseName);
@@ -137,10 +139,11 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		DeviceUtils.createDeviceProject(bot, projectName, "Python");
 		generateProjectAndBuild(projectName, deviceBaseName);
 
-		exportProject(PREFIX_DOTS + "cpp." + deviceBaseName);
-		exportProject(PREFIX_DOTS + "java." + deviceBaseName);
-		exportProject(PREFIX_DOTS + "python." + deviceBaseName);
+		StandardTestActions.exportProject(PREFIX_DOTS + "cpp." + deviceBaseName, bot);
+		StandardTestActions.exportProject(PREFIX_DOTS + "java." + deviceBaseName, bot);
+		StandardTestActions.exportProject(PREFIX_DOTS + "python." + deviceBaseName, bot);
 		bot.waitUntil(new WaitForLaunchTermination(), 30000);
+		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Devices", "runtime", "test", "cpp" }, deviceBaseName);
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Devices", "runtime", "test", "java" }, deviceBaseName);
@@ -172,10 +175,11 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		ServiceUtils.createServiceProject(bot, projectName, serviceInterface, "Python");
 		generateProjectAndBuild(projectName, serviceBaseName);
 
-		exportProject(PREFIX_DOTS + "cpp." + serviceBaseName);
-		exportProject(PREFIX_DOTS + "java." + serviceBaseName);
-		exportProject(PREFIX_DOTS + "python." + serviceBaseName);
+		StandardTestActions.exportProject(PREFIX_DOTS + "cpp." + serviceBaseName, bot);
+		StandardTestActions.exportProject(PREFIX_DOTS + "java." + serviceBaseName, bot);
+		StandardTestActions.exportProject(PREFIX_DOTS + "python." + serviceBaseName, bot);
 		bot.waitUntil(new WaitForLaunchTermination(), 30000);
+		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Services", "runtime", "test", "cpp" }, serviceBaseName);
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Services", "runtime", "test", "java" }, serviceBaseName);
@@ -210,7 +214,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		});
 		editor.save();
 
-		exportProject(waveformBaseName);
+		StandardTestActions.exportProject(waveformBaseName, bot);
 		String[] scaPath = { "Target SDR", "Waveforms", "runtime", "test" };
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, waveformBaseName);
 
@@ -255,7 +259,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		});
 		editor.save();
 
-		exportProject(nodeBaseName);
+		StandardTestActions.exportProject(nodeBaseName, bot);
 		String[] scaPath = { "Target SDR", "Nodes", "runtime", "test" };
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, nodeBaseName);
 
@@ -291,8 +295,9 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 
 		generateProjectAndBuild(PREFIX_DOTS + sharedLibraryBaseName, sharedLibraryBaseName + ".cpp");
 
-		exportProject(PREFIX_DOTS + sharedLibraryBaseName);
+		StandardTestActions.exportProject(PREFIX_DOTS + sharedLibraryBaseName, bot);
 		bot.waitUntil(new WaitForLaunchTermination(), 30000);
+		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Shared Libraries", "runtime", "test" }, sharedLibraryBaseName);
 	}
@@ -309,10 +314,6 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		bot.waitUntil(new WaitForBuild(), 30000);
 		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), 120000);
 		bot.closeAllEditors();
-	}
-
-	private void exportProject(String projectName) {
-		StandardTestActions.exportProject(projectName, bot);
 	}
 
 	private void checkExistsInScaAndRemove(String[] scaPath, String projectName) {
