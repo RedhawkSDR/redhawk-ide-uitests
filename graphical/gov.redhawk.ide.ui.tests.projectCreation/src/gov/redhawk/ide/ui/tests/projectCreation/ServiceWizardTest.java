@@ -10,8 +10,16 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.projectCreation;
 
-import java.io.IOException;
+import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.allOf;
+import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
+import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.withMnemonic;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.widgets.Widget;
+import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,6 +36,13 @@ public class ServiceWizardTest extends ComponentWizardTest {
 	protected void testServiceProjectCreation(String name, String lang, String generator, String template) {
 		setServiceInWizard();
 		super.testProjectCreation(name, lang, generator, new StandardCodegenInfo(template));
+
+		@SuppressWarnings("unchecked")
+		Matcher<Widget> matcher = allOf(widgetOfType(CTabItem.class), withMnemonic("Ports"));
+		List<Widget> cTabs = bot.getFinder().findControls(matcher);
+		if (!cTabs.isEmpty()) {
+			Assert.fail("Ports tab should not be displayed");
+		}
 	}
 
 	public void setServiceInWizard() {
@@ -37,21 +52,21 @@ public class ServiceWizardTest extends ComponentWizardTest {
 	@Test
 	@Override
 	public void testPythonCreation() {
-		testServiceProjectCreation("ComponentWizardTest01", "Python", "Python Code Generator", "Default Service");
+		testServiceProjectCreation("ServiceWizardTest01", "Python", "Python Code Generator", "Default Service");
 		wizardShell.close();
 	}
 
 	@Test
 	@Override
 	public void testCppCreation() {
-		testServiceProjectCreation("ComponentWizardTest01", "C++", "C++ Code Generator", "Default Service");
+		testServiceProjectCreation("ServiceWizardTest01", "C++", "C++ Code Generator", "Default Service");
 		wizardShell.close();
 	}
 
 	@Test
 	@Override
 	public void testJavaCreation() {
-		testServiceProjectCreation("ComponentWizardTest01", "Java", "Java Code Generator", "Default Service");
+		testServiceProjectCreation("ServiceWizardTest01", "Java", "Java Code Generator", "Default Service");
 		wizardShell.close();
 	}
 	
