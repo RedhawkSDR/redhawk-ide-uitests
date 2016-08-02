@@ -10,48 +10,29 @@
  */
 package gov.redhawk.ide.frontend.runtime.tests;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
-import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 /**
  * Tests relating to allocating/deallocating tuners and listeners.
  */
-public class AllocDeallocTest extends UIRuntimeTest {
+public abstract class AbstractTunerTest extends UIRuntimeTest {
 
-	private static final String SANDBOX = "Sandbox";
-	private static final String DEV_MGR = "Device Manager";
-	private static final String FEI_DEVICE = "rh.FmRdsSimulator";
-	private static final String FEI_DEVICE_IMPL = "cpp";
-	private static final String FEI_DEVICE_1 = "rh.FmRdsSimulator_1";
+	protected static final String SANDBOX = "Sandbox";
+	protected static final String DEV_MGR = "Device Manager";
 	private static final String FEI_CONTAINER = "FrontEnd Tuners";
 	private static final String CENTER_FREQ = "101";
 
-	@Before
-	public void before() throws Exception {
-		super.before();
-		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, FEI_DEVICE, FEI_DEVICE_IMPL);
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { SANDBOX, DEV_MGR }, FEI_DEVICE_1);
-	}
+	protected abstract String getDeviceName();
 
-	@After
-	public void after() throws CoreException {
-		ScaExplorerTestUtils.terminate(bot, new String[] { SANDBOX }, DEV_MGR);
-		bot.waitUntil(new WaitForLaunchTermination(false));
-		ConsoleUtils.removeTerminatedLaunches(bot);
-		super.after();
-	}
+	protected abstract String getDeviceImpl();
 
 	/**
 	 * Allocate a tuner via the device, then deallocate all
@@ -59,15 +40,15 @@ public class AllocDeallocTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void allocate_deallocateAll_device() {
-		final SWTBotTreeItem feiContainer = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1 },
-			FEI_CONTAINER);
+		final SWTBotTreeItem feiContainer = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot,
+			new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		waitForTunerDeallocation(feiContainer);
 
-		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR }, FEI_DEVICE_1);
+		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR }, getDeviceName() + "_1");
 		completeAllocateWizard();
 		waitForTunerAllocation(feiContainer);
 
-		ScaExplorerTestUtils.deallocateAll(bot, new String[] { SANDBOX, DEV_MGR }, FEI_DEVICE_1);
+		ScaExplorerTestUtils.deallocateAll(bot, new String[] { SANDBOX, DEV_MGR }, getDeviceName() + "_1");
 		acknowledgeWarning();
 		waitForTunerDeallocation(feiContainer);
 	}
@@ -78,15 +59,15 @@ public class AllocDeallocTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void allocate_deallocateAll_container() {
-		final SWTBotTreeItem feiContainer = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1 },
-			FEI_CONTAINER);
+		final SWTBotTreeItem feiContainer = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot,
+			new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		waitForTunerDeallocation(feiContainer);
 
-		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1 }, FEI_CONTAINER);
+		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		completeAllocateWizard();
 		waitForTunerAllocation(feiContainer);
 
-		ScaExplorerTestUtils.deallocateAll(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1 }, FEI_CONTAINER);
+		ScaExplorerTestUtils.deallocateAll(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		acknowledgeWarning();
 		waitForTunerDeallocation(feiContainer);
 	}
@@ -96,15 +77,15 @@ public class AllocDeallocTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void allocate_deallocate_tuner() {
-		final SWTBotTreeItem feiContainer = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1 },
-			FEI_CONTAINER);
+		final SWTBotTreeItem feiContainer = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot,
+			new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		SWTBotTreeItem tuner = waitForTunerDeallocation(feiContainer);
 
-		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1, FEI_CONTAINER }, tuner.getText());
+		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
 		completeAllocateWizard();
 		tuner = waitForTunerAllocation(feiContainer);
 
-		ScaExplorerTestUtils.deallocate(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1, FEI_CONTAINER }, tuner.getText());
+		ScaExplorerTestUtils.deallocate(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
 		waitForTunerDeallocation(feiContainer);
 	}
 
@@ -113,19 +94,19 @@ public class AllocDeallocTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void allocate_deallocate_listner() {
-		final SWTBotTreeItem feiContainer = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1 },
-			FEI_CONTAINER);
+		final SWTBotTreeItem feiContainer = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot,
+			new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		SWTBotTreeItem tuner = waitForTunerDeallocation(feiContainer);
 
-		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1, FEI_CONTAINER }, tuner.getText());
+		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
 		completeAllocateWizard();
 		tuner = waitForTunerAllocation(feiContainer);
 
-		ScaExplorerTestUtils.addListener(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1, FEI_CONTAINER }, tuner.getText());
+		ScaExplorerTestUtils.addListener(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
 		completeListenerWizard();
 		SWTBotTreeItem listener = waitForListenerAllocation(tuner);
 
-		ScaExplorerTestUtils.deallocate(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1, FEI_CONTAINER, tuner.getText() }, listener.getText());
+		ScaExplorerTestUtils.deallocate(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER, tuner.getText() }, listener.getText());
 		waitForListenerDeallocation(tuner);
 	}
 
@@ -134,19 +115,19 @@ public class AllocDeallocTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void allocateListener_deallocateTuner() {
-		final SWTBotTreeItem feiContainer = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1 },
-			FEI_CONTAINER);
+		final SWTBotTreeItem feiContainer = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot,
+			new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		SWTBotTreeItem tuner = waitForTunerDeallocation(feiContainer);
 
-		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1, FEI_CONTAINER }, tuner.getText());
+		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
 		completeAllocateWizard();
 		tuner = waitForTunerAllocation(feiContainer);
 
-		ScaExplorerTestUtils.addListener(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1, FEI_CONTAINER }, tuner.getText());
+		ScaExplorerTestUtils.addListener(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
 		completeListenerWizard();
 		waitForListenerAllocation(tuner);
 
-		ScaExplorerTestUtils.deallocate(bot, new String[] { SANDBOX, DEV_MGR, FEI_DEVICE_1, FEI_CONTAINER }, tuner.getText());
+		ScaExplorerTestUtils.deallocate(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
 		acknowledgeWarning();
 		waitForTunerDeallocation(feiContainer);
 	}
