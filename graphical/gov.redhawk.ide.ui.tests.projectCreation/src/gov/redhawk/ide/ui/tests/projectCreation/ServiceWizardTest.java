@@ -46,28 +46,28 @@ public class ServiceWizardTest extends ComponentWizardTest {
 	}
 
 	public void setServiceInWizard() {
-		wizardBot.textWithLabel("Service Interface").setText("IDL:IDETEST/SampleInterface:1.0");
+		getWizardBot().textWithLabel("Service Interface").setText("IDL:IDETEST/SampleInterface:1.0");
 	}
 	
 	@Test
 	@Override
 	public void testPythonCreation() {
 		testServiceProjectCreation("ServiceWizardTest01", "Python", "Python Code Generator", "Default Service");
-		wizardShell.close();
+		getWizardShell().close();
 	}
 
 	@Test
 	@Override
 	public void testCppCreation() {
 		testServiceProjectCreation("ServiceWizardTest01", "C++", "C++ Code Generator", "Default Service");
-		wizardShell.close();
+		getWizardShell().close();
 	}
 
 	@Test
 	@Override
 	public void testJavaCreation() {
 		testServiceProjectCreation("ServiceWizardTest01", "Java", "Java Code Generator", "Default Service");
-		wizardShell.close();
+		getWizardShell().close();
 	}
 	
 	@Test

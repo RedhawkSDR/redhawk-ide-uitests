@@ -28,7 +28,7 @@ public class DeviceCreationWizardTest extends ComponentWizardTest {
 
 	@Test
 	public void testCppDeviceCreation() {
-		wizardBot.comboBox().setSelection("Device");
+		getWizardBot().comboBox().setSelection("Device");
 		super.testCppCreation();
 
 		assertDeviceInterface("IDL:CF/Device:1.0");
@@ -49,7 +49,7 @@ public class DeviceCreationWizardTest extends ComponentWizardTest {
 
 	@Test
 	public void testCppExecutableDeviceCreation() {
-		wizardBot.comboBox().setSelection("Executable");
+		getWizardBot().comboBox().setSelection("Executable");
 		super.testCppCreation();
 
 		assertDeviceInterface("IDL:CF/ExecutableDevice:1.0");
@@ -65,7 +65,7 @@ public class DeviceCreationWizardTest extends ComponentWizardTest {
 
 	@Test
 	public void testCppLoadableDeviceCreation() {
-		wizardBot.comboBox().setSelection("Loadable");
+		getWizardBot().comboBox().setSelection("Loadable");
 		super.testCppCreation();
 
 		assertDeviceInterface("IDL:CF/LoadableDevice:1.0");

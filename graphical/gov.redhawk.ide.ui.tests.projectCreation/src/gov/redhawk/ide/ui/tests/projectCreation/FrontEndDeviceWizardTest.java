@@ -146,8 +146,8 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 
 	protected void setupCodeGeneration(ICodegenInfo iCodegenInfo) {
 		if (!(iCodegenInfo instanceof FEICodegenInfo)) {
-			wizardBot.button("Next >").click();
-			wizardBot.button("Next >").click();
+			getWizardBot().button("Next >").click();
+			getWizardBot().button("Next >").click();
 			return;
 		}
 		FEICodegenInfo codegenInfo = (FEICodegenInfo) iCodegenInfo;
@@ -175,7 +175,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 			Assert.fail();
 			break;
 		}
-		wizardBot.button("Next >").click();
+		getWizardBot().button("Next >").click();
 
 		// FEI device options
 		switch (codegenInfo.getType()) {
@@ -192,15 +192,15 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 		default:
 			Assert.fail();
 		}
-		wizardBot.button("Next >").click();
+		getWizardBot().button("Next >").click();
 
 		// FEI properties
 		// TODO
 	}
 
 	protected void reverseFromCodeGeneration() {
-		wizardBot.button("< Back").click();
-		wizardBot.button("< Back").click();
+		getWizardBot().button("< Back").click();
+		getWizardBot().button("< Back").click();
 	}
 
 	protected void testNonDefaultLocation_setupCodeGeneration() {
@@ -213,23 +213,23 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 
 	private void receivePage(FEICodegenInfo codegenInfo) {
 		if (codegenInfo.isInputDigital()) {
-			wizardBot.radio("Digital Input").click();
+			getWizardBot().radio("Digital Input").click();
 			if (codegenInfo.getInputPortType() != null) {
-				SWTBotCombo combo = wizardBot.comboBoxWithLabelInGroup("Digital Input Type:", "Receiver Properties");
+				SWTBotCombo combo = getWizardBot().comboBoxWithLabelInGroup("Digital Input Type:", "Receiver Properties");
 				assertDataCharDeprecated(combo);
 				combo.setSelection(codegenInfo.getInputPortType());
 			}
 		} else {
-			wizardBot.radio("Analog Input (default)").click();
+			getWizardBot().radio("Analog Input (default)").click();
 			if (codegenInfo.getAnalogInputPorts() != -1) {
-				wizardBot.spinnerWithLabel("Number of Analog input ports:").setSelection(codegenInfo.getAnalogInputPorts());
+				getWizardBot().spinnerWithLabel("Number of Analog input ports:").setSelection(codegenInfo.getAnalogInputPorts());
 			}
 		}
 
 		if (codegenInfo.isOutputDigital()) {
 			// wizardBot.radio("Digital Output (default)").click();
 			if (codegenInfo.getOutputPortType() != null) {
-				SWTBotCombo combo = wizardBot.comboBoxWithLabel("Digital Output Type:");
+				SWTBotCombo combo = getWizardBot().comboBoxWithLabel("Digital Output Type:");
 				assertDataCharDeprecated(combo);
 				combo.setSelection(codegenInfo.getOutputPortType());
 			}
@@ -238,13 +238,13 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 				checkBox.click();
 			}
 		} else {
-			wizardBot.radio("Analog Output").click();
+			getWizardBot().radio("Analog Output").click();
 		}
 	}
 
 	private void transmitPage(FEICodegenInfo codegenInfo) {
 		if (codegenInfo.getDigitalInputPorts() != -1) {
-			wizardBot.spinnerWithLabel("Number of Digital input ports:").setSelection(codegenInfo.getDigitalInputPorts());
+			getWizardBot().spinnerWithLabel("Number of Digital input ports:").setSelection(codegenInfo.getDigitalInputPorts());
 		}
 		if (codegenInfo.getInputPortType() != null) {
 			SWTBotCombo combo = bot.comboBoxWithLabelInGroup("Digital Input Type:", "Transmitter Properties");

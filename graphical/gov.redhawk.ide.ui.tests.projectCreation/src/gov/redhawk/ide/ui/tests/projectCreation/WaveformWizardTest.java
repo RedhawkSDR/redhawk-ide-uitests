@@ -16,6 +16,8 @@ import java.io.IOException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -127,5 +129,28 @@ public class WaveformWizardTest extends AbstractCreationWizardTest {
 	public void testNamespacedWaveformCreation() {
 		testBasicCreate("namespaced.waveform.IDE1111");
 	}
-	
+
+	/**
+	 * Tests a race condition - it was possible to enter an illegal character in the waveform name while completing
+	 * the new REDHAWK waveform wizard.
+	 * IDE-826 Race condition naming project / clicking finish
+	 * @throws Exception
+	 */
+	@Test
+	public void projectNameRaceCondition() throws Exception {
+		SWTBotText projectNameField = getWizardBot().textWithLabel("Project name:");
+		projectNameField.setText("test_IDE_826");
+		getWizardBot().button("Finish").click();
+
+		// Try to change the name while the performFinish() is running
+		projectNameField.setText("test_IDE_826_bad");
+
+		bot.waitUntil(Conditions.shellCloses(getWizardShell()));
+
+		SWTBotView navigatorView = bot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
+		navigatorView.show();
+		navigatorView.setFocus();
+
+		navigatorView.bot().tree().select("test_IDE_826");
+	}
 }

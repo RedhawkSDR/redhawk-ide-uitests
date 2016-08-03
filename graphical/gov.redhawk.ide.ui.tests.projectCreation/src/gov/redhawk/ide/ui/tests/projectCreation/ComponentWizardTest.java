@@ -40,24 +40,24 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 	@Test
 	@Override
 	public void testNonDefaultLocation() throws IOException {
-		wizardBot.textWithLabel("&Project name:").setText("ProjectName");
-		wizardBot.checkBox("Use default location").click();
+		getWizardBot().textWithLabel("&Project name:").setText("ProjectName");
+		getWizardBot().checkBox("Use default location").click();
 
-		wizardBot.textWithLabel("&Location:").setText("Bad location");
+		getWizardBot().textWithLabel("&Location:").setText("Bad location");
 		Assert.assertFalse(bot.button("Finish").isEnabled());
 
 		File createdFolder = folder.newFolder("ProjectName");
-		wizardBot.textWithLabel("&Location:").setText(createdFolder.getAbsolutePath());
-		wizardBot.button("Next >").click();
+		getWizardBot().textWithLabel("&Location:").setText(createdFolder.getAbsolutePath());
+		getWizardBot().button("Next >").click();
 
-		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("Python");
-		wizardBot.comboBoxWithLabel("Code Generator:").setSelection(0);
-		wizardBot.button("Next >").click();
+		getWizardBot().comboBoxWithLabel("Prog. Lang:").setSelection("Python");
+		getWizardBot().comboBoxWithLabel("Code Generator:").setSelection(0);
+		getWizardBot().button("Next >").click();
 
 		testNonDefaultLocation_setupCodeGeneration();
 
-		wizardBot.button("Finish").click();
-		bot.waitUntil(Conditions.shellCloses(wizardShell));
+		getWizardBot().button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(getWizardShell()));
 		SWTBotEditor editorBot = bot.editorByTitle("ProjectName");
 
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("ProjectName");
@@ -68,14 +68,14 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 	}
 
 	protected void testNonDefaultLocation_setupCodeGeneration() {
-		SWTBotCombo templateCombo = wizardBot.comboBoxWithLabel("Template:");
+		SWTBotCombo templateCombo = getWizardBot().comboBoxWithLabel("Template:");
 		for (int i = 0; i < templateCombo.itemCount(); i++) {
-			wizardBot.comboBoxWithLabel("Template:").setSelection(i);
-			if (wizardBot.button("Finish").isEnabled()) {
+			getWizardBot().comboBoxWithLabel("Template:").setSelection(i);
+			if (getWizardBot().button("Finish").isEnabled()) {
 				break;
 			}
 		}
-		wizardBot.textWithLabel("Output Directory:").setText("customOutput");
+		getWizardBot().textWithLabel("Output Directory:").setText("customOutput");
 	}
 
 	protected void testNonDefaultLocation_assertOutputDir(SWTBotEditor editorBot) {
@@ -84,23 +84,23 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 	}
 
 	protected void testProjectCreation(String name, String lang, String generator, ICodegenInfo iCodegenInfo) {
-		wizardBot.textWithLabel("&Project name:").setText(name);
-		wizardBot.button("Next >").click();
+		getWizardBot().textWithLabel("&Project name:").setText(name);
+		getWizardBot().button("Next >").click();
 
-		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection(lang);
+		getWizardBot().comboBoxWithLabel("Prog. Lang:").setSelection(lang);
 		if (generator != null) {
-			wizardBot.comboBoxWithLabel("Code Generator:").setSelection(generator);
+			getWizardBot().comboBoxWithLabel("Code Generator:").setSelection(generator);
 		}
-		Assert.assertFalse(wizardBot.textWithLabel("ID:").getText().isEmpty());
-		wizardBot.textWithLabel("ID:").setText("customImplID");
-		Assert.assertFalse(wizardBot.textWithLabel("Description:").getText().isEmpty());
-		wizardBot.textWithLabel("Description:").setText("custom description");
-		wizardBot.button("Next >").click();
+		Assert.assertFalse(getWizardBot().textWithLabel("ID:").getText().isEmpty());
+		getWizardBot().textWithLabel("ID:").setText("customImplID");
+		Assert.assertFalse(getWizardBot().textWithLabel("Description:").getText().isEmpty());
+		getWizardBot().textWithLabel("Description:").setText("custom description");
+		getWizardBot().button("Next >").click();
 
 		setupCodeGeneration(iCodegenInfo);
 
-		wizardBot.button("Finish").click();
-		bot.waitUntil(Conditions.shellCloses(wizardShell));
+		getWizardBot().button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(getWizardShell()));
 
 		// Ensure SPD file was created
 		String baseFilename = getBaseFilename(name);
@@ -141,41 +141,41 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 
 	@Test
 	public void testBackNext() {
-		wizardBot.textWithLabel("&Project name:").setText("ComponentWizardTest01");
-		wizardBot.button("Next >").click();
+		getWizardBot().textWithLabel("&Project name:").setText("ComponentWizardTest01");
+		getWizardBot().button("Next >").click();
 
-		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("Python");
-		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("Python Code Generator");
-		wizardBot.button("Next >").click();
+		getWizardBot().comboBoxWithLabel("Prog. Lang:").setSelection("Python");
+		getWizardBot().comboBoxWithLabel("Code Generator:").setSelection("Python Code Generator");
+		getWizardBot().button("Next >").click();
 		setupCodeGeneration(null);
-		bot.waitUntil(Conditions.widgetIsEnabled(wizardBot.button("Finish")));
+		bot.waitUntil(Conditions.widgetIsEnabled(getWizardBot().button("Finish")));
 		reverseFromCodeGeneration();
-		wizardBot.button("< Back").click();
+		getWizardBot().button("< Back").click();
 
-		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("Java");
-		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("Java Code Generator");
-		wizardBot.button("Next >").click();
-		bot.waitUntil(Conditions.widgetIsEnabled(wizardBot.button("Finish")));
-		wizardBot.button("< Back").click();
+		getWizardBot().comboBoxWithLabel("Prog. Lang:").setSelection("Java");
+		getWizardBot().comboBoxWithLabel("Code Generator:").setSelection("Java Code Generator");
+		getWizardBot().button("Next >").click();
+		bot.waitUntil(Conditions.widgetIsEnabled(getWizardBot().button("Finish")));
+		getWizardBot().button("< Back").click();
 
-		wizardBot.comboBoxWithLabel("Prog. Lang:").setSelection("C++");
-		wizardBot.comboBoxWithLabel("Code Generator:").setSelection("C++ Code Generator");
-		wizardBot.button("Next >").click();
-		bot.waitUntil(Conditions.widgetIsEnabled(wizardBot.button("Finish")));
+		getWizardBot().comboBoxWithLabel("Prog. Lang:").setSelection("C++");
+		getWizardBot().comboBoxWithLabel("Code Generator:").setSelection("C++ Code Generator");
+		getWizardBot().button("Next >").click();
+		bot.waitUntil(Conditions.widgetIsEnabled(getWizardBot().button("Finish")));
 
-		wizardShell.close();
+		getWizardShell().close();
 	}
 
 	@Test
 	public void testContributedPropertiesUI() {
-		wizardBot.textWithLabel("&Project name:").setText("WizardTest03");
-		wizardBot.button("Next >").click();
-		wizardBot.comboBox().setSelection("Java");
-		wizardBot.button("Next >").click();
-		Assert.assertFalse(wizardBot.textWithLabel("Package:").getText().isEmpty());
-		wizardBot.textWithLabel("Package:").setText("customPackageName");
+		getWizardBot().textWithLabel("&Project name:").setText("WizardTest03");
+		getWizardBot().button("Next >").click();
+		getWizardBot().comboBox().setSelection("Java");
+		getWizardBot().button("Next >").click();
+		Assert.assertFalse(getWizardBot().textWithLabel("Package:").getText().isEmpty());
+		getWizardBot().textWithLabel("Package:").setText("customPackageName");
 
-		wizardShell.close();
+		getWizardShell().close();
 	}
 
 	/**
@@ -194,9 +194,9 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 	protected void setupCodeGeneration(ICodegenInfo iCodegenInfo) {
 		StandardCodegenInfo codegenInfo = (StandardCodegenInfo) iCodegenInfo;
 		if (codegenInfo != null && codegenInfo.getTemplate() != null) {
-			wizardBot.comboBoxWithLabel("Template:").setSelection(codegenInfo.getTemplate());
+			getWizardBot().comboBoxWithLabel("Template:").setSelection(codegenInfo.getTemplate());
 		}
-		Assert.assertFalse(wizardBot.textWithLabel("Output Directory:").getText().isEmpty());
+		Assert.assertFalse(getWizardBot().textWithLabel("Output Directory:").getText().isEmpty());
 	}
 	
 	protected void reverseFromCodeGeneration() {

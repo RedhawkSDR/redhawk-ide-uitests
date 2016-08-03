@@ -33,8 +33,8 @@ import org.junit.rules.TemporaryFolder;
 
 public abstract class AbstractCreationWizardTest extends UITest {
 
-	protected SWTBotShell wizardShell;
-	protected SWTBot wizardBot;
+	private SWTBotShell wizardShell;
+	private SWTBot wizardBot;
 
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
@@ -42,6 +42,14 @@ public abstract class AbstractCreationWizardTest extends UITest {
 	@BeforeClass
 	public static void setupPyDev() throws Exception {
 		StandardTestActions.configurePyDev();
+	}
+
+	protected SWTBotShell getWizardShell() {
+		return wizardShell;
+	}
+
+	protected SWTBot getWizardBot() {
+		return wizardBot;
 	}
 
 	@Test
