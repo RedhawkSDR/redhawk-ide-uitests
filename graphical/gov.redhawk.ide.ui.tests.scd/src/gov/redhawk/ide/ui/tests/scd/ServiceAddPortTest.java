@@ -15,6 +15,7 @@ import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -60,8 +61,14 @@ public class ServiceAddPortTest extends UITest {
 		ServiceUtils.createServiceProject(bot, "TestProject", "IDL:CF/LifeCycle:1.0", "Java");
 		bot.waitUntil(new WaitForEditorCondition());
 		SWTBot editorBot = bot.activeEditor().bot();
-		editorBot.cTabItem(PORTS_TAB_NAME).activate();
-		Assert.assertFalse("Add port button should be disabled", editorBot.button("Add").isEnabled());
+		try {
+			editorBot.cTabItem(PORTS_TAB_NAME);
+		} catch (WidgetNotFoundException e) {
+			// PASS - the port tab should not be displayed
+			return;
+		}
+
+		Assert.fail("Port tab should not be visible for Service projects that don't inherit from CF/PortSupplier");
 	}
 
 }
