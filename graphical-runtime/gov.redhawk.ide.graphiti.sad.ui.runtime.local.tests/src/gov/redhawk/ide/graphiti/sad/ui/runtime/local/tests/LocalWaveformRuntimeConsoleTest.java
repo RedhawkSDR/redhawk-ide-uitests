@@ -27,9 +27,10 @@ public class LocalWaveformRuntimeConsoleTest extends AbstractGraphitiLocalWavefo
 			if (title.contains(SIGGEN_1)) {
 				Assert.assertTrue("Console title does not start with component and waveform name",
 					title.startsWith(SIGGEN_1 + " [" + getWaveFormFullName() + "] "));
+				return;
 			}
 		}
-
+		Assert.fail("Test component and waveform not found");
 	}
 
 }
