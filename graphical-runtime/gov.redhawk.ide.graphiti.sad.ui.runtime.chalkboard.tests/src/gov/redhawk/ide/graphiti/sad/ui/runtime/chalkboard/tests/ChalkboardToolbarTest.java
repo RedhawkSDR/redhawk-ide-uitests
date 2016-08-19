@@ -34,12 +34,13 @@ public class ChalkboardToolbarTest extends AbstractGraphitiChalkboardTest {
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 200);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT, ComponentState.STOPPED);
 
 		editor.setFocus();
 		bot.toolbarButtonWithTooltip("Start Waveform").click();
-		final String[] waveformStartedPath = ScaExplorerTestUtils.joinPaths(CHALKBOARD_PARENT_PATH, new String[] { CHALKBOARD + " STARTED"});
-		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformStartedPath, SIGGEN_1);
-		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformStartedPath, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformPath, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, waveformPath, HARD_LIMIT_1);
 		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STARTED);
 		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT, ComponentState.STARTED);
 
