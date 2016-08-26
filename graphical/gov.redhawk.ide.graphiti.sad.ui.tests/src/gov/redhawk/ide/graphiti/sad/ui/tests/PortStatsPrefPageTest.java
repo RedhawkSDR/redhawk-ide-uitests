@@ -10,6 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swt.widgets.Display;
@@ -21,10 +22,9 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.core.graphiti.ui.internal.preferences.GraphitiPreferencesNLS;
+import gov.redhawk.core.graphiti.ui.preferences.DiagramPreferenceConstants;
 import gov.redhawk.ide.graphiti.ui.GraphitiUIPlugin;
-import gov.redhawk.ide.graphiti.ui.diagram.preferences.DiagramPreferenceConstants;
-import gov.redhawk.ide.graphiti.ui.diagram.preferences.GraphitiPreferencesNLS;
-import gov.redhawk.ide.graphiti.ui.diagram.preferences.PortStatisticsPreferencePage;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 
 public class PortStatsPrefPageTest extends AbstractGraphitiTest {
@@ -124,7 +124,7 @@ public class PortStatsPrefPageTest extends AbstractGraphitiTest {
 			public void run() {
 				Shell w = shell.widget;
 				PreferenceDialog data = (PreferenceDialog) w.getData();
-				PortStatisticsPreferencePage page = (PortStatisticsPreferencePage) data.getSelectedPage();
+				DialogPage page = (DialogPage) data.getSelectedPage();
 				setErrorMessage(page.getErrorMessage());
 			}
 		});
