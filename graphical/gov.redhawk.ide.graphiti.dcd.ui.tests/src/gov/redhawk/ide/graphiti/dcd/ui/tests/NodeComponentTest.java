@@ -21,9 +21,9 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.dcd.ext.impl.DeviceShapeImpl;
-import gov.redhawk.ide.graphiti.dcd.ext.impl.ServiceShapeImpl;
-import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
+import gov.redhawk.core.graphiti.dcd.ui.ext.DeviceShape;
+import gov.redhawk.core.graphiti.dcd.ui.ext.ServiceShape;
+import gov.redhawk.core.graphiti.ui.ext.RHContainerShape;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
@@ -95,7 +95,7 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 		MenuUtils.save(editor);
 
 		// Build expected xml string for device
-		RHContainerShapeImpl deviceShape = (RHContainerShapeImpl) editor.getEditPart(deviceName).part().getModel();
+		RHContainerShape deviceShape = (RHContainerShape) editor.getEditPart(deviceName).part().getModel();
 		final String componentFileString = "(?s).*<componentfile id=\"" + deviceBaseName + ".*";
 		final String deviceXmlString = DiagramTestUtils.regexStringForDevice(deviceShape);
 		
@@ -209,7 +209,7 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 	private static void assertGPP(SWTBotGefEditPart gefEditPart) {
 		Assert.assertNotNull(gefEditPart);
 		// Drill down to graphiti device shape
-		DeviceShapeImpl deviceShape = (DeviceShapeImpl) gefEditPart.part().getModel();
+		DeviceShape deviceShape = (DeviceShape) gefEditPart.part().getModel();
 
 		// Grab the associated business object and confirm it is a DcdComponentInstantiation
 		Object bo = DUtil.getBusinessObject(deviceShape);
@@ -236,7 +236,7 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 	private static void assertServiceStub(SWTBotGefEditPart gefEditPart) {
 		Assert.assertNotNull(gefEditPart);
 		// Drill down to graphiti service shape
-		ServiceShapeImpl serviceShape = (ServiceShapeImpl) gefEditPart.part().getModel();
+		ServiceShape serviceShape = (ServiceShape) gefEditPart.part().getModel();
 
 		// Grab the associated business object and confirm it is a DcdComponentInstantiation
 		Object bo = DUtil.getBusinessObject(serviceShape);

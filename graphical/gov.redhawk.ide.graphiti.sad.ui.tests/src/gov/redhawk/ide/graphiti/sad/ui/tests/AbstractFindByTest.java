@@ -23,7 +23,7 @@ import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
+import gov.redhawk.core.graphiti.ui.ext.RHContainerShape;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
@@ -120,7 +120,7 @@ public abstract class AbstractFindByTest extends AbstractGraphitiTest {
 
 		// Edit FindBy ports
 		editFindByPorts(newFindByName);
-		RHContainerShapeImpl findByShape = (RHContainerShapeImpl) fbEditPart.part().getModel();
+		RHContainerShape findByShape = (RHContainerShape) fbEditPart.part().getModel();
 		FindByStub findByObject = (FindByStub) DUtil.getBusinessObject(findByShape);
 		validateFindByPortEdits(findByShape, findByObject);
 
@@ -271,7 +271,7 @@ public abstract class AbstractFindByTest extends AbstractGraphitiTest {
 		gefBot.button("Finish").click();
 	}
 
-	protected void validateFindByPortEdits(RHContainerShapeImpl findByShape, FindByStub findByObject) {
+	protected void validateFindByPortEdits(RHContainerShape findByShape, FindByStub findByObject) {
 		Assert.assertTrue("Number of ports is incorrect", findByShape.getUsesPortStubs().size() == 2 && findByShape.getProvidesPortStubs().size() == 0);
 		Assert.assertEquals("Uses port name is incorrect", NEW_USES_PORT, findByShape.getUsesPortStubs().get(1).getName());
 		Assert.assertEquals("Diagram uses and domain uses don't match", NEW_USES_PORT, findByObject.getUses().get(1).getName());

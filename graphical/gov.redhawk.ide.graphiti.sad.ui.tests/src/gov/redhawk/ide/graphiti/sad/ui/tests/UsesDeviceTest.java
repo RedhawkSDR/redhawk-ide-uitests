@@ -20,7 +20,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
+import gov.redhawk.core.graphiti.ui.ext.RHContainerShape;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForWidgetEnablement;
@@ -69,7 +69,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart frontEndTunerGefEditPart = editor.getEditPart(SadTestUtils.USE_FRONTEND_TUNER_DEVICE);
 		assertFrontEndTuner(frontEndTunerGefEditPart);
 
-		RHContainerShapeImpl rhContainerShape = (RHContainerShapeImpl) frontEndTunerGefEditPart.part().getModel();
+		RHContainerShape rhContainerShape = (RHContainerShape) frontEndTunerGefEditPart.part().getModel();
 
 		// two provides ports, two uses ports
 		Assert.assertTrue(rhContainerShape.getUsesPortStubs().size() == 2 && rhContainerShape.getProvidesPortStubs().size() == 2);
@@ -129,7 +129,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		assertFrontEndTuner(frontEndTunerGefEditPart);
 
 		// two provides ports, one uses ports
-		RHContainerShapeImpl rhContainerShape = (RHContainerShapeImpl) frontEndTunerGefEditPart.part().getModel();
+		RHContainerShape rhContainerShape = (RHContainerShape) frontEndTunerGefEditPart.part().getModel();
 		Assert.assertTrue(rhContainerShape.getProvidesPortStubs().size() == 2 && rhContainerShape.getUsesPortStubs().size() == 1);
 		Assert.assertEquals(rhContainerShape.getProvidesPortStubs().get(0).getName(), "RFInfo_in");
 		Assert.assertEquals(rhContainerShape.getProvidesPortStubs().get(1).getName(), "DigitalTuner_in");
@@ -241,7 +241,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart frontEndTunerGefEditPart = editor.getEditPart(SadTestUtils.USE_FRONTEND_TUNER_DEVICE);
 		assertFrontEndTuner(frontEndTunerGefEditPart);
 
-		RHContainerShapeImpl rhContainerShape = (RHContainerShapeImpl) frontEndTunerGefEditPart.part().getModel();
+		RHContainerShape rhContainerShape = (RHContainerShape) frontEndTunerGefEditPart.part().getModel();
 
 		// two provides ports, two uses ports
 		Assert.assertTrue(rhContainerShape.getUsesPortStubs().size() == 2 && rhContainerShape.getProvidesPortStubs().size() == 2);
@@ -338,7 +338,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart useDeviceEditPart = editor.getEditPart(SadTestUtils.USE_DEVICE);
 		SadTestUtils.assertUsesDevice(useDeviceEditPart);
 
-		RHContainerShapeImpl rhContainerShape = (RHContainerShapeImpl) useDeviceEditPart.part().getModel();
+		RHContainerShape rhContainerShape = (RHContainerShape) useDeviceEditPart.part().getModel();
 
 		// two provides ports, two uses ports
 		Assert.assertTrue(rhContainerShape.getUsesPortStubs().size() == 2 && rhContainerShape.getProvidesPortStubs().size() == 2);
@@ -404,7 +404,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 	private void assertFrontEndTuner(SWTBotGefEditPart gefEditPart) {
 		Assert.assertNotNull(gefEditPart);
 		// Drill down to graphiti component shape
-		RHContainerShapeImpl rhContainerShape = (RHContainerShapeImpl) gefEditPart.part().getModel();
+		RHContainerShape rhContainerShape = (RHContainerShape) gefEditPart.part().getModel();
 
 		// Grab the associated business object and confirm it is a UsesDeviceStub
 		Object bo = DUtil.getBusinessObject(rhContainerShape);

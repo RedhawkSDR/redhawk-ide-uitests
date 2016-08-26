@@ -16,7 +16,7 @@ import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.junit.Assert;
 
-import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
+import gov.redhawk.core.graphiti.ui.ext.RHContainerShape;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import mil.jpeojtrs.sca.partitioning.FindByStub;
@@ -41,7 +41,7 @@ public class FindByEventChannelTest extends AbstractFindByTest {
 	}
 
 	@Override
-	protected void validateFindByPortEdits(RHContainerShapeImpl findByShape, FindByStub findByObject) {
+	protected void validateFindByPortEdits(RHContainerShape findByShape, FindByStub findByObject) {
 		return; // PASS - Event Channels do not have ports
 	}
 

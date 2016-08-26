@@ -10,12 +10,12 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
-import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
-import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
-import mil.jpeojtrs.sca.partitioning.UsesDeviceStub;
-
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.junit.Assert;
+
+import gov.redhawk.core.graphiti.ui.ext.RHContainerShape;
+import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
+import mil.jpeojtrs.sca.partitioning.UsesDeviceStub;
 
 public class SadTestUtils {
 	
@@ -32,7 +32,7 @@ public class SadTestUtils {
 	public static void assertUsesDevice(SWTBotGefEditPart gefEditPart) {
 		Assert.assertNotNull(gefEditPart);
 		// Drill down to graphiti component shape
-		RHContainerShapeImpl rhContainerShape = (RHContainerShapeImpl) gefEditPart.part().getModel();
+		RHContainerShape rhContainerShape = (RHContainerShape) gefEditPart.part().getModel();
 
 		// Grab the associated business object and confirm it is a UsesDeviceStub
 		Object bo = DUtil.getBusinessObject(rhContainerShape);

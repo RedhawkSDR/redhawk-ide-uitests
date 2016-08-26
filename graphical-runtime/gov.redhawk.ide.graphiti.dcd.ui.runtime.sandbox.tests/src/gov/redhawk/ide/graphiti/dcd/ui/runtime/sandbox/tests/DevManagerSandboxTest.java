@@ -15,9 +15,9 @@ import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.core.graphiti.dcd.ui.ext.DeviceShape;
 import gov.redhawk.ide.debug.ScaDebugPlugin;
 import gov.redhawk.ide.debug.impl.LocalScaDeviceManagerImpl;
-import gov.redhawk.ide.graphiti.dcd.ext.impl.DeviceShapeImpl;
 import gov.redhawk.ide.graphiti.dcd.internal.ui.editor.GraphitiDcdSandboxEditor;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -84,7 +84,7 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 	private static void assertGPP(SWTBotGefEditPart gefEditPart) {
 		Assert.assertNotNull(gefEditPart);
 		// Drill down to graphiti device shape
-		DeviceShapeImpl deviceShape = (DeviceShapeImpl) gefEditPart.part().getModel();
+		DeviceShape deviceShape = (DeviceShape) gefEditPart.part().getModel();
 
 		// Grab the associated business object and confirm it is a DcdComponentInstantiation
 		Object bo = DUtil.getBusinessObject(deviceShape);

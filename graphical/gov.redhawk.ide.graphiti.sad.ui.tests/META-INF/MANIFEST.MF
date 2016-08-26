@@ -24,7 +24,3 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui.tests;bundle-version="1.0.0",
  gov.redhawk.ide.sdr
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: REDHAWK
-Import-Package: gov.redhawk.ide.graphiti.sad.ext,
- gov.redhawk.ide.graphiti.sad.ext.impl,
- gov.redhawk.ide.graphiti.sad.ui.diagram.patterns,
- gov.redhawk.ide.graphiti.ui.palette

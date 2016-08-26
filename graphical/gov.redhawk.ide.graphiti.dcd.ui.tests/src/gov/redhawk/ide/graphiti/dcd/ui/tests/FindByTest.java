@@ -19,7 +19,7 @@ import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
+import gov.redhawk.core.graphiti.ui.ext.RHContainerShape;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
@@ -70,7 +70,7 @@ public class FindByTest extends AbstractGraphitiTest {
 		// Grab the associated business object and confirm it is a FindBy element
 		SWTBotGefEditPart fbEditPart = editor.getEditPart(findByName);
 		Assert.assertNotNull("FindBy Element not found", fbEditPart);
-		RHContainerShapeImpl findByShape = (RHContainerShapeImpl) fbEditPart.part().getModel();
+		RHContainerShape findByShape = (RHContainerShape) fbEditPart.part().getModel();
 		Assert.assertTrue("Element is not a FindBy", DUtil.getBusinessObject(findByShape) instanceof FindByStub);
 		FindByStub findByObject = (FindByStub) DUtil.getBusinessObject(findByShape);
 
@@ -229,7 +229,7 @@ public class FindByTest extends AbstractGraphitiTest {
 		// Confirm that changes were made
 		SWTBotGefEditPart fbEditPart = editor.getEditPart(newFindByName);
 		Assert.assertNotNull("FindBy Element not found", fbEditPart);
-		RHContainerShapeImpl findByShape = (RHContainerShapeImpl) fbEditPart.part().getModel();
+		RHContainerShape findByShape = (RHContainerShape) fbEditPart.part().getModel();
 		FindByStub findByObject = (FindByStub) DUtil.getBusinessObject(findByShape);
 
 		Assert.assertEquals("Inner Text was not updated", newFindByName, findByShape.getInnerText().getValue());

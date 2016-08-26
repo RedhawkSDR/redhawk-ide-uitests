@@ -20,8 +20,8 @@ import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
-import gov.redhawk.ide.graphiti.sad.ext.impl.ComponentShapeImpl;
+import gov.redhawk.core.graphiti.sad.ui.ext.ComponentShape;
+import gov.redhawk.core.graphiti.ui.ext.RHContainerShape;
 import gov.redhawk.ide.graphiti.ui.tests.ComponentDescription;
 import gov.redhawk.ide.graphiti.ui.tests.util.XmlTestUtils;
 import gov.redhawk.ide.swtbot.MenuUtils;
@@ -117,20 +117,20 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 
 		// Confirm shapes in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
-		RHContainerShapeImpl shapeA = (RHContainerShapeImpl) DiagramTestUtils.getRHContainerShape(editor, compA.getShortName(1));
+		RHContainerShape shapeA = (RHContainerShape) DiagramTestUtils.getRHContainerShape(editor, compA.getShortName(1));
 		Assert.assertNotNull("Missing new resource " + compA.getFullName(), shapeA);
 		Assert.assertEquals(compA.getFullName(), shapeA.getOuterText().getValue());
 		Assert.assertEquals(compA.getShortName(1), shapeA.getInnerText().getValue());
 		Assert.assertTrue(shapeA.getUsesPortsContainerShape().getChildren().size() > 1);
-		RHContainerShapeImpl shapeB = (RHContainerShapeImpl) DiagramTestUtils.getRHContainerShape(editor, compB.getShortName(1));
+		RHContainerShape shapeB = (RHContainerShape) DiagramTestUtils.getRHContainerShape(editor, compB.getShortName(1));
 		Assert.assertNotNull("Missing new resource " + compB.getFullName(), shapeB);
 		Assert.assertEquals(compB.getFullName(), shapeB.getOuterText().getValue());
 		Assert.assertEquals(compB.getShortName(1), shapeB.getInnerText().getValue());
 		Assert.assertTrue(shapeB.getProvidesPortsContainerShape().getChildren().size() > 1);
 		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
-			ComponentShapeImpl componentShapeA = (ComponentShapeImpl) shapeA;
+			ComponentShape componentShapeA = (ComponentShape) shapeA;
 			Assert.assertEquals("0", componentShapeA.getStartOrderText().getValue());
-			ComponentShapeImpl componentShapeB = (ComponentShapeImpl) shapeB;
+			ComponentShape componentShapeB = (ComponentShape) shapeB;
 			Assert.assertEquals("1", componentShapeB.getStartOrderText().getValue());
 		}
 	}

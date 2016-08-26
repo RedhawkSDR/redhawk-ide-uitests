@@ -20,7 +20,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.ext.impl.RHContainerShapeImpl;
+import gov.redhawk.core.graphiti.ui.ext.RHContainerShape;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
@@ -123,7 +123,7 @@ public abstract class AbstractFindByWithDialogTest extends AbstractFindByTest {
 		gefBot.button("Finish").click();
 
 		// Make sure the connection disappears
-		RHContainerShapeImpl findByShape = (RHContainerShapeImpl) fbEditPart.part().getModel();
+		RHContainerShape findByShape = (RHContainerShape) fbEditPart.part().getModel();
 		FindByStub findByObject = (FindByStub) DUtil.getBusinessObject(findByShape);
 		Assert.assertTrue("Number of ports is incorrect", findByShape.getUsesPortStubs().size() == 1 && findByShape.getProvidesPortStubs().size() == 0);
 		Assert.assertEquals("Uses port name is incorrect", USES_PORTS[0], findByShape.getUsesPortStubs().get(0).getName());
