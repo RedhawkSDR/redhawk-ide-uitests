@@ -67,11 +67,12 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 		// Add namespaced component to the chalkboard
 		DiagramTestUtils.addFromPaletteToDiagram(editor, NSDEV, 200, 300);
 		Assert.assertNotNull(editor.getEditPart(NSDEV_1));
-		DiagramTestUtils.waitForComponentState(bot, editor, NSDEV, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, NSDEV_1, ComponentState.STOPPED);
 
 		// Ensure it doesn't have any problems
-		ScaDevice< ? > device = ScaDebugPlugin.getInstance().getLocalSca().getSandboxDeviceManager().getDevice(NSDEV_1);
+		ScaDevice< ? > device = ScaDebugPlugin.getInstance().getLocalSca().getSandboxDeviceManager().getAllDevices().get(0);
 		Assert.assertNotNull(device);
+		Assert.assertEquals(NSDEV_1, device.getLabel());
 		Assert.assertTrue(device.getStatus().isOK());
 		Assert.assertNotNull(device.getProfileObj());
 	}
