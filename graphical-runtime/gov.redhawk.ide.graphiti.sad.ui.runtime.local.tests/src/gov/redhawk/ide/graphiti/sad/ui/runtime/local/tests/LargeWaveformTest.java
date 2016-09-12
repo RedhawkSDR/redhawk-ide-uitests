@@ -111,7 +111,7 @@ public class LargeWaveformTest extends UIRuntimeTest {
 		String fullName = ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, new String[] { "Sandbox" }, WAVEFORM_NAME, digramType);
 		bot.editorByTitle(fullName);
 
-		ScaExplorerTestUtils.terminateFromScaExplorer(bot, new String[] { "Sandbox" }, WAVEFORM_NAME);
+		ScaExplorerTestUtils.terminate(bot, new String[] { "Sandbox" }, WAVEFORM_NAME);
 	}
 
 	private void waitUntilEditorsClose() {

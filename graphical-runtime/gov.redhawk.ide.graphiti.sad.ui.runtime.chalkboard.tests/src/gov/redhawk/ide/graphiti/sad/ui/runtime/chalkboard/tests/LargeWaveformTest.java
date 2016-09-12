@@ -78,7 +78,7 @@ public class LargeWaveformTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void terminateChalkboard() {
-		ScaExplorerTestUtils.terminateFromScaExplorer(bot, new String[] { "Sandbox" }, "Chalkboard");
+		ScaExplorerTestUtils.terminate(bot, new String[] { "Sandbox" }, "Chalkboard");
 	}
 
 	private void waitUntilEditorEmpty() {
