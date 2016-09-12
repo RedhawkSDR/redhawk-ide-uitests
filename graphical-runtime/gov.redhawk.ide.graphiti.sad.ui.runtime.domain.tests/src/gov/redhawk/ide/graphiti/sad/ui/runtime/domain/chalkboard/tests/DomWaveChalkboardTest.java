@@ -21,13 +21,14 @@ import org.junit.Test;
 import gov.redhawk.ide.debug.impl.LocalScaWaveformImpl;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.sca.ui.ScaFileStoreEditorInput;
 
 public class DomWaveChalkboardTest extends UIRuntimeTest {
 
 	private static final String EDITOR_NAME = "gov.redhawk.ide.graphiti.sad.internal.ui.editor.GraphitiWaveformSandboxEditor";
-
 	private static final String WAVEFORM_NAME = "ExampleWaveform06";
+	private static final String WAVEFORM_SDR_PATH = "/waveforms/" + WAVEFORM_NAME + "/" + WAVEFORM_NAME + ".sad.xml";
 
 	private String domainName;
 	private RHBotGefEditor editor;
@@ -52,6 +53,7 @@ public class DomWaveChalkboardTest extends UIRuntimeTest {
 	/**
 	 * Test the most basic functionality / presence of the waveform sandbox diagram (on a domain waveform).
 	 * IDE-1120 Check the type of editor that opens as well as its input
+	 * IDE-1668 Correct diagram titles and tooltips
 	 */
 	@Test
 	public void domainWaveformSandboxTest() {
@@ -61,6 +63,10 @@ public class DomWaveChalkboardTest extends UIRuntimeTest {
 		IEditorInput editorInput = editorPart.getEditorInput();
 		Assert.assertTrue("Waveform sandbox editor's input object is incorrect", editorInput instanceof ScaFileStoreEditorInput);
 		Assert.assertEquals("Waveform sandbox editor's input SCA object is incorrect", LocalScaWaveformImpl.class, ((ScaFileStoreEditorInput) editorInput).getScaObject().getClass());
+
+		// IDE-1668
+		Assert.assertEquals("Incorrect title", ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, new String[] { domainName, "Waveforms" }, WAVEFORM_NAME), editorPart.getTitle());
+		Assert.assertEquals("Incorrect tooltip", domainName + " - " + WAVEFORM_SDR_PATH, editorPart.getTitleToolTip());
 	}
 
 }

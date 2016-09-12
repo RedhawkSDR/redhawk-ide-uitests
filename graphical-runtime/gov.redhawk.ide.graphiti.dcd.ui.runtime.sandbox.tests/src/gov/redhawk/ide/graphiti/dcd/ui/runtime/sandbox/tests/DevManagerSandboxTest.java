@@ -34,10 +34,12 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 	private static final String NSDEV = "name.space.device";
 	private static final String NSDEV_1 = "device_1";
 	private static final String EDITOR_NAME = "gov.redhawk.ide.graphiti.dcd.internal.ui.editor.GraphitiDeviceManagerSandboxEditor";
+	private static final String SANDBOX_DEV_MGR_EDITOR_TOOLIP = "Sandbox device manager";
 
 	/**
 	 * Test the most basic functionality / presence of the device manager sandbox diagram.
 	 * IDE-1194 Check the type of editor that opens as well as its input
+	 * IDE-1668 Correct diagram titles and tooltips
 	 */
 	@Test
 	public void deviceManagerSandboxTest() {
@@ -48,6 +50,10 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 		Assert.assertEquals("Device manager sandbox editor class is incorrect", EDITOR_NAME, editorPart.getClass().getName());
 		IEditorInput editorInput = editorPart.getEditorInput();
 		Assert.assertTrue("Device manager sandbox editor's input object is incorrect", editorInput instanceof URIEditorInput);
+
+		// IDE-1668
+		Assert.assertEquals("Incorrect title", DEVICE_MANAGER, editorPart.getTitle());
+		Assert.assertEquals("Incorrect tooltip", SANDBOX_DEV_MGR_EDITOR_TOOLIP, editorPart.getTitleToolTip());
 	}
 
 	/**

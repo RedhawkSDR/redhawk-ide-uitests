@@ -37,12 +37,15 @@ import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 
 	private static final String EDITOR_NAME = "gov.redhawk.ide.graphiti.sad.internal.ui.editor.GraphitiWaveformSandboxEditor";
+	private static final String SANDBOX_CHALKBOARD_EDITOR_TITLE = "Chalkboard";
+	private static final String SANDBOX_CHALKBOARD_EDITOR_TOOLIP = "Sandbox chalkboard";
 
 	private RHBotGefEditor editor;
 
 	/**
 	 * Test the most basic functionality / presence of the waveform sandbox editor (on the chalkboard).
 	 * IDE-1120 Check the type of editor that opens as well as its input
+	 * IDE-1668 Correct diagram titles and tooltips
 	 */
 	@Test
 	public void chalkboardTest() {
@@ -53,6 +56,10 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		Assert.assertEquals("Waveform sandbox editor class is incorrect", EDITOR_NAME, editorPart.getClass().getName());
 		IEditorInput editorInput = editorPart.getEditorInput();
 		Assert.assertTrue("Waveform sandbox editor's input object is incorrect", editorInput instanceof URIEditorInput);
+
+		// IDE-1668
+		Assert.assertEquals("Incorrect title", SANDBOX_CHALKBOARD_EDITOR_TITLE, editorPart.getTitle());
+		Assert.assertEquals("Incorrect tooltip", SANDBOX_CHALKBOARD_EDITOR_TOOLIP, editorPart.getTitleToolTip());
 	}
 
 	/**

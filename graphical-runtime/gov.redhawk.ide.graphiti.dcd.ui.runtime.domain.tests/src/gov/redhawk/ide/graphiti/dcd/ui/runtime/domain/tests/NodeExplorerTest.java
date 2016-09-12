@@ -46,6 +46,7 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 	 * IDE-1001 Hide grid on runtime diagram.
 	 * IDE-1089 Editor title, missing XML tab
 	 * IDE-1194 Check the type of editor that opens as well as its input
+	 * IDE-1668 Correct diagram titles and tooltips
 	 */
 	@Test
 	public void deviceManagerExplorerTest() {
@@ -60,6 +61,10 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		IEditorInput editorInput = editorPart.getEditorInput();
 		Assert.assertEquals("Device manager explorer editor's input object is incorrect", ScaFileStoreEditorInput.class, editorInput.getClass());
 		Assert.assertEquals("Device manager explorer editor's input SCA object is incorrect", ScaDeviceManagerImpl.class, ((ScaFileStoreEditorInput) editorInput).getScaObject().getClass());
+
+		// IDE-1668
+		Assert.assertEquals("Incorrect title", DEVICE_MANAGER, editorPart.getTitle());
+		Assert.assertEquals("Incorrect tooltip", devMgrPath[0] + " - " + DEVICE_MANAGER_SDR_PATH, editorPart.getTitleToolTip());
 
 		// IDE-1089 test
 		nodeEditor.bot().cTabItem("DeviceManager.dcd.xml").activate();

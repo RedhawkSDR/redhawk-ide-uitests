@@ -25,6 +25,7 @@ import org.junit.Before;
 public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTest {
 
 	protected static final String DEVICE_MANAGER = "DevMgr_localhost";
+	protected static final String DEVICE_MANAGER_SDR_PATH = "/nodes/" + DEVICE_MANAGER + "/DeviceManager.dcd.xml";
 	protected static final String DEVICE_MANAGER_W_BULKIO = "DevMgr_with_bulkio";
 	protected static final String NAMESPACE_DEVICE_MANAGER = "name.space.node";
 

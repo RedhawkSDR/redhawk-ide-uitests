@@ -47,9 +47,10 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 	/**
 	 * Test the most basic functionality / presence of the waveform sandbox editor (on a sandbox local waveform).
 	 * IDE-1120 Check the type of editor that opens as well as its input
+	 * IDE-1668 Correct diagram titles and tooltips
 	 */
 	@Test
-	public void chalkboardTest() {
+	public void sandboxWaveformChalkboardTest() {
 		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
 
 		// IDE-1120
@@ -58,6 +59,11 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 		IEditorInput editorInput = editorPart.getEditorInput();
 		Assert.assertEquals("Waveform sandbox editor's input object is incorrect", ScaFileStoreEditorInput.class, editorInput.getClass());
 		Assert.assertEquals("Waveform sandbox editor's input SCA object is incorrect", LocalScaWaveformImpl.class, ((ScaFileStoreEditorInput) editorInput).getScaObject().getClass());
+
+		// IDE-1668
+		final String WAVEFORM_SDR_PATH = "/waveforms/" + LOCAL_WAVEFORM + "/" + LOCAL_WAVEFORM + ".sad.xml";
+		Assert.assertEquals("Incorrect title", getWaveFormFullName(), editorPart.getTitle());
+		Assert.assertEquals("Incorrect tooltip", WAVEFORM_SDR_PATH, editorPart.getTitleToolTip());
 	}
 
 	/**
