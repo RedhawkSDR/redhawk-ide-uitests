@@ -23,7 +23,6 @@ import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.sad.internal.ui.editor.GraphitiWaveformExplorerEditor;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils;
@@ -32,7 +31,6 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.ide.swtbot.diagram.RHTestBotCanvas;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
-import gov.redhawk.model.sca.impl.ScaWaveformImpl;
 
 public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeTest {
 
@@ -46,20 +44,12 @@ public class WaveformExplorerTest extends AbstractGraphitiDomainWaveformRuntimeT
 	 * This editor is "look but don't touch". All design functionality should be disabled.
 	 * Runtime functionality (start/stop, plot, etc) should still work.
 	 * IDE-1001 Hide grid on runtime diagram.
-	 * IDE-1120 - Ensure check that class hierarchy and input type are as expected
 	 */
 	@Test
 	public void waveformExplorerTest() {
 		final String[] waveformPath = ScaExplorerTestUtils.joinPaths(DOMAIN_WAVEFORM_PARENT_PATH, new String[] { getWaveFormFullName() });
 
 		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
-
-		// IDE-1120
-		Assert.assertEquals("Editor class should be GraphitiWaveformExplorerEditor", GraphitiWaveformExplorerEditor.class,
-			editor.getReference().getPart(false).getClass());
-		GraphitiWaveformExplorerEditor editorPart = (GraphitiWaveformExplorerEditor) editor.getReference().getPart(false);
-		Assert.assertEquals("Explorer editors in a domain should have ScaWaveform as their input", ScaWaveformImpl.class, editorPart.getWaveform().getClass());
-
 		editor.setFocus();
 
 		// check for components

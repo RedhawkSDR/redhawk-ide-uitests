@@ -18,10 +18,13 @@ import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.core.graphiti.sad.ui.ext.ComponentShape;
+import gov.redhawk.ide.debug.impl.LocalScaWaveformImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -29,14 +32,33 @@ import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
+import gov.redhawk.sca.ui.ScaFileStoreEditorInput;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 
 public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRuntimeTest {
+
+	private static final String EDITOR_NAME = "gov.redhawk.ide.graphiti.sad.internal.ui.editor.GraphitiWaveformSandboxEditor";
 
 	public static final String NAMESPACE_LOCAL_WAVEFORM = "namespaceWF"; // Contains namespaced components
 
 	private static final String HARD_LIMIT = "rh.HardLimit";
 	private static final String HARD_LIMIT_1 = "HardLimit_1";
+
+	/**
+	 * Test the most basic functionality / presence of the waveform sandbox editor (on a sandbox local waveform).
+	 * IDE-1120 Check the type of editor that opens as well as its input
+	 */
+	@Test
+	public void chalkboardTest() {
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
+
+		// IDE-1120
+		IEditorPart editorPart = editor.getReference().getEditor(false);
+		Assert.assertEquals("Waveform sandbox editor class is incorrect", EDITOR_NAME, editorPart.getClass().getName());
+		IEditorInput editorInput = editorPart.getEditorInput();
+		Assert.assertEquals("Waveform sandbox editor's input object is incorrect", ScaFileStoreEditorInput.class, editorInput.getClass());
+		Assert.assertEquals("Waveform sandbox editor's input SCA object is incorrect", LocalScaWaveformImpl.class, ((ScaFileStoreEditorInput) editorInput).getScaObject().getClass());
+	}
 
 	/**
 	 * IDE-671

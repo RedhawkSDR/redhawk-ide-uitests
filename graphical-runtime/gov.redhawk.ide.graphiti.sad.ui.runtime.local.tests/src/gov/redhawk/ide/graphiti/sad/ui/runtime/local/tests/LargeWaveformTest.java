@@ -12,16 +12,11 @@ package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import gov.redhawk.ide.debug.impl.LocalScaWaveformImpl;
-import gov.redhawk.ide.graphiti.sad.internal.ui.editor.GraphitiWaveformExplorerEditor;
-import gov.redhawk.ide.graphiti.sad.internal.ui.editor.GraphitiWaveformSandboxEditor;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
@@ -91,19 +86,7 @@ public class LargeWaveformTest extends UIRuntimeTest {
 
 	private void releaseWaveform(DiagramType diagramType) {
 		String fullName = ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, new String[] { "Sandbox" }, WAVEFORM_NAME, diagramType);
-		SWTBotEditor editor = bot.editorByTitle(fullName);
-
-		// IDE-1120
-		if (DiagramType.GRAPHITI_CHALKBOARD.equals(diagramType)) {
-			Assert.assertEquals("Editor class should be GraphitiWaveformSandboxEditor", GraphitiWaveformSandboxEditor.class,
-				editor.getReference().getPart(false).getClass());
-		} else {
-			Assert.assertEquals("Editor class should be GraphitiWaveformExplorerEditor", GraphitiWaveformExplorerEditor.class,
-				editor.getReference().getPart(false).getClass());
-		}
-		GraphitiWaveformExplorerEditor editorPart = (GraphitiWaveformExplorerEditor) editor.getReference().getPart(false);
-		Assert.assertEquals("Sandbox editors should have LocalScaWaveform as their input", LocalScaWaveformImpl.class, editorPart.getWaveform().getClass());
-
+		bot.editorByTitle(fullName);
 		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox" }, WAVEFORM_NAME);
 	}
 

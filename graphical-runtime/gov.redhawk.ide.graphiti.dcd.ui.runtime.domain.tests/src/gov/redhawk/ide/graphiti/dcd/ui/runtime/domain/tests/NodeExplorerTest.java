@@ -23,39 +23,43 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.dcd.internal.ui.editor.GraphitiDcdExplorerEditor;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.impl.ScaDeviceManagerImpl;
+import gov.redhawk.sca.ui.ScaFileStoreEditorInput;
 import mil.jpeojtrs.sca.dcd.DcdConnectInterface;
 
 public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 
+	private static final String EDITOR_NAME = "gov.redhawk.core.graphiti.dcd.ui.editor.GraphitiDeviceManagerExplorerEditor";
+
 	private SWTBotGefEditor editor;
 
 	/**
+	 * Test the most basic functionality / presence of the device manager explorer diagram.
 	 * IDE-998 Opens Graphiti Node Explorer diagram.
-	 * This editor is "look but don't touch". All design functionality should be disabled.
-	 * Runtime functionality (start/stop, plot, etc) should still work.
 	 * IDE-1001 Hide grid on runtime diagram.
 	 * IDE-1089 Editor title, missing XML tab
+	 * IDE-1194 Check the type of editor that opens as well as its input
 	 */
 	@Test
-	public void nodeExplorerTest() {
+	public void deviceManagerExplorerTest() {
 		launchDomainAndDevMgr(DEVICE_MANAGER);
 		SWTBotEditor nodeEditor = gefBot.editorByTitle(DEVICE_MANAGER);
 		editor = gefBot.gefEditor(DEVICE_MANAGER);
 		editor.setFocus();
 
 		// IDE-1194
-		Assert.assertEquals("Editor class should be GraphitiDcdExplorerEditor", GraphitiDcdExplorerEditor.class,
-			editor.getReference().getPart(false).getClass());
-		GraphitiDcdExplorerEditor editorPart = (GraphitiDcdExplorerEditor) editor.getReference().getPart(false);
-		Assert.assertEquals("DcdExplorer editors should have ScaDeviceManager as their input", ScaDeviceManagerImpl.class,
-			editorPart.getDeviceManager().getClass());
+		IEditorPart editorPart = editor.getReference().getEditor(false);
+		Assert.assertEquals("Device manager explorer editor class is incorrect", EDITOR_NAME, editorPart.getClass().getName());
+		IEditorInput editorInput = editorPart.getEditorInput();
+		Assert.assertEquals("Device manager explorer editor's input object is incorrect", ScaFileStoreEditorInput.class, editorInput.getClass());
+		Assert.assertEquals("Device manager explorer editor's input SCA object is incorrect", ScaDeviceManagerImpl.class, ((ScaFileStoreEditorInput) editorInput).getScaObject().getClass());
 
 		// IDE-1089 test
 		nodeEditor.bot().cTabItem("DeviceManager.dcd.xml").activate();

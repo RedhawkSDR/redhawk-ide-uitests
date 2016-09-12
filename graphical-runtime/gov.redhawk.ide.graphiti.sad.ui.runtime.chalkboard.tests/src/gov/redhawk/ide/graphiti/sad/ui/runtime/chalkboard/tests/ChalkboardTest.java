@@ -10,6 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
+import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.tb.ColorDecorator;
 import org.eclipse.graphiti.tb.IDecorator;
@@ -18,6 +19,8 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,7 +36,24 @@ import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 
 public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 
+	private static final String EDITOR_NAME = "gov.redhawk.ide.graphiti.sad.internal.ui.editor.GraphitiWaveformSandboxEditor";
+
 	private RHBotGefEditor editor;
+
+	/**
+	 * Test the most basic functionality / presence of the waveform sandbox editor (on the chalkboard).
+	 * IDE-1120 Check the type of editor that opens as well as its input
+	 */
+	@Test
+	public void chalkboardTest() {
+		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+
+		// IDE-1120
+		IEditorPart editorPart = editor.getReference().getEditor(false);
+		Assert.assertEquals("Waveform sandbox editor class is incorrect", EDITOR_NAME, editorPart.getClass().getName());
+		IEditorInput editorInput = editorPart.getEditorInput();
+		Assert.assertTrue("Waveform sandbox editor's input object is incorrect", editorInput instanceof URIEditorInput);
+	}
 
 	/**
 	 * IDE-884 Create the chalkboard waveform diagram. Add components to diagram from palette and TargetSDR.

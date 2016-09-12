@@ -11,14 +11,15 @@
  */
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
+import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.core.graphiti.dcd.ui.ext.DeviceShape;
 import gov.redhawk.ide.debug.ScaDebugPlugin;
-import gov.redhawk.ide.debug.impl.LocalScaDeviceManagerImpl;
-import gov.redhawk.ide.graphiti.dcd.internal.ui.editor.GraphitiDcdSandboxEditor;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
@@ -32,6 +33,22 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 
 	private static final String NSDEV = "name.space.device";
 	private static final String NSDEV_1 = "device_1";
+	private static final String EDITOR_NAME = "gov.redhawk.ide.graphiti.dcd.internal.ui.editor.GraphitiDeviceManagerSandboxEditor";
+
+	/**
+	 * Test the most basic functionality / presence of the device manager sandbox diagram.
+	 * IDE-1194 Check the type of editor that opens as well as its input
+	 */
+	@Test
+	public void deviceManagerSandboxTest() {
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
+
+		// IDE-1194
+		IEditorPart editorPart = editor.getReference().getEditor(false);
+		Assert.assertEquals("Device manager sandbox editor class is incorrect", EDITOR_NAME, editorPart.getClass().getName());
+		IEditorInput editorInput = editorPart.getEditorInput();
+		Assert.assertTrue("Device manager sandbox editor's input object is incorrect", editorInput instanceof URIEditorInput);
+	}
 
 	/**
 	 * Add devices to the sandbox node diagram from palette
@@ -39,12 +56,6 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 	@Test
 	public void launchDevice() {
 		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
-
-		// IDE-1194
-		Assert.assertEquals("Editor class should be GraphitiDcdSandboxEditor", GraphitiDcdSandboxEditor.class, editor.getReference().getPart(false).getClass());
-		GraphitiDcdSandboxEditor editorPart = (GraphitiDcdSandboxEditor) editor.getReference().getPart(false);
-		Assert.assertEquals("Dcd Sandbox editors should have LocalScaDeviceManager as their input", LocalScaDeviceManagerImpl.class,
-			editorPart.getDeviceManager().getClass());
 
 		// Add device to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);

@@ -12,11 +12,7 @@ package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.chalkboard.tests;
 
 import org.eclipse.core.runtime.CoreException;
 import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
 
-import gov.redhawk.ide.debug.LocalScaWaveform;
-import gov.redhawk.ide.graphiti.sad.internal.ui.editor.GraphitiWaveformSandboxEditor;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractSyncText;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.ComponentDescription;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -77,18 +73,4 @@ public class DomWaveChalkboardSyncTest extends AbstractSyncText {
 	protected boolean supportsParentResourceStartStop() {
 		return true;
 	}
-
-	/**
-	 * IDE-1120 Check the editor's type and input
-	 */
-	@Test
-	public void checkEditorTypeAndInput() {
-		RHBotGefEditor editor = launchDiagram();
-		Assert.assertEquals("Editor class should be GraphitiWaveformSandboxEditor", GraphitiWaveformSandboxEditor.class,
-			editor.getReference().getPart(false).getClass());
-		GraphitiWaveformSandboxEditor editorPart = (GraphitiWaveformSandboxEditor) editor.getReference().getPart(false);
-		Assert.assertTrue("Chalkboard editors in a domain should have LocalScaWaveform as their input",
-			LocalScaWaveform.class.isAssignableFrom(editorPart.getWaveform().getClass()));
-	}
-
 }
