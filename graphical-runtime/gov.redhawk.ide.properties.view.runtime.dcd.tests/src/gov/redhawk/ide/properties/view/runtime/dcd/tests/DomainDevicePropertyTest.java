@@ -63,11 +63,6 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 		ConsoleUtils.disableAutoShowConsole(gefBot);
 		treeItem.select();
 	}
-	
-	@Override
-	protected void setPropTabName() {
-		PROP_TAB_NAME = "Properties";
-	}
 
 	@Override
 	protected EList<ScaAbstractProperty< ? >> getModelObjectProperties() {

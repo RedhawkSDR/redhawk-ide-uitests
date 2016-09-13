@@ -72,11 +72,6 @@ public class DomainComponentPropertyTest extends AbstractPropertiesViewRuntimeTe
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, componentParentPath.toArray(new String[] {}), COMPONENT_NUM);
 		treeItem.select();
 	}
-	
-	@Override
-	protected void setPropTabName() {
-		PROP_TAB_NAME = "Properties";
-	}
 
 	@Override
 	protected EList<ScaAbstractProperty< ? >> getModelObjectProperties() {

@@ -47,7 +47,6 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 	@Override
 	protected void prepareObject() {
 		WaveformUtils.createNewWaveform(bot, WAVEFORM_NAME, COMPONENT_NAME);
-		setPropTabName();
 		setEditor();
 		editor.click(COMPONENT_NAME);
 	}
@@ -55,11 +54,6 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 	@Override
 	protected void selectObject() {
 		editor.click(COMPONENT_NAME);
-	}
-
-	@Override
-	protected void setPropTabName() {
-		propTabName = "Component Properties";
 	}
 
 	@Override
@@ -119,7 +113,7 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 
 		setEditor();
 		selectObject();
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, propTabName);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		Assert.assertNotNull("Property window does not populate", propTree);
 		SWTBotTreeItem[] items = propTree.getAllItems();
 		Assert.assertTrue("No property values are displayed", items.length > 0);
@@ -135,7 +129,7 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 		prepareObject();
 		setEditor();
 		selectObject();
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, propTabName);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 
 		SWTBotTreeItem treeItem = propTree.getTreeItem(simpleSeqDouble);
 		treeItem.select();

@@ -46,11 +46,6 @@ public class LocalDevicePropertyTest extends AbstractPropertiesViewRuntimeTest {
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox", "Device Manager" }, DEVICE_NAME_NUM);
 		treeItem.select();
 	}
-	
-	@Override
-	protected void setPropTabName() {
-		PROP_TAB_NAME = "Properties";
-	}
 
 	@Override
 	protected EList<ScaAbstractProperty< ? >> getModelObjectProperties() {

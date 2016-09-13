@@ -37,7 +37,6 @@ public class DesignDevicePropertyTest extends AbstractPropertiesViewDesignTest {
 	@Override
 	protected void prepareObject() {
 		NodeUtils.createNewNodeProject(bot, NODE_NAME, DOMAIN_NAME);
-		setPropTabName();
 		setEditor();
 		DiagramTestUtils.addFromPaletteToDiagram((RHBotGefEditor) editor, DEVICE_NAME, 0, 0);
 		selectObject();
@@ -46,11 +45,6 @@ public class DesignDevicePropertyTest extends AbstractPropertiesViewDesignTest {
 	@Override
 	protected void selectObject() {
 		editor.click(DEVICE_NAME);
-	}
-
-	@Override
-	protected void setPropTabName() {
-		propTabName = "Device Properties";
 	}
 
 	@Override

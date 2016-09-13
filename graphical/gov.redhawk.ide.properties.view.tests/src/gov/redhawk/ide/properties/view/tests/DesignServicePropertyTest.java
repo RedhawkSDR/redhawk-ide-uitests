@@ -21,7 +21,6 @@ public class DesignServicePropertyTest extends DesignDevicePropertyTest {
 	@Override
 	protected void prepareObject() {
 		NodeUtils.createNewNodeProject(bot, NODE_NAME, DOMAIN_NAME);
-		setPropTabName();
 		setEditor();
 		DiagramTestUtils.addFromPaletteToDiagram((RHBotGefEditor) editor, SERVICE_NAME, 0, 0);
 		selectObject();
@@ -30,11 +29,6 @@ public class DesignServicePropertyTest extends DesignDevicePropertyTest {
 	@Override
 	protected void selectObject() {
 		editor.click(SERVICE_NAME);
-	}
-
-	@Override
-	protected void setPropTabName() {
-		propTabName = "Service Properties";
 	}
 
 	@Override

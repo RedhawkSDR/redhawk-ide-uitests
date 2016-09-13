@@ -356,7 +356,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		// properties view if selected right after creation
 		editor.rootEditPart().click();
 		editor.click(SIGGEN_1);
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Component Properties");
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
 		SWTBotTreeItem magItem = propTable.getTreeItem("magnitude");
 		Assert.assertEquals(magItem.cell(1), "100.0");
 		magItem.select().click(1);

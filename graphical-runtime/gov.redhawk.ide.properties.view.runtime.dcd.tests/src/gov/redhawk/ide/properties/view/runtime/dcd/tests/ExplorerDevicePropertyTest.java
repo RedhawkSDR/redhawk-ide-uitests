@@ -24,9 +24,4 @@ public class ExplorerDevicePropertyTest extends DomainDevicePropertyTest {
 		SWTBotGefEditor editor = gefBot.gefEditor(DEVICE_MANAGER);
 		editor.click(DEVICE_NUM);
 	}
-	
-	@Override
-	protected void setPropTabName() {
-		PROP_TAB_NAME = "Device Properties";
-	}
 }

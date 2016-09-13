@@ -31,9 +31,4 @@ public class LocalDeviceDiagramPropertyTest extends LocalDevicePropertyTest {
 
 		editor.click(DEVICE_NAME_NUM);
 	}
-
-	@Override
-	protected void setPropTabName() {
-		PROP_TAB_NAME = "Device Properties";
-	}
 }

@@ -32,6 +32,8 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public abstract class AbstractSyncText extends UIRuntimeTest {
 
+	private static final String PROP_TAB_NAME = "Properties";
+
 	/**
 	 * Launch the waveform/node. Open and return the appropriate diagram.
 	 */
@@ -54,8 +56,6 @@ public abstract class AbstractSyncText extends UIRuntimeTest {
 	protected abstract String resourceA_doubleProperty();
 
 	protected abstract double resourceA_doubleProperty_startingValue();
-
-	protected abstract String propertiesTabName();
 
 	/**
 	 * True if the parent resource supports starting/stopping (i.e. just waveforms, not nodes)
@@ -165,7 +165,7 @@ public abstract class AbstractSyncText extends UIRuntimeTest {
 		componentPart.select();
 
 		// Wait for the property to update (currently domain objects opened with the chalkboard editor have a delay)
-		propTree = ViewUtils.selectPropertiesTab(bot, propertiesTabName());
+		propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		final SWTBotTreeItem magItemDiagram = propTree.getTreeItem(resourceA_doubleProperty());
 		bot.waitUntil(new WaitForCellValue(magItemDiagram, 1, newValue), 15000);
 	}
@@ -190,7 +190,7 @@ public abstract class AbstractSyncText extends UIRuntimeTest {
 		componentPart.select();
 
 		// Verify value; change it to double that value
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, propertiesTabName());
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		SWTBotTreeItem magItemDiagram = propTree.getTreeItem(resourceA_doubleProperty());
 		Assert.assertEquals(magItemDiagram.cell(1), Double.toString(resourceA_doubleProperty_startingValue()));
 		magItemDiagram.select().click(1);

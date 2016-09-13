@@ -47,11 +47,6 @@ public class LocalComponentPropertyTest extends AbstractPropertiesViewRuntimeTes
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMP_NAME + "_1");
 		treeItem.select();
 	}
-	
-	@Override
-	protected void setPropTabName() {
-		PROP_TAB_NAME = "Properties";
-	}
 
 	@Override
 	protected EList<ScaAbstractProperty< ? >> getModelObjectProperties() {

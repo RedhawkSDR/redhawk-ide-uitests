@@ -27,10 +27,4 @@ public class DeviceSdrTest extends AbstractPropertiesViewTargetSdrTest {
 		SWTBotGefEditor editor = gefBot.gefEditor(NODE_NAME);
 		editor.select(DEVICE_NAME);
 	}
-	
-	@Override
-	protected void setPropTabName() {
-		PROP_TAB_NAME = "Device Properties";
-	}
-
 }

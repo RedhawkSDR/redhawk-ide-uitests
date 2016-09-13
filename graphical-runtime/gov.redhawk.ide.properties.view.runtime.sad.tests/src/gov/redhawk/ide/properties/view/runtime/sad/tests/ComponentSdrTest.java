@@ -27,10 +27,4 @@ public class ComponentSdrTest extends AbstractPropertiesViewTargetSdrTest {
 		SWTBotGefEditor editor = gefBot.gefEditor(WAVEFORM_NAME);
 		editor.select(COMPONENT_NAME);
 	}
-
-	@Override
-	protected void setPropTabName() {
-		PROP_TAB_NAME = "Component Properties";
-	}
-
 }

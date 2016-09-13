@@ -65,10 +65,6 @@ public class DomWaveExplorerSyncTest extends AbstractSyncText {
 		return 100.0;
 	}
 
-	protected String propertiesTabName() {
-		return "Component Properties";
-	}
-
 	@Override
 	protected boolean supportsParentResourceStartStop() {
 		return true;

@@ -31,9 +31,4 @@ public class LocalComponentDiagramPropertyTest extends LocalComponentPropertyTes
 
 		editor.click(COMP_NAME);
 	}
-
-	@Override
-	protected void setPropTabName() {
-		PROP_TAB_NAME = "Component Properties";
-	}
 }

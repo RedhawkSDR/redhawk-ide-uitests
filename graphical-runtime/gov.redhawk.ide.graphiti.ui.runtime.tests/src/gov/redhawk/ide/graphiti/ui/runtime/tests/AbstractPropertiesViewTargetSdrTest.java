@@ -28,14 +28,13 @@ import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 @SuppressWarnings("restriction")
 public abstract class AbstractPropertiesViewTargetSdrTest extends UIRuntimeTest {
 
-	protected RHSWTGefBot gefBot; // SUPPRESS CHECKSTYLE shared variable
-	protected String PROP_TAB_NAME; // SUPPRESS CHECKSTYLE shared variable
 	public static final String PROPERTIES_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
+	private static final String PROP_TAB_NAME = "Properties";
+
+	protected RHSWTGefBot gefBot; // SUPPRESS CHECKSTYLE shared variable
 
 	protected abstract void selectResource();
 
-	protected abstract void setPropTabName();
-	
 	@Before
 	public void beforeTest() {
 		gefBot = new RHSWTGefBot();
@@ -47,7 +46,6 @@ public abstract class AbstractPropertiesViewTargetSdrTest extends UIRuntimeTest 
 	@Test
 	public void checkInnerTabs() {
 		selectResource();
-		setPropTabName();
 
 		ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		checkForAdvancedTab();

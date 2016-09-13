@@ -33,9 +33,4 @@ public class ExplorerComponentPropertyTest extends DomainComponentPropertyTest {
 		
 		editor.click(COMPONENT);
 	}
-	
-	@Override
-	protected void setPropTabName() {
-		PROP_TAB_NAME = "Component Properties";
-	}
 }

@@ -51,6 +51,8 @@ import mil.jpeojtrs.sca.prf.AccessType;
 
 public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 
+	private static final String PROP_TAB_NAME = "Properties";
+
 	/**
 	 * Used in the property edit tests. Must be a String numeral, to be valid with both all property types. Booleans are
 	 * special cases.
@@ -60,7 +62,6 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	/** A Map of all properties found in the IDE's property view */
 	protected Map<String, String> propertyMap = new HashMap<String, String>(); // SUPPRESS CHECKSTYLE shared variable
 
-	protected String PROP_TAB_NAME; // SUPPRESS CHECKSTYLE shared variable
 	protected RHSWTGefBot gefBot; // SUPPRESS CHECKSTYLE shared variable
 	protected Keyboard keyboard = KeyboardFactory.getSWTKeyboard(); // SUPPRESS CHECKSTYLE shared variable
 
@@ -72,8 +73,6 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	 * - do initial object selection
 	 */
 	protected abstract void prepareObject();
-
-	protected abstract void setPropTabName();
 
 	protected abstract EList<ScaAbstractProperty< ? >> getModelObjectProperties();
 
@@ -111,7 +110,6 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	@Test
 	public void checkPropValuesAtLaunch() {
 		prepareObject();
-		setPropTabName();
 
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		populatePropertyMap(propTree.getAllItems());
@@ -148,7 +146,6 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	public void editPropertyViewToModel() {
 		StandardTestActions.setRefreshInterval(bot, 1000);
 		prepareObject();
-		setPropTabName();
 
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		populatePropertyMap(propTree.getAllItems());
@@ -186,7 +183,6 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 		StandardTestActions.setRefreshInterval(bot, 1000);
 
 		prepareObject();
-		setPropTabName();
 
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		populatePropertyMap(propTree.getAllItems());

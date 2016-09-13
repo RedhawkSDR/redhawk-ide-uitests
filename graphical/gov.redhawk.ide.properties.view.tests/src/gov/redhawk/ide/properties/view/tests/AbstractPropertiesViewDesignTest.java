@@ -46,6 +46,8 @@ import mil.jpeojtrs.sca.prf.Values;
 
 public abstract class AbstractPropertiesViewDesignTest extends UITest {
 
+	protected static final String PROP_TAB_NAME = "Properties";
+
 	/**
 	 * Used in the property edit tests. Must be a String numeral, to be valid with both all property types. Booleans are
 	 * special cases.
@@ -56,7 +58,6 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 	protected Map<String, String> propertyMap = new HashMap<String, String>();
 
 	SWTBotGefEditor editor;
-	protected String propTabName;
 	protected RHSWTGefBot gefBot;
 	protected Keyboard keyboard = KeyboardFactory.getSWTKeyboard();
 
@@ -76,8 +77,6 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 	protected abstract ComponentProperties getModelPropertiesFromEditor() throws IOException;
 
 	protected abstract void writeModelPropertiesToEditor(ComponentProperties componentProps) throws IOException;
-
-	protected abstract void setPropTabName();
 
 	@Before
 	public void beforeTest() {
@@ -116,7 +115,7 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 		prepareObject();
 
 		// Just using this to expand everything, we will populate later in the test
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, propTabName);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		populatePropertyMap(propTree.getAllItems());
 		propertyMap.clear();
 
@@ -162,7 +161,7 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 		prepareObject();
 
 		// TODO: Just using this to expand everything, we will populate later in the test
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, propTabName);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		populatePropertyMap(propTree.getAllItems());
 		propertyMap.clear();
 
@@ -174,7 +173,7 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 		selectObject();
 
 		// Update property map and Check property view to see if all values are accurate
-		propTree = ViewUtils.selectPropertiesTab(bot, propTabName);
+		propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		populatePropertyMap(propTree.getAllItems());
 		checkProps(xmlPropertyMap);
 	}

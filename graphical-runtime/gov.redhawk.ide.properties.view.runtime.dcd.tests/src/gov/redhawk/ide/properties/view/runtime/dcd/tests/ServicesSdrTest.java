@@ -27,10 +27,4 @@ public class ServicesSdrTest extends AbstractPropertiesViewTargetSdrTest {
 		SWTBotGefEditor editor = gefBot.gefEditor(NODE_NAME);
 		editor.select(SERVICE_NAME);
 	}
-
-	@Override
-	protected void setPropTabName() {
-		PROP_TAB_NAME = "Service Properties";
-	}
-	
 }
