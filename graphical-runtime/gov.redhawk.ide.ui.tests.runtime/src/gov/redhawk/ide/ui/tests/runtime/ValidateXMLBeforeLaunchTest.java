@@ -15,6 +15,7 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -68,6 +69,7 @@ public class ValidateXMLBeforeLaunchTest extends UIRuntimeTest {
 	/**
 	 * Launching an SPD with XML errors in the sandbox should present an error dialog.
 	 * IDE-1445 Validate all XML before launching in sandbox
+	 * IDE-1686 NPE when launching a resource with duplicate IDs in XML
 	 */
 	@Test
 	public void badComponentLaunch() {
@@ -83,6 +85,8 @@ public class ValidateXMLBeforeLaunchTest extends UIRuntimeTest {
 
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, "SpdWithPrfAndScdErrors", "cpp");
 		shell = bot.shell("Problem Occurred");
+		String errorMessage = shell.bot().label(2).getText();
+		Assert.assertTrue("Incorrect error message (NPE from IDE-1686 may have occurred)", errorMessage.contains("Some XML file(s) have errors"));
 		shell.bot().button("OK").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 	}

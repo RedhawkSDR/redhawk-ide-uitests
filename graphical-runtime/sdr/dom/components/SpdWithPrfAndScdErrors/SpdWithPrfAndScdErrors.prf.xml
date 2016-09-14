@@ -11,8 +11,19 @@
     http://www.eclipse.org/legal/epl-v10.html.
 -->
 <properties>
+  <!-- missing id -->
   <simple mode="readwrite" type="string">
     <kind kindtype="property"/>
     <action type="external"/>
   </simple>
+  <!-- IDE-1686 id duplicate (see simple inside struct) -->
+  <simple id="abc" mode="readwrite" type="string">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <struct id="def" mode="readwrite">
+    <!-- IDE-1686 id duplicate (see top-level simple) -->
+    <simple id="abc" type="string"/>
+    <configurationkind kindtype="property"/>
+  </struct>
 </properties>
