@@ -15,6 +15,8 @@ import java.util.List;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotList;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,6 +30,48 @@ import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import mil.jpeojtrs.sca.partitioning.FindByStub;
 
 public abstract class AbstractFindByWithDialogTest extends AbstractFindByTest {
+
+	/**
+	 * IDE-1087 - FindBy Wizards should not allow duplicate Ports
+	 */
+	@Test
+	public void redundantPortNameTest() {
+		waveformName = "FindBy_Redundant_Port";
+
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
+		editor = gefBot.rhGefEditor(waveformName);
+
+		DiagramTestUtils.addFromPaletteToDiagram(editor, getFindByType(), 0, 150);
+		FindByUtils.completeFindByWizard(gefBot, getFindByType(), getFindByName(), PROVIDES_PORTS, USES_PORTS);
+
+		// Open FindBy edit wizard and try to add the same ports
+		getEditor().getEditPart(getFindByName()).select();
+		getEditor().clickContextMenu("Edit " + getFindByType());
+
+		SWTBotList providesList = gefBot.listInGroup("Port(s) to use for connections", 0);
+		SWTBotList usesList = gefBot.listInGroup("Port(s) to use for connections", 1);
+
+		Assert.assertEquals("Incorrect number of provides ports found", PROVIDES_PORTS.length, providesList.getItems().length);
+		Assert.assertEquals("Incorrect number of uses ports found", USES_PORTS.length, usesList.getItems().length);
+
+		SWTBotText providesText = gefBot.textInGroup("Port(s) to use for connections", 0);
+		for (String s : PROVIDES_PORTS) {
+			providesText.setText(s);
+			bot.button("Add Provides Port").click();
+		}
+
+		SWTBotText usesText = gefBot.textInGroup("Port(s) to use for connections", 1);
+		for (String s : USES_PORTS) {
+			usesText.setText(s);
+			bot.button("Add Uses Port").click();
+		}
+
+		Assert.assertEquals("Redundant provides ports should not have been added", PROVIDES_PORTS.length, providesList.getItems().length);
+		Assert.assertEquals("Redundant uses ports should not have been added", USES_PORTS.length, usesList.getItems().length);
+
+		gefBot.button("Finish").click();
+
+	}
 
 	@Test
 	public void feedbackLoopTest() throws IOException {
