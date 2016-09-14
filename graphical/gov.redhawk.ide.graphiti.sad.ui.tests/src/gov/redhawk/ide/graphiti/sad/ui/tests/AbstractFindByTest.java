@@ -62,17 +62,17 @@ public abstract class AbstractFindByTest extends AbstractGraphitiTest {
 
 	protected abstract String getEditTextLabel();
 
-	// CHECKSTYLE:OFF - Direct access preferred
-	protected RHBotGefEditor editor;
-	protected String waveformName;
+	protected RHBotGefEditor editor; // SUPPRESS CHECKSTYLE INLINE
+	protected String waveformName; // SUPPRESS CHECKSTYLE INLINE
 
-	// CHECKSTYLE:ON
 	/**
 	 * IDE-652 & IDE-908
 	 * Edit existing FindBy Elements
 	 * Change names, add & remove ports
 	 * 
 	 * IDE-1403 Editing FindBy name creates duplicate item in diagram
+	 *
+	 * IDE-1374 - FindBy direct edit dialog incorrectly enables Delete button
 	 * @throws IOException
 	 */
 	@Test
@@ -100,6 +100,7 @@ public abstract class AbstractFindByTest extends AbstractGraphitiTest {
 		// Open FindBy edit wizard and change name
 		getEditor().getEditPart(getFindByName()).select();
 		getEditor().clickContextMenu("Edit " + getFindByType());
+
 		final String newFindByName = "Edited" + getFindByName();
 		gefBot.textWithLabel(getEditTextLabel()).setText(newFindByName);
 		try {
@@ -125,7 +126,8 @@ public abstract class AbstractFindByTest extends AbstractGraphitiTest {
 
 		// Confirm that changes were made in then diagram
 		Assert.assertEquals("Inner Text was not updated", newFindByName, findByShape.getInnerText().getValue());
-		String findByDomainName = FindByUtils.FIND_BY_NAME.equals(getFindByType()) ? findByObject.getNamingService().getName() : findByObject.getDomainFinder().getName();
+		String findByDomainName = FindByUtils.FIND_BY_NAME.equals(getFindByType()) ? findByObject.getNamingService().getName()
+			: findByObject.getDomainFinder().getName();
 		Assert.assertEquals("Diagram object and domain object names don't match", newFindByName, findByDomainName);
 	}
 
@@ -251,6 +253,12 @@ public abstract class AbstractFindByTest extends AbstractGraphitiTest {
 	protected void editFindByPorts(String newFindByName) {
 		editor.getEditPart(newFindByName).select();
 		editor.clickContextMenu("Edit " + getFindByType());
+
+		// IDE-1374 test
+		Assert.assertFalse("Delete button should not be enabled without a selection",
+			gefBot.buttonInGroup("Delete", "Port(s) to use for connections", 0).isEnabled());
+		Assert.assertFalse("Delete button should not be enabled without a selection",
+			gefBot.buttonInGroup("Delete", "Port(s) to use for connections", 1).isEnabled());
 
 		// Delete existing provides port
 		gefBot.listInGroup("Port(s) to use for connections", 0).select(PROVIDES_PORTS[0]);
