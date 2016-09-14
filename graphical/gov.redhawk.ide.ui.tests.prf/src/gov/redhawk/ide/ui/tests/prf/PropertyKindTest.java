@@ -10,23 +10,25 @@
  */
 package gov.redhawk.ide.ui.tests.prf;
 
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.swt.finder.utils.FileUtils;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.Assert;
+import org.junit.Test;
+
 import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
-import org.eclipse.swtbot.swt.finder.utils.FileUtils;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
  * Tests involving the PRF editor and the 'property' property kind.
  */
 public class PropertyKindTest extends UITest {
-	
+
 	private final String compName = "PropertyKindTest";
 	private final String compLanguage = "Python";
 	private final String compSpd = compName + ".spd.xml";
@@ -36,6 +38,8 @@ public class PropertyKindTest extends UITest {
 	/**
 	 * Ensure 'configure' and 'execparam' are present only when there are deprecated properties. Also check that the
 	 * default new property kind is 'property'.
+	 * 
+	 * IDE-1676 - Filter message property kind for non-struct properties
 	 */
 	@Test
 	public void checkAvailableKinds() {
@@ -55,6 +59,9 @@ public class PropertyKindTest extends UITest {
 				if (item.contains("execparam")) {
 					Assert.fail(String.format("After clicking %s, found execparam in the list of combo items", buttonText));
 				}
+				if (!"Add Struct".equals(buttonText) && item.contains("message")) {
+					Assert.fail(String.format("After clicking %s, found execparam in the list of combo items", buttonText));
+				}
 			}
 		}
 
@@ -69,23 +76,61 @@ public class PropertyKindTest extends UITest {
 		ProjectExplorerUtils.openProjectInEditor(bot, compName, compSpd);
 		editor = bot.editorByTitle(compName);
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PROPERTIES_TAB);
-		for (int i = 0; i < 4; i++) {
-			editor.bot().tree().select(0);
+		SWTBotTree tree = editor.bot().tree().select(0);
+		for (SWTBotTreeItem item : tree.getAllItems()) {
+			item.select();
 			SWTBotCombo combo = editor.bot().comboBoxWithLabel("Kind:");
 			boolean foundConfigure = false, foundExecParam = false;
-			for (String item : combo.items()) {
-				if (item.contains("configure")) {
+			for (String comboItem : combo.items()) {
+				if (comboItem.contains("configure")) {
 					foundConfigure = true;
+					continue;
 				}
-				if (item.contains("execparam")) {
+				if (comboItem.contains("execparam")) {
 					foundExecParam = true;
+					continue;
 				}
 			}
-			Assert.assertTrue(String.format("Couldn't find configure in the list of combo items for property #%d", i), foundConfigure);
-			Assert.assertTrue(String.format("Couldn't find execparam in the list of combo items for property #%d", i), foundExecParam);
+			Assert.assertTrue(String.format("Couldn't find configure in the list of combo items for property %s", item.getText()), foundConfigure);
+
+			if ("simple".equals(item.getText())) {
+				Assert.assertTrue(String.format("Couldn't find execparam in the list of combo items for property %s", item.getText()), foundExecParam);
+			} else {
+				Assert.assertFalse(String.format("Execparam should not display in the list of combo items for property %s", item.getText()), foundExecParam);
+			}
+		}
+
+		// Replace the PRF contents
+		DiagramTestUtils.openTabInEditor(editor, compPrf);
+		prfAsString = FileUtils.read(this.getClass().getResourceAsStream("/testFiles/PropertyKindMessageTest.prf.xml"));
+		editor.bot().styledText().setText(prfAsString);
+		MenuUtils.save(editor);
+		editor.close();
+
+		// Ensure 'message' is now present only for Struct properties
+		ProjectExplorerUtils.openProjectInEditor(bot, compName, compSpd);
+		editor = bot.editorByTitle(compName);
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PROPERTIES_TAB);
+		tree = editor.bot().tree().select(0);
+		for (SWTBotTreeItem item : tree.getAllItems()) {
+			item.select();
+			SWTBotCombo combo = editor.bot().comboBoxWithLabel("Kind:");
+			boolean foundMessage = false;
+			for (String comboItem : combo.items()) {
+				if (comboItem.contains("message")) {
+					foundMessage = true;
+					break;
+				}
+			}
+
+			if ("struct".equals(item.getText())) {
+				Assert.assertTrue(String.format("Couldn't find message in the list of combo items for property %s", item.getText()), foundMessage);
+			} else {
+				Assert.assertFalse(String.format("Message should not display in the list of combo items for property %s", item.getText()), foundMessage);
+			}
 		}
 	}
-	
+
 	/**
 	 * Ensure the editor is okay with multiple kinds.
 	 */
@@ -93,7 +138,7 @@ public class PropertyKindTest extends UITest {
 	public void checkMultiKind() {
 		ComponentUtils.createComponentProject(bot, compName, compLanguage);
 		SWTBotEditor editor = bot.editorByTitle(compName);
-		
+
 		// Replace the PRF contents
 		DiagramTestUtils.openTabInEditor(editor, compPrf);
 		String prfAsString = FileUtils.read(this.getClass().getResourceAsStream("/testFiles/PropertyKindTest2.prf.xml"));
