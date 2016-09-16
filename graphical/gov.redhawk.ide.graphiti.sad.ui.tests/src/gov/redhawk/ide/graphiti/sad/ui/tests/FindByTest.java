@@ -127,7 +127,6 @@ public class FindByTest extends AbstractGraphitiTest {
 		// Add FindBy to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, FindByUtils.FIND_BY_NAME, 0, 150);
 		FindByUtils.completeFindByWizard(gefBot, FindByUtils.FIND_BY_NAME, findByName, provides, uses);
-		MenuUtils.save(editor);
 
 		// Check that only two ports exist and what they are
 		Assert.assertNotNull(DiagramTestUtils.getDiagramProvidesPort(editor, findByName, provides[0]));
@@ -148,7 +147,6 @@ public class FindByTest extends AbstractGraphitiTest {
 		// Check that only two ports exist and what they are
 		Assert.assertNotNull(DiagramTestUtils.getDiagramProvidesPort(editor, findByName, provides[0]));
 		Assert.assertNotNull(DiagramTestUtils.getDiagramUsesPort(editor, findByName, uses[0]));
-
 	}
 
 	/**
