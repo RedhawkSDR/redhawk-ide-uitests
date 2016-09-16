@@ -36,13 +36,23 @@ public class ConnectionTest extends AbstractGraphitiTest {
 	private RHBotGefEditor editor;
 	private String projectName;
 	private static final String DOMAIN_NAME = "REDHAWK_DEV";
+
 	private static final String GPP = "GPP";
+	private static final String GPP_1 = "GPP";
+
 	private static final String DEVICE_STUB = "DeviceStub";
+	private static final String DEVICE_STUB_1 = "DeviceStub_1";
+	private static final String DEVICE_STUB_2 = "DeviceStub_2";
+	private static final String DEVICE_STUB_OUT = "dataFloat_out";
+	private static final String DEVICE_STUB_IN = "dataFloat_in";
+
 	private static final String SERVICE_STUB = "ServiceStub";
+	private static final String SERVICE_STUB_1 = "ServiceStub";
 
 	/**
-	 * IDE-985
-	 * Users should be able to create connections between devices/services in the Graphiti diagram
+	 * IDE-985 Users should be able to create connections between devices/services in the Graphiti diagram
+	 * IDE-687 - Users need to be able to delete connections
+	 * IDE-1523 Creating connections in design diagram should be undoable/redoable
 	 */
 	@Test
 	public void connectFeatureTest() {
@@ -56,21 +66,21 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		editor.setFocus();
 
 		// Add to diagram from palette
-		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 300, 200);
 
 		// Get component edit parts and container shapes
-		SWTBotGefEditPart gppEditPart = editor.getEditPart(GPP);
-		ContainerShape gppShape = (ContainerShape) gppEditPart.part().getModel();
-		SWTBotGefEditPart deviceStubEditPart = editor.getEditPart(DEVICE_STUB);
-		ContainerShape deviceStubShape = (ContainerShape) deviceStubEditPart.part().getModel();
+		SWTBotGefEditPart sourceEditPart = editor.getEditPart(DEVICE_STUB_1);
+		ContainerShape sourceShape = (ContainerShape) sourceEditPart.part().getModel();
+		SWTBotGefEditPart targetEditPart = editor.getEditPart(DEVICE_STUB_2);
+		ContainerShape targetShape = (ContainerShape) targetEditPart.part().getModel();
 
 		// Get port edit parts
-		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, GPP);
-		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB, "dataDouble_in");
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, DEVICE_STUB_1, DEVICE_STUB_OUT);
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB_2, DEVICE_STUB_IN);
 
 		// Confirm that no connections currently exist
-		Diagram diagram = DUtil.findDiagram(gppShape);
+		Diagram diagram = DUtil.findDiagram(sourceShape);
 		Assert.assertTrue("No connections should exist", diagram.getConnections().isEmpty());
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
 		String editorText = editor.toTextEditor().getText();
@@ -78,7 +88,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
 
 		// Attempt to make an illegal connection and confirm that it was not actually made
-		SWTBotGefEditPart illegalTarget = DiagramTestUtils.getDiagramUsesPort(editor, DEVICE_STUB);
+		SWTBotGefEditPart illegalTarget = DiagramTestUtils.getDiagramUsesPort(editor, DEVICE_STUB_2);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, illegalTarget);
 		Assert.assertTrue("Illegal connection should not have been drawn", diagram.getConnections().isEmpty());
 
@@ -89,7 +99,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		// Test to make sure connection was made correctly
 		Assert.assertFalse("Connection should exist", diagram.getConnections().isEmpty());
 
-		Connection connection = DUtil.getIncomingConnectionsContainedInContainerShape(deviceStubShape).get(0);
+		Connection connection = DUtil.getIncomingConnectionsContainedInContainerShape(targetShape).get(0);
 
 		UsesPortStub usesPort = (UsesPortStub) DUtil.getBusinessObject(connection.getStart());
 		Assert.assertEquals("Connection uses port not correct", usesPort, DUtil.getBusinessObject((ContainerShape) usesEditPart.part().getModel()));
@@ -146,8 +156,8 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SERVICE_STUB, 300, 300);
 
 		// Get port edit parts
-		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, GPP);
-		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB, "dataDouble_in");
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, GPP_1);
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB_1, DEVICE_STUB_IN);
 
 		// Draw incompatible connection between ports and confirm error decoration
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
@@ -161,7 +171,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		Assert.assertTrue("Connection was not removed", connections.size() == 0);
 
 		// Draw incompatible connection to component supported interface (DEVICE) and confirm error decoration
-		SWTBotGefEditPart lollipopEditPart = DiagramTestUtils.getComponentSupportedInterface(editor, DEVICE_STUB);
+		SWTBotGefEditPart lollipopEditPart = DiagramTestUtils.getComponentSupportedInterface(editor, DEVICE_STUB_1);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, lollipopEditPart);
 		connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertTrue("Connection was not added", connections.size() == 1);
@@ -173,7 +183,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		Assert.assertTrue("Connection was not removed", connections.size() == 0);
 
 		// Test incompatible connection to component supported interface (SERVICE) and confirm error decoration
-		lollipopEditPart = DiagramTestUtils.getComponentSupportedInterface(editor, SERVICE_STUB);
+		lollipopEditPart = DiagramTestUtils.getComponentSupportedInterface(editor, SERVICE_STUB_1);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, lollipopEditPart);
 		connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertTrue("Connection was not added", connections.size() == 1);
