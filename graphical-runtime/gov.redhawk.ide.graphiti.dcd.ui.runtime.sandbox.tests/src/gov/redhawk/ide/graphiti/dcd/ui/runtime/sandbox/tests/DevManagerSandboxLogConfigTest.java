@@ -20,6 +20,7 @@ import org.junit.After;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractLogConfigTest;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class DevManagerSandboxLogConfigTest extends AbstractLogConfigTest {
@@ -30,10 +31,13 @@ public class DevManagerSandboxLogConfigTest extends AbstractLogConfigTest {
 	private static final String DEVICE_MANAGER = "Device Manager";
 	private static final String[] GPP_PARENT_PATH = { "Sandbox", "Device Manager" };
 
+	private RHBotGefEditor resourceDiagram = null;
+
 	@Override
 	protected SWTBotTreeItem launchLoggingResource() {
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, GPP, "cpp");
-		return ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, GPP_PARENT_PATH, GPP_1 + " STARTED");
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(gefBot, GPP_PARENT_PATH, GPP_1);
+		return ScaExplorerTestUtils.getTreeItemFromScaExplorer(gefBot, GPP_PARENT_PATH, GPP_1);
 	}
 
 	@After
@@ -51,13 +55,13 @@ public class DevManagerSandboxLogConfigTest extends AbstractLogConfigTest {
 
 	@Override
 	protected SWTBotGefEditPart openResourceDiagram() {
-		DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
-		return gefBot.rhGefEditor("Device Manager Chalkboard").getEditPart(GPP);
+		resourceDiagram = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
+		return resourceDiagram.getEditPart(GPP_1);
 	}
 
 	@Override
 	protected SWTBotGefEditor getDiagramEditor() {
-		return gefBot.rhGefEditor("Device Manager Chalkboard");
+		return resourceDiagram;
 	}
 
 }
