@@ -10,16 +10,25 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.projectCreation;
 
-import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
-
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
+
+import gov.redhawk.ide.codegen.util.ProjectCreator;
+import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
+import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 
 public class NodeCreationWizardTest extends AbstractCreationWizardTest {
 
@@ -32,6 +41,7 @@ public class NodeCreationWizardTest extends AbstractCreationWizardTest {
 
 	/**
 	 * IDE-1111: Test creation of node with dots in the name
+	 * IDE-1673: Ensure waveform .spec file directory block generates correctly
 	 */
 	@Test
 	public void testNamespacedNodeCreation() {
@@ -53,7 +63,7 @@ public class NodeCreationWizardTest extends AbstractCreationWizardTest {
 		}
 	}
 
-	private void checkFiles(String projectName) {
+	private void checkFiles(final String projectName) {
 		// Ensure DCD file was created
 		SWTBotView view = bot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
 		view.show();
@@ -67,6 +77,30 @@ public class NodeCreationWizardTest extends AbstractCreationWizardTest {
 		editorBot.bot().cTabItem("Overview").activate();
 
 		Assert.assertEquals(projectName, editorBot.bot().textWithLabel("Name:").getText());
+
+		final SWTBotTreeItem projectNode = ProjectExplorerUtils.selectNode(bot, projectName);
+		String expectedDirectoryBlock = ProjectCreator.createDirectoryBlock("%dir %{_prefix}/dev/nodes/" + projectName.replace('.', '/'));
+		final String[] expectedDirPaths = expectedDirectoryBlock.split("\n");
+
+		// Check that .spec file directory block is correct
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				IProject project = (IProject) projectNode.widget.getData();
+				File file = project.getFile(projectName + ".spec").getLocation().toFile();
+				try {
+					List<String> fileContents = Files.readAllLines(file.toPath(), Charset.defaultCharset());
+					for (String path : expectedDirPaths) {
+						if (fileContents.contains(path)) {
+							continue;
+						}
+						Assert.fail("Expected directory path " + path + " was not found in the project spec file");
+					}
+				} catch (IOException e) {
+					Assert.fail(e.getMessage());
+				}
+			}
+		});
 	}
 
 	private void createNodeWithDevice(String projectName, String domainName, String deviceName) {

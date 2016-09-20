@@ -12,17 +12,27 @@ package gov.redhawk.ide.ui.tests.projectCreation;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.codegen.util.ProjectCreator;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.model.sca.util.ModelUtil;
 import mil.jpeojtrs.sca.sad.SoftwareAssembly;
 
@@ -37,13 +47,13 @@ public class WaveformWizardTest extends AbstractCreationWizardTest {
 	public void testBasicCreate() {
 		testBasicCreate("WaveformProj01");
 	}
-	
+
 	protected void testBasicCreate(String projectName) {
 		bot.textWithLabel("&Project name:").setText(projectName);
 		bot.button("Finish").click();
 
 		String baseFilename = getBaseFilename(projectName);
-		
+
 		// Ensure SAD file was created
 		SWTBotView view = bot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
 		view.show();
@@ -80,7 +90,6 @@ public class WaveformWizardTest extends AbstractCreationWizardTest {
 		Assert.assertNotEquals("DCE:64a7d543-7055-494d-936f-30225b3b283e", editorBot.bot().textWithLabel("ID:").getText());
 	}
 
-	
 	@Test
 	public void testWithAssemblyController() throws IOException {
 		testSelectAssemblyController("rh.SigGen", "SigGen_1");
@@ -124,10 +133,45 @@ public class WaveformWizardTest extends AbstractCreationWizardTest {
 
 	/**
 	 * IDE-1111: Test creation of waveform with dots in the name
+	 * IDE-1673: Ensure waveform .spec file directory block generates correctly
 	 */
 	@Test
 	public void testNamespacedWaveformCreation() {
-		testBasicCreate("namespaced.waveform.IDE1111");
+		final String waveformName = "namespaced.waveform.IDE1111";
+
+		// Test basic project creation
+		testBasicCreate(waveformName);
+
+		// Add a component to the waveform so that the .spec file generates
+		RHSWTGefBot gefBot = new RHSWTGefBot();
+		gefBot.editorByTitle(waveformName).bot().cTabItem("Diagram").activate();
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, "rh.SigGen", 10, 10);
+		editor.save();
+
+		final SWTBotTreeItem projectNode = ProjectExplorerUtils.selectNode(gefBot, waveformName);
+		String expectedDirectoryBlock = ProjectCreator.createDirectoryBlock("%dir %{_prefix}/dom/waveforms/" + waveformName.replace('.', '/'));
+		final String[] expectedDirPaths = expectedDirectoryBlock.split("\n");
+
+		// Check that .spec file directory block is correct
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				IProject project = (IProject) projectNode.widget.getData();
+				File file = project.getFile(waveformName + ".spec").getLocation().toFile();
+				try {
+					List<String> fileContents = Files.readAllLines(file.toPath(), Charset.defaultCharset());
+					for (String path : expectedDirPaths) {
+						if (fileContents.contains(path)) {
+							continue;
+						}
+						Assert.fail("Expected directory path " + path + " was not found in the project spec file");
+					}
+				} catch (IOException e) {
+					Assert.fail(e.getMessage());
+				}
+			}
+		});
 	}
 
 	/**
