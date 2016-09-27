@@ -28,6 +28,7 @@ import gov.redhawk.ide.debug.impl.LocalScaWaveformImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
@@ -58,7 +59,8 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 		Assert.assertEquals("Waveform sandbox editor class is incorrect", EDITOR_NAME, editorPart.getClass().getName());
 		IEditorInput editorInput = editorPart.getEditorInput();
 		Assert.assertEquals("Waveform sandbox editor's input object is incorrect", ScaFileStoreEditorInput.class, editorInput.getClass());
-		Assert.assertEquals("Waveform sandbox editor's input SCA object is incorrect", LocalScaWaveformImpl.class, ((ScaFileStoreEditorInput) editorInput).getScaObject().getClass());
+		Assert.assertEquals("Waveform sandbox editor's input SCA object is incorrect", LocalScaWaveformImpl.class,
+			((ScaFileStoreEditorInput) editorInput).getScaObject().getClass());
 
 		// IDE-1668
 		final String WAVEFORM_SDR_PATH = "/waveforms/" + LOCAL_WAVEFORM + "/" + LOCAL_WAVEFORM + ".sad.xml";
@@ -98,6 +100,41 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, LOCAL_WAVEFORM, DiagramType.GRAPHITI_CHALKBOARD);
 		editor = gefBot.rhGefEditor(getWaveFormFullName());
 		Assert.assertNotNull(editor.getEditPart(HARD_LIMIT_1));
+	}
+
+	/**
+	 * IDE-1076 - Make sure start, stop, and release toolbar buttons appear/function during runtime
+	 */
+	@Test
+	public void checkLocalWaveformToolbarButtons() {
+		RHBotGefEditor editor = gefBot.rhGefEditor(getWaveFormFullName());
+
+		// Add component to diagram from palette
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
+		assertHardLimit(editor.getEditPart(HARD_LIMIT_1));
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, getWaveformPath(), HARD_LIMIT_1);
+
+		// Confirm that all components are stopped
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT, ComponentState.STOPPED);
+
+		editor.setFocus();
+		bot.toolbarButtonWithTooltip("Start Waveform").click();
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(gefBot, getWaveformPath(), SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(gefBot, getWaveformPath(), HARD_LIMIT_1);
+		DiagramTestUtils.waitForComponentState(gefBot, editor, SIGGEN, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(gefBot, editor, HARD_LIMIT, ComponentState.STARTED);
+
+		editor.setFocus();
+		bot.toolbarButtonWithTooltip("Stop Waveform").click();
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(gefBot, getWaveformPath(), SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(gefBot, getWaveformPath(), HARD_LIMIT_1);
+		DiagramTestUtils.waitForComponentState(gefBot, editor, SIGGEN, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(gefBot, editor, HARD_LIMIT, ComponentState.STOPPED);
+
+		editor.setFocus();
+		bot.toolbarButtonWithTooltip("Release Waveform").click();
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, getWaveFormFullName());
 	}
 
 	/**
@@ -230,6 +267,7 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 	 * Asserts the given SWTBotGefEditPart is a HardLimit component and assembly controller
 	 * @param gefEditPart
 	 */
+	@SuppressWarnings("restriction")
 	private static void assertHardLimit(SWTBotGefEditPart gefEditPart) {
 		Assert.assertNotNull(gefEditPart);
 		// Drill down to graphiti component shape
