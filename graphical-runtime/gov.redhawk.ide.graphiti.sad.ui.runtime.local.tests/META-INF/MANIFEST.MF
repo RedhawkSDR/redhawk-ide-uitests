@@ -22,6 +22,7 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui.runtime.tests,
  org.eclipse.emf.workspace;bundle-version="1.5.1",
  gov.redhawk.logging.ui,
  gov.redhawk.ide.sdr,
- gov.redhawk.ide.debug
+ gov.redhawk.ide.debug,
+ gov.redhawk.ide.sdr.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
