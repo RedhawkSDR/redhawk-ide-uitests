@@ -14,10 +14,10 @@ import java.util.List;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -56,7 +56,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart gppUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, GPP);
 		SWTBotGefEditPart deviceStubProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, gppUsesEditPart, deviceStubProvidesEditPart);
-		MenuUtils.save(editor);
 
 		// Confirm connection was made
 		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, gppUsesEditPart);
@@ -69,7 +68,9 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		String bottomHalf = editorText.substring(editorText.indexOf("</connections>") + "</connections>".length());
 		editorText = topHalf + bottomHalf;
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
+
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm that the connection no longer exists in Graphiti model
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -104,7 +105,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart gppUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, GPP);
 		SWTBotGefEditPart deviceStubProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, gppUsesEditPart, deviceStubProvidesEditPart);
-		MenuUtils.save(editor);
 
 		// Remove device from dcd.xml
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
@@ -113,7 +113,9 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		String bottomHalf = editorText.substring(editorText.indexOf("</componentplacement>") + "</componentplacement>".length());
 		editorText = topHalf + bottomHalf;
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
+
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm that the connection no longer exists
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");

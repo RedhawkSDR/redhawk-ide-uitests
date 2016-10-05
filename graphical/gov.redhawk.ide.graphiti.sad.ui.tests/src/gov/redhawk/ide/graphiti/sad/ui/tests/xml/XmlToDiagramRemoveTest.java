@@ -13,12 +13,12 @@ package gov.redhawk.ide.graphiti.sad.ui.tests.xml;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.graphiti.sad.ui.tests.SadTestUtils;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
-import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -59,7 +59,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
-		MenuUtils.save(editor);
 
 		// Remove connection from sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -67,7 +66,9 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		int endString = editorText.indexOf("<connections>");
 		editorText = editorText.substring(0, endString);
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
+
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm that the connection no longer exists
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -102,7 +103,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
-		MenuUtils.save(editor);
 
 		// Remove component from sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -112,7 +112,9 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		int startIndex = editorText.indexOf("<componentplacement>", endIndex + 1);
 		String partTwoText = editorText.substring(startIndex);
 		editor.toTextEditor().setText(partOneText + partTwoText);
-		MenuUtils.save(editor);
+
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm that the connection no longer exists
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -146,9 +148,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		//add component inside host collocation (so host collocation is valid)
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 5, 5);
 
-		//save
-		MenuUtils.save(editor);
-
 		// Remove host collocation from sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
 		String editorText = editor.toTextEditor().getText();
@@ -157,7 +156,9 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		int startIndex = editorText.indexOf("</partitioning>");
 		String partTwoText = editorText.substring(startIndex);
 		editor.toTextEditor().setText(partOneText + partTwoText);
-		MenuUtils.save(editor);
+
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm the host collocation no longer exists in diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -179,7 +180,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 0);
-		MenuUtils.save(editor);
 
 		// Edit content of (add external port) sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -191,7 +191,9 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 			+ "</port> </externalports>";
 		editorText = editorText.replace("</assemblycontroller>", externalports);
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
+
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
@@ -211,7 +213,9 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		externalports = editorText.substring(extPortStartIndex, extPortEndIndex);
 		editorText = editorText.replace(externalports, "");
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
+
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm that no external ports exist in diagram
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
@@ -244,6 +248,9 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		editorText = editorText.replace("<assemblycontroller/>", usesDevice);
 		editor.toTextEditor().setText(editorText);
 
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
+
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 
@@ -256,6 +263,9 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		editorText = editorText.replace("<usesdevice id=\"FrontEndTuner_1\"/>", "");
 		editor.toTextEditor().setText(editorText);
+
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm use device shape disappears
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");

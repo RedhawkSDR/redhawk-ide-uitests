@@ -100,7 +100,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 			List<SadComponentPlacement> placements = sad.getPartitioning().getComponentPlacement();
 			placements.add(createSadPlacement(compFileA, compA.getShortName(1), 0));
 			placements.add(createSadPlacement(compFileB, compB.getShortName(1), 1));
-			XmlTestUtils.writeModelToXmlEditor(editor, TEST_NAME, getEditorType(), sad);
+			XmlTestUtils.writeModelToXmlEditor(editor, TEST_NAME + ".sad.xml", sad);
 		} else {
 			if (dcd.getComponentFiles() == null) {
 				dcd.setComponentFiles(PartitioningFactory.eINSTANCE.createComponentFiles());
@@ -111,7 +111,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 			List<DcdComponentPlacement> placements = dcd.getPartitioning().getComponentPlacement();
 			placements.add(createDcdPlacement(compFileA, compA.getShortName(1)));
 			placements.add(createDcdPlacement(compFileB, compB.getShortName(1)));
-			XmlTestUtils.writeModelToXmlEditor(editor, TEST_NAME, getEditorType(), dcd);
+			XmlTestUtils.writeModelToXmlEditor(editor, "DeviceManager.dcd.xml", dcd);
 		}
 		MenuUtils.save(editor);
 
@@ -162,7 +162,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 			SadConnectInterface connection = SadFactory.eINSTANCE.createSadConnectInterface("connection_1", compA.getOutPort(0), compA.getShortName(1),
 				compB.getInPort(0), compB.getShortName(1));
 			connections.add(connection);
-			XmlTestUtils.writeModelToXmlEditor(editor, TEST_NAME, getEditorType(), sad);
+			XmlTestUtils.writeModelToXmlEditor(editor, TEST_NAME + ".sad.xml", sad);
 		} else {
 			if (dcd.getConnections() == null) {
 				dcd.setConnections(DcdFactory.eINSTANCE.createDcdConnections());
@@ -171,7 +171,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 			DcdConnectInterface connection = DcdFactory.eINSTANCE.createDcdConnectInterface("connection_1", compA.getOutPort(0),
 				TEST_NAME + ":" + compA.getShortName(1), compB.getInPort(0), TEST_NAME + ":" + compB.getShortName(1));
 			connections.add(connection);
-			XmlTestUtils.writeModelToXmlEditor(editor, TEST_NAME, getEditorType(), dcd);
+			XmlTestUtils.writeModelToXmlEditor(editor, "DeviceManager.dcd.xml", dcd);
 		}
 		MenuUtils.save(editor);
 

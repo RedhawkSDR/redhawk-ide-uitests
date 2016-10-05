@@ -15,9 +15,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import mil.jpeojtrs.sca.dcd.DcdPackage;
@@ -58,15 +60,13 @@ public class XmlTestUtils {
 		}
 	}
 
-	public static void writeModelToXmlEditor(SWTBotEditor editor, String testName, EditorType editorType, Object profileObj) throws IOException {
+	public static void writeModelToXmlEditor(SWTBotEditor editor, String fileName, EObject profileObj) throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		if (editorType == EditorType.SAD) {
-			DiagramTestUtils.openTabInEditor(editor, testName + ".sad.xml");
-			((SoftwareAssembly) profileObj).eResource().save(outputStream, null);
-		} else {
-			DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
-			((DeviceConfiguration) profileObj).eResource().save(outputStream, null);
-		}
+		DiagramTestUtils.openTabInEditor(editor, fileName);
+		profileObj.eResource().save(outputStream, null);
 		editor.toTextEditor().setText(outputStream.toString());
+
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 	}
 }
