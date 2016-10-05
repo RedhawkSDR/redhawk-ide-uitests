@@ -109,27 +109,23 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		// Add devices to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 300, 0);
-		MenuUtils.save(editor);
 
 		// Get port edit parts
 		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, DEVICE_STUB_1, "dataFloat_out");
 		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB_2, "dataDouble_in");
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
-		MenuUtils.save(editor);
 
 		// Edit content of dcd.xml
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
 		String editorText = editor.toTextEditor().getText();
 		editorText = editorText.replace("<providesidentifier>dataDouble_in</providesidentifier>", "<providesidentifier>dataFloat_in</providesidentifier>");
 		editor.toTextEditor().setText(editorText);
-		// TODO: Currently only typing in the XML editor seems to force an update. Why?
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
-		MenuUtils.save(editor);
 
-		// Confirm edits appear in the diagram
-		DiagramTestUtils.openTabInEditor(editor, "Diagram");
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Check that connection data has changed
+		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 		usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, DEVICE_STUB_1, "dataFloat_out");
 		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertEquals("Wrong number of connections found", 1, sourceConnections.size());

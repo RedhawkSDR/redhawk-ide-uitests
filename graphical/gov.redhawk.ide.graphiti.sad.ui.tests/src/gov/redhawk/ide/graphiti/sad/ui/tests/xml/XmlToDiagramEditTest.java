@@ -17,6 +17,7 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.Assert;
 import org.junit.Test;
@@ -66,7 +67,6 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 0, 200);
-		MenuUtils.save(editor);
 
 		// Edit content of sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -76,30 +76,18 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		editorText = editorText.replace("startorder=\"2\"", "startorder=\"1\"");
 		editorText = editorText.replace("startorder=\"3\"", "startorder=\"2\"");
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
+
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 
-		gefBot.waitUntil(new DefaultCondition() {
-
-			@Override
-			public boolean test() throws Exception {
-				return HARD_LIMIT_2.equals(DiagramTestUtils.getComponentObject(editor, HARD_LIMIT_2).getUsageName());
-			}
-
-			@Override
-			public String getFailureMessage() {
-				return "Usage Name did not update correctly. Expected [" + HARD_LIMIT_2 + "] Found ["
-					+ DiagramTestUtils.getComponentObject(editor, HARD_LIMIT).getUsageName() + "]";
-			}
-		}, 10000, 1000);
-
 		SadComponentInstantiation componentObj = DiagramTestUtils.getComponentObject(editor, HARD_LIMIT);
 		Assert.assertEquals("Component ID did not update correctly", HARD_LIMIT_2, componentObj.getId());
+		Assert.assertEquals("Usage Name did not update correctly", HARD_LIMIT_2, DiagramTestUtils.getComponentObject(editor, HARD_LIMIT).getUsageName());
 		Assert.assertEquals("Naming Service did not update correctly", HARD_LIMIT_2, componentObj.getFindComponent().getNamingService().getName());
 		Assert.assertEquals("Start Order did not update correctly", BigInteger.valueOf(2), componentObj.getStartOrder());
-
 	}
 
 	/**
@@ -124,8 +112,6 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		SWTBotGefEditPart hardLimitProvidesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, sigGenUsesEditPart, hardLimitProvidesEditPart);
-		MenuUtils.save(editor);
-bot.sleep(5000);
 		Assert.assertEquals("Wrong number of connections before edit", 1, DiagramTestUtils.getSourceConnectionsFromPort(editor, DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1)).size());
 
 		// Edit content of sad.xml
@@ -140,34 +126,12 @@ bot.sleep(5000);
 		editorText = editorText.replace(connectionProvidesBefore, connectionProvidesAfter);
 		editorText = editorText.replace(connectionCiBefore, connectionCiAfter);
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
-		editorText = editor.toTextEditor().getText();
-		Assert.assertTrue("Connection does not reference correct provides port after editing", editorText.contains(connectionProvidesAfter));
-		Assert.assertTrue("Connection does not reference correct component instantiation after editing", editorText.contains(connectionCiAfter));
 
-		// Confirm edits appear in the diagram
-		DiagramTestUtils.openTabInEditor(editor, "Diagram");
-
-		// TODO: test wait
-		bot.sleep(500);
-
-		bot.waitUntil(new DefaultCondition() {
-			private List<SWTBotGefConnectionEditPart> sourceConnections;
-
-			@Override
-			public boolean test() throws Exception {
-				sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1));
-				return (sourceConnections.size() == 1);
-			}
-
-			@Override
-			public String getFailureMessage() {
-				return "Wrong number of connections found, expected 1, but found " + sourceConnections.size();
-			}
-
-		});
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Check that SigGen connection data has changed
+		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 		sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		final List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, sigGenUsesEditPart);
 		Assert.assertEquals("Wrong number of connections found", 1, sourceConnections.size());
@@ -256,7 +220,6 @@ bot.sleep(5000);
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 20);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 20, 150);
-		MenuUtils.save(editor);
 
 		// Verify that the host collocation has two components
 		ContainerShape hostCoShape = DiagramTestUtils.getHostCollocationShape(editor, HOST_CO_NAME);
@@ -273,7 +236,9 @@ bot.sleep(5000);
 		String sigGenCpText = editorText.substring(begin, end); // save this
 		editorText = editorText.substring(0, begin) + editorText.substring(end);
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
+
+		// Simulate keystrokes in the XML editor so the update will actually occur
+		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm SigGen component was removed from Host Collocation
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
