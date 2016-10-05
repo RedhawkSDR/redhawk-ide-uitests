@@ -24,7 +24,6 @@ import gov.redhawk.core.graphiti.sad.ui.ext.ComponentShape;
 import gov.redhawk.core.graphiti.ui.ext.RHContainerShape;
 import gov.redhawk.ide.graphiti.ui.tests.ComponentDescription;
 import gov.redhawk.ide.graphiti.ui.tests.util.XmlTestUtils;
-import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -113,7 +112,6 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 			placements.add(createDcdPlacement(compFileB, compB.getShortName(1)));
 			XmlTestUtils.writeModelToXmlEditor(editor, "DeviceManager.dcd.xml", dcd);
 		}
-		MenuUtils.save(editor);
 
 		// Confirm shapes in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -173,7 +171,6 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 			connections.add(connection);
 			XmlTestUtils.writeModelToXmlEditor(editor, "DeviceManager.dcd.xml", dcd);
 		}
-		MenuUtils.save(editor);
 
 		// Confirm connections in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");

@@ -13,7 +13,6 @@ package gov.redhawk.ide.graphiti.sad.ui.tests.xml;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -67,9 +66,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		editorText = editorText.substring(0, endString);
 		editor.toTextEditor().setText(editorText);
 
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
-
 		// Confirm that the connection no longer exists
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 		SWTBotGefEditPart componentEditPart = editor.getEditPart(SIG_GEN_1);
@@ -113,9 +109,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		String partTwoText = editorText.substring(startIndex);
 		editor.toTextEditor().setText(partOneText + partTwoText);
 
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
-
 		// Confirm that the connection no longer exists
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 		SWTBotGefEditPart componentEditPart = editor.getEditPart(HARD_LIMIT_1);
@@ -157,9 +150,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		String partTwoText = editorText.substring(startIndex);
 		editor.toTextEditor().setText(partOneText + partTwoText);
 
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
-
 		// Confirm the host collocation no longer exists in diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 		HostCollocation hostCollocationObj = DiagramTestUtils.getHostCollocationObject(editor, HOSTCOLLOCATION_INSTANCE_NAME);
@@ -192,9 +182,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		editorText = editorText.replace("</assemblycontroller>", externalports);
 		editor.toTextEditor().setText(editorText);
 
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
-
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
 		//assert port set to external in diagram
@@ -213,9 +200,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		externalports = editorText.substring(extPortStartIndex, extPortEndIndex);
 		editorText = editorText.replace(externalports, "");
 		editor.toTextEditor().setText(editorText);
-
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm that no external ports exist in diagram
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
@@ -248,9 +232,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		editorText = editorText.replace("<assemblycontroller/>", usesDevice);
 		editor.toTextEditor().setText(editorText);
 
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
-
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 
@@ -263,9 +244,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		editorText = editorText.replace("<usesdevice id=\"FrontEndTuner_1\"/>", "");
 		editor.toTextEditor().setText(editorText);
-
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm use device shape disappears
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");

@@ -32,7 +32,6 @@ import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.graphiti.ui.tests.ComponentDescription;
 import gov.redhawk.ide.graphiti.ui.tests.util.XmlTestUtils;
 import gov.redhawk.ide.graphiti.ui.tests.xml.AbstractXmlToDiagramAddTest;
-import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -80,7 +79,6 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 400, 0);
-		MenuUtils.save(editor);
 
 		// Edit content of sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -88,11 +86,8 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 
 		// add host collocation
 		editorText = editorText.replace("<componentplacement>", "<hostcollocation name=\"" + HOSTCOLLOCATION_INSTANCE_NAME + "\"><componentplacement>");
-
 		editorText = editorText.replace("</partitioning>", "</hostcollocation></partitioning>");
-
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
 
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -131,7 +126,6 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
-		MenuUtils.save(editor);
 
 		// Switch to the XML tab and get contents
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -174,7 +168,6 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 
 		// Need to allow the editor to get the changes
 		editor.toTextEditor().setText(outputStream.toString());
-		MenuUtils.save(editor);
 
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -227,7 +220,6 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 0);
-		MenuUtils.save(editor);
 
 		// Confirm that no external ports exist in diagram
 		SWTBotGefEditPart hardLimitUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1);
@@ -245,7 +237,6 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 			+ "<componentinstantiationref refid=\"" + HARD_LIMIT_1 + "\"/>" + "</port> </externalports>";
 		editorText = editorText.replace("</assemblycontroller>", externalports);
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
 
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");

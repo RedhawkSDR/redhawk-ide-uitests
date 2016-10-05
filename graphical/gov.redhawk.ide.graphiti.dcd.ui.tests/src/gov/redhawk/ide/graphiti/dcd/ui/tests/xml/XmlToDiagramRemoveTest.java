@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -69,9 +68,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		editorText = topHalf + bottomHalf;
 		editor.toTextEditor().setText(editorText);
 
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
-
 		// Confirm that the connection no longer exists in Graphiti model
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 		gppUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, GPP);
@@ -113,9 +109,6 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 		String bottomHalf = editorText.substring(editorText.indexOf("</componentplacement>") + "</componentplacement>".length());
 		editorText = topHalf + bottomHalf;
 		editor.toTextEditor().setText(editorText);
-
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Confirm that the connection no longer exists
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");

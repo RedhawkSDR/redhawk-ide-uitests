@@ -16,13 +16,11 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
-import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -59,16 +57,12 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 
 		// Add devices to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
-		MenuUtils.save(editor);
 
 		// Edit content of dcd.xml
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
 		String editorText = editor.toTextEditor().getText();
 		editorText = editorText.replace(DEVICE_STUB_1, DEVICE_STUB_2);
 		editor.toTextEditor().setText(editorText);
-		// TODO: Currently only typing in the XML editor seems to force an update. Why?
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
-		MenuUtils.save(editor);
 
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -120,9 +114,6 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		String editorText = editor.toTextEditor().getText();
 		editorText = editorText.replace("<providesidentifier>dataDouble_in</providesidentifier>", "<providesidentifier>dataFloat_in</providesidentifier>");
 		editor.toTextEditor().setText(editorText);
-
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
 
 		// Check that connection data has changed
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");

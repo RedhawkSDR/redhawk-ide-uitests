@@ -17,7 +17,6 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.Assert;
 import org.junit.Test;
@@ -77,9 +76,6 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		editorText = editorText.replace("startorder=\"3\"", "startorder=\"2\"");
 		editor.toTextEditor().setText(editorText);
 
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
-
 		// Confirm edits appear in the diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 
@@ -127,9 +123,6 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		editorText = editorText.replace(connectionCiBefore, connectionCiAfter);
 		editor.toTextEditor().setText(editorText);
 
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
-
 		// Check that SigGen connection data has changed
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 		sigGenUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
@@ -167,7 +160,6 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		// Add component to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 200, 0);
-		MenuUtils.save(editor);
 
 		// Verify componentOne is set as assembly Controller
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -181,7 +173,6 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		String editorText = editor.toTextEditor().getText();
 		editorText = editorText.replace("<componentinstantiationref refid=\"" + SIG_GEN_1 + "\"/>", "<componentinstantiationref refid=\"" + HARD_LIMIT_1 + "\"/>");
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
 
 		// Confirm edits reflect that componentTwo is now assembly controller
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -237,9 +228,6 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		editorText = editorText.substring(0, begin) + editorText.substring(end);
 		editor.toTextEditor().setText(editorText);
 
-		// Simulate keystrokes in the XML editor so the update will actually occur
-		editor.toTextEditor().pressShortcut(Keystrokes.SPACE, Keystrokes.BS);
-
 		// Confirm SigGen component was removed from Host Collocation
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 		hostCoShape = DiagramTestUtils.getHostCollocationShape(editor, HOST_CO_NAME);
@@ -271,7 +259,6 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		editorText = editorText.replace("<componentfile id", sigGenCfText + " \n <componentfile id");
 		editorText = editorText.replace("<componentplacement>", sigGenCpText + " \n <componentplacement>");
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
 
 		// Confirm SigGen component was added back to Host Collocation
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -305,7 +292,6 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		editorText = editor.toTextEditor().getText();
 		editorText = editorText.replace("<hostcollocation name=\"" + HOST_CO_NAME + "\">", "<hostcollocation name=\"" + HOST_CO_NAME + "_1\">");
 		editor.toTextEditor().setText(editorText);
-		MenuUtils.save(editor);
 
 		// Confirm that Host Collocation name updated in diagram
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
