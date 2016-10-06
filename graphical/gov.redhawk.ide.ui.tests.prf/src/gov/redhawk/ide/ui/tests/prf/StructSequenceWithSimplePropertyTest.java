@@ -25,32 +25,32 @@ public class StructSequenceWithSimplePropertyTest extends SimplePropertyTest {
 	public void before() throws Exception {
 		super.before();
 
-		editor.bot().sleep(600);
-		editor.bot().tree().expandNode("ID").select("Struct");
-		editor.bot().textWithLabel("ID*:").setText("Struct");
-		editor.bot().sleep(600);
-		editor.bot().tree().expandNode("ID", "Struct").select("Simple");
-		editor.bot().textWithLabel("ID*:").setText("Simple");
-		editor.bot().sleep(600);
+		editorBot.sleep(600);
+		editorBot.tree().expandNode("ID").select("Struct");
+		editorBot.textWithLabel("ID*:").setText("Struct");
+		editorBot.sleep(600);
+		editorBot.tree().expandNode("ID", "Struct").select("Simple");
+		editorBot.textWithLabel("ID*:").setText("Simple");
+		editorBot.sleep(600);
 
 		selectStructSequence();
 	}
 
 	@Override
 	protected void createType() {
-		editor.bot().button("Add StructSeq").click();
+		editorBot.button("Add StructSeq").click();
 	}
 
 	protected void selectStructSequence() {
-		editor.bot().tree().select("ID");
+		editorBot.tree().select("ID");
 	}
 
 	protected void selectStruct() {
-		editor.bot().tree().getTreeItem("ID").select("Struct");
+		editorBot.tree().getTreeItem("ID").select("Struct");
 	}
 
 	protected void selectSimple() {
-		editor.bot().tree().expandNode("ID", "Struct").select("Simple");
+		editorBot.tree().expandNode("ID", "Struct").select("Simple");
 	}
 
 	@Test
@@ -119,34 +119,34 @@ public class StructSequenceWithSimplePropertyTest extends SimplePropertyTest {
 
 	@Test
 	public void testStructValue() {
-		SWTBotTree structValueTable = editor.bot().treeWithLabel("StructValue:");
-		editor.bot().button("Add...").click();
+		SWTBotTree structValueTable = editorBot.treeWithLabel("StructValue:");
+		editorBot.button("Add...").click();
 		SWTBotTreeItem item = structValueTable.getTreeItem("Struct[0]");
 		item.expand();
 		SWTBotTreeItem subItem = item.getNode("Simple");
 
-		editor.bot().button("Add...").click();
+		editorBot.button("Add...").click();
 		SWTBotTreeItem item1 = structValueTable.getTreeItem("Struct[1]");
 		item1.expand();
 		SWTBotTreeItem subItem1 = item1.getNode("Simple");
 
-		StandardTestActions.writeToCell(editor.bot(), subItem1, 2, "hello");
+		StandardTestActions.writeToCell(editorBot, subItem1, 2, "hello");
 		assertFormValid();
 
 		item1.select();
-		editor.bot().button("Remove", 1).click();
+		editorBot.button("Remove", 1).click();
 
 		selectSimple();
-		editor.bot().comboBoxWithLabel("Type*:").setSelection("double (64-bit)");
+		editorBot.comboBoxWithLabel("Type*:").setSelection("double (64-bit)");
 		assertFormInvalid();
 		selectStructSequence();
 
-		structValueTable = editor.bot().treeWithLabel("StructValue:");
+		structValueTable = editorBot.treeWithLabel("StructValue:");
 		item = structValueTable.getTreeItem("Struct[0]");
 		item.expand();
 		subItem = item.getNode("Simple");
 
-		StandardTestActions.writeToCell(editor.bot(), subItem, 2, "1.1");
+		StandardTestActions.writeToCell(editorBot, subItem, 2, "1.1");
 		assertFormValid();
 	}
 

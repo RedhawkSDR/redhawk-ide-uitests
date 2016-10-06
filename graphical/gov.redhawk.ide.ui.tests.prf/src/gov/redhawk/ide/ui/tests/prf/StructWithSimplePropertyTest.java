@@ -19,27 +19,27 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 
 	@Override
 	protected void createType() {
-		bot.button("Add Struct").click();
+		editorBot.button("Add Struct").click();
 	}
 
 	@Override
 	public void before() throws Exception {
 		super.before();
-		editor.bot().sleep(600);
+		editorBot.sleep(600);
 
-		editor.bot().tree().expandNode("ID").select("Simple");
-		editor.bot().textWithLabel("ID*:").setText("Simple");
-		editor.bot().sleep(600);
+		editorBot.tree().expandNode("ID").select("Simple");
+		editorBot.textWithLabel("ID*:").setText("Simple");
+		editorBot.sleep(600);
 
 		selectStruct();
 	}
 
 	protected void selectStruct() {
-		editor.bot().tree().select("ID");
+		editorBot.tree().select("ID");
 	}
 
 	protected void selectSimple() {
-		editor.bot().tree().getTreeItem("ID").select("Simple");
+		editorBot.tree().getTreeItem("ID").select("Simple");
 	}
 
 	@Test
@@ -91,9 +91,9 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 	@Override
 	public void testUniqueID() {
 		selectSimple();
-		editor.bot().textWithLabel("ID*:").setText("ID");
+		editorBot.textWithLabel("ID*:").setText("ID");
 		assertFormInvalid();
-		editor.bot().textWithLabel("ID*:").setText("SID");
+		editorBot.textWithLabel("ID*:").setText("SID");
 		assertFormValid();
 
 		super.testUniqueID();
@@ -109,9 +109,9 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 
 	@Test
 	public void testAddSecondSimple() {
-		editor.bot().tree().getTreeItem("ID").select().contextMenu("New").menu("Simple").click();
+		editorBot.tree().getTreeItem("ID").select().contextMenu("New").menu("Simple").click();
 		assertFormInvalid();
-		editor.bot().textWithLabel("ID*:").setText("SID2");
+		editorBot.textWithLabel("ID*:").setText("SID2");
 		assertFormValid();
 	}
 

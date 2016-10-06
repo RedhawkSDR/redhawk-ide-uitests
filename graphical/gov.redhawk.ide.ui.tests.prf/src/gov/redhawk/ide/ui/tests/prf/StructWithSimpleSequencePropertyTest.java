@@ -19,31 +19,31 @@ public class StructWithSimpleSequencePropertyTest extends SimpleSequenceProperty
 
 	@Override
 	protected void createType() {
-		bot.button("Add Struct").click();
+		editorBot.button("Add Struct").click();
 	}
 
 	@Override
 	public void before() throws Exception {
 		super.before();
-		editor.bot().sleep(600);
+		editorBot.sleep(600);
 
-		editor.bot().tree().expandNode("ID").select("Simple");
-		bot.button("Remove").click();
+		editorBot.tree().expandNode("ID").select("Simple");
+		editorBot.button("Remove").click();
 
-		editor.bot().tree().select("ID").contextMenu("New").menu("Simple Sequence").click();
+		editorBot.tree().select("ID").contextMenu("New").menu("Simple Sequence").click();
 		selectSimpleSequence();
-		editor.bot().textWithLabel("ID*:").setText("Simple Sequence");
-		editor.bot().sleep(600);
+		editorBot.textWithLabel("ID*:").setText("Simple Sequence");
+		editorBot.sleep(600);
 
 		selectStruct();
 	}
 
 	protected void selectStruct() {
-		editor.bot().tree().select("ID");
+		editorBot.tree().select("ID");
 	}
 
 	protected void selectSimpleSequence() {
-		editor.bot().tree().getTreeItem("ID").select("Simple Sequence");
+		editorBot.tree().getTreeItem("ID").select("Simple Sequence");
 	}
 
 	@Test
@@ -88,9 +88,9 @@ public class StructWithSimpleSequencePropertyTest extends SimpleSequenceProperty
 	@Override
 	public void testUniqueID() {
 		selectSimpleSequence();
-		editor.bot().textWithLabel("ID*:").setText("ID");
+		editorBot.textWithLabel("ID*:").setText("ID");
 		assertFormInvalid();
-		editor.bot().textWithLabel("ID*:").setText("SID");
+		editorBot.textWithLabel("ID*:").setText("SID");
 		assertFormValid();
 
 		super.testUniqueID();
@@ -106,9 +106,9 @@ public class StructWithSimpleSequencePropertyTest extends SimpleSequenceProperty
 
 	@Test
 	public void testAddSecondSimpleSequence() {
-		editor.bot().tree().getTreeItem("ID").contextMenu("New").menu("Simple Sequence").click();
+		editorBot.tree().getTreeItem("ID").contextMenu("New").menu("Simple Sequence").click();
 		assertFormInvalid();
-		editor.bot().textWithLabel("ID*:").setText("SID2");
+		editorBot.textWithLabel("ID*:").setText("SID2");
 		assertFormValid();
 	}
 

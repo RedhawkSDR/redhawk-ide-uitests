@@ -15,7 +15,7 @@ import gov.redhawk.ide.swtbot.StandardTestActions;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
@@ -28,188 +28,212 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 
 	@Test
 	public void testValues() throws CoreException {
-		SWTBotTable valuesViewer = editor.bot().tableWithLabel("Values:");
+		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
 		// Start with type selected as string
-		addValue(bot, "true");
+		addValue(editorBot, "true");
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "a", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "a", false);
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "true", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "true", false);
 		assertFormValid();
-		addValue(bot, "true");
+		addValue(editorBot, "true");
 		assertFormValid();
 		clearValues();
 
 		setType("char", "");
-		addValue(bot, "1");
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "abc", false);
+		addValue(editorBot, "1");
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "abc", false);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1", false);
 		assertFormValid();
-		addValue(bot, "1");
+		addValue(editorBot, "1");
 		assertFormValid();
 		clearValues();
 
 		setType("double (64-bit)", "");
-		bot.button("Add...").click();
-		Assert.assertFalse("OK should not be enabled", bot.button("OK").isEnabled());
-		bot.textWithLabel("Value:").setText("abc");
-		Assert.assertFalse("OK should not be enabled", bot.button("OK").isEnabled());
-		bot.textWithLabel("Value:").setText("-1.1");
-		bot.button("OK").click();
+		editorBot.button("Add...").click();
+		SWTBotShell shell = bot.shell("New Value");
+		Assert.assertFalse("OK should not be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("abc");
+		Assert.assertFalse("OK should not be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("-1.1");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "al", false);
 		assertFormInvalid();
 		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "-1.1", false);
 		assertFormValid();
-		bot.button("Add...").click();
-		bot.textWithLabel("Value:").setText("-1.1");
-		bot.button("OK").click();
+		editorBot.button("Add...").click();
+		shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("-1.1");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
 		clearValues();
 
 		setType("float (32-bit)", "complex");
-		bot.button("Add...").click();
-		Assert.assertFalse("OK should not be enabled", bot.button("OK").isEnabled());
-		bot.textWithLabel("Value:").setText("abc");
-		Assert.assertFalse("OK should not be enabled", bot.button("OK").isEnabled());
-		bot.textWithLabel("Value:").setText("-1.1");
-		Assert.assertTrue("OK should be enabled", bot.button("OK").isEnabled());
-		bot.textWithLabel("Value:").setText("-1.1");
-		Assert.assertTrue("OK should be enabled", bot.button("OK").isEnabled());
-		bot.textWithLabel("Value:").setText("-1.1+j10.1");
-		bot.button("OK").click();
+		editorBot.button("Add...").click();
+		shell = bot.shell("New Value");
+		Assert.assertFalse("OK should not be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("abc");
+		Assert.assertFalse("OK should not be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("-1.1");
+		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("-1.1");
+		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("-1.1+j10.1");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "-1.1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1.1", false);
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "-1.1+jjak", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1.1+jjak", false);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "-1.1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1.1", false);
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "-1.1+j10.1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1.1+j10.1", false);
 		assertFormValid();
-		bot.button("Add...").click();
-		bot.textWithLabel("Value:").setText("-1.1");
-		Assert.assertTrue("OK should be enabled", bot.button("OK").isEnabled());
-		bot.textWithLabel("Value:").setText("-1.1+j10.1");
-		bot.button("OK").click();
+		editorBot.button("Add...").click();
+		shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("-1.1");
+		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("-1.1+j10.1");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
 		clearValues();
 
 		setType("long (32-bit)", "");
-		addValue(bot, "-11");
+		addValue(editorBot, "-11");
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "1.1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1.1", false);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "-11", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11", false);
 		assertFormValid();
-		bot.button("Add...").click();
-		bot.textWithLabel("Value:").setText("-11");
-		bot.button("OK").click();
+		editorBot.button("Add...").click();
+		shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("-11");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
 		clearValues();
 
 		setType("longlong (64-bit)", "");
-		addValue(bot, "-11");
+		addValue(editorBot, "-11");
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "1.1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1.1", false);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "-11", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11", false);
 		assertFormValid();
-		bot.button("Add...").click();
-		bot.textWithLabel("Value:").setText("-11");
-		bot.button("OK").click();
+		editorBot.button("Add...").click();
+		shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("-11");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
 		clearValues();
 
 		setType("short (16-bit)", "complex");
-		bot.button("Add...").click();
-		bot.textWithLabel("Value:").setText("1");
-		Assert.assertTrue("OK should be enabled", bot.button("OK").isEnabled());
-		bot.textWithLabel("Value:").setText("-11-j2");
-		bot.button("OK").click();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "1", false);
+		editorBot.button("Add...").click();
+		shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("1");
+		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("-11-j2");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1", false);
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "1+100iada", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1+100iada", false);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "-11-j2", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11-j2", false);
 		assertFormValid();
-		addValue(bot, "-11-j2");
+		addValue(editorBot, "-11-j2");
 		assertFormValid();
 		clearValues();
 
 		setType("ulong (32-bit)", "");
-		addValue(bot, "11");
+		addValue(editorBot, "11");
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "-1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1", false);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "11", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "11", false);
 		assertFormValid();
-		bot.button("Add...").click();
-		bot.textWithLabel("Value:").setText("11");
-		bot.button("OK").click();
+		editorBot.button("Add...").click();
+		shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("11");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
 		clearValues();
 
 		setType("ulonglong (64-bit)", "");
-		addValue(bot, "11");
+		addValue(editorBot, "11");
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "-1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1", false);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "11", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "11", false);
 		assertFormValid();
-		bot.button("Add...").click();
-		bot.textWithLabel("Value:").setText("11");
-		bot.button("OK").click();
+		editorBot.button("Add...").click();
+		shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("11");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
 		clearValues();
 
 		setType("ushort (16-bit)", "complex");
-		bot.button("Add...").click();
-		bot.textWithLabel("Value:").setText("1");
-		Assert.assertTrue("OK should be enabled", bot.button("OK").isEnabled());
-		bot.textWithLabel("Value:").setText("11");
-		Assert.assertTrue("OK should be enabled", bot.button("OK").isEnabled());
-		bot.textWithLabel("Value:").setText("11+j2");
-		bot.button("OK").click();
+		editorBot.button("Add...").click();
+		shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("1");
+		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("11");
+		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("11+j2");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1", false);
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "1+j1ada", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1+j1ada", false);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "11", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "11", false);
 		assertFormValid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "11+j2", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "11+j2", false);
 		assertFormValid();
-		bot.button("Add...").click();
-		bot.textWithLabel("Value:").setText("11");
-		Assert.assertTrue("OK should be enabled", bot.button("OK").isEnabled());
-		bot.textWithLabel("Value:").setText("11+j2");
-		bot.button("OK").click();
+		editorBot.button("Add...").click();
+		shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("11");
+		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("11+j2");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
 		clearValues();
 
 		setType("objref", "");
-		bot.button("Add...").click();
-		bot.textWithLabel("Value:").setText("1");
-		Assert.assertFalse("OK should not be enabled", bot.button("OK").isEnabled());
-		bot.button("Cancel").click();
+		editorBot.button("Add...").click();
+		shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("1");
+		Assert.assertFalse("OK should not be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().button("Cancel").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
 		clearValues();
 
 		setType("string", "");
-		addValue(bot, "abcd");
+		addValue(editorBot, "abcd");
 		assertFormValid();
-		addValue(bot, "efg");
+		addValue(editorBot, "efg");
 		assertFormValid();
 		clearValues();
 	}
 
 	private void setType(String type, String complex) {
-		bot.comboBoxWithLabel("Type*:").setSelection(type);
-		bot.comboBoxWithLabel("Type*:", 1).setSelection(complex);
+		editorBot.comboBoxWithLabel("Type*:").setSelection(type);
+		editorBot.comboBoxWithLabel("Type*:", 1).setSelection(complex);
 	}
 
-	private void addValue(SWTWorkbenchBot bot, String text) {
+	private void addValue(SWTBot bot, String text) {
 		final int startingRows = bot.table().rowCount();
 		bot.button("Add...").click();
 		SWTBotShell shell = bot.shell("New Value");
@@ -232,13 +256,13 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 	}
 
 	private void clearValues() {
-		SWTBotTable valuesTable = bot.tableWithLabel("Values:");
+		SWTBotTable valuesTable = editorBot.tableWithLabel("Values:");
 		if (valuesTable.rowCount() > 0) {
 			for (int i = 0; i <= valuesTable.rowCount(); i++) {
 				valuesTable.select(0);
-				SWTBotButton removeButton = bot.button("Remove", 1);
+				SWTBotButton removeButton = editorBot.button("Remove", 1);
 				if (removeButton.isEnabled()) {
-					bot.button("Remove", 1).click();
+					editorBot.button("Remove", 1).click();
 				} else {
 					break;
 				}
@@ -248,7 +272,7 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 
 	@Override
 	protected void createType() {
-		bot.button("Add Sequence").click();
+		editorBot.button("Add Sequence").click();
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
+import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.junit.Before;
 import org.osgi.framework.FrameworkUtil;
 
@@ -33,6 +34,7 @@ import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 public abstract class AbstractPropertyTabTest extends UITest {
 
 	protected SWTBotEditor editor; // SUPPRESS CHECKSTYLE SWTBot variable
+	protected SWTBot editorBot; // SUPPRESS CHECKSTYLE SWTBot variable
 
 	@Before
 	public void before() throws Exception {
@@ -41,12 +43,13 @@ public abstract class AbstractPropertyTabTest extends UITest {
 		StandardTestActions.importProject(FrameworkUtil.getBundle(AbstractPropertyTabTest.class), new Path("workspace/PropTest_Comp"), null);
 		ProjectExplorerUtils.openProjectInEditor(bot, "PropTest_Comp", "PropTest_Comp.spd.xml");
 		editor = bot.editorByTitle("PropTest_Comp");
+		editorBot = editor.bot();
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PROPERTIES_TAB);
 	}
 
 	protected Properties getModelFromXml() throws IOException {
 		DiagramTestUtils.openTabInEditor(editor, "PropTest_Comp.prf.xml");
-		String text = editor.bot().styledText().getText();
+		String text = editorBot.styledText().getText();
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PROPERTIES_TAB);
 
 		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();

@@ -13,14 +13,13 @@ package gov.redhawk.ide.ui.tests.prf;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.junit.Test;
 
 public class SimplePropertyTest extends AbstractPropertyTest {
 
 	@Override
 	protected void createType() {
-		bot.button("Add Simple").click();
+		editorBot.button("Add Simple").click();
 	}
 
 	@Test
@@ -34,10 +33,9 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 	}
 
 	protected void testValue(String valueLabel) throws CoreException {
-		SWTBot editorBot = editor.bot();
 		editorBot.textWithLabel(valueLabel).setText("stringValue");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("\"\"");
+		editorBot.textWithLabel(valueLabel).setText("\"\"");
 		assertFormValid();
 
 		editorBot.textWithLabel(valueLabel).setText("");
@@ -45,188 +43,188 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 
 		setType("boolean", "complex");
 		assertFormInvalid();
-		bot.comboBox(1).setSelection("");
-		bot.textWithLabel(valueLabel).setText("true");
+		editorBot.comboBox(1).setSelection("");
+		editorBot.textWithLabel(valueLabel).setText("true");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("badValue");
+		editorBot.textWithLabel(valueLabel).setText("badValue");
 		assertFormInvalid();
 		editorBot.textWithLabel(valueLabel).setText("");
 		assertFormValid();
 
 		setType("char", "");
-		bot.textWithLabel(valueLabel).setText("1");
-		bot.textWithLabel(valueLabel).setText("badValue");
+		editorBot.textWithLabel(valueLabel).setText("1");
+		editorBot.textWithLabel(valueLabel).setText("badValue");
 		assertFormInvalid();
 		editorBot.textWithLabel(valueLabel).setText("");
 		assertFormValid();
 
 		setType("double (64-bit)", "real");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
 		assertFormInvalid();
-		bot.comboBox(1).setSelection("complex");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.comboBox(1).setSelection("complex");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("");
-		bot.comboBox(1).setSelection("");
+		editorBot.textWithLabel(valueLabel).setText("");
+		editorBot.comboBox(1).setSelection("");
 		assertFormValid();
 
 		setType("float (32-bit)", "real");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
 		assertFormInvalid();
-		bot.comboBox(1).setSelection("complex");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.comboBox(1).setSelection("complex");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("");
-		bot.comboBox(1).setSelection("");
+		editorBot.textWithLabel(valueLabel).setText("");
+		editorBot.comboBox(1).setSelection("");
 		assertFormValid();
 
 		setType("longlong (64-bit)", "real");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1");
+		editorBot.textWithLabel(valueLabel).setText("-1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1+j1");
+		editorBot.textWithLabel(valueLabel).setText("-1+j1");
 		assertFormInvalid();
-		bot.comboBox(1).setSelection("complex");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.comboBox(1).setSelection("complex");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1");
+		editorBot.textWithLabel(valueLabel).setText("-1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1+j1");
+		editorBot.textWithLabel(valueLabel).setText("-1+j1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("");
-		bot.comboBox(1).setSelection("");
+		editorBot.textWithLabel(valueLabel).setText("");
+		editorBot.comboBox(1).setSelection("");
 		assertFormValid();
 
 		setType("long (32-bit)", "real");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1");
+		editorBot.textWithLabel(valueLabel).setText("-1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1+j1");
+		editorBot.textWithLabel(valueLabel).setText("-1+j1");
 		assertFormInvalid();
-		bot.comboBox(1).setSelection("complex");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.comboBox(1).setSelection("complex");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1");
+		editorBot.textWithLabel(valueLabel).setText("-1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1+j1");
+		editorBot.textWithLabel(valueLabel).setText("-1+j1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("");
-		bot.comboBox(1).setSelection("");
+		editorBot.textWithLabel(valueLabel).setText("");
+		editorBot.comboBox(1).setSelection("");
 		assertFormValid();
 
 		setType("short (16-bit)", "real");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1");
+		editorBot.textWithLabel(valueLabel).setText("-1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1+j1");
+		editorBot.textWithLabel(valueLabel).setText("-1+j1");
 		assertFormInvalid();
-		bot.comboBox(1).setSelection("complex");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.comboBox(1).setSelection("complex");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1");
+		editorBot.textWithLabel(valueLabel).setText("-1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1+j1");
+		editorBot.textWithLabel(valueLabel).setText("-1+j1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("");
-		bot.comboBox(1).setSelection("");
+		editorBot.textWithLabel(valueLabel).setText("");
+		editorBot.comboBox(1).setSelection("");
 		assertFormValid();
 
 		setType("ulong (32-bit)", "real");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1");
+		editorBot.textWithLabel(valueLabel).setText("-1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("1");
+		editorBot.textWithLabel(valueLabel).setText("1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("1+j1");
+		editorBot.textWithLabel(valueLabel).setText("1+j1");
 		assertFormInvalid();
-		bot.comboBox(1).setSelection("complex");
-		bot.textWithLabel(valueLabel).setText("1.1");
+		editorBot.comboBox(1).setSelection("complex");
+		editorBot.textWithLabel(valueLabel).setText("1.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("1");
+		editorBot.textWithLabel(valueLabel).setText("1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("1.1+j10.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("1+j1");
+		editorBot.textWithLabel(valueLabel).setText("1+j1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("");
-		bot.comboBox(1).setSelection("");
+		editorBot.textWithLabel(valueLabel).setText("");
+		editorBot.comboBox(1).setSelection("");
 		assertFormValid();
 
 		setType("ulonglong (64-bit)", "real");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1");
+		editorBot.textWithLabel(valueLabel).setText("-1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("1");
+		editorBot.textWithLabel(valueLabel).setText("1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("1+j1");
+		editorBot.textWithLabel(valueLabel).setText("1+j1");
 		assertFormInvalid();
-		bot.comboBox(1).setSelection("complex");
-		bot.textWithLabel(valueLabel).setText("1.1");
+		editorBot.comboBox(1).setSelection("complex");
+		editorBot.textWithLabel(valueLabel).setText("1.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("1");
+		editorBot.textWithLabel(valueLabel).setText("1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("1.1+j10.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("1+j1");
+		editorBot.textWithLabel(valueLabel).setText("1+j1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("");
-		bot.comboBox(1).setSelection("");
+		editorBot.textWithLabel(valueLabel).setText("");
+		editorBot.comboBox(1).setSelection("");
 		assertFormValid();
 
 		setType("ushort (16-bit)", "real");
-		bot.textWithLabel(valueLabel).setText("-1.1");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("-1");
+		editorBot.textWithLabel(valueLabel).setText("-1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("1");
+		editorBot.textWithLabel(valueLabel).setText("1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("1+j1");
+		editorBot.textWithLabel(valueLabel).setText("1+j1");
 		assertFormInvalid();
-		bot.comboBox(1).setSelection("complex");
-		bot.textWithLabel(valueLabel).setText("1.1");
+		editorBot.comboBox(1).setSelection("complex");
+		editorBot.textWithLabel(valueLabel).setText("1.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("1");
+		editorBot.textWithLabel(valueLabel).setText("1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("1.1+j10.1");
+		editorBot.textWithLabel(valueLabel).setText("1.1+j10.1");
 		assertFormInvalid();
-		bot.textWithLabel(valueLabel).setText("1+j1");
+		editorBot.textWithLabel(valueLabel).setText("1+j1");
 		assertFormValid();
-		bot.textWithLabel(valueLabel).setText("");
-		bot.comboBox(1).setSelection("");
+		editorBot.textWithLabel(valueLabel).setText("");
+		editorBot.comboBox(1).setSelection("");
 		assertFormValid();
 
 		setType("objref", "complex");
-		bot.textWithLabel(valueLabel).setText("1");
+		editorBot.textWithLabel(valueLabel).setText("1");
 		assertFormInvalid();
 	}
 
 	private void setType(String type, String complex) {
-		bot.comboBox().setSelection(type);
-		bot.comboBox(1).setSelection(complex);
+		editorBot.comboBox().setSelection(type);
+		editorBot.comboBox(1).setSelection(complex);
 	}
 }

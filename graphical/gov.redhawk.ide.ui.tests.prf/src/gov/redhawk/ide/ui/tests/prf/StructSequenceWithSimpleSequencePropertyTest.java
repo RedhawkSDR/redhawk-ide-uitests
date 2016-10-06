@@ -29,39 +29,39 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 	@Override
 	public void before() throws Exception {
 		super.before();
-		editor.bot().sleep(600);
+		editorBot.sleep(600);
 
-		SWTBotTree tree = editor.bot().tree();
+		SWTBotTree tree = editorBot.tree();
 		tree.expandNode("ID").select("Struct");
-		editor.bot().textWithLabel("ID*:").setText("Struct");
-		editor.bot().sleep(600);
+		editorBot.textWithLabel("ID*:").setText("Struct");
+		editorBot.sleep(600);
 
 		tree.expandNode("ID", "Struct").select("Simple");
-		bot.button("Remove").click();
+		editorBot.button("Remove").click();
 
 		tree.getTreeItem("ID").getNode("Struct").select().contextMenu("New").menu("Simple Sequence").click();
 		tree.expandNode("ID", "Struct").select("Simple Sequence");
-		editor.bot().textWithLabel("ID*:").setText("Simple Sequence");
-		editor.bot().sleep(600);
+		editorBot.textWithLabel("ID*:").setText("Simple Sequence");
+		editorBot.sleep(600);
 
 		selectStructSequence();
 	}
 
 	@Override
 	protected void createType() {
-		editor.bot().button("Add StructSeq").click();
+		editorBot.button("Add StructSeq").click();
 	}
 
 	protected void selectStructSequence() {
-		editor.bot().tree().select("ID");
+		editorBot.tree().select("ID");
 	}
 
 	protected void selectStruct() {
-		editor.bot().tree().getTreeItem("ID").select("Struct");
+		editorBot.tree().getTreeItem("ID").select("Struct");
 	}
 
 	protected void selectSimpleSequence() {
-		editor.bot().tree().expandNode("ID", "Struct").select("Simple Sequence");
+		editorBot.tree().expandNode("ID", "Struct").select("Simple Sequence");
 	}
 
 	@Test
@@ -123,13 +123,13 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 
 	@Test
 	public void testStructValue() {
-		SWTBotTree structValueTable = editor.bot().treeWithLabel("StructValue:");
-		editor.bot().button("Add...").click();
+		SWTBotTree structValueTable = editorBot.treeWithLabel("StructValue:");
+		editorBot.button("Add...").click();
 		SWTBotTreeItem item = structValueTable.getTreeItem("Struct[0]");
 		item.expand();
 		SWTBotTreeItem subItem = item.getNode("Simple Sequence");
 
-		editor.bot().button("Add...").click();
+		editorBot.button("Add...").click();
 		SWTBotTreeItem item1 = structValueTable.getTreeItem("Struct[1]");
 		item1.expand();
 		SWTBotTreeItem subItem1 = item1.getNode("Simple Sequence");
@@ -139,37 +139,37 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 
 		SWTBotShell shell = bot.shell("Values");
 		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "hello", false);
-		assertValuesDialogState(bot, new String[] { "hello" }, false, false, true);
+		assertValuesDialogState(shell.bot(), new String[] { "hello" }, false, false, true);
 
 		shell.bot().button("Add").click();
 		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 1, 0, "world", false);
-		assertValuesDialogState(bot, new String[] { "hello", "world" }, true, false, true);
+		assertValuesDialogState(shell.bot(), new String[] { "hello", "world" }, true, false, true);
 
 		shell.bot().table().select(0);
-		assertValuesDialogState(bot, new String[] { "hello", "world" }, false, true, true);
+		assertValuesDialogState(shell.bot(), new String[] { "hello", "world" }, false, true, true);
 
 		shell.bot().button("Down").click();
-		assertValuesDialogState(bot, new String[] { "world", "hello" }, true, false, true);
+		assertValuesDialogState(shell.bot(), new String[] { "world", "hello" }, true, false, true);
 
 		shell.bot().button("Up").click();
-		assertValuesDialogState(bot, new String[] { "hello", "world" }, false, true, true);
+		assertValuesDialogState(shell.bot(), new String[] { "hello", "world" }, false, true, true);
 
 		shell.bot().button("Remove").click();
-		assertValuesDialogState(bot, new String[] { "world" }, false, false, false);
+		assertValuesDialogState(shell.bot(), new String[] { "world" }, false, false, false);
 
 		shell.bot().button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
 
 		item1.select();
-		editor.bot().button("Remove", 1).click();
+		editorBot.button("Remove", 1).click();
 
 		selectSimpleSequence();
-		editor.bot().comboBoxWithLabel("Type*:").setSelection("double (64-bit)");
+		editorBot.comboBoxWithLabel("Type*:").setSelection("double (64-bit)");
 		assertFormInvalid();
 		selectStructSequence();
 
-		structValueTable = editor.bot().treeWithLabel("StructValue:");
+		structValueTable = editorBot.treeWithLabel("StructValue:");
 		item = structValueTable.getTreeItem("Struct[0]");
 		item.expand();
 		subItem = item.getNode("Simple Sequence");
