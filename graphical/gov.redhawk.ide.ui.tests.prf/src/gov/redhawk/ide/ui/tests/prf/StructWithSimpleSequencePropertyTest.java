@@ -101,7 +101,7 @@ public class StructWithSimpleSequencePropertyTest extends SimpleSequenceProperty
 	 */
 	@Test
 	public void testKind() throws IOException {
-		testKind(false);
+		testKind(false, true);
 	}
 
 	@Test

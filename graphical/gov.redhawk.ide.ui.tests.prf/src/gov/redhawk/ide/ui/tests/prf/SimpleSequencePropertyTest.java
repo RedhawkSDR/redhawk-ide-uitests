@@ -260,6 +260,6 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 	public void testKind() throws IOException {
 		assertFormValid();
 
-		testKind(false);
+		testKind(false, false);
 	}
 }

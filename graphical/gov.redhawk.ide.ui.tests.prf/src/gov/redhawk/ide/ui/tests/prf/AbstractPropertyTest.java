@@ -142,7 +142,7 @@ public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 		assertFormValid();
 	}
 
-	protected void testKind(boolean supportsExec) throws IOException {
+	protected void testKind(boolean supportsExec, boolean supportsMessage) throws IOException {
 		assertFormValid();
 
 		SWTBotCombo kindCombo = editor.bot().comboBoxWithLabel("Kind:");
@@ -161,11 +161,11 @@ public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 				Assert.assertTrue(((Simple) prop).isCommandLine());
 			}
 
-			kindCombo.setSelection("message");
+			kindCombo.setSelection("allocation");
 			Assert.assertFalse(checkBox.isEnabled());
 			Assert.assertFalse(checkBox.isChecked());
 			prop = getModelFromXml().getProperty("ID");
-			assertKind(prop, PropertyConfigurationType.MESSAGE);
+			assertKind(prop, PropertyConfigurationType.ALLOCATION);
 			if (prop instanceof Simple) {
 				Boolean commandLine = ((Simple) prop).getCommandline();
 				Assert.assertTrue(commandLine == null || commandLine == false);
@@ -188,9 +188,11 @@ public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 		assertFormValid();
 		assertKind(getModelFromXml().getProperty("ID"), PropertyConfigurationType.ALLOCATION);
 
-		kindCombo.setSelection("message");
-		assertFormValid();
-		assertKind(getModelFromXml().getProperty("ID"), PropertyConfigurationType.MESSAGE);
+		if (supportsMessage) {
+			kindCombo.setSelection("message");
+			assertFormValid();
+			assertKind(getModelFromXml().getProperty("ID"), PropertyConfigurationType.MESSAGE);
+		}
 	}
 
 	private void assertKind(AbstractProperty prop, PropertyConfigurationType type) {

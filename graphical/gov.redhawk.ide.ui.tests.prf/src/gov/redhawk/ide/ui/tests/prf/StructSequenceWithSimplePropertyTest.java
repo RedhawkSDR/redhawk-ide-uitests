@@ -155,7 +155,7 @@ public class StructSequenceWithSimplePropertyTest extends SimplePropertyTest {
 	 */
 	@Test
 	public void testKind() throws IOException {
-		testKind(false);
+		testKind(false, false);
 	}
 
 	@Override

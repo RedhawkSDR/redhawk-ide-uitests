@@ -203,7 +203,7 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 	 */
 	@Test
 	public void testKind() throws IOException {
-		testKind(false);
+		testKind(false, false);
 	}
 
 	@Override

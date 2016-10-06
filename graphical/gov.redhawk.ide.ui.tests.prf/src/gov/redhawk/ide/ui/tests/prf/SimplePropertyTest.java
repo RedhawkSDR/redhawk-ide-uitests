@@ -25,7 +25,7 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 
 	@Test
 	public void testKind() throws IOException {
-		testKind(true);
+		testKind(true, false);
 	}
 
 	@Test

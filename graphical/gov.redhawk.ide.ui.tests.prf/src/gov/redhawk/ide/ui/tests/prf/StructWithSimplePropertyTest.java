@@ -104,7 +104,7 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 	 */
 	@Test
 	public void testKind() throws IOException {
-		testKind(false);
+		testKind(false, true);
 	}
 
 	@Test
