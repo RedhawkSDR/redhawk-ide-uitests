@@ -65,8 +65,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		// Add component to the host collocation
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 20, 20);
 
-		MenuUtils.save(editor);
-
 		// Check pictogram elements
 		SWTBotGefEditPart hostCoEditPart = editor.getEditPart(HOST_CO_NAME);
 		Assert.assertNotNull(hostCoEditPart);
@@ -103,7 +101,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Add component to the host collocation
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 20, 20);
-		MenuUtils.save(editor);
 
 		// Store host collocation and component relative location
 		ContainerShape hostCoShape = DiagramTestUtils.getHostCollocationShape(editor, HOST_CO_NAME);
@@ -145,8 +142,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 20, 20);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
 
-		MenuUtils.save(editor);
-
 		// Check that component was added
 		HostCollocation hostCo = DiagramTestUtils.getHostCollocationObject(editor, HOST_CO_NAME);
 		Assert.assertNotNull("Host collocation must not be null", hostCo);
@@ -158,7 +153,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Drag component outside of host collocation and confirm that it was removed
 		editor.drag(editor.getEditPart(HARD_LIMIT_1), 350, 0);
-		MenuUtils.save(editor);
 		hostCo = DiagramTestUtils.getHostCollocationObject(editor, HOST_CO_NAME);
 		Assert.assertTrue("Number of components should be 1, instead there are " + hostCo.getComponentPlacement().size(),
 			hostCo.getComponentPlacement().size() == 1);
@@ -185,8 +179,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		// Add component to the host collocation
 		editor.setFocus();
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 20, 20);
-
-		MenuUtils.save(editor);
 
 		// Check pictogram elements
 		SWTBotGefEditPart hostCoEditPart = editor.getEditPart(HOST_CO_NAME);
@@ -242,8 +234,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		// Add component to the host collocation
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 20, 20);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
-
-		MenuUtils.save(editor);
 
 		// Check that component was added
 		HostCollocation hostCo = DiagramTestUtils.getHostCollocationObject(editor, HOST_CO_NAME);
@@ -361,7 +351,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	private void assertShapeLocationAndNumber(SWTBotGefEditor editor, ContainerShape shape1, int shape1X, int shape1Y, // SUPPRESS CHECKSTYLE INLINE
 		ContainerShape shape2, int shape2X, int shape2Y, HostCollocation hostCo, String hostCoName, int numContainedShapes) {
 
-		MenuUtils.save(editor);
 		hostCo = DiagramTestUtils.getHostCollocationObject(editor, hostCoName);
 
 		// Test how many components are contained in the host collocation bounds
@@ -538,7 +527,6 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 		// Add component to the host collocation
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
-		MenuUtils.save(editor);
 
 		ContainerShape collocationShape = DiagramTestUtils.getHostCollocationShape(editor, HOST_CO_NAME);
 		Text nameText = DiagramTestUtils.getHostCollocationText(collocationShape);
