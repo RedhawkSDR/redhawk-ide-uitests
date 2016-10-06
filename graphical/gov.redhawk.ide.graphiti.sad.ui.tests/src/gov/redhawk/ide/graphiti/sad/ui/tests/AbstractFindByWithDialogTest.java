@@ -80,6 +80,7 @@ public abstract class AbstractFindByWithDialogTest extends AbstractFindByTest {
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		editor = gefBot.rhGefEditor(waveformName);
 
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0); // Assembly controller
 		DiagramTestUtils.addFromPaletteToDiagram(editor, getFindByType(), 0, 150);
 		FindByUtils.completeFindByWizard(gefBot, getFindByType(), getFindByName(), PROVIDES_PORTS, USES_PORTS);
 
