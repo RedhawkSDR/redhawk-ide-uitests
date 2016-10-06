@@ -33,13 +33,11 @@ public class PropertyKindTest extends UITest {
 	private final String compLanguage = "Python";
 	private final String compSpd = compName + ".spd.xml";
 	private final String compPrf = compName + ".prf.xml";
-	private final String[] buttons = new String[] { "Add Simple", "Add Sequence", "Add Struct", "Add StructSeq" };
 
 	/**
 	 * Ensure 'configure' and 'execparam' are present only when there are deprecated properties. Also check that the
 	 * default new property kind is 'property'.
-	 * 
-	 * IDE-1676 - Filter message property kind for non-struct properties
+	 * IDE-1676 - Filter 'message' property kind for non-struct properties
 	 */
 	@Test
 	public void checkAvailableKinds() {
@@ -48,10 +46,14 @@ public class PropertyKindTest extends UITest {
 
 		// Ensure 'configure' and 'execparam' aren't in the list when adding a property
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PROPERTIES_TAB);
-		for (String buttonText : buttons) {
+		for (String buttonText : new String[] { "Add Simple", "Add Sequence", "Add Struct", "Add StructSeq" }) {
 			editor.bot().button(buttonText).click();
 			SWTBotCombo combo = editor.bot().comboBoxWithLabel("Kind:");
+
+			// Property should be of kind 'property'
 			Assert.assertTrue(String.format("After clicking %s, expected a new property of kind 'property'", buttonText), combo.getText().contains("property"));
+
+			// Assert configure, execparam, message are no present
 			for (String item : combo.items()) {
 				if (item.contains("configure")) {
 					Assert.fail(String.format("After clicking %s, found configure in the list of combo items", buttonText));
@@ -59,8 +61,8 @@ public class PropertyKindTest extends UITest {
 				if (item.contains("execparam")) {
 					Assert.fail(String.format("After clicking %s, found execparam in the list of combo items", buttonText));
 				}
-				if (!"Add Struct".equals(buttonText) && item.contains("message")) {
-					Assert.fail(String.format("After clicking %s, found execparam in the list of combo items", buttonText));
+				if (item.contains("message") && !"Add Struct".equals(buttonText)) {
+					Assert.fail(String.format("After clicking %s, found message in the list of combo items", buttonText));
 				}
 			}
 		}
