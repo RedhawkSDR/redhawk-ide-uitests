@@ -32,7 +32,7 @@ public class DeviceLaunchingTest extends ResourceLaunchingAbstractTest {
 	@Override
 	protected RHBotGefEditor openDiagram() {
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, new String[] { "Sandbox" }, "Device Manager", DiagramType.GRAPHITI_CHALKBOARD);
-		return new RHSWTGefBot().rhGefEditor("Device Manager Chalkboard");
+		return new RHSWTGefBot().rhGefEditor("Device Manager");
 	}
 
 }
