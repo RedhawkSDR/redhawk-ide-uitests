@@ -10,6 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceDialog;
@@ -19,12 +20,12 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.core.graphiti.ui.internal.preferences.GraphitiPreferencesNLS;
 import gov.redhawk.core.graphiti.ui.preferences.DiagramPreferenceConstants;
-import gov.redhawk.ide.graphiti.ui.GraphitiUIPlugin;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 
 public class PortStatsPrefPageTest extends AbstractGraphitiTest {
@@ -79,7 +80,7 @@ public class PortStatsPrefPageTest extends AbstractGraphitiTest {
 
 		// RESTORE DEFUALTS
 		defaultButton.click();
-		IPreferenceStore store = GraphitiUIPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store = new ScopedPreferenceStore(InstanceScope.INSTANCE, "gov.redhawk.core.graphiti.ui");
 		Assert.assertNull("No error message should be present", getErrorMessage(prefShell));
 		Assert.assertTrue("Default value not reset for " + queueLevelText,
 			store.getDefaultDouble(DiagramPreferenceConstants.PREF_PORT_STATISTICS_QUEUE_LEVEL) == Double.valueOf(queueLevelText.getText()));
