@@ -17,9 +17,13 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
+import org.eclipse.swtbot.swt.finder.results.Result;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
@@ -30,6 +34,7 @@ import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.model.sca.ScaFileStore;
 
 public class FileManagerTest extends UIRuntimeTest {
 
@@ -40,7 +45,7 @@ public class FileManagerTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void showErrorDetails() throws CoreException {
-		// Create a read-only directory in the SDRROOT
+		// Create an unreadable directory in the SDRROOT
 		IFileStore readOnlyDirectory = EFS.getStore(URI.create("sdrdom:/readonly"));
 		readOnlyDirectory.mkdir(EFS.NONE, null);
 		addSdrDomCleanupPath(new Path("/readonly"));
@@ -61,13 +66,38 @@ public class FileManagerTest extends UIRuntimeTest {
 		propertiesView.show();
 
 		// Browse to the directory, try to expand it to trigger an error
-		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { domainName, "File Manager" }, "readonly");
+		final SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { domainName, "File Manager" }, "readonly");
 		treeItem.expand();
+
+		// Wait for the directory fetch to error
+		bot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				Object data =  UIThreadRunnable.syncExec(treeItem.display, new Result<Object>() {
+
+					@Override
+					public Object run() {
+						return treeItem.widget.getData();
+					}
+				});
+				if (data instanceof ScaFileStore) {
+					IStatus status = ((ScaFileStore) data).getStatus();
+					return status != null && !status.isOK();
+				}
+				return false;
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "File exception did not occur";
+			}
+		});
 
 		// Select the directory, bring up the status details from the properties view
 		treeItem.select();
 		SWTBotTreeItem statusItem = StandardTestActions.waitForTreeItemToAppear(propertiesView.bot(), propertiesView.bot().tree(), Arrays.asList("Status"));
-		statusItem.click();
+		statusItem.click(0);
 		propertiesView.bot().button("Details").click();
 
 		// Wait for details dialog, then close
