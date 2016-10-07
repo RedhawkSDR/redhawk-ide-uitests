@@ -80,8 +80,8 @@ public abstract class ResourceLaunchingAbstractTest extends UIRuntimeTest {
 	}
 
 	/**
-	 * IDE-1384
-	 * Ensure some context menus are disabled while the resource is starting up
+	 * IDE-1384 Show resources as disabled/gray while they're launching
+	 * Ensure some context menus are not present / disabled while the resource is starting up
 	 */
 	@Test
 	public void contextMenusDisableDuringStartup() {
@@ -98,9 +98,12 @@ public abstract class ResourceLaunchingAbstractTest extends UIRuntimeTest {
 		DiagramTestUtils.releaseFromDiagram(editor, editPart);
 		waitForAssertionInLog();
 
-		assertionError = false;
-		DiagramTestUtils.startComponentFromDiagram(editor, slowComp.getShortName(1));
-		waitForAssertionInLog();
+		try {
+			DiagramTestUtils.startComponentFromDiagram(editor, slowComp.getShortName(1));
+			Assert.fail();
+		} catch (WidgetNotFoundException ex) {
+			// PASS
+		}
 
 		try {
 			DiagramTestUtils.changeLogLevelFromDiagram(editor, slowComp.getShortName(1), LogLevels.DEBUG);
