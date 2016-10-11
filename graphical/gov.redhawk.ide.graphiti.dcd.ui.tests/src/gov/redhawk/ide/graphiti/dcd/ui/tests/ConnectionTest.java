@@ -12,9 +12,11 @@ package gov.redhawk.ide.graphiti.dcd.ui.tests;
 
 import java.util.List;
 
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.junit.Assert;
@@ -27,7 +29,10 @@ import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.ConnectionUtils;
 import gov.redhawk.ide.swtbot.diagram.ConnectionUtils.ConnectionState;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.PortUtils;
+import gov.redhawk.ide.swtbot.diagram.PortUtils.PortState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.RHTestBotCanvas;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
@@ -190,4 +195,49 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		ConnectionUtils.assertConnectionStyling(connections.get(0), ConnectionState.ERROR);
 	}
 
+	/**
+	 * IDE-1388
+	 * Test the compatible port highlight behavior
+	 */
+	@Test
+	public void highlightTest() {
+		projectName = "HighlightTestNode";
+		String deviceStubUses = "dataFloat_out";
+		String deviceStubProvides = "dataFloat_in";
+
+		NodeUtils.createNewNodeProject(bot, projectName, DOMAIN_NAME);
+
+		// Add DeviceStub to the diagram from the palette
+		editor = gefBot.rhGefEditor(projectName);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 10, 10);
+		SWTBotGefEditPart usesPort = DiagramTestUtils.getDiagramUsesPort(editor, DEVICE_STUB, deviceStubUses).children().get(0);
+		usesPort.select();
+
+		// Mouse down on target port (direct mouse event)
+		RHTestBotCanvas canvas = editor.getDragViewer().getCanvas();
+		Point point = DiagramTestUtils.getDiagramRelativeCenter(usesPort);
+		canvas.mouseDown(point.x(), point.y());
+
+		// Check the corresponding provides port for color change - (it's actually the anchor that changes color)
+		SWTBotGefEditPart deviceStubEditPart = editor.getEditPart(DEVICE_STUB);
+		List<SWTBotGefEditPart> providesPorts = PortUtils.getProvidesPortContainerBots(deviceStubEditPart);
+
+		for (SWTBotGefEditPart providesPort : providesPorts) {
+			ContainerShape shape = (ContainerShape) providesPort.part().getModel();
+			ProvidesPortStub portStub = (ProvidesPortStub) Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(shape);
+			if (deviceStubProvides.equals(portStub.getName())) {
+				PortUtils.assertPortStyling(providesPort, PortState.HIGHLIGHT_FOR_CONNECTION);
+			} else {
+				PortUtils.assertPortStyling(providesPort, PortState.NORMAL_PROVIDES);
+			}
+		}
+
+		// Mouse up on target port
+		canvas.mouseUp(point.x(), point.y());
+
+		// Confirm ports return to default color
+		for (SWTBotGefEditPart providesPort : providesPorts) {
+			PortUtils.assertPortStyling(providesPort, PortState.NORMAL_PROVIDES);
+		}
+	}
 }
