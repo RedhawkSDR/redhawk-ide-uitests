@@ -13,6 +13,7 @@ package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.junit.Assert;
@@ -24,6 +25,7 @@ import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.ScaDevice;
 import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
 
@@ -95,6 +97,26 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 	}
 
 	/**
+	 * IDE-1562 - shutdown Sandbox Device Manager
+	 * When performing 'shutdown' on the local device manager, all contained devices should be released
+	 */
+	@Test
+	public void shutdownSandboxDeviceManager() {
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
+
+		// Add device to diagram from palette
+		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
+		assertGPP(editor.getEditPart(GPP));
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP, ComponentState.STARTED);
+
+		SWTBotTreeItem devMgrTreeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox" }, "Device Manager");
+		devMgrTreeItem.contextMenu("Shutdown").click();
+
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, GPP_1);
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Device Manager" }, "GPP_1 STARTED");
+	}
+
+	/**
 	 * Private helper method for {@link #checkNodePictogramElements()} Asserts the given SWTBotGefEditPart is a GPP
 	 * device and is drawn correctly
 	 * @param gefEditPart
@@ -105,6 +127,7 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 		DeviceShape deviceShape = (DeviceShape) gefEditPart.part().getModel();
 
 		// Grab the associated business object and confirm it is a DcdComponentInstantiation
+		@SuppressWarnings("restriction")
 		Object bo = DUtil.getBusinessObject(deviceShape);
 		Assert.assertTrue("business object should be of type DcdComponentInstantiation", bo instanceof DcdComponentInstantiation);
 		DcdComponentInstantiation ci = (DcdComponentInstantiation) bo;
