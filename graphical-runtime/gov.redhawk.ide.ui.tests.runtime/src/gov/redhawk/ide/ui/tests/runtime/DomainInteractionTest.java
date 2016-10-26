@@ -12,14 +12,12 @@ package gov.redhawk.ide.ui.tests.runtime;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.ide.sdr.ui.internal.handlers.LaunchDomainManagerWithOptionsDialog;
@@ -28,21 +26,6 @@ import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class DomainInteractionTest extends AbstractDomainRuntimeTest {
-
-	private SWTBotView explorerView;
-	private SWTBot viewBot;
-
-	@Before
-	public void before() throws Exception {
-		super.before();
-
-		StandardTestActions.cleanUpLaunches();
-		StandardTestActions.cleanUpConnections();
-
-		explorerView = bot.viewById(ScaExplorerTestUtils.SCA_EXPLORER_VIEW_ID);
-		explorerView.show();
-		viewBot = explorerView.bot();
-	}
 
 	@AfterClass
 	public static void afterClassCleanup() throws Exception {
@@ -120,7 +103,7 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 
 		launchViaNewDomainWizard(DOMAIN_NAME_1, new String[0]);
 
-		StandardTestActions.viewToolbarWithToolTip(explorerView, "New Domain Connection").click();
+		StandardTestActions.viewToolbarWithToolTip(getExplorerView(), "New Domain Connection").click();
 		SWTBotShell shell = bot.shell("New Domain Manager");
 
 		shell.bot().textWithLabel("Display Name:").setText(DOMAIN_NAME_1);
@@ -179,7 +162,7 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		ScaExplorerTestUtils.launchDomain(bot, DOMAIN_NAME, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN_NAME);
 
-		SWTBotTreeItem treeItem = viewBot.tree().getTreeItem("Target SDR").select();
+		SWTBotTreeItem treeItem = getViewBot().tree().getTreeItem("Target SDR").select();
 		treeItem.contextMenu("Launch Domain ...").click();
 		SWTBotShell shell = bot.shell("Launch Domain Manager");
 
@@ -242,27 +225,8 @@ public class DomainInteractionTest extends AbstractDomainRuntimeTest {
 		});
 	}
 
-	private void launchViaNewDomainWizard(String domainName, String[] deviceManagers) {
-		SWTBotTreeItem treeItem = viewBot.tree().getTreeItem("Target SDR").select();
-		treeItem.contextMenu("Launch Domain ...").click();
-		SWTBotShell shell = bot.shell("Launch Domain Manager");
-
-		shell.bot().textWithLabel("Domain Name: ").setText(domainName);
-		bot.waitWhile(Conditions.treeHasRows(shell.bot().tree(), 0));
-		StandardTestActions.selectNamespacedTreeItems(viewBot, shell.bot().tree(), deviceManagers);
-		shell.bot().button("OK").click();
-		bot.waitUntil(Conditions.shellCloses(shell));
-
-		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
-		ConsoleUtils.assertConsoleTitleExists(bot, "Domain Manager " + domainName + " .*"); // IDE-1372
-		for (String deviceManager : deviceManagers) {
-			ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { domainName, "Device Managers" }, deviceManager);
-			ConsoleUtils.assertConsoleTitleExists(bot, "Device Manager " + deviceManager + " .*");
-		}
-	}
-
 	private void connectViaNewDomainWizard(String domainName, String displayName) {
-		explorerView.toolbarPushButton("New Domain Connection").click();
+		getExplorerView().toolbarPushButton("New Domain Connection").click();
 		SWTBotShell shell = bot.shell("New Domain Manager");
 
 		shell.bot().textWithLabel("Display Name:").setText(displayName);
