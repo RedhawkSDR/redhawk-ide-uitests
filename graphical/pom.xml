@@ -173,16 +173,6 @@
               </requirement>
               <requirement>
                 <type>eclipse-feature</type>
-                <id>org.eclipse.equinox.p2.user.ui</id>
-                <versionRange>0.0.0</versionRange>
-              </requirement>
-              <requirement>
-                <type>eclipse-feature</type>
-                <id>org.eclipse.equinox.p2.user.ui.source</id>
-                <versionRange>0.0.0</versionRange>
-              </requirement>
-              <requirement>
-                <type>eclipse-feature</type>
                 <id>gov.redhawk.ide.swtbot.feature</id>
                 <versionRange>0.0.0</versionRange>
               </requirement>
