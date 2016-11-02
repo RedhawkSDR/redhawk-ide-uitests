@@ -213,7 +213,6 @@
             <PYTHONPATH>${env.PYTHONPATH}</PYTHONPATH>
             <LD_LIBRARY_PATH>${env.LD_LIBRARY_PATH}</LD_LIBRARY_PATH>
             <CLASSPATH>${env.LD_LIBRARY_PATH}</CLASSPATH>
-            <JAVA_HOME>${java.home}</JAVA_HOME>
             <SDRROOT>${SDRROOT}</SDRROOT>
             <OSSIEHOME>${env.OSSIEHOME}</OSSIEHOME>
           </environmentVariables>
