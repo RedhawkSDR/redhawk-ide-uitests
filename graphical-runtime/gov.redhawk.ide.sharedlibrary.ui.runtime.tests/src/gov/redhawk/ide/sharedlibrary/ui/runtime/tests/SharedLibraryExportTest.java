@@ -76,7 +76,7 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 		bot.closeAllEditors();
 
 		// Create a waveform
-		WaveformUtils.createNewWaveform(bot, WAVEFORM_PROJ_NAME, null);
+		WaveformUtils.createNewWaveform(bot, WAVEFORM_PROJ_NAME, "rh.SigGen");
 		bot.editorByTitle(WAVEFORM_PROJ_NAME);
 		bot.closeAllEditors();
 
