@@ -104,16 +104,22 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 	public void shutdownSandboxDeviceManager() {
 		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 
-		// Add device to diagram from palette
+		// Add multiple devices to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
 		assertGPP(editor.getEditPart(GPP));
 		DiagramTestUtils.waitForComponentState(bot, editor, GPP, ComponentState.STARTED);
+
+		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 150, 150);
+		assertGPP(editor.getEditPart(GPP + "_2"));
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP + "_2", ComponentState.STARTED);
 
 		SWTBotTreeItem devMgrTreeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox" }, "Device Manager");
 		devMgrTreeItem.contextMenu("Shutdown").click();
 
 		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, GPP_1);
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, "GPP_2");
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Device Manager" }, "GPP_1 STARTED");
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Device Manager" }, "GPP_2 STARTED");
 	}
 
 	/**
