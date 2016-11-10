@@ -16,10 +16,14 @@ import java.io.IOException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.ui.forms.widgets.Section;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -107,21 +111,21 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		ProjectExplorerUtils.waitUntilNodeAppears(bot, name, baseFilename + ".spd.xml");
 
 		// Ensure SPD editor opened
-		SWTBotEditor editorBot = bot.editorByTitle(name);
-		Assert.assertEquals("gov.redhawk.ide.ui.editors.ComponentEditor", editorBot.getReference().getId());
+		SWTBotEditor editor = bot.editorByTitle(name);
+		Assert.assertEquals("gov.redhawk.ide.ui.editors.ComponentEditor", editor.getReference().getId());
 
 		// Check overview tab contents
-		Assert.assertEquals(name, editorBot.bot().textWithLabel("Name*:").getText());
+		Assert.assertEquals(name, editor.bot().textWithLabel("Name*:").getText());
 
 		// Check implementation tab contents
-		editorBot.bot().cTabItem("Implementations").activate();
-		SWTBotTreeItem[] items = editorBot.bot().tree().getAllItems();
-		Assert.assertEquals(1, editorBot.bot().tree().selectionCount());
+		editor.bot().cTabItem("Implementations").activate();
+		SWTBotTreeItem[] items = editor.bot().tree().getAllItems();
+		Assert.assertEquals(1, editor.bot().tree().selectionCount());
 		Assert.assertEquals(1, items.length);
 		Assert.assertTrue(items[0].getText().matches("customImplID.*"));
-		Assert.assertEquals("customImplID", editorBot.bot().textWithLabel("ID*:").getText());
-		Assert.assertEquals(lang, editorBot.bot().textWithLabel("Prog. Lang:").getText());
-		Assert.assertEquals("custom description", editorBot.bot().textWithLabel("Description:").getText());
+		Assert.assertEquals("customImplID", editor.bot().textWithLabel("ID*:").getText());
+		Assert.assertEquals(lang, editor.bot().textWithLabel("Prog. Lang:").getText());
+		Assert.assertEquals("custom description", editor.bot().textWithLabel("Description:").getText());
 	}
 
 	@Test
@@ -131,7 +135,44 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 
 	@Test
 	public void testCppCreation() {
-		testProjectCreation("ComponentWizardTest01", "C++", "C++ Code Generator", new StandardCodegenInfo("Pull Port Data"));
+		String projectName = "ComponentWizardTest01";
+		testProjectCreation(projectName, "C++", "C++ Code Generator", new StandardCodegenInfo("Pull Port Data"));
+		testSharedLibSettings(projectName);
+	}
+
+	// Check project localfile/entrypoint/code-type settings
+	private void testSharedLibSettings(String projectName) {
+		SWTBotEditor editor = bot.editorByTitle(projectName);
+		editor.bot().cTabItem("Implementations").activate();
+		final Section section = bot.widget(new BaseMatcher<Section>() {
+			@Override
+			public boolean matches(Object item) {
+				if (item instanceof Section) {
+					Section section = (Section) item;
+					if ("Code".equals(section.getText())) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+			@Override
+			public void describeTo(Description description) {
+				description.appendText("Of type Section");
+			}
+		});
+
+		Display.getDefault().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				section.setExpanded(true);
+			}
+		});
+
+		Assert.assertTrue(editor.bot().textWithLabel("Entry Point:").getText().matches(".*\\.so.*"));
+		Assert.assertTrue(editor.bot().textWithLabel("File*:").getText().matches(".*\\.so.*"));
+		Assert.assertEquals("SharedLibrary", editor.bot().comboBoxWithLabel("Type:").getText());
 	}
 
 	@Test
