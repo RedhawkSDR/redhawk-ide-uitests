@@ -146,6 +146,15 @@ public class EventViewTest extends AbstractDomainRuntimeTest {
 			// Check that expected properties show in the PropertiesView
 			eventItem.select();
 			SWTBotTreeItem[] propTreeItems = propView.bot().tree().getAllItems();
+			if ("MessageEvent".equals(type)) {
+				type = CF.PropertiesHelper.id();
+				List<SWTBotTreeItem> allItems = new ArrayList<SWTBotTreeItem>(Arrays.asList(propTreeItems));
+				for (SWTBotTreeItem treeItem : propTreeItems) {
+					treeItem.expand();
+					allItems.addAll(Arrays.asList(treeItem.getItems()));
+				}
+				propTreeItems = allItems.toArray(new SWTBotTreeItem[0]);
+			}
 
 			// +3 to account for Timestamp, Channel, Type generic properties
 			Assert.assertEquals("Incorrect number of properties displayed", eventProperties.size() + 3, propTreeItems.length);
@@ -163,7 +172,7 @@ public class EventViewTest extends AbstractDomainRuntimeTest {
 					Assert.assertTrue("Incorrect Event Type value", propValue.matches(".*" + type + ".*"));
 				} else {
 					// Check event specific properties
-					Assert.assertTrue("Incorrect property displayed", eventProperties.contains(propValue));
+					Assert.assertTrue(String.format("Property %s was not displayed", propValue), eventProperties.contains(propValue));
 				}
 			}
 		}
@@ -178,6 +187,7 @@ public class EventViewTest extends AbstractDomainRuntimeTest {
 		events.add(createStateChangeEvent());
 		events.add(createResourceStateChangeEvent());
 		events.add(createPropertySetChangeEvent());
+		events.add(createMessagePortEvent());
 		events.add(createAbnormalTerminationEvent());
 
 		return events;
@@ -245,23 +255,22 @@ public class EventViewTest extends AbstractDomainRuntimeTest {
 
 	private Any createPropertySetChangeEvent() throws BadKind {
 		// Assign event props
-		// TODO: What to do about Properties array?
 		Simple testSimple = PrfFactory.eINSTANCE.createSimple();
 		testSimple.setId("testSimple");
 		testSimple.setName("testSimple");
 		testSimple.setMode(AccessType.READWRITE);
 		testSimple.setType(PropertyValueType.STRING);
-		
+
 		Kind testKind = PrfFactory.eINSTANCE.createKind();
 		testKind.setType(PropertyConfigurationType.PROPERTY);
 		testSimple.getKind().add(testKind);
-		
+
 		Action testAction = PrfFactory.eINSTANCE.createAction();
 		testAction.setType(ActionType.EXTERNAL);
 		testSimple.setAction(testAction);
-		
+
 		testSimple.setValue("testValue");
-		
+
 		Struct testStruct = PrfFactory.eINSTANCE.createStruct();
 		testStruct.setId("testStruct");
 		testStruct.setName("testStruct");
@@ -270,15 +279,11 @@ public class EventViewTest extends AbstractDomainRuntimeTest {
 		configKind.setType(StructPropertyConfigurationType.PROPERTY);
 		testStruct.getConfigurationKind().add(configKind);
 		testStruct.getSimple().add(testSimple);
-		
-		CF.DataType testDataType = new CF.DataType(testStruct.getId(), testStruct.toAny()); 
-		
-		Any testAny2 = orb.create_any();
-//		testAny2.in
-		
-		String[] eventProps = { "sourceId", "sourceName", "" };
-		PropertySetChangeEventType propertySetChangeEvent = new PropertySetChangeEventType(eventProps[0], eventProps[1], new CF.DataType[]{testDataType});
-//		PropertySetChangeEventType propertySetChangeEvent = new PropertySetChangeEventType(eventProps[0], eventProps[1], new CF.DataType[0]);
+
+		CF.DataType testDataType = new CF.DataType(testStruct.getId(), testStruct.toAny());
+		String structDetailString = String.format("%s = {\n%s = %s\n}\n", testStruct.getId(), testSimple.getId(), testSimple.getValue());
+		String[] eventProps = { "sourceId", "sourceName", structDetailString };
+		PropertySetChangeEventType propertySetChangeEvent = new PropertySetChangeEventType(eventProps[0], eventProps[1], new CF.DataType[] { testDataType });
 
 		Any any = orb.create_any();
 		PropertySetChangeEventTypeHelper.insert(any, propertySetChangeEvent);
@@ -301,6 +306,29 @@ public class EventViewTest extends AbstractDomainRuntimeTest {
 		eventPropMap.put(AbnormalComponentTerminationEventTypeHelper.type().name(), Arrays.asList(eventProps));
 
 		return any;
+	}
+
+	private Any createMessagePortEvent() throws BadKind {
+		String[] eventProps = { "Hello", "World", "" };
+
+		Any value1 = orb.create_any();
+		value1.insert_string(eventProps[0]);
+		Any value2 = orb.create_any();
+		value2.insert_string(eventProps[1]);
+
+		CF.DataType[] details = { new CF.DataType("cell1", value1), new CF.DataType("cell2", value2) };
+		Any detailsAny = orb.create_any();
+		CF.PropertiesHelper.insert(detailsAny, details);
+
+		CF.DataType[] message = { new CF.DataType("testMessage", detailsAny) };
+
+		Any messageAny = orb.create_any();
+		CF.PropertiesHelper.insert(messageAny, message);
+
+		// Add the event to the eventPropMap for a later test step
+		eventPropMap.put("MessageEvent", Arrays.asList(eventProps));
+
+		return messageAny;
 	}
 
 }
