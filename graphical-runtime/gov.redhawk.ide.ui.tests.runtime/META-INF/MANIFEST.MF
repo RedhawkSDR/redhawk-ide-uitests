@@ -14,6 +14,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0",
  gov.redhawk.sca.ui,
  gov.redhawk.ide.debug,
  org.ossie,
- org.eclipse.swtbot.swt.finder
+ org.eclipse.swtbot.swt.finder,
+ gov.redhawk.logging.ui
 Bundle-Vendor: REDHAWK
 Export-Package: gov.redhawk.ide.ui.tests.runtime

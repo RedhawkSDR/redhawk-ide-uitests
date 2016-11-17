@@ -12,6 +12,7 @@ package gov.redhawk.ide.ui.tests.runtime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,8 @@ import org.omg.CORBA.TypeCodePackage.BadKind;
 import org.omg.CosEventChannelAdmin.EventChannel;
 import org.omg.CosEventComm.Disconnected;
 
+import CF.LogEvent;
+import CF.LogEventHelper;
 import CF.EventChannelManagerPackage.ChannelAlreadyExists;
 import CF.EventChannelManagerPackage.OperationFailed;
 import CF.EventChannelManagerPackage.OperationNotAllowed;
@@ -48,6 +51,7 @@ import StandardEvent.StateChangeEventType;
 import StandardEvent.StateChangeEventTypeHelper;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.logging.ui.LogLevels;
 import gov.redhawk.model.sca.ScaDomainManager;
 import gov.redhawk.model.sca.ScaDomainManagerRegistry;
 import gov.redhawk.sca.ScaPlugin;
@@ -189,8 +193,25 @@ public class EventViewTest extends AbstractDomainRuntimeTest {
 		events.add(createPropertySetChangeEvent());
 		events.add(createMessagePortEvent());
 		events.add(createAbnormalTerminationEvent());
+		events.add(createLogEvent());
 
 		return events;
+	}
+
+	private Any createLogEvent() throws BadKind {
+		long currentTime = System.currentTimeMillis();
+		Date date = new Date(currentTime);
+		LogLevels level = LogLevels.INFO;
+		String[] eventProps = { "producerId", "producerName", "producerNameFQN", date.toString(), level.getLabel(), "I am a logging message" };
+		LogEvent logEvent = new LogEvent(eventProps[0], eventProps[1], eventProps[2], currentTime, level.getLevel(), eventProps[5]);
+
+		Any any = orb.create_any();
+		LogEventHelper.insert(any, logEvent);
+
+		// Add the event to the eventPropMap for a later test step
+		eventPropMap.put(LogEventHelper.type().name(), Arrays.asList(eventProps));
+
+		return any;
 	}
 
 	private Any createDomainAddedEvent() throws BadKind {
