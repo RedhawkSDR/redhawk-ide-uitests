@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softwareassembly PUBLIC "-//JTRS//DTD SCA V2.2.2 SAD//EN" "softwareassembly.dtd">
+<softwareassembly id="DCE:9d964e85-a621-4ffd-aacc-bf1bb3e051da" name="messageEventWaveform">
+  <componentfiles>
+    <componentfile id="messageEventComponent_18f06df5-d21a-4b0e-865c-2cac5341c960" type="SPD">
+      <localfile name="/components/messageEventComponent/messageEventComponent.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="messageEventComponent_18f06df5-d21a-4b0e-865c-2cac5341c960"/>
+      <componentinstantiation id="messageEventComponent_1" startorder="0">
+        <usagename>messageEventComponent_1</usagename>
+        <findcomponent>
+          <namingservice name="messageEventComponent_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <assemblycontroller>
+    <componentinstantiationref refid="messageEventComponent_1"/>
+  </assemblycontroller>
+  <connections>
+    <connectinterface id="connection_1">
+      <usesport>
+        <usesidentifier>messageOut</usesidentifier>
+        <componentinstantiationref refid="messageEventComponent_1"/>
+      </usesport>
+      <componentsupportedinterface>
+        <supportedidentifier>IDL:ExtendedEvent/MessageEvent:1.0</supportedidentifier>
+        <findby>
+          <domainfinder name="IDM_Channel" type="eventchannel"/>
+        </findby>
+      </componentsupportedinterface>
+    </connectinterface>
+  </connections>
+</softwareassembly>
