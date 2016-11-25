@@ -48,6 +48,8 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 		SharedLibraryUtils.createSharedLibraryProject(bot, SHARED_LIB_PROJ_NAME, "C++ Library");
 		SWTBotEditor editor = bot.editorByTitle(SHARED_LIB_PROJ_NAME);
 		StandardTestActions.generateProject(bot, editor);
+		bot.waitUntil(new WaitForBuild(), WaitForBuild.TIMEOUT);
+		bot.closeAllEditors();
 
 		// Export to SDR
 		SWTBotTreeItem projectNode = ProjectExplorerUtils.waitUntilNodeAppears(bot, SHARED_LIB_PROJ_NAME);
