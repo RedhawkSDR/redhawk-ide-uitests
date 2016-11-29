@@ -110,6 +110,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 		// GPP starts when launched
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP_1, ComponentState.STARTED);
 		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_1);
 
 		// verify GPP stopped
@@ -210,8 +211,8 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 
 		// create connection between devices via REDHAWK Explorer
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
-		ScaExplorerTestUtils.connectPortsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, "connection_1", DEVICE_STUB_1, "dataDouble_out",
-			DEVICE_STUB_2, "dataDouble_in");
+		ScaExplorerTestUtils.connectPortsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, "connection_1", DEVICE_STUB_1, "dataDouble_out", DEVICE_STUB_2,
+			"dataDouble_in");
 
 		// verify connection exists in diagram
 		DiagramTestUtils.waitUntilConnectionDisplaysInDiagram(bot, editor, DEVICE_STUB_2);
@@ -239,12 +240,15 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		// verify devices were added to the diagram
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, GPP);
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, DEVICE_STUB);
-		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_1); // GPP starts when launched
 
-		// verify hard limit stopped
+		// GPP starts when launched
+		DiagramTestUtils.waitForComponentState(bot, editor, GPP_1, ComponentState.STARTED);
+		DiagramTestUtils.stopComponentFromDiagram(editor, GPP_1);
+
+		// verify device stub stopped
 		DiagramTestUtils.waitForComponentState(bot, editor, DEVICE_STUB, ComponentState.STOPPED);
 
-		// start hard limit from REDHAWK explorer
+		// start device stub REDHAWK explorer
 		ScaExplorerTestUtils.startResourceInExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 		// verify device stub started but GPP did not
