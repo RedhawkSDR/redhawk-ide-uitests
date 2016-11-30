@@ -15,8 +15,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ConsoleUtils;
+import gov.redhawk.ide.swtbot.ErrorLogUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
-import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
@@ -48,13 +48,16 @@ public class LaunchLocalWaveformTest extends UIRuntimeTest {
 	}
 
 	private void launchWaveform(String waveformName) {
+		// Start with an empty error log
+		ErrorLogUtils.clearErrorLog(gefBot);
+
 		// Launch Local Waveform From Target SDR
 		ScaExplorerTestUtils.launchWaveformFromTargetSDR(gefBot, waveformName);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveformName);
 		ConsoleUtils.disableAutoShowConsole(gefBot);
 
-		// Open the error log and check that it is empty
-		ViewUtils.checkErrorLogIsEmpty(gefBot);
+		// Check that error log is still empty
+		ErrorLogUtils.checkErrorLogIsEmpty(gefBot);
 
 		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveformName);
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveformName);
