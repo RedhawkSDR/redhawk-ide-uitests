@@ -10,6 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,5 +58,8 @@ public class LaunchLocalWaveformTest extends UIRuntimeTest {
 
 		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveformName);
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveformName);
+
+		Assert.assertFalse("Error while unbinding waveform",
+			ConsoleUtils.checkConsoleContents(gefBot, waveformName + " [Sandbox Waveform]", "Error while unbinding waveform"));
 	}
 }
