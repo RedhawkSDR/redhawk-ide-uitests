@@ -27,6 +27,7 @@ import gov.redhawk.core.graphiti.sad.ui.ext.ComponentShape;
 import gov.redhawk.ide.debug.impl.LocalScaWaveformImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.sdr.ui.SdrUiPlugin;
+import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
@@ -276,6 +277,9 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 		
 		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, namespacedWF);
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, namespacedWF);
+		
+		Assert.assertFalse("Error while unbinding waveform",
+			ConsoleUtils.checkConsoleContents(gefBot, namespacedWF + " [Sandbox Waveform]", "Error while unbinding waveform"));
 	}
 
 	/**
