@@ -262,21 +262,6 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 			}
 		}
 	}
-	
-	/**
-	 * IDE-1705 - Waveforms need to support namespaces of depths greater than one (e.g. a.b.c.d.waveform)
-	 */
-	@Test
-	public void launchNamespacedWaveform() {
-		final String namespacedWF = "a.b.c.d.waveform";
-		
-		// Launch Local Waveform From Target SDR
-		ScaExplorerTestUtils.launchWaveformFromTargetSDR(gefBot, namespacedWF);
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, namespacedWF);
-		
-		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, namespacedWF);
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, namespacedWF);
-	}
 
 	/**
 	 * Private helper method for {@link #checkComponentPictogramElements()} and
