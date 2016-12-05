@@ -48,16 +48,14 @@ public class LaunchLocalWaveformTest extends UIRuntimeTest {
 	}
 
 	private void launchWaveform(String waveformName) {
-		// Start with an empty error log
-		ErrorLogUtils.clearErrorLog(gefBot);
-
 		// Launch Local Waveform From Target SDR
 		ScaExplorerTestUtils.launchWaveformFromTargetSDR(gefBot, waveformName);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveformName);
 		ConsoleUtils.disableAutoShowConsole(gefBot);
 
 		// Check that error log is still empty
-		ErrorLogUtils.checkErrorLogIsEmpty(gefBot);
+		String errorMsg = ErrorLogUtils.checkErrorLogForMessage(gefBot, waveformName);
+		Assert.assertNull(errorMsg, errorMsg);
 
 		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveformName);
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveformName);
