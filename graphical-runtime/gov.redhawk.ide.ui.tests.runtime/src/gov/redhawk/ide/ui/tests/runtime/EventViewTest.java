@@ -113,6 +113,19 @@ public class EventViewTest extends AbstractDomainRuntimeTest {
 		assertPropertyDetails();
 
 		assertDetailsButton();
+
+		// IDE-1743 - Test disconnect button
+		SWTBotView eventView = ViewUtils.getEventView(bot);
+		int numOfEvents = eventView.bot().tree().getAllItems().length;
+		for (SWTBotToolbarButton button : eventView.getToolbarButtons()) {
+			if ("Disconnect".equals(button.getToolTipText())) {
+				button.click();
+				break;
+			}
+		}
+		testChannel.for_suppliers().obtain_push_consumer().push(events.get(0));
+
+		Assert.assertEquals("Event Viewer did not disconnect from event channel", numOfEvents, eventView.bot().tree().getAllItems().length);
 	}
 
 	private void assertDetailsButton() {
