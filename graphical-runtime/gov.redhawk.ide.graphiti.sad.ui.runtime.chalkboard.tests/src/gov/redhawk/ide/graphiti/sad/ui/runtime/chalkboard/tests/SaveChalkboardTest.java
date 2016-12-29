@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
@@ -66,51 +65,48 @@ public class SaveChalkboardTest extends AbstractGraphitiChalkboardTest {
 
 		// Validate new waveform
 		bot.waitUntil(Conditions.shellCloses(saveShell));
-		bot.closeAllEditors();
+
+		// Wait for new project to appear
 		bot.waitUntil(new DefaultCondition() {
 
 			@Override
 			public String getFailureMessage() {
 				return "New Waveform does not appear in the project explorer view";
 			}
-			
+
 			@Override
 			public boolean test() throws Exception {
 				SWTBotTreeItem waveformNode = gefBot.viewById("org.eclipse.ui.navigator.ProjectExplorer").bot().tree().getTreeItem(WAVEFORM_NAME);
 				return waveformNode != null;
 			}
-			
+
 		});
-		
-		SWTBotView projectView = gefBot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
-		SWTBotTreeItem waveformNode = projectView.bot().tree().getTreeItem(WAVEFORM_NAME);
-		SWTBotTreeItem waveformSadXml = waveformNode.expand().getNode(WAVEFORM_NAME + ".sad.xml").select();
-		waveformSadXml.contextMenu("Open With").menu("Waveform Editor").click();
-		
-		// confirm that components and connection exist
+
+		// Get new editor (opens automatically), and check parts
 		editor = gefBot.rhGefEditor(WAVEFORM_NAME);
+		editor.setFocus();
 		Assert.assertNotNull(SIGGEN_1 + " component was not found", editor.getEditPart(SIGGEN_1));
 		Assert.assertNotNull(HARD_LIMIT_1 + " component was not found", editor.getEditPart(HARD_LIMIT_1));
-		
+
 		usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN_1);
 		providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
 		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertFalse("Source connections should not be empty for this test", sourceConnections.isEmpty());
-		
+
 		ContainerShape hardLimitContainerShape = (ContainerShape) editor.getEditPart(HARD_LIMIT_1).part().getModel();
 		Connection connection = DUtil.getIncomingConnectionsContainedInContainerShape(hardLimitContainerShape).get(0);
-		
+
 		UsesPortStub usesPort = (UsesPortStub) DUtil.getBusinessObject(connection.getStart());
 		Assert.assertEquals("Connection uses port not correct", usesPort, DUtil.getBusinessObject((ContainerShape) usesEditPart.part().getModel()));
 
 		ProvidesPortStub providesPort = (ProvidesPortStub) DUtil.getBusinessObject(connection.getEnd());
 		Assert.assertEquals("Connect provides port not correct", providesPort, DUtil.getBusinessObject((ContainerShape) providesEditPart.part().getModel()));
 	}
-	
+
 	/**
 	 * IDE-963
 	 * Testing key binding of Ctrl-S to Save As
-	 * @throws AWTException 
+	 * @throws AWTException
 	 */
 	@Test
 	public void saveAsHotkeyTest() throws AWTException {
@@ -119,13 +115,13 @@ public class SaveChalkboardTest extends AbstractGraphitiChalkboardTest {
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN);
-		
+
 		Robot robot = new Robot();
 		robot.keyPress(KeyEvent.VK_CONTROL);
 		robot.keyPress(KeyEvent.VK_S);
 		robot.keyRelease(KeyEvent.VK_S);
 		robot.keyRelease(KeyEvent.VK_CONTROL);
-		
+
 		SWTBotShell saveShell = bot.shell("Save Chalkboard");
 		Assert.assertNotNull("Save As dialog not found", saveShell);
 		saveShell.setFocus();
