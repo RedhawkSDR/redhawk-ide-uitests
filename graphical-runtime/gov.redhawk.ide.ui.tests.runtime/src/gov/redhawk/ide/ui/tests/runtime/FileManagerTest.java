@@ -27,6 +27,7 @@ import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ConsoleUtils;
@@ -45,6 +46,9 @@ public class FileManagerTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void showErrorDetails() throws CoreException {
+		// This test must be run as a non-root user or we we can't simulate a permissions issue
+		Assume.assumeFalse("root".equals(System.getProperty("user.name")));
+
 		// Create an unreadable directory in the SDRROOT
 		IFileStore readOnlyDirectory = EFS.getStore(URI.create("sdrdom:/readonly"));
 		readOnlyDirectory.mkdir(EFS.NONE, null);
