@@ -145,7 +145,9 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 	}
 
 	protected void setupCodeGeneration(ICodegenInfo iCodegenInfo) {
+		getWizardBot().button("Next >").click();
 		if (!(iCodegenInfo instanceof FEICodegenInfo)) {
+			// Leave defaults for the Setup Code Generation page and FEI pages
 			getWizardBot().button("Next >").click();
 			getWizardBot().button("Next >").click();
 			return;
@@ -199,6 +201,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 	}
 
 	protected void reverseFromCodeGeneration() {
+		getWizardBot().button("< Back").click();
 		getWizardBot().button("< Back").click();
 		getWizardBot().button("< Back").click();
 	}
