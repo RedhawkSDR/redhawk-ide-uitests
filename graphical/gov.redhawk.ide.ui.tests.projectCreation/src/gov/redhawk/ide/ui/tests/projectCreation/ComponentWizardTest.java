@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotLabel;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
@@ -155,12 +157,15 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		getWizardBot().comboBoxWithLabel("Prog. Lang:").setSelection("Java");
 		getWizardBot().comboBoxWithLabel("Code Generator:").setSelection("Java Code Generator");
 		getWizardBot().button("Next >").click();
+		setupCodeGeneration(null);
 		bot.waitUntil(Conditions.widgetIsEnabled(getWizardBot().button("Finish")));
+		reverseFromCodeGeneration();
 		getWizardBot().button("< Back").click();
 
 		getWizardBot().comboBoxWithLabel("Prog. Lang:").setSelection("C++");
 		getWizardBot().comboBoxWithLabel("Code Generator:").setSelection("C++ Code Generator");
 		getWizardBot().button("Next >").click();
+		setupCodeGeneration(null);
 		bot.waitUntil(Conditions.widgetIsEnabled(getWizardBot().button("Finish")));
 
 		getWizardShell().close();
