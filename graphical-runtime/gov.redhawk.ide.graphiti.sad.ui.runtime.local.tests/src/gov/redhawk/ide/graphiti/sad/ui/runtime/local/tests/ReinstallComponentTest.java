@@ -22,14 +22,13 @@ import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
-import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.PaletteUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 
 
 public class ReinstallComponentTest extends AbstractGraphitiTest {
