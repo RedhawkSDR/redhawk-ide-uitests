@@ -51,7 +51,7 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 	}
 
 	/**
-	 * IDE-1639 Test editing a running resource's logging configuration
+	 * IDE-1011 Test editing a running resource's logging configuration
 	 */
 	@Test
 	public void logConfigEditorTest() {
