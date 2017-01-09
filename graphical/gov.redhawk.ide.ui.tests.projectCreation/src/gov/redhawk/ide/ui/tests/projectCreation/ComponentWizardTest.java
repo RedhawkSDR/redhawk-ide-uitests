@@ -13,21 +13,19 @@ package gov.redhawk.ide.ui.tests.projectCreation;
 import java.io.File;
 import java.io.IOException;
 
-import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
-import gov.redhawk.ide.ui.tests.projectCreation.util.ICodegenInfo;
-import gov.redhawk.ide.ui.tests.projectCreation.util.StandardCodegenInfo;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotLabel;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
+import gov.redhawk.ide.ui.tests.projectCreation.util.ICodegenInfo;
+import gov.redhawk.ide.ui.tests.projectCreation.util.StandardCodegenInfo;
 
 /**
  * IDE-1219

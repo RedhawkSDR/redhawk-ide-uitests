@@ -50,8 +50,8 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 	 * Ensure the "standard" runtime context menu items are present on a resource and appear to do something.
 	 * IDE-661 Start/stop
 	 * IDE-665 Monitor ports
+	 * IDE-1009, IDE-1325 Set log level
 	 * IDE-1010 Tail log
-	 * IDE-1325 Log level
 	 * IDE-1423 Show Properties
 	 * IDE-1648 Monitor ports
 	 */
@@ -64,7 +64,7 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 		DiagramTestUtils.startComponentFromDiagram(editor, componentName);
 		DiagramTestUtils.waitForComponentState(bot, editor, componentName, ComponentState.STARTED);
 
-		// Test Log Levels (IDE-1325)
+		// Test Log Levels (IDE-1009, IDE-1325)
 		DiagramTestUtils.changeLogLevelFromDiagram(editor, componentName, LogLevels.TRACE);
 		DiagramTestUtils.confirmLogLevelFromDiagram(editor, componentName, LogLevels.TRACE);
 
