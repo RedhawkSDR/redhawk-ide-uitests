@@ -27,6 +27,7 @@ import gov.redhawk.core.graphiti.sad.ui.ext.ComponentShape;
 import gov.redhawk.ide.debug.impl.LocalScaWaveformImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.sdr.ui.SdrUiPlugin;
+import gov.redhawk.ide.swtbot.ErrorLogUtils;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
@@ -142,6 +143,9 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 	/**
 	 * IDE-1556
 	 * Verify that user can open diagram editors for multiple running instances of the same waveform
+	 *
+	 * IDE-1018
+	 * Verify action handler conflicts are not thrown when opening multiple waveforms
 	 */
 	@Test
 	public void multipleWaveforms() {
@@ -205,6 +209,9 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 				}
 			});
 		}
+
+		String errorMsg = ErrorLogUtils.checkErrorLogForMessage(gefBot, "Conflicting handlers");
+		Assert.assertNull(errorMsg, errorMsg);
 
 		// Release the second waveform so that the aftertest assertion doesn't fail
 		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveformFullNames.get(1));
