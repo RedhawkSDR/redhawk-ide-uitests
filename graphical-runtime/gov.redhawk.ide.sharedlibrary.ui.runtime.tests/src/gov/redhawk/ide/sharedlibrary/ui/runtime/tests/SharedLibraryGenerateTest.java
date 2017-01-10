@@ -11,8 +11,13 @@
  */
 package gov.redhawk.ide.sharedlibrary.ui.runtime.tests;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.junit.Assert;
@@ -23,6 +28,7 @@ import gov.redhawk.ide.swtbot.EditorUtils;
 import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 
 /**
  * Shared Library projects should display many fewer options in the editor pages
@@ -30,7 +36,7 @@ import gov.redhawk.ide.swtbot.UIRuntimeTest;
  */
 public class SharedLibraryGenerateTest extends UIRuntimeTest {
 
-	SWTBotEditor editor;
+	private SWTBotEditor editor;
 
 	@BeforeClass
 	public static void beforeClassSetup() {
@@ -40,12 +46,17 @@ public class SharedLibraryGenerateTest extends UIRuntimeTest {
 
 	// TODO: Do we need to include Octave project type for this test?
 	/**
-	 * IDE-1117, IDE-1408
-	 * Softpackage (shared library) code generation test
-	 * Currently only checks case where code generation is initiated from the editor toolbar button
+	 * IDE-1117 Re-codegen shared library projects
+	 * IDE-1408 Ensure warning about localfile resolves after codegen
+	 * IDE-1669 The IDE should add header files to the Makefile.am.ide for installation
+	 *
+	 * Softpackage (shared library) code generation test. Currently only checks case where code generation is
+	 * initiated from the editor toolbar button.
+	 * @throws CoreException
+	 * @throws IOException
 	 */
 	@Test
-	public void softpackageGenerationTest() {
+	public void softpackageGenerationTest() throws IOException, CoreException {
 		final String projectName = "SharedLibraryTest";
 		final String projectType = "C++ Library";
 
@@ -60,5 +71,20 @@ public class SharedLibraryGenerateTest extends UIRuntimeTest {
 		Assert.assertTrue(project.getFolder("cpp").exists());
 		Assert.assertTrue(project.getFolder("cpp/include").exists());
 		Assert.assertTrue(project.getFolder("cpp/src").exists());
+
+		// IDE-1669 Test for shared library header installation in the Makefile.am.ide
+		bot.waitUntil(new WaitForBuild(), WaitForBuild.TIMEOUT);
+		final String HEADER_INCLUDE_LINE = "redhawk_HEADERS_auto = include/" + projectName + ".h";
+		boolean found = false;
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(project.getFile("cpp/Makefile.am.ide").getContents(true)))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				if (HEADER_INCLUDE_LINE.equals(line)) {
+					found = true;
+					break;
+				}
+			}
+		}
+		Assert.assertTrue("Header entry was not found", found);
 	}
 }
