@@ -12,6 +12,7 @@
 package gov.redhawk.ide.ui.tests.runtime;
 
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,6 +21,9 @@ import gov.redhawk.ide.swtbot.finder.widgets.RHBotTreeItem;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class ExplorerChalkboardTest extends UIRuntimeTest {
+
+	private static final String SANDBOX = "Sandbox";
+	private static final String CHALKBOARD = "Chalkboard";
 	private static final String COMPONENT_NAME = "ExamplePythonComponent";
 	private static final String COMPONENT_NAME_1 = COMPONENT_NAME + "_1";
 	private static final String COMPONENT_IMPL = "python";
@@ -44,8 +48,10 @@ public class ExplorerChalkboardTest extends UIRuntimeTest {
 		tooltip = usesOutPort.getToolTipText();
 		Assert.assertNotNull(tooltip);
 		Assert.assertTrue("Description for " + COMPONENT_USES_OUT_PORT + " uses Port", tooltip.contains("Example description of a uses/output Port"));
+	}
 
-		// Release test Component
-		componentTreeItem.contextMenu("Release").click();
+	@After
+	public void cleanup() {
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { SANDBOX }, CHALKBOARD);
 	}
 }
