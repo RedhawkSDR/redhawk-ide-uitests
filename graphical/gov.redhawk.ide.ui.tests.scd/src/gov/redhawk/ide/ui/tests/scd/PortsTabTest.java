@@ -27,8 +27,8 @@ import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.EditorUtils;
-import gov.redhawk.ide.swtbot.SelectIDL;
 import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.condition.SelectIDL;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 import gov.redhawk.ui.editor.SCAFormEditor;
 import mil.jpeojtrs.sca.scd.AbstractPort;
