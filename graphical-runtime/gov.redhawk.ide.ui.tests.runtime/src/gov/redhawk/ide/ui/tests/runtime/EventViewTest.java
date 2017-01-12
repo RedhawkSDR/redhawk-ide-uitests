@@ -17,11 +17,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +51,8 @@ import StandardEvent.DomainManagementObjectRemovedEventType;
 import StandardEvent.DomainManagementObjectRemovedEventTypeHelper;
 import StandardEvent.StateChangeEventType;
 import StandardEvent.StateChangeEventTypeHelper;
+import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.logging.ui.LogLevels;
@@ -68,7 +72,7 @@ import mil.jpeojtrs.sca.prf.Simple;
 import mil.jpeojtrs.sca.prf.Struct;
 import mil.jpeojtrs.sca.prf.StructPropertyConfigurationType;
 
-public class EventViewTest extends AbstractDomainRuntimeTest {
+public class EventViewTest extends UIRuntimeTest {
 
 	private static final String CHANNEL_NAME = "TestChannel";
 	private ORB orb;
@@ -82,13 +86,19 @@ public class EventViewTest extends AbstractDomainRuntimeTest {
 		eventPropMap = new HashMap<String, List<String>>();
 	};
 
+	@After
+	public void clean() throws DebugException {
+		StandardTestActions.cleanUpLaunches();
+		StandardTestActions.cleanUpConnections();
+	}
+
 	@Test
 	public void eventViewTest() throws ChannelAlreadyExists, OperationNotAllowed, OperationFailed, ServiceUnavailable, Disconnected, BadKind {
-
 		// Launch the test domain
 		String domainName = "EventViewDomain";
 		String[] deviceMgrs = new String[] { "DevMgr_localhost" };
-		launchViaNewDomainWizard(domainName, deviceMgrs);
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domainName, deviceMgrs);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
 		ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(Display.getCurrent());
 		ScaDomainManager domMgr = registry.findDomain(domainName);
 		Assert.assertNotNull(String.format("Domain %s could not be found", domainName), domMgr);
