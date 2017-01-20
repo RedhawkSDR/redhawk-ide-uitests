@@ -12,8 +12,11 @@ package gov.redhawk.ide.graphiti.sad.ui.tests;
 
 import java.util.List;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
@@ -41,15 +44,16 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 	private String waveformName;
 
 	/**
-	 * IDE-124
 	 * Add a uses device FrontEnd tuner to the diagram. Verify the shape, its ports, and the XML. Delete and verify.
+	 * IDE-124 SAD-level uses device support
+	 * IDE-1821 Check for model error when using deviceusedbyapplication
 	 */
 	@Test
 	public void usesDevice_frontEndTuner_listenMode() {
-		waveformName = "IDE-124-CreateAndDeleteUseGenericFrontEndTunerDeviceTest";
+		waveformName = "usesDevice_frontEndTuner_listenMode";
 
 		// Create an empty waveform project
-		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
+		WaveformUtils.createNewWaveform(gefBot, waveformName, "rh.SigGen");
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		editor.setFocus();
 
@@ -58,7 +62,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		String existingAllocationId = "12345";
 		String newAllocationId = "678910";
 
-		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor);
+		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor, 0, 150);
 		String[] providesPorts = new String[] { "dataDouble_in", "dataDouble2_in" };
 		String[] usesPorts = new String[] { "dataDouble_out", "dataDouble2_out" };
 		UsesDeviceTestUtils.completeUsesFEDeviceWizard(gefBot, existingAllocationId, newAllocationId, providesPorts, usesPorts);
@@ -79,6 +83,15 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		Assert.assertEquals(rhContainerShape.getUsesPortStubs().get(1).getName(), "dataDouble2_out");
 		Assert.assertEquals(rhContainerShape.getProvidesPortStubs().get(0).getName(), "dataDouble_in");
 		Assert.assertEquals(rhContainerShape.getProvidesPortStubs().get(1).getName(), "dataDouble2_in");
+
+		// Save to trigger validation. Ensure there are no errors (IDE-1821)
+		KeyboardFactory.getSWTKeyboard().pressShortcut(SWT.CTRL, 's');
+		try {
+			bot.shell("Invalid Model").bot().button("No").click();
+			Assert.fail("Error dialog appeared while saving");
+		} catch (WidgetNotFoundException e) {
+			// PASS
+		}
 
 		// Check to see if xml is correct in the sad.xml
 		final String usesDeviceXML = regexStringForGenericUseFrontEndTunerDeviceListenById(usesDeviceId, existingAllocationId, newAllocationId);
