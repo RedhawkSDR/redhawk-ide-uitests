@@ -16,6 +16,7 @@ import org.junit.After;
 import org.junit.Assert;
 
 import gov.redhawk.ide.debug.LocalSca;
+import gov.redhawk.ide.debug.LocalScaWaveform;
 import gov.redhawk.ide.debug.ScaDebugPlugin;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -25,7 +26,6 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 import gov.redhawk.model.sca.ScaAbstractProperty;
 import gov.redhawk.model.sca.ScaComponent;
-import gov.redhawk.model.sca.ScaWaveform;
 
 /**
  * Tests properties of a component contained within a locally launched waveform selected in the Chalkboard Diagram
@@ -61,8 +61,8 @@ public class LocalWaveformComponentDiagramPropertyTest extends LocalComponentDia
 	@Override
 	protected EList<ScaAbstractProperty< ? >> getModelObjectProperties() {
 		LocalSca localSca = ScaDebugPlugin.getInstance().getLocalSca();
-		EList<ScaWaveform> localWaveforms = localSca.getWaveforms();
-		for (ScaWaveform waveform : localWaveforms) {
+		EList<LocalScaWaveform> localWaveforms = localSca.getWaveforms();
+		for (LocalScaWaveform waveform : localWaveforms) {
 			if (waveformFullName.equals(waveform.getName())) {
 				for (ScaComponent c : waveform.getComponents()) {
 					if (COMP_NAME.equals(c.getProfileObj().getName())) {
