@@ -21,6 +21,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
@@ -165,13 +166,26 @@ public class EventViewTest extends UIRuntimeTest {
 
 		// Get each event with its associated properties
 		SWTBotTreeItem[] eventItems = eventView.bot().tree().getAllItems();
-		for (SWTBotTreeItem eventItem : eventItems) {
+		for (final SWTBotTreeItem eventItem : eventItems) {
 			String type = eventItem.cell(1);
 			List<String> eventProperties = eventPropMap.get(type);
 			Assert.assertNotNull(String.format("Could not find properties associated with the %s event", type), eventProperties);
 
 			// Check that expected properties show in the PropertiesView
-			eventItem.select();
+			bot.waitUntil(new DefaultCondition() {
+
+				@Override
+				public boolean test() throws Exception {
+					eventItem.select();
+					return eventItem.isSelected();
+				}
+
+				@Override
+				public String getFailureMessage() {
+					return "Event item selection failed";
+				}
+			});
+
 			SWTBotTreeItem[] propTreeItems = propView.bot().tree().getAllItems();
 			if ("MessageEvent".equals(type)) {
 				type = CF.PropertiesHelper.id();
