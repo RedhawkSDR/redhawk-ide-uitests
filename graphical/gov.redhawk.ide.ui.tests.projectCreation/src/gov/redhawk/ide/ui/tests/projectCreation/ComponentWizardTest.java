@@ -30,15 +30,18 @@ import org.junit.Test;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.ui.tests.projectCreation.util.ICodegenInfo;
 import gov.redhawk.ide.ui.tests.projectCreation.util.StandardCodegenInfo;
+import mil.jpeojtrs.sca.spd.CodeFileType;
 
 /**
  * IDE-1219
  */
 public class ComponentWizardTest extends AbstractCreationWizardTest {
 
+	private static final String COMP_PROJECT_TYPE = "REDHAWK Component Project";
+
 	@Override
 	protected String getProjectType() {
-		return "REDHAWK Component Project";
+		return COMP_PROJECT_TYPE;
 	}
 
 	@Test
@@ -137,11 +140,16 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 	public void testCppCreation() {
 		String projectName = "ComponentWizardTest01";
 		testProjectCreation(projectName, "C++", "C++ Code Generator", new StandardCodegenInfo("Pull Port Data"));
-		testSharedLibSettings(projectName);
+
+		boolean isSharedAddress = false;
+		if (COMP_PROJECT_TYPE.equals(getProjectType())) {
+			isSharedAddress = true;
+		}
+		checkCodeElementValues(projectName, isSharedAddress);
 	}
 
 	// Check project localfile/entrypoint/code-type settings
-	private void testSharedLibSettings(String projectName) {
+	private void checkCodeElementValues(String projectName, boolean isSharedAddress) {
 		SWTBotEditor editor = bot.editorByTitle(projectName);
 		editor.bot().cTabItem("Implementations").activate();
 		final Section section = bot.widget(new BaseMatcher<Section>() {
@@ -170,9 +178,13 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 			}
 		});
 
-		Assert.assertTrue(editor.bot().textWithLabel("Entry Point:").getText().matches(".*\\.so.*"));
-		Assert.assertTrue(editor.bot().textWithLabel("File*:").getText().matches(".*\\.so.*"));
-		Assert.assertEquals("SharedLibrary", editor.bot().comboBoxWithLabel("Type:").getText());
+		if (isSharedAddress) {
+			Assert.assertTrue(editor.bot().textWithLabel("Entry Point:").getText().matches(".*\\.so"));
+			Assert.assertTrue(editor.bot().textWithLabel("File*:").getText().matches(".*\\.so"));
+			Assert.assertEquals(CodeFileType.SHARED_LIBRARY.getLiteral(), editor.bot().comboBoxWithLabel("Type:").getText());
+		} else {
+			Assert.assertEquals(CodeFileType.EXECUTABLE.getLiteral(), editor.bot().comboBoxWithLabel("Type:").getText());
+		}
 	}
 
 	@Test
@@ -242,7 +254,7 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		}
 		Assert.assertFalse(getWizardBot().textWithLabel("Output Directory:").getText().isEmpty());
 	}
-	
+
 	protected void reverseFromCodeGeneration() {
 	}
 
