@@ -21,6 +21,7 @@ import java.util.Arrays;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -32,6 +33,8 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public abstract class AbstractCreationWizardTest extends UITest {
+
+	private static final String EXISTING_FILES_WARNING = " The specified location already exists and contains files. They will become part of this project.";
 
 	private SWTBotShell wizardShell;
 	private SWTBot wizardBot;
@@ -53,7 +56,7 @@ public abstract class AbstractCreationWizardTest extends UITest {
 	}
 
 	@Test
-	public void testUUID() {
+	public void uuid() {
 		wizardBot.textWithLabel("&Project name:").setText("WizardTest02");
 		Assert.assertTrue(wizardBot.button("Next >").isEnabled());
 
@@ -106,23 +109,48 @@ public abstract class AbstractCreationWizardTest extends UITest {
 
 	protected abstract String getProjectType();
 
+	/**
+	 * Tests using a non-default location for the created project
+	 * IDE-1782 Warn when new project location contains files
+	 * @throws IOException
+	 */
 	@Test
-	public void testNonDefaultLocation() throws IOException {
+	public void nonDefaultLocation() throws IOException {
 		bot.textWithLabel("&Project name:").setText("ProjectName");
 		bot.checkBox("Use default location").click();
 
 		bot.textWithLabel("&Location:").setText("Bad location");
 		Assert.assertFalse(bot.button("Finish").isEnabled());
 
+		File dirWithFiles = folder.newFolder("LocationWithFiles");
+		File.createTempFile("nonDefaultLocation", ".tmp", dirWithFiles);
+		bot.textWithLabel("&Location:").setText(dirWithFiles.getAbsolutePath());
+		for (int i = 0;; i++) {
+			String textBoxContents = bot.text(i).getText();
+			if (EXISTING_FILES_WARNING.equals(textBoxContents)) {
+				break;
+			}
+		}
+
 		File createdFolder = folder.newFolder("ProjectName");
 		bot.textWithLabel("&Location:").setText(createdFolder.getAbsolutePath());
-		bot.button("Finish").click();
 
+		nonDefaultLocation_extraSteps();
+
+		bot.button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(wizardShell));
 		bot.waitUntil(new WaitForEditorCondition(), 30000, 500);
 
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("ProjectName");
 		IPath location = project.getLocation();
 		Assert.assertEquals(createdFolder.getAbsolutePath(), location.toOSString());
+	}
+
+	/**
+	 * This method is called by the {@link #nonDefaultLocation()} test if there are additional steps after filling
+	 * out the first page of the wizard before "Finish" can be clicked.
+	 */
+	protected void nonDefaultLocation_extraSteps() {
 	}
 
 	protected String getBaseFilename(String projectName) {

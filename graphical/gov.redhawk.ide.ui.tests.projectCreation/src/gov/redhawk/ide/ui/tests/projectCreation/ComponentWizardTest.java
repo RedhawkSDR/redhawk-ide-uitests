@@ -10,12 +10,8 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.projectCreation;
 
-import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
@@ -46,35 +42,23 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 
 	@Test
 	@Override
-	public void testNonDefaultLocation() throws IOException {
-		getWizardBot().textWithLabel("&Project name:").setText("ProjectName");
-		getWizardBot().checkBox("Use default location").click();
+	public void nonDefaultLocation() throws IOException {
+		super.nonDefaultLocation();
 
-		getWizardBot().textWithLabel("&Location:").setText("Bad location");
-		Assert.assertFalse(bot.button("Finish").isEnabled());
+		nonDefaultLocation_assertOutputDir();
+	}
 
-		File createdFolder = folder.newFolder("ProjectName");
-		getWizardBot().textWithLabel("&Location:").setText(createdFolder.getAbsolutePath());
+	protected void nonDefaultLocation_extraSteps() {
 		getWizardBot().button("Next >").click();
 
 		getWizardBot().comboBoxWithLabel("Prog. Lang:").setSelection("Python");
 		getWizardBot().comboBoxWithLabel("Code Generator:").setSelection(0);
 		getWizardBot().button("Next >").click();
 
-		testNonDefaultLocation_setupCodeGeneration();
-
-		getWizardBot().button("Finish").click();
-		bot.waitUntil(Conditions.shellCloses(getWizardShell()));
-		SWTBotEditor editorBot = bot.editorByTitle("ProjectName");
-
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("ProjectName");
-		IPath location = project.getLocation();
-		Assert.assertEquals(createdFolder.getAbsolutePath(), location.toOSString());
-
-		testNonDefaultLocation_assertOutputDir(editorBot);
+		nonDefaultLocation_setupCodeGeneration();
 	}
 
-	protected void testNonDefaultLocation_setupCodeGeneration() {
+	protected void nonDefaultLocation_setupCodeGeneration() {
 		SWTBotCombo templateCombo = getWizardBot().comboBoxWithLabel("Template:");
 		for (int i = 0; i < templateCombo.itemCount(); i++) {
 			getWizardBot().comboBoxWithLabel("Template:").setSelection(i);
@@ -85,7 +69,8 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		getWizardBot().textWithLabel("Output Directory:").setText("customOutput");
 	}
 
-	protected void testNonDefaultLocation_assertOutputDir(SWTBotEditor editorBot) {
+	protected void nonDefaultLocation_assertOutputDir() {
+		SWTBotEditor editorBot = bot.editorByTitle("ProjectName");
 		editorBot.bot().cTabItem("Implementations").activate();
 		Assert.assertEquals("customOutput", editorBot.bot().textWithLabel("Output Dir:").getText());
 	}

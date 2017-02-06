@@ -112,14 +112,16 @@ public class NodeCreationWizardTest extends AbstractCreationWizardTest {
 	}
 
 	@Override
-	public void testNonDefaultLocation() throws IOException {
+	public void nonDefaultLocation() throws IOException {
 		setDomainName(null);
-		super.testNonDefaultLocation();
+
+		super.nonDefaultLocation();
 	}
 
 	@Override
-	public void testUUID() {
+	public void uuid() {
 		setDomainName(null);
-		super.testUUID();
+
+		super.uuid();
 	}
 }

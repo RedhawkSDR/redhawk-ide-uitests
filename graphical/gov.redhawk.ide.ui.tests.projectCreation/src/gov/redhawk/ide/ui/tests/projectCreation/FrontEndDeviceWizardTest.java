@@ -206,11 +206,13 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 		getWizardBot().button("< Back").click();
 	}
 
-	protected void testNonDefaultLocation_setupCodeGeneration() {
+	@Override
+	protected void nonDefaultLocation_setupCodeGeneration() {
 		setupCodeGeneration(null);
 	}
 
-	protected void testNonDefaultLocation_assertOutputDir(SWTBotEditor editorBot) {
+	@Override
+	protected void nonDefaultLocation_assertOutputDir() {
 		// PASS
 	}
 

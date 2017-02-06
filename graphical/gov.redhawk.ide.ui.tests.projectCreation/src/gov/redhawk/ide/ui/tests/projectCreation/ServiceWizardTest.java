@@ -88,16 +88,18 @@ public class ServiceWizardTest extends ComponentWizardTest {
 	
 	@Test
 	@Override
-	public void testNonDefaultLocation() throws IOException {
+	public void nonDefaultLocation() throws IOException {
 		setServiceInWizard();
-		super.testNonDefaultLocation();
+
+		super.nonDefaultLocation();
 	}
 	
 	@Test
 	@Override
-	public void testUUID() {
+	public void uuid() {
 		setServiceInWizard();
-		super.testUUID();
+
+		super.uuid();
 	}
 	
 	/**
