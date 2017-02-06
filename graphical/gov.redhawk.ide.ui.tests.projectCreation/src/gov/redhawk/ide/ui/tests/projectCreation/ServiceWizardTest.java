@@ -59,7 +59,9 @@ public class ServiceWizardTest extends ComponentWizardTest {
 	@Test
 	@Override
 	public void testCppCreation() {
-		testServiceProjectCreation("ServiceWizardTest01", "C++", "C++ Code Generator", "Default Service");
+		String projectName = "ServiceWizardTest01";
+		testServiceProjectCreation(projectName, "C++", "C++ Code Generator", "Default Service");
+		checkCodeElementValues(projectName, false);
 		getWizardShell().close();
 	}
 

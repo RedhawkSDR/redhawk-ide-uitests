@@ -149,7 +149,7 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 	}
 
 	// Check project localfile/entrypoint/code-type settings
-	private void checkCodeElementValues(String projectName, boolean isSharedAddress) {
+	protected void checkCodeElementValues(String projectName, boolean isSharedAddress) {
 		SWTBotEditor editor = bot.editorByTitle(projectName);
 		editor.bot().cTabItem("Implementations").activate();
 		final Section section = bot.widget(new BaseMatcher<Section>() {
