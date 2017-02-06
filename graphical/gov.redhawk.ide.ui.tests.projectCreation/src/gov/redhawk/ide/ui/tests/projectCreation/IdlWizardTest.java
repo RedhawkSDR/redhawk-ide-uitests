@@ -17,8 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -57,27 +56,13 @@ public class IdlWizardTest extends UITest {
 	 */
 	@Test
 	public void includePathTest() {
-		final SWTBotTreeItem projectNode = ProjectExplorerUtils.selectNode(bot, PROJ_NAME);
-		Display.getDefault().asyncExec(new Runnable() {
-
-			@Override
-			public void run() {
-				checkFileContents((IProject) projectNode.widget.getData());
-
-			}
-		});
-		projectNode.expand();
-
-	}
-
-	private void checkFileContents(IProject project) {
 		final String INCLUDE_PATHS = ".INCLUDE_PATHS=";
 		final String[] includePaths = { "${OssieHome}/share/idl", "/usr/share/idl/omniORB", "/usr/share/idl/omniORB/COS" };
 		final List<String> defaultIncludePaths = Arrays.asList(includePaths);
 
 		BufferedReader bufferedReader = null;
 		try {
-			File file = project.getFile(".ecpproperties").getLocation().toFile();
+			File file = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJ_NAME).getFile(".ecpproperties").getLocation().toFile();
 			bufferedReader = new BufferedReader(new FileReader(file));
 
 			String line = null;
