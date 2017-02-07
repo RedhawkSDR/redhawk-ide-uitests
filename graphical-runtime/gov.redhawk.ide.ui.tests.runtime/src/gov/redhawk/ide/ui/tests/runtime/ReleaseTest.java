@@ -21,7 +21,7 @@ import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
-public class TerminateTest extends UIRuntimeTest {
+public class ReleaseTest extends UIRuntimeTest {
 
 	private static final String SIG_GEN = "rh.SigGen";
 	private static final String SIG_GEN_1 = "SigGen_1";
@@ -36,30 +36,29 @@ public class TerminateTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void exitCodeInTerminal() {
-		// Launch and then terminate a component
+		// Launch and then release a component
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIG_GEN, "cpp");
 		SWTBotTreeItem component = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SIG_GEN_1);
-		component.contextMenu("Terminate").click();
+		component.contextMenu("Release").click();
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SIG_GEN_1);
 
 		// Check the console output
 		SWTBotView consoleView = ConsoleUtils.showConsole(bot, SIG_GEN_1 + " [Sandbox Component]");
 		String consoleText = consoleView.bot().styledText().getText();
-		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("The IDE detected"));
-		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("SIGTERM"));
+		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("exited normally"));
 	}
 
 	/**
-	 * IDE-1828 - Test terminate operation for shared address space components
+	 * IDE-1828 - Test release operation for shared address space components
 	 */
 	@Ignore
 	@Test
 	public void exitCodeInTerminal_SharedAddressSpace() {
-		// Launch two components and then terminate a component
+		// Launch two components and then release a component
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SHARED_ADDRESS_COMP, "cpp");
 		SWTBotTreeItem component = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SHARED_ADDRESS_COMP_1);
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SHARED_ADDRESS_COMP, "cpp");
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SHARED_ADDRESS_COMP_2);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SHARED_ADDRESS_COMP_1);
 
 		try {
 			ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMPONENT_HOST_1);
@@ -68,17 +67,31 @@ public class TerminateTest extends UIRuntimeTest {
 			// PASS - component host should not appear in the REDHAWK Explorer
 		}
 
-		component.contextMenu("Terminate").click();
+		component.contextMenu("Release").click();
 
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SHARED_ADDRESS_COMP_1);
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SHARED_ADDRESS_COMP_2);
 
-		// Check the console output -
-		// Terminating a child component should also terminate the ComponentHost and any siblings
+		try {
+			ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SHARED_ADDRESS_COMP_2);
+			Assert.fail("Releasing a shared address space component should not affect sibling components");
+		} catch (TimeoutException e) {
+			// PASS - this component should not be released
+		}
+
+		// Check the console output - Releasing a child component should not release the ComponentHost
 		SWTBotView consoleView = ConsoleUtils.showConsole(bot, COMPONENT_HOST_1 + " [Chalkboard]");
 		String consoleText = consoleView.bot().styledText().getText();
-		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("The IDE detected"));
-		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("SIGTERM"));
-	}
+		Assert.assertFalse("Process should not have exited on thread release", consoleText.contains("The IDE detected"));
+		Assert.assertFalse("Process should not have exited on thread release", consoleText.contains("SIGTERM"));
 
+		// Release the Chalkboard, which should release the ComponentHost
+		SWTBotTreeItem chalkboard = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox" }, "Chalkboard");
+		chalkboard.contextMenu("Release").click();
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SHARED_ADDRESS_COMP_2);
+
+		// Check the console output
+		consoleView = ConsoleUtils.showConsole(bot, COMPONENT_HOST_1 + " [Chalkboard]");
+		consoleText = consoleView.bot().styledText().getText();
+		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("exited normally"));
+	}
 }
