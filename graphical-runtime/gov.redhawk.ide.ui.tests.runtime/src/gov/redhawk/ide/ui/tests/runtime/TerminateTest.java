@@ -81,4 +81,28 @@ public class TerminateTest extends UIRuntimeTest {
 		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("SIGTERM"));
 	}
 
+	/**
+	 * IDE-1828 - Test that terminating the component host cleans up child components
+	 */
+	@Test
+	public void terminateComponentHost() {
+		// Launch two components and then terminate the component host
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SHARED_ADDRESS_COMP, "cpp");
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SHARED_ADDRESS_COMP_1);
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SHARED_ADDRESS_COMP, "cpp");
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SHARED_ADDRESS_COMP_2);
+
+		// Check the console output - Releasing a child component should not release the ComponentHost
+		ConsoleUtils.terminateProcess(bot, COMPONENT_HOST_1 + " [Chalkboard]");
+
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SHARED_ADDRESS_COMP_1);
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SHARED_ADDRESS_COMP_2);
+
+		// Check the console output -
+		SWTBotView consoleView = ConsoleUtils.showConsole(bot, COMPONENT_HOST_1 + " [Chalkboard]");
+		String consoleText = consoleView.bot().styledText().getText();
+		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("The IDE detected"));
+		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("SIGTERM"));
+	}
+
 }
