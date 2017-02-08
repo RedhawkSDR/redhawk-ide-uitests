@@ -84,6 +84,7 @@ public class TerminateTest extends UIRuntimeTest {
 	/**
 	 * IDE-1828 - Test that terminating the component host cleans up child components
 	 */
+	@Ignore
 	@Test
 	public void terminateComponentHost() {
 		// Launch two components and then terminate the component host
