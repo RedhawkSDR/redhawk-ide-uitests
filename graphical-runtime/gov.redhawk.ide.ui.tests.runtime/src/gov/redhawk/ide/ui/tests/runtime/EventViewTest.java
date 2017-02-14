@@ -83,6 +83,7 @@ import mil.jpeojtrs.sca.prf.Simple;
 import mil.jpeojtrs.sca.prf.Struct;
 import mil.jpeojtrs.sca.prf.StructPropertyConfigurationType;
 import mil.jpeojtrs.sca.util.AnyUtils;
+import mil.jpeojtrs.sca.util.time.UTCTime;
 
 public class EventViewTest extends UIRuntimeTest {
 
@@ -195,6 +196,7 @@ public class EventViewTest extends UIRuntimeTest {
 
 	/**
 	 * IDE-1852 Test PropertyChangeEvent from Redhawk 2.1+
+	 * IDE-1833 Test that the precision timestamp is shown, along with its status
 	 */
 	@Test
 	public void propertyChangeEvent() throws BadKind, Disconnected {
@@ -202,6 +204,7 @@ public class EventViewTest extends UIRuntimeTest {
 		Any event = createPropertyChangeEvent();
 		pushConsumer.push(event);
 		assertPropertyDetails();
+		assertTimeStamp();
 	}
 
 	@Test
@@ -519,6 +522,44 @@ public class EventViewTest extends UIRuntimeTest {
 		eventFields.add("1 (valid)");
 
 		return retVal;
+	}
+
+	private void assertTimeStamp() {
+		SWTBotView eventView = ViewUtils.getEventView(bot);
+		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
+
+		// Get each event with its associated properties
+		SWTBotTreeItem[] eventItems = eventView.bot().tree().getAllItems();
+		final SWTBotTreeItem eventItem = eventItems[0];
+
+		// Check that expected properties show in the PropertiesView
+		bot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				eventItem.select();
+				return eventItem.isSelected();
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Event item selection failed";
+			}
+		});
+
+		// Assert prop values are correctly displayed
+		SWTBotTreeItem[] propTreeItems = propView.bot().tree().getAllItems();
+		for (SWTBotTreeItem propItem : propTreeItems) {
+			String propLabel = propItem.cell(0);
+			String propValue = propItem.cell(1);
+
+			if (!"Timestamp".equals(propLabel)) {
+				continue;
+			}
+			Assert.assertEquals(new UTCTime((short) 1, 1486749720.0, 0.123456).toString(), propValue);
+			return;
+		}
+		Assert.fail("Couldn't find timetamp details");
 	}
 
 	private Any createPropertySetChangeEvent() throws BadKind {
