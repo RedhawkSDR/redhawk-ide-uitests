@@ -28,11 +28,56 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 	}
 
 	@Test
-	public void testValue() throws CoreException {
-		testValue("Value:");
+	public void testValueString() throws CoreException {
+		testValueString("Value:");
 	}
 
-	protected void testValue(String valueLabel) throws CoreException {
+	@Test
+	public void testValueBoolean() throws CoreException {
+		testValueBoolean("Value:");
+	}
+
+	@Test
+	public void testValueChar() throws CoreException {
+		testValueChar("Value:");
+	}
+
+	@Test
+	public void testValueDouble() throws CoreException {
+		testValueDouble("Value:");
+	}
+
+	@Test
+	public void testValueFloat() throws CoreException {
+		testValueFloat("Value:");
+	}
+
+	@Test
+	public void testValueLong() throws CoreException {
+		testValueLong("Value:");
+	}
+
+	@Test
+	public void testValueLongLong() throws CoreException {
+		testValueLongLong("Value:");
+	}
+
+	@Test
+	public void testValueShorts() throws CoreException {
+		testValueShorts("Value:");
+	}
+
+	@Test
+	public void testValueObjRef() throws CoreException {
+		testValueObjRef("Value:");
+	}
+
+	@Test
+	public void testValueUTCTime() throws CoreException {
+		testValueUTCTime("Value:");
+	}
+
+	protected void testValueString(String valueLabel) {
 		editorBot.textWithLabel(valueLabel).setText("stringValue");
 		assertFormValid();
 		editorBot.textWithLabel(valueLabel).setText("\"\"");
@@ -40,7 +85,9 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 
 		editorBot.textWithLabel(valueLabel).setText("");
 		assertFormValid();
+	}
 
+	protected void testValueBoolean(String valueLabel) {
 		setType("boolean", "complex");
 		assertFormInvalid();
 		editorBot.comboBox(1).setSelection("");
@@ -50,14 +97,18 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 		assertFormInvalid();
 		editorBot.textWithLabel(valueLabel).setText("");
 		assertFormValid();
+	}
 
+	protected void testValueChar(String valueLabel) {
 		setType("char", "");
 		editorBot.textWithLabel(valueLabel).setText("1");
 		editorBot.textWithLabel(valueLabel).setText("badValue");
 		assertFormInvalid();
 		editorBot.textWithLabel(valueLabel).setText("");
 		assertFormValid();
+	}
 
+	protected void testValueDouble(String valueLabel) {
 		setType("double (64-bit)", "real");
 		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormValid();
@@ -71,7 +122,9 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 		editorBot.textWithLabel(valueLabel).setText("");
 		editorBot.comboBox(1).setSelection("");
 		assertFormValid();
+	}
 
+	protected void testValueFloat(String valueLabel) {
 		setType("float (32-bit)", "real");
 		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormValid();
@@ -85,52 +138,10 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 		editorBot.textWithLabel(valueLabel).setText("");
 		editorBot.comboBox(1).setSelection("");
 		assertFormValid();
+	}
 
-		setType("longlong (64-bit)", "real");
-		editorBot.textWithLabel(valueLabel).setText("-1.1");
-		assertFormInvalid();
-		editorBot.textWithLabel(valueLabel).setText("-1");
-		assertFormValid();
-		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
-		assertFormInvalid();
-		editorBot.textWithLabel(valueLabel).setText("-1+j1");
-		assertFormInvalid();
-		editorBot.comboBox(1).setSelection("complex");
-		editorBot.textWithLabel(valueLabel).setText("-1.1");
-		assertFormInvalid();
-		editorBot.textWithLabel(valueLabel).setText("-1");
-		assertFormValid();
-		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
-		assertFormInvalid();
-		editorBot.textWithLabel(valueLabel).setText("-1+j1");
-		assertFormValid();
-		editorBot.textWithLabel(valueLabel).setText("");
-		editorBot.comboBox(1).setSelection("");
-		assertFormValid();
-
+	protected void testValueLong(String valueLabel) {
 		setType("long (32-bit)", "real");
-		editorBot.textWithLabel(valueLabel).setText("-1.1");
-		assertFormInvalid();
-		editorBot.textWithLabel(valueLabel).setText("-1");
-		assertFormValid();
-		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
-		assertFormInvalid();
-		editorBot.textWithLabel(valueLabel).setText("-1+j1");
-		assertFormInvalid();
-		editorBot.comboBox(1).setSelection("complex");
-		editorBot.textWithLabel(valueLabel).setText("-1.1");
-		assertFormInvalid();
-		editorBot.textWithLabel(valueLabel).setText("-1");
-		assertFormValid();
-		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
-		assertFormInvalid();
-		editorBot.textWithLabel(valueLabel).setText("-1+j1");
-		assertFormValid();
-		editorBot.textWithLabel(valueLabel).setText("");
-		editorBot.comboBox(1).setSelection("");
-		assertFormValid();
-
-		setType("short (16-bit)", "real");
 		editorBot.textWithLabel(valueLabel).setText("-1.1");
 		assertFormInvalid();
 		editorBot.textWithLabel(valueLabel).setText("-1");
@@ -173,6 +184,30 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 		editorBot.textWithLabel(valueLabel).setText("");
 		editorBot.comboBox(1).setSelection("");
 		assertFormValid();
+	}
+
+	protected void testValueLongLong(String valueLabel) {
+		setType("longlong (64-bit)", "real");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
+		assertFormInvalid();
+		editorBot.textWithLabel(valueLabel).setText("-1");
+		assertFormValid();
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		assertFormInvalid();
+		editorBot.textWithLabel(valueLabel).setText("-1+j1");
+		assertFormInvalid();
+		editorBot.comboBox(1).setSelection("complex");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
+		assertFormInvalid();
+		editorBot.textWithLabel(valueLabel).setText("-1");
+		assertFormValid();
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		assertFormInvalid();
+		editorBot.textWithLabel(valueLabel).setText("-1+j1");
+		assertFormValid();
+		editorBot.textWithLabel(valueLabel).setText("");
+		editorBot.comboBox(1).setSelection("");
+		assertFormValid();
 
 		setType("ulonglong (64-bit)", "real");
 		editorBot.textWithLabel(valueLabel).setText("-1.1");
@@ -191,6 +226,30 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 		editorBot.textWithLabel(valueLabel).setText("1.1+j10.1");
 		assertFormInvalid();
 		editorBot.textWithLabel(valueLabel).setText("1+j1");
+		assertFormValid();
+		editorBot.textWithLabel(valueLabel).setText("");
+		editorBot.comboBox(1).setSelection("");
+		assertFormValid();
+	}
+
+	protected void testValueShorts(String valueLabel) {
+		setType("short (16-bit)", "real");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
+		assertFormInvalid();
+		editorBot.textWithLabel(valueLabel).setText("-1");
+		assertFormValid();
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		assertFormInvalid();
+		editorBot.textWithLabel(valueLabel).setText("-1+j1");
+		assertFormInvalid();
+		editorBot.comboBox(1).setSelection("complex");
+		editorBot.textWithLabel(valueLabel).setText("-1.1");
+		assertFormInvalid();
+		editorBot.textWithLabel(valueLabel).setText("-1");
+		assertFormValid();
+		editorBot.textWithLabel(valueLabel).setText("-1.1+j10.1");
+		assertFormInvalid();
+		editorBot.textWithLabel(valueLabel).setText("-1+j1");
 		assertFormValid();
 		editorBot.textWithLabel(valueLabel).setText("");
 		editorBot.comboBox(1).setSelection("");
@@ -217,9 +276,28 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 		editorBot.textWithLabel(valueLabel).setText("");
 		editorBot.comboBox(1).setSelection("");
 		assertFormValid();
+	}
 
+	protected void testValueObjRef(String valueLabel) {
 		setType("objref", "complex");
 		editorBot.textWithLabel(valueLabel).setText("1");
+		assertFormInvalid();
+	}
+
+	protected void testValueUTCTime(String valueLabel) {
+		setType("utctime", "real");
+		editorBot.textWithLabel(valueLabel).setText("abc");
+		assertFormInvalid();
+		editorBot.textWithLabel(valueLabel).setText("2017:01:02::03:04:05");
+		assertFormValid();
+		editorBot.textWithLabel(valueLabel).setText("123");
+		assertFormInvalid();
+		editorBot.textWithLabel(valueLabel).setText("2017:01:02::03:04:05.123456");
+		assertFormValid();
+		editorBot.textWithLabel(valueLabel).setText("");
+		assertFormValid();
+
+		setType("utctime", "complex");
 		assertFormInvalid();
 	}
 

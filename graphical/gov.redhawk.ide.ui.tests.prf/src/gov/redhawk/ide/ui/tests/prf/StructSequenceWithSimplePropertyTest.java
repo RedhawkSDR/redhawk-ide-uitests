@@ -67,9 +67,72 @@ public class StructSequenceWithSimplePropertyTest extends SimplePropertyTest {
 
 	@Test
 	@Override
-	public void testValue() throws CoreException {
+	public void testValueString() throws CoreException {
 		selectSimple();
-		testValue("Default Value:");
+		testValueString("Default Value:");
+	}
+
+	@Test
+	@Override
+	public void testValueBoolean() throws CoreException {
+		selectSimple();
+		testValueBoolean("Default Value:");
+	}
+
+	@Test
+	@Override
+	public void testValueChar() throws CoreException {
+		selectSimple();
+		testValueChar("Default Value:");
+	}
+
+	@Test
+	@Override
+	public void testValueDouble() throws CoreException {
+		selectSimple();
+		testValueDouble("Default Value:");
+	}
+
+	@Test
+	@Override
+	public void testValueFloat() throws CoreException {
+		selectSimple();
+		testValueFloat("Default Value:");
+	}
+
+	@Test
+	@Override
+	public void testValueLong() throws CoreException {
+		selectSimple();
+		testValueLong("Default Value:");
+	}
+
+	@Test
+	@Override
+	public void testValueLongLong() throws CoreException {
+		selectSimple();
+		testValueLongLong("Default Value:");
+	}
+
+	@Test
+	@Override
+	public void testValueShorts() throws CoreException {
+		selectSimple();
+		testValueShorts("Default Value:");
+	}
+
+	@Test
+	@Override
+	public void testValueObjRef() throws CoreException {
+		selectSimple();
+		testValueObjRef("Default Value:");
+	}
+
+	@Test
+	@Override
+	public void testValueUTCTime() throws CoreException {
+		selectSimple();
+		testValueUTCTime("Default Value:");
 	}
 
 	@Test

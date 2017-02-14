@@ -27,19 +27,60 @@ import org.junit.Test;
 public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 
 	@Test
-	public void testValues() throws CoreException {
+	public void testValuesChar() {
 		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
-		// Start with type selected as string
-		addValue(editorBot, "true");
-		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "a", false);
-		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "true", false);
-		assertFormValid();
-		addValue(editorBot, "true");
-		assertFormValid();
-		clearValues();
+		testValuesChar(valuesViewer);
+	}
 
+	@Test
+	public void testValuesDouble() {
+		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
+		testValuesDouble(valuesViewer);
+	}
+
+	@Test
+	public void testValuesFloat() {
+		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
+		testValuesFloat(valuesViewer);
+	}
+
+	@Test
+	public void testValuesLong() {
+		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
+		testValuesLong(valuesViewer);
+	}
+
+	@Test
+	public void testValuesLongLong() {
+		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
+		testValuesLongLong(valuesViewer);
+	}
+
+	@Test
+	public void testValuesShort() {
+		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
+		testValuesShort(valuesViewer);
+	}
+
+	@Test
+	public void testValuesObjRef() {
+		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
+		testValuesObjRef(valuesViewer);
+	}
+
+	@Test
+	public void testValuesString() {
+		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
+		testValuesString(valuesViewer);
+	}
+
+	@Test
+	public void testValuesUTCTime() {
+		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
+		testValuesUTCTime(valuesViewer);
+	}
+
+	private void testValuesChar(SWTBotTable valuesViewer) {
 		setType("char", "");
 		addValue(editorBot, "1");
 		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "abc", false);
@@ -49,7 +90,9 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		addValue(editorBot, "1");
 		assertFormValid();
 		clearValues();
+	}
 
+	private void testValuesDouble(SWTBotTable valuesViewer) {
 		setType("double (64-bit)", "");
 		editorBot.button("Add...").click();
 		SWTBotShell shell = bot.shell("New Value");
@@ -71,9 +114,12 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		assertFormValid();
 		clearValues();
 
+	}
+
+	private void testValuesFloat(SWTBotTable valuesViewer) {
 		setType("float (32-bit)", "complex");
 		editorBot.button("Add...").click();
-		shell = bot.shell("New Value");
+		SWTBotShell shell = bot.shell("New Value");
 		Assert.assertFalse("OK should not be enabled", shell.bot().button("OK").isEnabled());
 		shell.bot().textWithLabel("Value:").setText("abc");
 		Assert.assertFalse("OK should not be enabled", shell.bot().button("OK").isEnabled());
@@ -102,7 +148,9 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
 		clearValues();
+	}
 
+	private void testValuesLong(SWTBotTable valuesViewer) {
 		setType("long (32-bit)", "");
 		addValue(editorBot, "-11");
 		assertFormValid();
@@ -111,43 +159,10 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11", false);
 		assertFormValid();
 		editorBot.button("Add...").click();
-		shell = bot.shell("New Value");
+		SWTBotShell shell = bot.shell("New Value");
 		shell.bot().textWithLabel("Value:").setText("-11");
 		shell.bot().button("OK").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
-		assertFormValid();
-		clearValues();
-
-		setType("longlong (64-bit)", "");
-		addValue(editorBot, "-11");
-		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1.1", false);
-		assertFormInvalid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11", false);
-		assertFormValid();
-		editorBot.button("Add...").click();
-		shell = bot.shell("New Value");
-		shell.bot().textWithLabel("Value:").setText("-11");
-		shell.bot().button("OK").click();
-		bot.waitUntil(Conditions.shellCloses(shell));
-		assertFormValid();
-		clearValues();
-
-		setType("short (16-bit)", "complex");
-		editorBot.button("Add...").click();
-		shell = bot.shell("New Value");
-		shell.bot().textWithLabel("Value:").setText("1");
-		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
-		shell.bot().textWithLabel("Value:").setText("-11-j2");
-		shell.bot().button("OK").click();
-		bot.waitUntil(Conditions.shellCloses(shell));
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1", false);
-		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1+100iada", false);
-		assertFormInvalid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11-j2", false);
-		assertFormValid();
-		addValue(editorBot, "-11-j2");
 		assertFormValid();
 		clearValues();
 
@@ -165,6 +180,23 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
 		clearValues();
+	}
+
+	private void testValuesLongLong(SWTBotTable valuesViewer) {
+		setType("longlong (64-bit)", "");
+		addValue(editorBot, "-11");
+		assertFormValid();
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1.1", false);
+		assertFormInvalid();
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11", false);
+		assertFormValid();
+		editorBot.button("Add...").click();
+		SWTBotShell shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("-11");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+		assertFormValid();
+		clearValues();
 
 		setType("ulonglong (64-bit)", "");
 		addValue(editorBot, "11");
@@ -178,6 +210,26 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		shell.bot().textWithLabel("Value:").setText("11");
 		shell.bot().button("OK").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
+		assertFormValid();
+		clearValues();
+	}
+
+	private void testValuesShort(SWTBotTable valuesViewer) {
+		setType("short (16-bit)", "complex");
+		editorBot.button("Add...").click();
+		SWTBotShell shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("1");
+		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("-11-j2");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1", false);
+		assertFormValid();
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1+100iada", false);
+		assertFormInvalid();
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11-j2", false);
+		assertFormValid();
+		addValue(editorBot, "-11-j2");
 		assertFormValid();
 		clearValues();
 
@@ -209,14 +261,29 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
 		clearValues();
+	}
 
+	private void testValuesObjRef(SWTBotTable valuesViewer) {
 		setType("objref", "");
 		editorBot.button("Add...").click();
-		shell = bot.shell("New Value");
+		SWTBotShell shell = bot.shell("New Value");
 		shell.bot().textWithLabel("Value:").setText("1");
 		Assert.assertFalse("OK should not be enabled", shell.bot().button("OK").isEnabled());
 		shell.bot().button("Cancel").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
+		assertFormValid();
+		clearValues();
+	}
+
+	private void testValuesString(SWTBotTable valuesViewer) {
+		// Start with type selected as string
+		addValue(editorBot, "true");
+		assertFormValid();
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "a", false);
+		assertFormValid();
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "true", false);
+		assertFormValid();
+		addValue(editorBot, "true");
 		assertFormValid();
 		clearValues();
 
@@ -224,6 +291,29 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		addValue(editorBot, "abcd");
 		assertFormValid();
 		addValue(editorBot, "efg");
+		assertFormValid();
+		clearValues();
+	}
+
+	private void testValuesUTCTime(SWTBotTable valuesViewer) {
+		setType("utctime", "real");
+		editorBot.button("Add...").click();
+		SWTBotShell shell = bot.shell("New Value");
+		shell.bot().textWithLabel("Value:").setText("2017:01:02::03:04:05");
+		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("123");
+		Assert.assertFalse("OK should not be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("2017:01:02::03:04:05.123456");
+		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "2017:01:02::03:04:05", false);
+		assertFormValid();
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "abc", false);
+		assertFormInvalid();
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "2017:01:02::03:04:05.123456", false);
+		assertFormValid();
+		addValue(editorBot, "2000:12:31::23:59:59.999999");
 		assertFormValid();
 		clearValues();
 	}
@@ -257,15 +347,13 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 
 	private void clearValues() {
 		SWTBotTable valuesTable = editorBot.tableWithLabel("Values:");
-		if (valuesTable.rowCount() > 0) {
-			for (int i = 0; i <= valuesTable.rowCount(); i++) {
-				valuesTable.select(0);
-				SWTBotButton removeButton = editorBot.button("Remove", 1);
-				if (removeButton.isEnabled()) {
-					editorBot.button("Remove", 1).click();
-				} else {
-					break;
-				}
+		while (valuesTable.rowCount() > 0) {
+			valuesTable.select(0);
+			SWTBotButton removeButton = editorBot.button("Remove", 1);
+			if (removeButton.isEnabled()) {
+				editorBot.button("Remove", 1).click();
+			} else {
+				break;
 			}
 		}
 	}

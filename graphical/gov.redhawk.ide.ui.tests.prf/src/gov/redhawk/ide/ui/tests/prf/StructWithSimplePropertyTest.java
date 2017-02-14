@@ -56,9 +56,72 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 
 	@Test
 	@Override
-	public void testValue() throws CoreException {
+	public void testValueString() throws CoreException {
 		selectSimple();
-		super.testValue();
+		super.testValueString();
+	}
+
+	@Test
+	@Override
+	public void testValueBoolean() throws CoreException {
+		selectSimple();
+		super.testValueBoolean();
+	}
+
+	@Test
+	@Override
+	public void testValueChar() throws CoreException {
+		selectSimple();
+		super.testValueChar();
+	}
+
+	@Test
+	@Override
+	public void testValueDouble() throws CoreException {
+		selectSimple();
+		super.testValueDouble();
+	}
+
+	@Test
+	@Override
+	public void testValueFloat() throws CoreException {
+		selectSimple();
+		super.testValueFloat();
+	}
+
+	@Test
+	@Override
+	public void testValueLong() throws CoreException {
+		selectSimple();
+		super.testValueLong();
+	}
+
+	@Test
+	@Override
+	public void testValueLongLong() throws CoreException {
+		selectSimple();
+		super.testValueLongLong();
+	}
+
+	@Test
+	@Override
+	public void testValueShorts() throws CoreException {
+		selectSimple();
+		super.testValueShorts();
+	}
+
+	@Test
+	@Override
+	public void testValueObjRef() throws CoreException {
+		selectSimple();
+		super.testValueObjRef();
+	}
+
+	@Test
+	@Override
+	public void testValueUTCTime() throws CoreException {
+		selectSimple();
+		super.testValueUTCTime();
 	}
 
 	@Test

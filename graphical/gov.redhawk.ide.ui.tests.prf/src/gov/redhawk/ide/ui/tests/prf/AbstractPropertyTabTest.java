@@ -27,6 +27,7 @@ import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ui.editor.SCAFormEditor;
 import mil.jpeojtrs.sca.prf.PrfPackage;
 import mil.jpeojtrs.sca.prf.Properties;
 import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
@@ -59,10 +60,12 @@ public abstract class AbstractPropertyTabTest extends UITest {
 	}
 
 	protected void assertFormValid() {
+		bot.sleep(SCAFormEditor.getFieldBindingDelay());
 		EditorUtils.assertEditorTabValid(editor, EditorUtils.SPD_EDITOR_PROPERTIES_TAB_ID);
 	}
 
 	protected void assertFormInvalid() {
+		bot.sleep(SCAFormEditor.getFieldBindingDelay());
 		EditorUtils.assertEditorTabInvalid(editor, EditorUtils.SPD_EDITOR_PROPERTIES_TAB_ID);
 	}
 

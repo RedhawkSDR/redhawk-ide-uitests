@@ -24,7 +24,7 @@ public class ImportPropertyTest extends AbstractPropertyTabTest {
 
 	@Test
 	public void testAddPropertyFromBrowse() {
-		bot.button("Browse...").click();
+		editorBot.button("Browse...").click();
 		SWTBot dialogBot = bot.shell("Browse Properties").bot();
 
 		dialogBot.text().setText("frequency");
@@ -39,7 +39,7 @@ public class ImportPropertyTest extends AbstractPropertyTabTest {
 
 	@Test
 	public void testBug1295_BrowseWizardValidation() {
-		bot.button("Browse...").click();
+		editorBot.button("Browse...").click();
 		SWTBot dialogBot = bot.shell("Browse Properties").bot();
 
 		List<String> path = Arrays.asList("Target SDR", "Components", "rh.SigGen", "frequency");

@@ -78,9 +78,65 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 
 	@Test
 	@Override
-	public void testValues() throws CoreException {
+	public void testValuesChar() {
 		selectSimpleSequence();
-		super.testValues();
+		super.testValuesChar();
+	}
+
+	@Test
+	@Override
+	public void testValuesDouble() {
+		selectSimpleSequence();
+		super.testValuesDouble();
+	}
+
+	@Test
+	@Override
+	public void testValuesFloat() {
+		selectSimpleSequence();
+		super.testValuesFloat();
+	}
+
+	@Test
+	@Override
+	public void testValuesLong() {
+		selectSimpleSequence();
+		super.testValuesLong();
+	}
+
+	@Test
+	@Override
+	public void testValuesLongLong() {
+		selectSimpleSequence();
+		super.testValuesLongLong();
+	}
+
+	@Test
+	@Override
+	public void testValuesShort() {
+		selectSimpleSequence();
+		super.testValuesShort();
+	}
+
+	@Test
+	@Override
+	public void testValuesObjRef() {
+		selectSimpleSequence();
+		super.testValuesObjRef();
+	}
+
+	@Test
+	@Override
+	public void testValuesString() {
+		selectSimpleSequence();
+		super.testValuesString();
+	}
+
+	@Test
+	@Override
+	public void testValuesUTCTime() {
+		selectSimpleSequence();
+		super.testValuesUTCTime();
 	}
 
 	@Test
