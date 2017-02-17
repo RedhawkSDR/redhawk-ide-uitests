@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE deviceconfiguration PUBLIC "-//JTRS//DTD SCA V2.2.2 DCD//EN" "deviceconfiguration.dtd">
+<deviceconfiguration id="DCE:c2a66fdb-d3da-4971-a397-8e423203af8e" name="RequirementsNode">
+  <devicemanagersoftpkg>
+    <localfile name="/mgr/DeviceManager.spd.xml"/>
+  </devicemanagersoftpkg>
+  <componentfiles>
+    <componentfile id="GPP_8d980660-7059-4cd3-b210-7fd299928de2" type="SPD">
+      <localfile name="/devices/GPP/GPP.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="GPP_8d980660-7059-4cd3-b210-7fd299928de2"/>
+      <componentinstantiation id="RequirementsNode:GPP_1">
+        <usagename>GPP_1</usagename>
+        <deployerrequires>
+          <requires id="ReqId_1" value="ReqValue_1"/>
+          <requires id="ReqId_2" value="ReqValue_2"/>
+        </deployerrequires>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <domainmanager>
+    <namingservice name="REDHAWK_DEV/REDHAWK_DEV"/>
+  </domainmanager>
+</deviceconfiguration>
