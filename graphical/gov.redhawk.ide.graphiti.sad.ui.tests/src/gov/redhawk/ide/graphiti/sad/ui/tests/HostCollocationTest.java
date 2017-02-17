@@ -19,6 +19,9 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -435,6 +438,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 	private RHBotGefEditor hostCollocationAndUsesDeviceWaveform(String waveformName) {
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
+		bot.sleep(1000);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 		DiagramTestUtils.maximizeActiveWindow(gefBot);
 
@@ -538,5 +542,91 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		HostCollocation hostCollocation = DiagramTestUtils.getHostCollocationObject(editor, HOST_CO_NAME_2);
 		Assert.assertNotNull("Could not find host collocation with new name", hostCollocation);
 		Assert.assertEquals("Name value does not match expected value: " + HOST_CO_NAME_2, HOST_CO_NAME_2, hostCollocation.getName());
+	}
+
+	/**
+	 * IDE-1855 Edit support for usesdeviceref in hostcollocation
+	 */
+	@Test
+	public void usesDeviceRefs() {
+		RHBotGefEditor editor = hostCollocationAndUsesDeviceWaveform("usesDeviceRefs");
+
+		// Edit the HC
+		SWTBotGefEditPart swtBotGefEditPart = editor.getEditPart("collocation_1");
+		swtBotGefEditPart.select();
+		editor.clickContextMenu("Edit Host Collocation");
+
+		// Don't do anything - ensure the editor isn't dirty
+		SWTBotShell shell = bot.shell("Edit Host Collocation");
+		shell.bot().button("Cancel").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+		Assert.assertFalse(editor.isDirty());
+
+		// Edit the HC
+		swtBotGefEditPart = editor.getEditPart("collocation_1");
+		swtBotGefEditPart.select();
+		editor.clickContextMenu("Edit Host Collocation");
+		shell = bot.shell("Edit Host Collocation");
+
+		// Test the add/remove buttons
+		SWTBotButton addButton = shell.bot().button("Add ->");
+		SWTBotButton removeButton = shell.bot().button("<- Remove");
+
+		Assert.assertFalse(addButton.isEnabled());
+		Assert.assertFalse(removeButton.isEnabled());
+		Assert.assertEquals(1, shell.bot().table(0).rowCount());
+		Assert.assertEquals(0, shell.bot().table(1).rowCount());
+
+		shell.bot().table(0).select("Uses Device FrontEndTuner_1");
+		Assert.assertTrue(addButton.isEnabled());
+		Assert.assertFalse(removeButton.isEnabled());
+
+		addButton.click();
+		Assert.assertFalse(addButton.isEnabled());
+		Assert.assertFalse(removeButton.isEnabled());
+		Assert.assertEquals(0, shell.bot().table(0).rowCount());
+		Assert.assertEquals(1, shell.bot().table(1).rowCount());
+
+		shell.bot().table(1).select("Uses Device FrontEndTuner_1");
+		Assert.assertFalse(addButton.isEnabled());
+		Assert.assertTrue(removeButton.isEnabled());
+
+		removeButton.click();
+		Assert.assertFalse(addButton.isEnabled());
+		Assert.assertFalse(removeButton.isEnabled());
+		Assert.assertEquals(1, shell.bot().table(0).rowCount());
+		Assert.assertEquals(0, shell.bot().table(1).rowCount());
+
+		// Add a single uses device
+		shell.bot().table(0).select("Uses Device FrontEndTuner_1");
+		addButton.click();
+		shell.bot().button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+
+		// Verify model
+		HostCollocation hc = DiagramTestUtils.getHostCollocationObject(editor, "collocation_1");
+		Assert.assertEquals(1, hc.getUsesDeviceRef().size());
+		Assert.assertEquals("FrontEndTuner_1", hc.getUsesDeviceRef().get(0).getRefid());
+
+		// Edit again
+		swtBotGefEditPart = editor.getEditPart("collocation_1");
+		swtBotGefEditPart.select();
+		editor.clickContextMenu("Edit Host Collocation");
+		shell = bot.shell("Edit Host Collocation");
+
+		Assert.assertFalse(shell.bot().button("Add ->").isEnabled());
+		Assert.assertFalse(shell.bot().button("<- Remove").isEnabled());
+		Assert.assertEquals(0, shell.bot().table(0).rowCount());
+		Assert.assertEquals(1, shell.bot().table(1).rowCount());
+
+		// Remove the uses device
+		shell.bot().table(1).select("Uses Device FrontEndTuner_1");
+		shell.bot().button("<- Remove").click();
+		shell.bot().button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+
+		// Verify model
+		hc = DiagramTestUtils.getHostCollocationObject(editor, "collocation_1");
+		Assert.assertEquals(0, hc.getUsesDeviceRef().size());
 	}
 }
