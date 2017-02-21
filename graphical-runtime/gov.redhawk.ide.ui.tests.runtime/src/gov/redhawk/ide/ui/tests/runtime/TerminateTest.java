@@ -26,7 +26,7 @@ public class TerminateTest extends UIRuntimeTest {
 	private static final String SIG_GEN = "rh.SigGen";
 	private static final String SIG_GEN_1 = "SigGen_1";
 
-	private static final String SHARED_ADDRESS_COMP = "SharedAddyComp";
+	private static final String SHARED_ADDRESS_COMP = "rh.SharedAddyComp";
 	private static final String SHARED_ADDRESS_COMP_1 = "SharedAddyComp_1";
 	private static final String SHARED_ADDRESS_COMP_2 = "SharedAddyComp_2";
 	private static final String COMPONENT_HOST_1 = "ComponentHost_1";
