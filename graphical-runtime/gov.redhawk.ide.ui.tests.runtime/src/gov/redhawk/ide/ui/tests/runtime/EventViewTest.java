@@ -20,10 +20,12 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.jacorb.JacorbUtil;
 import org.junit.AfterClass;
@@ -244,9 +246,10 @@ public class EventViewTest extends UIRuntimeTest {
 		SWTBotView eventView = ViewUtils.getEventView(bot);
 		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
 
-		// Get each event with its associated properties
-		SWTBotTreeItem[] eventItems = eventView.bot().tree().getAllItems();
-		final SWTBotTreeItem eventItem = eventItems[0];
+		// Get the event
+		SWTBotTree tree = eventView.bot().tree();
+		bot.waitWhile(Conditions.treeHasRows(tree, 0));
+		final SWTBotTreeItem eventItem = tree.getAllItems()[0];
 		String type = eventItem.cell(1);
 
 		// Check that expected properties show in the PropertiesView
