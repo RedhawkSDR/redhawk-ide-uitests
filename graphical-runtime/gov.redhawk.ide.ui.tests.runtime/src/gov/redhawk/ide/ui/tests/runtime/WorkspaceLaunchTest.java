@@ -15,8 +15,11 @@ import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.forms.finder.SWTFormsBot;
 import org.eclipse.swtbot.forms.finder.widgets.SWTBotImageHyperlink;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ComponentUtils;
@@ -39,13 +42,13 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void workspaceLaunchTest() {
-		String projectName = "cppComponent";
-		String projectNameOne = projectName + "_1";
+		final String projectName = "cppComponent";
+		final String projectNameOne = projectName + "_1";
 		createProject(projectName);
 
 		// Launch via the Overview tab
 		ProjectExplorerUtils.openProjectInEditor(bot, projectName, projectName + ".spd.xml");
-		SWTBotEditor editor = bot.editorByTitle(projectName);
+		final SWTBotEditor editor = bot.editorByTitle(projectName);
 		editor.bot().cTabItem("Overview").activate();
 
 		SWTFormsBot formsBot = new SWTFormsBot();
@@ -60,11 +63,49 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 
 		// Launch the toolbar "Run" button
 		ProjectExplorerUtils.selectNode(bot, projectName).select();
-		bot.toolbarDropDownButtonWithTooltip("Run As...").click();
-		bot.waitUntil(Conditions.shellIsActive("Run As"));
-		SWTBotShell shell = bot.shell("Run As");
-		shell.bot().button("OK").click();
-		bot.waitUntil(Conditions.shellCloses(shell));
+		bot.waitUntil(new DefaultCondition() {
+
+			private String errorMsg = "Failed to click \"Run As... \" toolbar button";
+
+			@Override
+			public boolean test() throws Exception {
+				// The specific tooltip that pops is inconsistent, need to check for all three possibilities
+				try {
+					bot.toolbarDropDownButtonWithTooltip("Run").click();
+					return true;
+				} catch (WidgetNotFoundException e) {
+					errorMsg = e.getMessage();
+				}
+
+				try {
+					bot.toolbarDropDownButtonWithTooltip("Run " + projectName + ".spd.xml").click();
+					return true;
+				} catch (WidgetNotFoundException e) {
+					errorMsg = e.getMessage();
+				}
+
+				try {
+					bot.toolbarDropDownButtonWithTooltip("Run As...").click();
+
+					// This will only open if "Run As..." ends up being the run command clicked
+					bot.waitUntil(Conditions.shellIsActive("Run As"));
+					SWTBotShell shell = bot.shell("Run As");
+					shell.bot().button("OK").click();
+					bot.waitUntil(Conditions.shellCloses(shell));
+
+					return true;
+				} catch (WidgetNotFoundException e) {
+					errorMsg = e.getMessage();
+				}
+				return false;
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return errorMsg;
+			}
+		});
+
 		assertLaunch(projectNameOne);
 	}
 
