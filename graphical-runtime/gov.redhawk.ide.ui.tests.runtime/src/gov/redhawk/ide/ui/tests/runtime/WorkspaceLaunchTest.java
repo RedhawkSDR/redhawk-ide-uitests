@@ -19,6 +19,7 @@ import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ComponentUtils;
@@ -86,12 +87,6 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 				try {
 					bot.toolbarDropDownButtonWithTooltip("Run As...").click();
 
-					// This will only open if "Run As..." ends up being the run command clicked
-					bot.waitUntil(Conditions.shellIsActive("Run As"));
-					SWTBotShell shell = bot.shell("Run As");
-					shell.bot().button("OK").click();
-					bot.waitUntil(Conditions.shellCloses(shell));
-
 					return true;
 				} catch (WidgetNotFoundException e) {
 					errorMsg = e.getMessage();
@@ -104,6 +99,15 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 				return errorMsg;
 			}
 		});
+
+		try {
+			bot.waitUntil(Conditions.shellIsActive("Run As"));
+			SWTBotShell shell = bot.shell("Run As");
+			shell.bot().button("OK").click();
+			bot.waitUntil(Conditions.shellCloses(shell));
+		} catch (TimeoutException e) {
+			// PASS, This dialog may not show, depending on which Run version was selected above
+		}
 
 		assertLaunch(projectNameOne);
 	}
