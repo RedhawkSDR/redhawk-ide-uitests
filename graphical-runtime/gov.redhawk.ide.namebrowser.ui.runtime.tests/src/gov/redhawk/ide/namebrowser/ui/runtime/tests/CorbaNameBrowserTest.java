@@ -43,6 +43,7 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 		bot.menu("Window").menu("Show View").menu("CORBA Name Browser").click();
 		SWTBotView view = bot.viewById("gov.redhawk.ui.views.namebrowserview");
 		view.bot().buttonWithTooltip("Connect to the specified host").click();
+		fullName = fullName.replace(".", "\\.");
 		String[] path = { "127.0.0.1", DOMAIN, fullName + "_1" };
 		SWTBotTreeItem node = StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), Arrays.asList(path));
 		Assert.assertTrue("Waveform children not displaying", node.getItems().length == 2);
