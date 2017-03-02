@@ -545,6 +545,61 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	}
 
 	/**
+	 * IDE-1855 Test what happens when the hostcollocation is edited, and there are no usesdevices
+	 */
+	@Test
+	public void usesDeviceRefs_noUsesDevices() {
+		final SWTBotShell originalShell = bot.activeShell();
+		RHBotGefEditor editor = hostCollocationAndUsesDeviceWaveform("usesDeviceRefs_noUsesDevices");
+
+		// Edit the HC
+		SWTBotGefEditPart swtBotGefEditPart = editor.getEditPart("collocation_1");
+		swtBotGefEditPart.select();
+		editor.clickContextMenu("Edit Host Collocation");
+
+		// Add the uses device to the collocation
+		SWTBotShell shell = bot.shell("Edit Host Collocation");
+		shell.bot().table(0).select("Uses Device " + FE_USES_1);
+		shell.bot().button("Add ->").click();
+		shell.bot().button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+
+		// Delete the uses device
+		SWTBotGefEditPart gefEditPart = editor.getEditPart(FE_USES_1);
+		DiagramTestUtils.deleteFromDiagram(editor, gefEditPart);
+
+		// Edit the HC
+		swtBotGefEditPart = editor.getEditPart("collocation_1");
+		swtBotGefEditPart.select();
+		editor.clickContextMenu("Edit Host Collocation");
+
+		// Remove the uses device from the collocation
+		shell = bot.shell("Edit Host Collocation");
+		shell.bot().table(1).select("Uses Device " + FE_USES_1);
+		shell.bot().button("<- Remove").click();
+
+		// The uses device should disappear
+		Assert.assertEquals(0, shell.bot().table(0).rowCount());
+		Assert.assertEquals(0, shell.bot().table(0).rowCount());
+		shell.bot().button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+
+		// Edit the HC
+		swtBotGefEditPart = editor.getEditPart("collocation_1");
+		swtBotGefEditPart.select();
+		editor.clickContextMenu("Edit Host Collocation");
+
+		// Ensure there's an error, we can't finish
+		shell = bot.shell("Edit Host Collocation");
+		shell.bot().text(" There are no uses devices in the SAD file");
+		Assert.assertFalse(shell.bot().button("Finish").isEnabled());
+		shell.bot().button("Cancel").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+
+		originalShell.activate();
+	}
+
+	/**
 	 * IDE-1855 Edit support for usesdeviceref in hostcollocation
 	 */
 	@Test
