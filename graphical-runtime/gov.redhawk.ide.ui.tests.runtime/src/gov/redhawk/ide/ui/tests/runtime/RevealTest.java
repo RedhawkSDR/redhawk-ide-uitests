@@ -78,7 +78,7 @@ public class RevealTest extends UITest {
 		ref = ExecutableDeviceHelper.narrow(session.getPOA().servant_to_reference(new ExecutableDevicePOATie(stubDevice)));
 		devMgr.registerDevice(ref);
 
-		devMgr.fetchDevices(new NullProgressMonitor(), null);
+		devMgr.fetchDevices(new NullProgressMonitor(), RefreshDepth.NONE);
 		ScaDevice< ? > device = devMgr.getDevice("analogDevice");
 		device.refresh(null, RefreshDepth.SELF);
 		viewBot.sleep(500);
