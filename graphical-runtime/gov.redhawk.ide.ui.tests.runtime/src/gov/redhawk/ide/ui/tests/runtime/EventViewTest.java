@@ -161,6 +161,9 @@ public class EventViewTest extends UIRuntimeTest {
 		assertPropertyDetails();
 	}
 
+	/**
+	 * IDE-1841 This event tests display of the new EVENT_CHANNEL source category type
+	 */
 	@Test
 	public void domainRemovedEvent() throws BadKind, Disconnected {
 		openEventView();
@@ -409,7 +412,7 @@ public class EventViewTest extends UIRuntimeTest {
 		String producerId = "producerId";
 		String sourceId = "sourceId";
 		String sourceName = "sourceName";
-		SourceCategoryType sourceCategory = SourceCategoryType.APPLICATION;
+		SourceCategoryType sourceCategory = SourceCategoryType.EVENT_CHANNEL;
 		DomainManagementObjectRemovedEventType domainRemoveEvent = new DomainManagementObjectRemovedEventType(producerId, sourceId, sourceName, sourceCategory);
 
 		Any any = orb.create_any();
@@ -419,7 +422,7 @@ public class EventViewTest extends UIRuntimeTest {
 		eventFields.add(producerId);
 		eventFields.add(sourceId);
 		eventFields.add(sourceName);
-		eventFields.add("APPLICATION");
+		eventFields.add("EVENT_CHANNEL"); // IDE-1841
 
 		return any;
 	}
