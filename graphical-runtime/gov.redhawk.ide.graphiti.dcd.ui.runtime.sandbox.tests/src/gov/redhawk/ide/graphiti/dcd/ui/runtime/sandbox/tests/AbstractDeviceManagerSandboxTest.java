@@ -37,6 +37,9 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 	static final String DEVICE_STUB_DOUBLE_IN_PORT = "dataDouble_in";
 	static final String DEVICE_STUB_DOUBLE_OUT_PORT = "dataDouble_out";
 
+	static final String SERVICE_STUB = "ServiceStub";
+	static final String SERVICE_STUB_1 = "ServiceStub_1";
+
 	protected RHSWTGefBot gefBot;
 
 	@Before
