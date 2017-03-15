@@ -37,6 +37,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
+		bot.sleep(500);
 		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(DEVICE_STUB));
 
 		// wait until device not present in REDHAWK Explorer Chalkboard & Diagram
@@ -60,6 +61,26 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		// wait until device not present in REDHAWK Explorer Chalkboard & Diagram
 		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, DEVICE_STUB_1);
 		Assert.assertNull(editor.getEditPart(DEVICE_STUB));
+	}
+	
+	/**
+	 * IDE-1037
+	 * Adds, then terminates a service via dev manager chalkboard diagram.
+	 * Verify it's no longer present in REDHAWK Explorer Sandbox or Diagram
+	 */
+	@Test
+	public void addTerminateServiceInChalkboardDiagram() {
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
+
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SERVICE_STUB, 0, 0);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SERVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, SERVICE_STUB_1);
+		bot.sleep(500);
+		DiagramTestUtils.terminateFromDiagram(editor, editor.getEditPart(SERVICE_STUB));
+
+		// wait until service not present in REDHAWK Explorer Chalkboard & Diagram
+		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER, SERVICE_STUB_1);
+		Assert.assertNull(editor.getEditPart(SERVICE_STUB));
 	}
 
 	/**
@@ -158,32 +179,44 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	}
 
 	/**
-	 * IDE-11199
-	 * Adds, then removes a device via REDHAWK Explorer Dev Manager Chalkboard.
+	 * IDE-1119
+	 * Adds then terminate a device via the REDHAWK Explorer
 	 * Verify its no longer present in Diagram
 	 */
 	@Test
-	public void addRemoveDeviceInScaExplorer() {
+	public void addTerminateDeviceInExplorerView() {
 		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 
 		// Launch device from TargetSDR
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, DEVICE_STUB, "python");
 
-		// verify DeviceStub was added to the diagram
+		// verify DeviceStub was added to the diagram and explorer view
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, DEVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 		// delete device from REDHAWK Explorer dev manager chalkboard
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 		ScaExplorerTestUtils.terminate(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 		// verify DeviceStub device not present in Diagram
 		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, DEVICE_STUB_1);
 
+	}
+
+	/**
+	 * IDE-1119
+	 * Adds, then removes a device via terminating the REDHAWK Explorer Sandbox Device Manager
+	 * Verify its no longer present in Diagram
+	 */
+	@Test
+	public void addDevice_TerminateDeviceManager() {
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
+
 		// Launch device from TargetSDR
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, DEVICE_STUB, "python");
 
-		// verify DeviceStub was added to the diagram
+		// verify DeviceStub was added to the diagram and explorer view
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, DEVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
 
 		// terminate device manager
 		ScaExplorerTestUtils.terminate(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER);
@@ -192,6 +225,97 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, DEVICE_STUB_1);
 	}
 
+	/**
+	 * IDE-1119
+	 * Adds, then removes a device via calling shutdown on the REDHAWK Explorer Sandbox Device Manager
+	 * Verify its no longer present in Diagram
+	 */
+	@Test
+	public void addDevice_ShutdownDeviceManager() {
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
+
+		// Launch device from TargetSDR
+		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, DEVICE_STUB, "python");
+
+		// verify DeviceStub was added to the diagram and explorer view
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, DEVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, DEVICE_STUB_1);
+
+		// terminate device manager
+		ScaExplorerTestUtils.shutdown(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER);
+
+		// verify DeviceStub not present in Diagram
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, DEVICE_STUB_1);
+	}
+
+	/**
+	 * IDE-1037
+	 * Adds then terminate a service via the REDHAWK Explorer
+	 * Verify its no longer present in Diagram
+	 */
+	@Test
+	public void addTerminateServiceInExplorerView() {
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
+
+		// Launch service from TargetSDR
+		ScaExplorerTestUtils.launchServiceFromTargetSDR(bot, SERVICE_STUB, "python");
+
+		// verify ServiceStub was added to the diagram and explorer view
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SERVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, SERVICE_STUB_1);
+
+		// delete service from REDHAWK Explorer dev manager chalkboard
+		ScaExplorerTestUtils.terminate(bot, SANDBOX_DEVMGR_PATH, SERVICE_STUB_1);
+
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, SERVICE_STUB_1);
+	}
+
+	/**
+	 * IDE-1880
+	 * Adds, then removes a service via terminating the REDHAWK Explorer Sandbox Device Manager
+	 * Verify its no longer present in Diagram
+	 */
+	@Test
+	public void addService_TerminateDeviceManager() {
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
+
+		// Launch service from TargetSDR
+		ScaExplorerTestUtils.launchServiceFromTargetSDR(bot, SERVICE_STUB, "python");
+
+		// verify ServiceStub was added to the diagram and explorer view
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SERVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, SERVICE_STUB_1);
+
+		// terminate device manager
+		ScaExplorerTestUtils.terminate(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER);
+
+		// verify ServiceStub not present in Diagram
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, SERVICE_STUB_1);
+	}
+
+	/**
+	 * IDE-1881
+	 * Adds, then removes a service via calling shutdown on the REDHAWK Explorer Sandbox Device Manager
+	 * Verify its no longer present in Diagram
+	 */
+	@Test
+	public void addService_ShutdownDeviceManager() {
+		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
+
+		// Launch service from TargetSDR
+		ScaExplorerTestUtils.launchServiceFromTargetSDR(bot, SERVICE_STUB, "python");
+
+		// verify ServiceStub was added to the diagram and explorer view
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SERVICE_STUB_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, SERVICE_STUB_1);
+
+		// terminate device manager
+		ScaExplorerTestUtils.shutdown(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER);
+
+		// verify ServiceStub not present in Diagram
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, SERVICE_STUB_1);
+	}
+	
 	/**
 	 * IDE-1119
 	 * Adds, then removes device connections via REDHAWK Explorer view.
@@ -230,7 +354,7 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	 * devices in diagram reflect appropriate color changes
 	 */
 	@Test
-	public void startStopDevicesFromScaExplorer() {
+	public void startStopDevicesFromRedhawkExplorer() {
 		editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 
 		// Launch two devices from TargetSDR

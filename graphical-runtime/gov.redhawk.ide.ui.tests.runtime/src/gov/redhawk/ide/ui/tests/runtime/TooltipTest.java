@@ -20,7 +20,7 @@ import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.finder.widgets.RHBotTreeItem;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
-public class ExplorerChalkboardTest extends UIRuntimeTest {
+public class TooltipTest extends UIRuntimeTest {
 
 	private static final String SANDBOX = "Sandbox";
 	private static final String CHALKBOARD = "Chalkboard";

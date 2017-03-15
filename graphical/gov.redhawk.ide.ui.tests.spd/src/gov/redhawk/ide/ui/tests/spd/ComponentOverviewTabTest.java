@@ -10,13 +10,6 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.spd;
 
-import gov.redhawk.ide.swtbot.EditorUtils;
-import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.UITest;
-import gov.redhawk.ui.editor.SCAFormEditor;
-import mil.jpeojtrs.sca.spd.SoftPkg;
-import mil.jpeojtrs.sca.util.DceUuidUtil;
-
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
@@ -26,6 +19,17 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.ComponentUtils;
+import gov.redhawk.ide.swtbot.EditorUtils;
+import gov.redhawk.ide.swtbot.ErrorLogUtils;
+import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
+import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
+import gov.redhawk.ui.editor.SCAFormEditor;
+import mil.jpeojtrs.sca.spd.SoftPkg;
+import mil.jpeojtrs.sca.util.DceUuidUtil;
 
 public class ComponentOverviewTabTest extends UITest {
 
@@ -176,5 +180,21 @@ public class ComponentOverviewTabTest extends UITest {
 		button.click();
 		SWTBotShell shell = bot.shell("Create control panel");
 		shell.bot().button("Cancel").click();
+	}
+
+	/**
+	 * IDE-1807 - Confirm that ActionHandler conflicts are not thrown when multiple SPD editors are open
+	 */
+	@Test
+	public void multipleEditorTest() {
+		// Open second editor, first editor was open in the @before function
+		final String secondProject = "testComponent";
+		ComponentUtils.createComponentProject(editorBot, secondProject, "C++");
+		ProjectExplorerUtils.waitUntilNodeAppears(bot, secondProject);
+
+		RHSWTGefBot gefBot = new RHSWTGefBot();
+		String errorMsg = ErrorLogUtils.checkErrorLogForMessage(gefBot, "Conflicting handlers");
+		Assert.assertNull(errorMsg, errorMsg);
+
 	}
 }
