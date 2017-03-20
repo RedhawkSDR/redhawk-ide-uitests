@@ -40,8 +40,8 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 
 	@Override
 	public void after() throws CoreException {
-		ScaExplorerTestUtils.terminate(gefBot, AbstractDeviceManagerSandboxTest.CHALKBOARD_PARENT_PATH, AbstractDeviceManagerSandboxTest.DEVICE_MANAGER);
-		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(gefBot, AbstractDeviceManagerSandboxTest.CHALKBOARD_PARENT_PATH, AbstractDeviceManagerSandboxTest.DEVICE_MANAGER);
+		ScaExplorerTestUtils.terminate(gefBot, AbstractDeviceManagerSandboxTest.SANDBOX_PATH, AbstractDeviceManagerSandboxTest.DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(gefBot, AbstractDeviceManagerSandboxTest.SANDBOX_PATH, AbstractDeviceManagerSandboxTest.DEVICE_MANAGER);
 		ConsoleUtils.removeTerminatedLaunches(bot);
 		super.after();
 	}

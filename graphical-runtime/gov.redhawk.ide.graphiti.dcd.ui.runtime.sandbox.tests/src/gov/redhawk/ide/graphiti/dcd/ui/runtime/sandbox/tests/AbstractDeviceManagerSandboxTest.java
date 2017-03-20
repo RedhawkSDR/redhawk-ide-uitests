@@ -23,7 +23,7 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
  */
 public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 
-	static final String[] CHALKBOARD_PARENT_PATH = { "Sandbox" };
+	static final String[] SANDBOX_PATH = { "Sandbox" };
 	static final String DEVICE_MANAGER = "Device Manager";
 	static final String[] SANDBOX_DEVMGR_PATH = new String[] { "Sandbox", "Device Manager" };
 
@@ -49,8 +49,8 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 
 	@After
 	public void afterTest() {
-		ScaExplorerTestUtils.terminate(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER);
-		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(bot, CHALKBOARD_PARENT_PATH, DEVICE_MANAGER);
+		ScaExplorerTestUtils.terminate(bot, SANDBOX_PATH, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(bot, SANDBOX_PATH, DEVICE_MANAGER);
 		ConsoleUtils.removeTerminatedLaunches(bot);
 		bot.closeAllEditors();
 	}
