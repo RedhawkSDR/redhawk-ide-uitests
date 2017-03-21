@@ -11,6 +11,7 @@
 package gov.redhawk.ide.namebrowser.ui.runtime.tests;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -55,8 +56,14 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 		SWTBotView view = bot.viewById("gov.redhawk.ui.views.namebrowserview");
 		view.bot().buttonWithTooltip("Connect to the specified host").click();
 		fullName = fullName.replace(".", "\\.");
-		String[] path = { "127.0.0.1", domainName, fullName + "_1" };
-		SWTBotTreeItem node = StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), Arrays.asList(path));
+		
+		// Wait for the component nodes to appear
+		String[] path = { "127.0.0.1", domainName, fullName + "_1", "HardLimit_1" };
+		List<String> pathList = Arrays.asList(path);
+		StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), pathList);
+		
+		pathList = pathList.subList(0, pathList.size()-1);
+		SWTBotTreeItem node = StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), pathList);
 		Assert.assertTrue("Waveform children not displaying", node.getItems().length == 2);
 	}
 
