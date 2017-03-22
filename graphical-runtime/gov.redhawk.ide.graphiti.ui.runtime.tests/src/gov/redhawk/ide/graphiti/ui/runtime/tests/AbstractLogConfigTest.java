@@ -37,8 +37,8 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 	 * Launch the resource whose logging configuration we want to edit.
 	 * @return - The SWTBotTreeItem for the resource in the REDHAWK Explorer
 	 */
-	protected abstract SWTBotTreeItem launchLoggingResource();
 
+	protected abstract SWTBotTreeItem launchLoggingResource();
 	protected abstract SWTBotView showConsole();
 
 	protected abstract SWTBotGefEditPart openResourceDiagram();
@@ -62,7 +62,6 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 		resourceTreeItem = launchLoggingResource();
 
 		// Open the log config editor via the explorer view
-		resourceTreeItem.select();
 		resourceTreeItem.contextMenu().menu("Logging", "Edit Log Config").click();
 
 		// Handle warning dialog
@@ -73,7 +72,8 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 		// Make sure the editor comes up (check for tab title)
 		SWTBotEditor editor = bot.editorByTitle("Edit Log Config");
 
-		// Open the console view and make sure that no TRACE messages show up (5 seconds)
+		// Refresh the resource, then check the console view and make sure that no TRACE messages show up (5 seconds)
+		resourceTreeItem.contextMenu("Refresh");
 		final SWTBotView consoleView = showConsole();
 		try {
 			bot.waitUntil(new DefaultCondition() {
@@ -87,7 +87,7 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 				public String getFailureMessage() {
 					return "Failure is expected, Logging should not be set to TRACE as default";
 				}
-			}, 10000);
+			});
 			Assert.fail("TRACE messages found in console view.  Logging should not be set to TRACE as default");
 		} catch (TimeoutException e) {
 			// PASS - We don't expect TRACE messages to be thrown at this point
@@ -100,9 +100,9 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 		editor.toTextEditor().setText(text);
 		editor.save();
 
-		// Focus console view and wait for trace messages to show up
+		// Refresh the resource. Focus console view and wait for trace messages to show up.
+		resourceTreeItem.contextMenu("Refresh");
 		consoleView.setFocus();
-
 		bot.waitUntil(new DefaultCondition() {
 
 			@Override
@@ -114,7 +114,7 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 			public String getFailureMessage() {
 				return "Edits to the config log did not take effect.  Expected TRACE messages to be output to the console view";
 			}
-		}, 10000);
+		});
 
 		// Close editor
 		editor.close();
@@ -142,7 +142,8 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 		bot.sleep(250);
 		consoleView.toolbarButton("Clear Console").click();
 
-		// Make sure the console view no longer pushes Trace messages (10 seconds)
+		// Refresh the resource. Make sure the console view no longer pushes Trace messages (10 seconds)
+		resourceTreeItem.contextMenu("Refresh");
 		try {
 			bot.waitUntil(new DefaultCondition() {
 
@@ -155,7 +156,7 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 				public String getFailureMessage() {
 					return "Failure is expected, Logging should not be set to TRACE as default";
 				}
-			}, 10000);
+			});
 			Assert.fail("TRACE messages found in console view.  Logging should not be set to TRACE as default");
 		} catch (TimeoutException e) {
 			// PASS - We don't expect TRACE messages to be thrown at this point
