@@ -36,7 +36,7 @@ public class OctaveWizardTest extends AbstractCreationWizardTest {
 
 	@Test
 	@Override
-	public void testNonDefaultLocation() throws IOException {
+	public void nonDefaultLocation() throws IOException {
 		final String projectName = "OctaveProject_LocationTest";
 
 		getWizardBot().textWithLabel("&Project name:").setText(projectName);
