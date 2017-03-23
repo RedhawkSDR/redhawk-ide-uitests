@@ -50,7 +50,7 @@ public class LocalDevicePropertyTest extends AbstractPropertiesViewRuntimeTest {
 	@Override
 	protected EList<ScaAbstractProperty< ? >> getModelObjectProperties() {
 		LocalSca localSca = ScaDebugPlugin.getInstance().getLocalSca();
-		for (ScaDevice< ? > dev : localSca.getSandboxDeviceManager().getAllDevices()) {
+		for (ScaDevice< ? > dev : localSca.getSandboxDeviceManager().getRootDevices()) {
 			if (DEVICE_NAME_NUM.equals(dev.getLabel())) {
 				return dev.getProperties();
 			}

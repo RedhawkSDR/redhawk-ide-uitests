@@ -89,7 +89,7 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 		DiagramTestUtils.waitForComponentState(bot, editor, NSDEV_1, ComponentState.STOPPED);
 
 		// Ensure it doesn't have any problems
-		ScaDevice< ? > device = ScaDebugPlugin.getInstance().getLocalSca().getSandboxDeviceManager().getAllDevices().get(0);
+		ScaDevice< ? > device = ScaDebugPlugin.getInstance().getLocalSca().getSandboxDeviceManager().getRootDevices().get(0);
 		Assert.assertNotNull(device);
 		Assert.assertEquals(NSDEV_1, device.getLabel());
 		Assert.assertTrue(device.getStatus().isOK());
