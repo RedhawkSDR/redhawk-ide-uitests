@@ -91,6 +91,14 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 
 		setupCodeGeneration(iCodegenInfo);
 
+		// IDE-70 - Package names for Java implementations should start with a lowercase letter.
+		if (lang.equals("Java")) {
+			String packageText = getWizardBot().textWithLabel("Package:").getText();
+			Assert.assertFalse(packageText.isEmpty());
+			Assert.assertTrue(Character.isUpperCase(name.charAt(0)));
+			Assert.assertTrue(Character.isLowerCase(packageText.charAt(0)));
+		}
+
 		getWizardBot().button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(getWizardShell()));
 

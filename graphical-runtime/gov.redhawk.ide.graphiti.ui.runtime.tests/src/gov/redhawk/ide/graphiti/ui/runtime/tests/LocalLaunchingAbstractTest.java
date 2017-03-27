@@ -45,6 +45,7 @@ public abstract class LocalLaunchingAbstractTest extends UIRuntimeTest {
 
 	/**
 	 * IDE-1384 Show resources as disabled/gray while they're launching
+	 * IDE-1894 Show services as disabled/gray too
 	 * Ensure some context menus are not present / disabled while the resource is starting up
 	 */
 	@Test

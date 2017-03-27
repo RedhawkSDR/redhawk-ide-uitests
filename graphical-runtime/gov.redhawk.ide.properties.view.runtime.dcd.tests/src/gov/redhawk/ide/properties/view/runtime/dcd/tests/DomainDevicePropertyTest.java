@@ -69,8 +69,7 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 		ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(Display.getCurrent());
 		ScaDomainManager dom = registry.findDomain(domain);
 		EList<ScaDeviceManager> devMgrs = dom.getDeviceManagers();
-		EList<ScaDevice< ? >> devs = devMgrs.get(0).getAllDevices();
-		for (ScaDevice< ? > dev : devs) {
+		for (ScaDevice< ? > dev : devMgrs.get(0).getRootDevices()) {
 			if (DEVICE.equals(dev.getProfileObj().getName())) {
 				return dev.getProperties();
 			}

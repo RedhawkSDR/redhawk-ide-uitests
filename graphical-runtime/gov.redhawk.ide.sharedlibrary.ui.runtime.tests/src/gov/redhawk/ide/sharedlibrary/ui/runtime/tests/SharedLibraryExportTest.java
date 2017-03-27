@@ -24,7 +24,9 @@ import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
+import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
+import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 /**
@@ -48,13 +50,12 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 		SharedLibraryUtils.createSharedLibraryProject(bot, SHARED_LIB_PROJ_NAME, "C++ Library");
 		SWTBotEditor editor = bot.editorByTitle(SHARED_LIB_PROJ_NAME);
 		StandardTestActions.generateProject(bot, editor);
-		bot.waitUntil(new WaitForBuild(), WaitForBuild.TIMEOUT);
+		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
 		bot.closeAllEditors();
 
 		// Export to SDR
 		SWTBotTreeItem projectNode = ProjectExplorerUtils.waitUntilNodeAppears(bot, SHARED_LIB_PROJ_NAME);
 		projectNode.contextMenu("Export to SDR").click();
-		bot.waitUntil(new WaitForBuild(), WaitForBuild.TIMEOUT);
 		bot.waitUntil(new WaitForLaunchTermination(), WaitForBuild.TIMEOUT);
 
 		// Confirm export worked
@@ -74,7 +75,7 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 		SharedLibraryUtils.createSharedLibraryProject(bot, SHARED_LIB_PROJ_NAME, "C++ Library");
 		SWTBotEditor editor = bot.editorByTitle(SHARED_LIB_PROJ_NAME);
 		StandardTestActions.generateProject(bot, editor);
-		bot.waitUntil(new WaitForBuild(), WaitForBuild.TIMEOUT);
+		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
 		bot.closeAllEditors();
 
 		// Create a waveform
@@ -90,6 +91,7 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 		SWTBotTreeItem sharedLibPrExpNode = ProjectExplorerUtils.selectNode(bot, SHARED_LIB_PROJ_NAME);
 		sharedLibPrExpNode.dragAndDrop(sharedLibContainer);
 		bot.waitUntil(new WaitForLaunchTermination(), WaitForBuild.TIMEOUT);
+		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 		findTreeItemAndDelete(new String[] { "Target SDR", "Shared Libraries" }, SHARED_LIB_PROJ_NAME);
 
 		SWTBotTreeItem waveformPrExpNode = ProjectExplorerUtils.selectNode(bot, WAVEFORM_PROJ_NAME);
