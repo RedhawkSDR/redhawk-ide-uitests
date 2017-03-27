@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -29,6 +30,7 @@ import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
+import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
 
 /**
  * Shared Library projects should display many fewer options in the editor pages
@@ -73,18 +75,25 @@ public class SharedLibraryGenerateTest extends UIRuntimeTest {
 		Assert.assertTrue(project.getFolder("cpp/src").exists());
 
 		// IDE-1669 Test for shared library header installation in the Makefile.am.ide
-		bot.waitUntil(new WaitForBuild(), WaitForBuild.TIMEOUT);
+		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
+
 		final String HEADER_INCLUDE_LINE = "redhawk_HEADERS_auto = include/" + projectName + ".h";
-		boolean found = false;
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(project.getFile("cpp/Makefile.am.ide").getContents(true)))) {
+		IFile file = project.getFile("cpp/Makefile.am.ide");
+		if (checkFileForLine(file, HEADER_INCLUDE_LINE)) {
+			return;
+		}
+		Assert.fail("Header entry was not found");
+	}
+
+	private boolean checkFileForLine(IFile file, String lineInFile) throws IOException, CoreException {
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getContents(true)))) {
 			String line;
 			while ((line = br.readLine()) != null) {
-				if (HEADER_INCLUDE_LINE.equals(line)) {
-					found = true;
-					break;
+				if (lineInFile.equals(line)) {
+					return true;
 				}
 			}
 		}
-		Assert.assertTrue("Header entry was not found", found);
+		return false;
 	}
 }
