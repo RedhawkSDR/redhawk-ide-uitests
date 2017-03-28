@@ -34,6 +34,7 @@ import gov.redhawk.ide.swtbot.ServiceUtils;
 import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
@@ -312,8 +313,10 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		bot.editorByTitle(editorTabName);
 
 		// Wait for the build to finish and any error markers to go away, then close editors
+		ViewUtils.getConsoleView(bot).show();
 		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
-		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), 120000);
+		ViewUtils.getProblemsView(bot).show();
+		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), WaitForSeverityMarkers.TIMEOUT);
 		bot.closeAllEditors();
 	}
 
