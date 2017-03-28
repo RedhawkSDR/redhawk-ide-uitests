@@ -16,8 +16,6 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
-import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
-import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ComponentUtils;
@@ -25,7 +23,9 @@ import gov.redhawk.ide.swtbot.DeviceUtils;
 import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
+import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 
@@ -84,34 +84,24 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 		// Default file editor should open
 		SWTBotEditor textEditor = bot.editorByTitle(projectName + ".cpp");
 
-		// Sometimes the comment block does not collapse fast enough and the include gets put in the wrong spot.
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-		}
+		// Wait for the initial codegen build to finish
+		ViewUtils.getConsoleView(bot).show();
+		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
+
+		// Add a #include for a header in the shared library
 		textEditor.toTextEditor().insertText(3, 0, "#include \"" + headerToInclude + "\"");
 		textEditor.save();
 
 		// Rebuild the project with the new modifications
 		StandardTestActions.buildAll();
 
-		// Wait for the build to finish
-		// One second sleep to make sure the build has started
-		try {
-			Thread.sleep(1000);
-			textEditor.bot().waitUntil(new WaitForBuild(), 30000);
-		} catch (TimeoutException e) {
-			Assert.fail("Failed while waiting for the build to complete for: " + projectName);
-		} catch (InterruptedException e) {
-			Assert.fail("Failed while waiting for the build to complete for: " + projectName);
-		}
+		// Wait one second to allow auto-build to start, then wait for it to finish
+		bot.sleep(1000);
+		bot.waitUntil(new WaitForBuild(BuildType.AUTO), WaitForBuild.TIMEOUT);
 
 		// Wait for any error markers to go away
-		try {
-			textEditor.bot().waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), 120000);
-		} catch (TimeoutException e) {
-			Assert.fail("Failed due severity markers being present on: " + projectName);
-		}
+		ViewUtils.getProblemsView(bot).show();
+		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), WaitForSeverityMarkers.TIMEOUT);
 
 		bot.closeAllEditors();
 	}
