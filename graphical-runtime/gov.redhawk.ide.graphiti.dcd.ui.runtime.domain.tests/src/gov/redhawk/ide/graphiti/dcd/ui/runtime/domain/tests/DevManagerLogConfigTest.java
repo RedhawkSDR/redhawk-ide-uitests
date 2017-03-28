@@ -18,7 +18,9 @@ import org.junit.After;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractLogConfigTest;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class DevManagerLogConfigTest extends AbstractLogConfigTest {
@@ -54,6 +56,7 @@ public class DevManagerLogConfigTest extends AbstractLogConfigTest {
 	@Override
 	protected SWTBotGefEditPart openResourceDiagram() {
 		resourceDiagram.setFocus();
+		DiagramTestUtils.waitForComponentState(bot, resourceDiagram, GPP_LOCALHOST, ComponentState.STARTED);
 		return resourceDiagram.getEditPart(GPP_LOCALHOST);
 	}
 
