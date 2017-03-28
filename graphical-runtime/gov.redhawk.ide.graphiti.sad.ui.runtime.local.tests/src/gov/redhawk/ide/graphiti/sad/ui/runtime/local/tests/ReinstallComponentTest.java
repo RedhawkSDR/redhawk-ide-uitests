@@ -22,6 +22,7 @@ import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
+import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
 import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -48,7 +49,7 @@ public class ReinstallComponentTest extends AbstractGraphitiTest {
 		ComponentUtils.createComponentProject(bot, componentName, "Java");
 		SWTBotEditor editor = bot.editorByTitle(componentName);
 		StandardTestActions.generateProject(bot, editor);
-		bot.waitUntil(new WaitForBuild(), WaitForBuild.TIMEOUT);
+		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
 		StandardTestActions.exportProject(componentName, bot);
 		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 		editor.close();

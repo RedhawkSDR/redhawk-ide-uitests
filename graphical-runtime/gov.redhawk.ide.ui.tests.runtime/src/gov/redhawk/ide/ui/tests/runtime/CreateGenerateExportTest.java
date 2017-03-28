@@ -36,6 +36,7 @@ import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
+import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
 import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
@@ -311,7 +312,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		bot.editorByTitle(editorTabName);
 
 		// Wait for the build to finish and any error markers to go away, then close editors
-		bot.waitUntil(new WaitForBuild(), 30000);
+		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
 		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), 120000);
 		bot.closeAllEditors();
 	}
