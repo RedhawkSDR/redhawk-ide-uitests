@@ -144,8 +144,16 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 		assertContainsPort(editorBot, true, "dataDoubleTX_in", "IDL:BULKIO/dataDouble:1.0");
 	}
 
-	protected void setupCodeGeneration(ICodegenInfo iCodegenInfo) {
+	@Override
+	protected void setupCodeGeneration(ICodegenInfo iCodegenInfo, String lang) {
+		// IDE-70 - Package names for Java implementations should start with a lowercase letter.
+		if (lang != null && lang.equals("Java")) {
+			String packageText = getWizardBot().textWithLabel("Package:").getText();
+			Assert.assertFalse(packageText.isEmpty());
+			Assert.assertTrue(Character.isLowerCase(packageText.charAt(0)));
+		}
 		getWizardBot().button("Next >").click();
+
 		if (!(iCodegenInfo instanceof FEICodegenInfo)) {
 			// Leave defaults for the Setup Code Generation page and FEI pages
 			getWizardBot().button("Next >").click();
@@ -207,7 +215,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 	}
 
 	protected void testNonDefaultLocation_setupCodeGeneration() {
-		setupCodeGeneration(null);
+		setupCodeGeneration(null, null);
 	}
 
 	protected void testNonDefaultLocation_assertOutputDir(SWTBotEditor editorBot) {
