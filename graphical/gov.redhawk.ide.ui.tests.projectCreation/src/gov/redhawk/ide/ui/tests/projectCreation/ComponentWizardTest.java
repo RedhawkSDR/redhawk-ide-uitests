@@ -89,15 +89,7 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		getWizardBot().textWithLabel("Description:").setText("custom description");
 		getWizardBot().button("Next >").click();
 
-		setupCodeGeneration(iCodegenInfo);
-
-		// IDE-70 - Package names for Java implementations should start with a lowercase letter.
-		if (lang.equals("Java")) {
-			String packageText = getWizardBot().textWithLabel("Package:").getText();
-			Assert.assertFalse(packageText.isEmpty());
-			Assert.assertTrue(Character.isUpperCase(name.charAt(0)));
-			Assert.assertTrue(Character.isLowerCase(packageText.charAt(0)));
-		}
+		setupCodeGeneration(iCodegenInfo, lang);
 
 		getWizardBot().button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(getWizardShell()));
@@ -193,7 +185,7 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		getWizardBot().comboBoxWithLabel("Prog. Lang:").setSelection("Python");
 		getWizardBot().comboBoxWithLabel("Code Generator:").setSelection("Python Code Generator");
 		getWizardBot().button("Next >").click();
-		setupCodeGeneration(null);
+		setupCodeGeneration(null, null);
 		bot.waitUntil(Conditions.widgetIsEnabled(getWizardBot().button("Finish")));
 		reverseFromCodeGeneration();
 		getWizardBot().button("< Back").click();
@@ -201,7 +193,7 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		getWizardBot().comboBoxWithLabel("Prog. Lang:").setSelection("Java");
 		getWizardBot().comboBoxWithLabel("Code Generator:").setSelection("Java Code Generator");
 		getWizardBot().button("Next >").click();
-		setupCodeGeneration(null);
+		setupCodeGeneration(null, null);
 		bot.waitUntil(Conditions.widgetIsEnabled(getWizardBot().button("Finish")));
 		reverseFromCodeGeneration();
 		getWizardBot().button("< Back").click();
@@ -209,7 +201,7 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		getWizardBot().comboBoxWithLabel("Prog. Lang:").setSelection("C++");
 		getWizardBot().comboBoxWithLabel("Code Generator:").setSelection("C++ Code Generator");
 		getWizardBot().button("Next >").click();
-		setupCodeGeneration(null);
+		setupCodeGeneration(null, null);
 		bot.waitUntil(Conditions.widgetIsEnabled(getWizardBot().button("Finish")));
 
 		getWizardShell().close();
@@ -240,11 +232,19 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		verifyEditorTabPresent("IDE1111.scd.xml");
 	}
 
-	protected void setupCodeGeneration(ICodegenInfo iCodegenInfo) {
+	protected void setupCodeGeneration(ICodegenInfo iCodegenInfo, String lang) {
 		StandardCodegenInfo codegenInfo = (StandardCodegenInfo) iCodegenInfo;
 		if (codegenInfo != null && codegenInfo.getTemplate() != null) {
 			getWizardBot().comboBoxWithLabel("Template:").setSelection(codegenInfo.getTemplate());
 		}
+
+		// IDE-70 - Package names for Java implementations should start with a lowercase letter.
+		if (lang != null && lang.equals("Java")) {
+			String packageText = getWizardBot().textWithLabel("Package:").getText();
+			Assert.assertFalse(packageText.isEmpty());
+			Assert.assertTrue(Character.isLowerCase(packageText.charAt(0)));
+		}
+
 		Assert.assertFalse(getWizardBot().textWithLabel("Output Directory:").getText().isEmpty());
 	}
 
