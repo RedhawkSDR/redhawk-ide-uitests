@@ -35,8 +35,6 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
 public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 
-	private static final String ROOT_SHELL_NAME = "REDHAWK - REDHAWK IDE";
-
 	private RHBotGefEditor editor;
 
 	@BeforeClass
