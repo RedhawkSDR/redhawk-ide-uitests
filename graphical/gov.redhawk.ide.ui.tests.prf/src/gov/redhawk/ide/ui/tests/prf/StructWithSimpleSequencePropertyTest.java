@@ -15,6 +15,9 @@ import java.io.IOException;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
+import mil.jpeojtrs.sca.prf.Properties;
+import mil.jpeojtrs.sca.prf.SimpleSequence;
+
 public class StructWithSimpleSequencePropertyTest extends SimpleSequencePropertyTest {
 
 	@Override
@@ -56,6 +59,17 @@ public class StructWithSimpleSequencePropertyTest extends SimpleSequenceProperty
 	public void testSimpleSequenceID() throws CoreException {
 		selectSimpleSequence();
 		super.testID();
+	}
+
+	@Override
+	public void testValueAutoUpdate() throws IOException {
+		selectSimpleSequence();
+		super.testValueAutoUpdate();
+	}
+
+	@Override
+	protected SimpleSequence getSimpleSequence(Properties properties) {
+		return properties.getStruct().get(0).getSimpleSequence().get(0);
 	}
 
 	@Test

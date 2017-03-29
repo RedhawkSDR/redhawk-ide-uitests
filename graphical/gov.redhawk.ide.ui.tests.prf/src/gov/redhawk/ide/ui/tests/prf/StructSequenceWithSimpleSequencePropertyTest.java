@@ -10,9 +10,6 @@
  */
 package gov.redhawk.ide.ui.tests.prf;
 
-import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.condition.WaitForCellValue;
-
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -23,6 +20,11 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.condition.WaitForCellValue;
+import mil.jpeojtrs.sca.prf.Properties;
+import mil.jpeojtrs.sca.prf.SimpleSequence;
 
 public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequencePropertyTest {
 
@@ -74,6 +76,17 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 	public void testNameSimpleSequence() {
 		selectSimpleSequence();
 		super.testName();
+	}
+
+	@Override
+	public void testValueAutoUpdate() throws IOException {
+		selectSimpleSequence();
+		super.testValueAutoUpdate();
+	}
+
+	@Override
+	protected SimpleSequence getSimpleSequence(Properties properties) {
+		return properties.getStructSequence().get(0).getStruct().getSimpleSequence().get(0);
 	}
 
 	@Test
