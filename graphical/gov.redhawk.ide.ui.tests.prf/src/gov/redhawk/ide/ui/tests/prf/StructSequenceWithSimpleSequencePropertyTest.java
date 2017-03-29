@@ -10,9 +10,6 @@
  */
 package gov.redhawk.ide.ui.tests.prf;
 
-import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.condition.WaitForCellValue;
-
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -23,6 +20,11 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.condition.WaitForCellValue;
+import mil.jpeojtrs.sca.prf.Properties;
+import mil.jpeojtrs.sca.prf.SimpleSequence;
 
 public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequencePropertyTest {
 
@@ -74,6 +76,17 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 	public void testNameSimpleSequence() {
 		selectSimpleSequence();
 		super.testName();
+	}
+
+	@Override
+	public void testValueAutoUpdate() throws IOException {
+		selectSimpleSequence();
+		super.testValueAutoUpdate();
+	}
+
+	@Override
+	protected SimpleSequence getSimpleSequence(Properties properties) {
+		return properties.getStructSequence().get(0).getStruct().getSimpleSequence().get(0);
 	}
 
 	@Test
@@ -194,11 +207,11 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 		new SWTBot(structValueTable.widget).button("...").click();
 
 		SWTBotShell shell = bot.shell("Values");
-		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "hello", false);
+		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "hello", false, true);
 		assertValuesDialogState(shell.bot(), new String[] { "hello" }, false, false, true);
 
 		shell.bot().button("Add").click();
-		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 1, 0, "world", false);
+		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 1, 0, "world", false, true);
 		assertValuesDialogState(shell.bot(), new String[] { "hello", "world" }, true, false, true);
 
 		shell.bot().table().select(0);
@@ -234,9 +247,9 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 		new SWTBot(structValueTable.widget).button("...").click();
 
 		shell = bot.shell("Values");
-		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "1.1", false);
+		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "1.1", false, true);
 		bot.waitUntil(new WaitForCellValue(shell.bot().table(), 0, 0, "1.1"));
-		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "abc", false);
+		StandardTestActions.writeToCell(shell.bot(), shell.bot().table(), 0, 0, "abc", false, true);
 		bot.waitUntil(new WaitForCellValue(shell.bot().table(), 0, 0, "1.1"));
 
 		shell.bot().button("Finish").click();

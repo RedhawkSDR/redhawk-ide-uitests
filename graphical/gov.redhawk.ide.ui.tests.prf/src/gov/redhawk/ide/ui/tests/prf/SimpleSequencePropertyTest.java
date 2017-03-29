@@ -10,8 +10,6 @@
  */
 package gov.redhawk.ide.ui.tests.prf;
 
-import gov.redhawk.ide.swtbot.StandardTestActions;
-
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,7 +22,38 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.StandardTestActions;
+import mil.jpeojtrs.sca.prf.Properties;
+import mil.jpeojtrs.sca.prf.SimpleSequence;
+
 public class SimpleSequencePropertyTest extends AbstractPropertyTest {
+
+	/**
+	 * IDE-152
+	 * Check that adding values to a SimpleSequence via the "Properties" tab automatically updates the prf.xml
+	 * @throws IOException
+	 */
+	@Test
+	public void testValueAutoUpdate() throws IOException {
+		String[] values = { "string1", "string2", "string3" };
+		for (String value : values) {
+			addValue(editorBot, value);
+		}
+		assertFormValid();
+
+		// Check xml
+		Properties properties = getModelFromXml();
+		SimpleSequence simpleSeq = getSimpleSequence(properties);
+		for (String value : values) {
+			Assert.assertTrue("Values block did not update", simpleSeq.getValues().getValue().contains(value));
+		}
+
+		clearValues();
+	}
+
+	protected SimpleSequence getSimpleSequence(Properties properties) {
+		return properties.getSimpleSequence().get(0);
+	}
 
 	@Test
 	public void testValuesChar() {
@@ -83,9 +112,9 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 	private void testValuesChar(SWTBotTable valuesViewer) {
 		setType("char", "");
 		addValue(editorBot, "1");
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "abc", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "abc", false, true);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1", false, true);
 		assertFormValid();
 		addValue(editorBot, "1");
 		assertFormValid();
@@ -102,9 +131,9 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		shell.bot().textWithLabel("Value:").setText("-1.1");
 		shell.bot().button("OK").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "al", false);
+		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "al", false, true);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "-1.1", false);
+		StandardTestActions.writeToCell(bot, valuesViewer, 0, 0, "-1.1", false, true);
 		assertFormValid();
 		editorBot.button("Add...").click();
 		shell = bot.shell("New Value");
@@ -131,13 +160,13 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		shell.bot().button("OK").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1.1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1.1", false, true);
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1.1+jjak", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1.1+jjak", false, true);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1.1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1.1", false, true);
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1.1+j10.1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1.1+j10.1", false, true);
 		assertFormValid();
 		editorBot.button("Add...").click();
 		shell = bot.shell("New Value");
@@ -154,9 +183,9 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		setType("long (32-bit)", "");
 		addValue(editorBot, "-11");
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1.1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1.1", false, true);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11", false, true);
 		assertFormValid();
 		editorBot.button("Add...").click();
 		SWTBotShell shell = bot.shell("New Value");
@@ -169,9 +198,9 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		setType("ulong (32-bit)", "");
 		addValue(editorBot, "11");
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1", false, true);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "11", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "11", false, true);
 		assertFormValid();
 		editorBot.button("Add...").click();
 		shell = bot.shell("New Value");
@@ -186,9 +215,9 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		setType("longlong (64-bit)", "");
 		addValue(editorBot, "-11");
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1.1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1.1", false, true);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11", false, true);
 		assertFormValid();
 		editorBot.button("Add...").click();
 		SWTBotShell shell = bot.shell("New Value");
@@ -201,9 +230,9 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		setType("ulonglong (64-bit)", "");
 		addValue(editorBot, "11");
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-1", false, true);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "11", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "11", false, true);
 		assertFormValid();
 		editorBot.button("Add...").click();
 		shell = bot.shell("New Value");
@@ -223,11 +252,11 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		shell.bot().textWithLabel("Value:").setText("-11-j2");
 		shell.bot().button("OK").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1", false, true);
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1+100iada", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1+100iada", false, true);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11-j2", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "-11-j2", false, true);
 		assertFormValid();
 		addValue(editorBot, "-11-j2");
 		assertFormValid();
@@ -244,13 +273,13 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		shell.bot().button("OK").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1", false, true);
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1+j1ada", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "1+j1ada", false, true);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "11", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "11", false, true);
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "11+j2", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "11+j2", false, true);
 		assertFormValid();
 		editorBot.button("Add...").click();
 		shell = bot.shell("New Value");
@@ -279,9 +308,9 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		// Start with type selected as string
 		addValue(editorBot, "true");
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "a", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "a", false, true);
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "true", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "true", false, true);
 		assertFormValid();
 		addValue(editorBot, "true");
 		assertFormValid();
@@ -307,11 +336,11 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
 		shell.bot().button("OK").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "2017:01:02::03:04:05", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "2017:01:02::03:04:05", false, true);
 		assertFormValid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "abc", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "abc", false, true);
 		assertFormInvalid();
-		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "2017:01:02::03:04:05.123456", false);
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "2017:01:02::03:04:05.123456", false, true);
 		assertFormValid();
 		addValue(editorBot, "2000:12:31::23:59:59.999999");
 		assertFormValid();
