@@ -25,6 +25,7 @@ import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
+import gov.redhawk.ide.swtbot.condition.WaitForCppIndexer;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -84,9 +85,10 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 		// Default file editor should open
 		SWTBotEditor textEditor = bot.editorByTitle(projectName + ".cpp");
 
-		// Wait for the initial codegen build to finish
+		// Wait for the initial codegen build and C/C++ indexer to finish
 		ViewUtils.getConsoleView(bot).show();
 		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
+		bot.waitUntil(new WaitForCppIndexer(), WaitForCppIndexer.TIMEOUT);
 
 		// Add a #include for a header in the shared library
 		textEditor.toTextEditor().insertText(3, 0, "#include \"" + headerToInclude + "\"");
