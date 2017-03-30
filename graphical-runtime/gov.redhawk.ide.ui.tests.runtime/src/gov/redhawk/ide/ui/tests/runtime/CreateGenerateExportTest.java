@@ -38,6 +38,7 @@ import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
+import gov.redhawk.ide.swtbot.condition.WaitForCppIndexer;
 import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
 import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
@@ -89,15 +90,15 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 
 		String projectName = PREFIX_DOTS + "cpp." + componentBaseName;
 		ComponentUtils.createComponentProject(bot, projectName, "C++");
-		generateProjectAndBuild(projectName, componentBaseName + ".cpp");
+		generateProjectAndBuild(projectName, componentBaseName + ".cpp", true);
 
 		projectName = PREFIX_DOTS + "java." + componentBaseName;
 		ComponentUtils.createComponentProject(bot, projectName, "Java");
-		generateProjectAndBuild(projectName, componentBaseName + ".java");
+		generateProjectAndBuild(projectName, componentBaseName + ".java", false);
 
 		projectName = PREFIX_DOTS + "python." + componentBaseName;
 		ComponentUtils.createComponentProject(bot, projectName, "Python");
-		generateProjectAndBuild(projectName, componentBaseName);
+		generateProjectAndBuild(projectName, componentBaseName, false);
 
 		StandardTestActions.exportProject(PREFIX_DOTS + "cpp." + componentBaseName, bot);
 		StandardTestActions.exportProject(PREFIX_DOTS + "java." + componentBaseName, bot);
@@ -131,15 +132,15 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 
 		String projectName = PREFIX_DOTS + "cpp." + deviceBaseName;
 		DeviceUtils.createDeviceProject(bot, projectName, "C++");
-		generateProjectAndBuild(projectName, deviceBaseName + ".cpp");
+		generateProjectAndBuild(projectName, deviceBaseName + ".cpp", true);
 
 		projectName = PREFIX_DOTS + "java." + deviceBaseName;
 		DeviceUtils.createDeviceProject(bot, projectName, "Java");
-		generateProjectAndBuild(projectName, deviceBaseName + ".java");
+		generateProjectAndBuild(projectName, deviceBaseName + ".java", false);
 
 		projectName = PREFIX_DOTS + "python." + deviceBaseName;
 		DeviceUtils.createDeviceProject(bot, projectName, "Python");
-		generateProjectAndBuild(projectName, deviceBaseName);
+		generateProjectAndBuild(projectName, deviceBaseName, false);
 
 		StandardTestActions.exportProject(PREFIX_DOTS + "cpp." + deviceBaseName, bot);
 		StandardTestActions.exportProject(PREFIX_DOTS + "java." + deviceBaseName, bot);
@@ -167,15 +168,15 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 
 		String projectName = PREFIX_DOTS + "cpp." + serviceBaseName;
 		ServiceUtils.createServiceProject(bot, projectName, serviceInterface, "C++");
-		generateProjectAndBuild(projectName, serviceBaseName + ".cpp");
+		generateProjectAndBuild(projectName, serviceBaseName + ".cpp", true);
 
 		projectName = PREFIX_DOTS + "java." + serviceBaseName;
 		ServiceUtils.createServiceProject(bot, projectName, serviceInterface, "Java");
-		generateProjectAndBuild(projectName, serviceBaseName + ".java");
+		generateProjectAndBuild(projectName, serviceBaseName + ".java", false);
 
 		projectName = PREFIX_DOTS + "python." + serviceBaseName;
 		ServiceUtils.createServiceProject(bot, projectName, serviceInterface, "Python");
-		generateProjectAndBuild(projectName, serviceBaseName);
+		generateProjectAndBuild(projectName, serviceBaseName, false);
 
 		StandardTestActions.exportProject(PREFIX_DOTS + "cpp." + serviceBaseName, bot);
 		StandardTestActions.exportProject(PREFIX_DOTS + "java." + serviceBaseName, bot);
@@ -295,7 +296,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		SoftPkg spd = ModelUtil.getSoftPkg(ResourcesPlugin.getWorkspace().getRoot().getProject(PREFIX_DOTS + sharedLibraryBaseName));
 		Assert.assertEquals("localfile element isn't correct", "cpp/lib", spd.getImplementation("cpp").getCode().getLocalFile().getName());
 
-		generateProjectAndBuild(PREFIX_DOTS + sharedLibraryBaseName, sharedLibraryBaseName + ".cpp");
+		generateProjectAndBuild(PREFIX_DOTS + sharedLibraryBaseName, sharedLibraryBaseName + ".cpp", true);
 
 		StandardTestActions.exportProject(PREFIX_DOTS + sharedLibraryBaseName, bot);
 		bot.waitUntil(new WaitForLaunchTermination(), 30000);
@@ -304,7 +305,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Shared Libraries", "runtime", "test" }, sharedLibraryBaseName);
 	}
 
-	private void generateProjectAndBuild(String projectName, String editorTabName) {
+	private void generateProjectAndBuild(String projectName, String editorTabName, boolean isCpp) {
 		// Generate
 		SWTBotEditor editor = bot.editorByTitle(projectName);
 		StandardTestActions.generateProject(bot, editor);
@@ -312,11 +313,16 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		// Default file editor should open
 		bot.editorByTitle(editorTabName);
 
-		// Wait for the build to finish and any error markers to go away, then close editors
+		// Wait for the build and the C/C++ indexer (if applicable) to finish, then for any error markers to go away
 		ViewUtils.getConsoleView(bot).show();
 		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
+		if (isCpp) {
+			bot.waitUntil(new WaitForCppIndexer(), WaitForCppIndexer.TIMEOUT);
+		}
 		ViewUtils.getProblemsView(bot).show();
 		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), WaitForSeverityMarkers.TIMEOUT);
+
+		// Close editors
 		bot.closeAllEditors();
 	}
 
