@@ -23,6 +23,7 @@ import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.DeviceUtils;
 import gov.redhawk.ide.swtbot.ServiceUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.PaletteUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -101,6 +102,7 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 		Assert.assertFalse(String.format("'%s' resource already present in the palette", projectName), PaletteUtils.toolIsPresent(editor, projectName));
 
 		StandardTestActions.exportProject(projectName, bot);
+		bot.waitUntil(new WaitForLaunchTermination(), 15000);
 
 		bot.waitUntil(new DefaultCondition() {
 
