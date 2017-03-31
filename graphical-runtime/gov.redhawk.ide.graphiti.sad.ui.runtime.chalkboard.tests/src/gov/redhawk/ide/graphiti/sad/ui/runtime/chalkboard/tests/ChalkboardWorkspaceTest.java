@@ -79,7 +79,6 @@ public class ChalkboardWorkspaceTest extends AbstractGraphitiChalkboardTest {
 		// Bring the component into the chalkboard and confirm there is no provides or uses port
 		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, wkspComponentName, 0, 0);
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, wkspComponentName);
 		DiagramTestUtils.waitForComponentState(bot, editor, wkspComponentName, ComponentState.STOPPED);
 		Assert.assertNull("Component should not have any Uses ports", DiagramTestUtils.getDiagramUsesPort(editor, wkspComponentName));
 		Assert.assertNull("Component should not have any Provides ports", DiagramTestUtils.getDiagramProvidesPort(editor, wkspComponentName));
