@@ -21,7 +21,7 @@
 </listAttribute>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="DISPLAY" value=":1"/>
-<mapEntry key="SDRROOT" value="${workspace_loc:/gov.redhawk.ide.properites.view.runtime.dcd.tests}/../sdr"/>
+<mapEntry key="SDRROOT" value="${workspace_loc:gov.redhawk.ide.properties.view.runtime.dcd.tests}/../sdr"/>
 </mapAttribute>
 <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=gov.redhawk.ide.properties.view.runtime.dcd.tests"/>
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
