@@ -10,6 +10,8 @@
  */
 package gov.redhawk.ide.ui.tests.runtime;
 
+import java.util.Arrays;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -175,6 +177,8 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	 * IDE-1122, IDE-1128, IDE-1332
 	 * Check that a name-spaced waveform project can be created and exported.
 	 * It should install to the correct location (we install it), and also be represented in the REDHAWK Explorer.
+	 * <p/>
+	 * IDE-1744 Verify code generation
 	 * @throws CoreException
 	 */
 	@Test
@@ -201,6 +205,11 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		});
 		editor.save();
 
+		// Generate code
+		editor.bot().toolbarButton(0).click();
+		StandardTestActions.waitForTreeItemToAppear(bot, ViewUtils.getProjectView(bot).bot().tree(), Arrays.asList(waveformBaseName, PREFIX_DOTS + waveformBaseName + ".spec"));
+
+		// Export
 		StandardTestActions.exportProject(waveformBaseName, bot);
 		String[] scaPath = { "Target SDR", "Waveforms", "runtime", "test" };
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, waveformBaseName);
@@ -223,6 +232,8 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	 * IDE-1122, IDE-1128, IDE-1332
 	 * Check that a name-spaced service project can be created and exported.
 	 * It should install to the correct location (we install it), and also be represented in the REDHAWK Explorer.
+	 * <p/>
+	 * IDE-1744 Verify code generation
 	 * @throws CoreException
 	 */
 	@Test
@@ -250,6 +261,12 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		});
 		editor.save();
 
+
+		// Generate code
+		editor.bot().toolbarButton(0).click();
+		StandardTestActions.waitForTreeItemToAppear(bot, ViewUtils.getProjectView(bot).bot().tree(), Arrays.asList(nodeBaseName, PREFIX_DOTS + nodeBaseName + ".spec"));
+
+		// Export
 		StandardTestActions.exportProject(nodeBaseName, bot);
 		String[] scaPath = { "Target SDR", "Nodes", "runtime", "test" };
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, nodeBaseName);
