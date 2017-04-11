@@ -43,7 +43,7 @@ public class PropertyErrorTest extends UIRuntimeTest {
 	@Test
 	public void changePropertyError() {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, COMP, COMP_INST);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, new String[] { "Sandbox" }, "Chalkboard", COMP_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMP_1);
 		ConsoleUtils.disableAutoShowConsole(bot);
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMP_1).select();
 

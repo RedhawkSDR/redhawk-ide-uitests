@@ -40,7 +40,7 @@ public class LocalComponentPropertyTest extends AbstractPropertiesViewRuntimeTes
 	@Override
 	protected void prepareObject() {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, COMP_NAME, "python");
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, new String[] { "Sandbox" }, "Chalkboard", COMP_NAME + "_1");
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMP_NAME + "_1");
 		
 		ConsoleUtils.disableAutoShowConsole(gefBot);
 		
