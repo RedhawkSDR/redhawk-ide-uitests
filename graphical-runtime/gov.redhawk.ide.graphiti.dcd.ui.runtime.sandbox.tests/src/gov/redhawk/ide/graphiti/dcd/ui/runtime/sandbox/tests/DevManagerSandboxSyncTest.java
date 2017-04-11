@@ -251,9 +251,12 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 	}
 
 	/**
+	 * IDE-1882
+	 * Add two services with the REDHAWK Explorer, confirming they have unique names
+	 *
 	 * IDE-1037
-	 * Adds, then terminates a service via the REDHAWK Explorer.
-	 * Verify it's no longer present in the diagram.
+	 * Then terminate services via the REDHAWK Explorer.
+	 * Verify they are no longer present in the diagram.
 	 */
 	@Test
 	public void addService_terminateServiceInExplorerView() {
@@ -264,16 +267,23 @@ public class DevManagerSandboxSyncTest extends AbstractDeviceManagerSandboxTest 
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SERVICE_STUB_1);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, SERVICE_STUB_1);
 
+		// Launch second service
+		ScaExplorerTestUtils.launchServiceFromTargetSDR(bot, SERVICE_STUB, "python");
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SERVICE_STUB_2);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, SANDBOX_DEVMGR_PATH, SERVICE_STUB_2);
+
 		// Terminate service from the explorer view
 		ScaExplorerTestUtils.terminate(bot, SANDBOX_DEVMGR_PATH, SERVICE_STUB_1);
+		ScaExplorerTestUtils.terminate(bot, SANDBOX_DEVMGR_PATH, SERVICE_STUB_2);
 
 		// Verify diagram
 		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, SERVICE_STUB_1);
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, SERVICE_STUB_2);
 	}
 
 	/**
 	 * IDE-1880
-	 * Adds a service, then termiantes the deviec manager in the REDHAWK Explorer.
+	 * Adds a service, then terminates the device manager in the REDHAWK Explorer.
 	 * Verify it's no longer present in the diagram.
 	 */
 	@Test

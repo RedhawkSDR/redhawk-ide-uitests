@@ -41,7 +41,7 @@ public class LocalDevicePropertyTest extends AbstractPropertiesViewRuntimeTest {
 	@Override
 	protected void prepareObject() {
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, DEVICE_NAME, "python");
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, new String[] { "Sandbox" }, "Device Manager", DEVICE_NAME_NUM);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Device Manager" }, DEVICE_NAME_NUM);
 		ConsoleUtils.disableAutoShowConsole(gefBot);
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox", "Device Manager" }, DEVICE_NAME_NUM);
 		treeItem.select();
