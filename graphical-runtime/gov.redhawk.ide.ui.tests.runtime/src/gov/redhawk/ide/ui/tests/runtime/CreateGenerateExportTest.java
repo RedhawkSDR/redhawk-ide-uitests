@@ -10,23 +10,23 @@
  */
 package gov.redhawk.ide.ui.tests.runtime;
 
-import java.io.File;
-
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.sdr.ui.SdrUiPlugin;
 import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.DeviceUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
@@ -46,6 +46,7 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.util.ModelUtil;
 import mil.jpeojtrs.sca.spd.SoftPkg;
+import mil.jpeojtrs.sca.util.ScaFileSystemConstants;
 
 /**
  * These tests create projects that use a namespace, build them, and install them to SDRROOT. Their presence in the
@@ -57,28 +58,6 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	private static final String SIGGEN = "rh.SigGen";
 	public static final String PROJECT_EXPLORER_VIEW_ID = "org.eclipse.ui.navigator.ProjectExplorer";
 
-	@After
-	public void after() {
-		// Cleanup anything left in the SDRROOT that we installed
-		IPath domPath = SdrUiPlugin.getDefault().getTargetSdrDomPath();
-		final String[] domSubdirs = new String[] { "components/runtime", "waveforms/runtime", "deps/runtime" };
-		for (String subdir : domSubdirs) {
-			File dir = domPath.append(subdir).toFile();
-			if (dir.isDirectory()) {
-				dir.delete();
-			}
-		}
-
-		IPath devPath = SdrUiPlugin.getDefault().getTargetSdrDevPath();
-		final String[] devSubdirs = new String[] { "devices/runtime", "services/runtime", "nodes/runtime" };
-		for (String subdir : devSubdirs) {
-			File dir = devPath.append(subdir).toFile();
-			if (dir.isDirectory()) {
-				dir.delete();
-			}
-		}
-	}
-
 	/**
 	 * IDE-1122, IDE-1182, IDE-1183, IDE-1185, IDE-1413
 	 * Check that name-spaced component projects can be created, generated and exported.
@@ -87,6 +66,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	@Test
 	public void componentProjects() {
 		final String componentBaseName = "component";
+		addSdrDomCleanupPath(new Path("/components/runtime"));
 
 		String projectName = PREFIX_DOTS + "cpp." + componentBaseName;
 		ComponentUtils.createComponentProject(bot, projectName, "C++");
@@ -129,6 +109,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	@Test
 	public void deviceProjects() throws OperationCanceledException, InterruptedException {
 		final String deviceBaseName = "dev";
+		addSdrDevCleanupPath(new Path("/devices/runtime"));
 
 		String projectName = PREFIX_DOTS + "cpp." + deviceBaseName;
 		DeviceUtils.createDeviceProject(bot, projectName, "C++");
@@ -165,6 +146,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	public void serviceProjects() {
 		final String serviceBaseName = "service";
 		final String serviceInterface = "IDL:BULKIO/dataShort:1.0"; // IDE-1355
+		addSdrDevCleanupPath(new Path("/services/runtime"));
 
 		String projectName = PREFIX_DOTS + "cpp." + serviceBaseName;
 		ServiceUtils.createServiceProject(bot, projectName, serviceInterface, "C++");
@@ -193,10 +175,12 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	 * IDE-1122, IDE-1128, IDE-1332
 	 * Check that a name-spaced waveform project can be created and exported.
 	 * It should install to the correct location (we install it), and also be represented in the REDHAWK Explorer.
+	 * @throws CoreException
 	 */
 	@Test
-	public void waveformProjects() {
+	public void waveformProjects() throws CoreException {
 		final String waveformBaseName = "waveform";
+		addSdrDomCleanupPath(new Path("/waveforms/runtime"));
 
 		// Create with one name, change the XML to another
 		WaveformUtils.createNewWaveform(bot, waveformBaseName, SIGGEN);
@@ -222,13 +206,15 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, waveformBaseName);
 
 		// Check that the directory and XML file exist in the appropriate location in the SDRROOT
-		IPath waveformDir = SdrUiPlugin.getDefault().getTargetSdrDomPath().append("waveforms");
+		IFileStore waveformDir = EFS.getFileSystem(ScaFileSystemConstants.SCHEME_TARGET_SDR_DOM).getStore(new Path("/waveforms"));
 		for (String segment : PREFIX_DOTS.split("\\.")) {
-			waveformDir = waveformDir.append(segment);
+			waveformDir = waveformDir.getChild(segment);
 		}
-		waveformDir = waveformDir.append(waveformBaseName);
-		Assert.assertTrue("Directory for waveform doesn't exist in SDRROOT", waveformDir.toFile().exists());
-		Assert.assertTrue("SAD XML for waveform doesn't exist in SDRROOT", waveformDir.append(waveformBaseName + ".sad.xml").toFile().exists());
+		waveformDir = waveformDir.getChild(waveformBaseName);
+		IFileInfo dirInfo = waveformDir.fetchInfo();
+		Assert.assertTrue("Directory for waveform doesn't exist in SDRROOT", dirInfo.exists());
+		IFileInfo fileInfo = waveformDir.getChild(waveformBaseName + ".sad.xml").fetchInfo();
+		Assert.assertTrue("SAD XML for waveform doesn't exist in SDRROOT", fileInfo.exists());
 
 		checkExistsInScaAndRemove(scaPath, waveformBaseName);
 	}
@@ -237,11 +223,13 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	 * IDE-1122, IDE-1128, IDE-1332
 	 * Check that a name-spaced service project can be created and exported.
 	 * It should install to the correct location (we install it), and also be represented in the REDHAWK Explorer.
+	 * @throws CoreException
 	 */
 	@Test
-	public void nodeProjects() {
+	public void nodeProjects() throws CoreException {
 		final String nodeBaseName = "node";
 		final String nodeDomain = "REDHAWK_DEV";
+		addSdrDevCleanupPath(new Path("/nodes/runtime"));
 
 		// Create with one name, change the XML to another
 		NodeUtils.createNewNodeProject(bot, nodeBaseName, nodeDomain);
@@ -267,15 +255,17 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, nodeBaseName);
 
 		// Check that the directory and XML file exist in the appropriate location in the SDRROOT
-		IPath nodeDir = SdrUiPlugin.getDefault().getTargetSdrDevPath().append("nodes");
+		IFileStore nodeDir = EFS.getFileSystem(ScaFileSystemConstants.SCHEME_TARGET_SDR_DEV).getStore(new Path("/nodes"));
 		for (String segment : PREFIX_DOTS.split("\\.")) {
 			if (segment.trim().length() > 0) {
-				nodeDir = nodeDir.append(segment);
+				nodeDir = nodeDir.getChild(segment);
 			}
 		}
-		nodeDir = nodeDir.append(nodeBaseName);
-		Assert.assertTrue("Directory for node doesn't exist in SDRROOT", nodeDir.toFile().exists());
-		Assert.assertTrue("DCD XML for node doesn't exist in SDRROOT", nodeDir.append("DeviceManager.dcd.xml").toFile().exists());
+		nodeDir = nodeDir.getChild(nodeBaseName);
+		IFileInfo dirInfo = nodeDir.fetchInfo();
+		Assert.assertTrue("Directory for node doesn't exist in SDRROOT", dirInfo.exists());
+		IFileInfo fileInfo = nodeDir.getChild("DeviceManager.dcd.xml").fetchInfo();
+		Assert.assertTrue("DCD XML for node doesn't exist in SDRROOT", fileInfo.exists());
 
 		checkExistsInScaAndRemove(scaPath, nodeBaseName);
 	}
@@ -289,6 +279,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	public void sharedLibProjects() {
 		final String sharedLibraryBaseName = "sharedLibrary";
 		final String sharedLibraryType = "C++ Library";
+		addSdrDomCleanupPath(new Path("/deps/runtime"));
 
 		SharedLibraryUtils.createSharedLibraryProject(bot, PREFIX_DOTS + sharedLibraryBaseName, sharedLibraryType);
 
