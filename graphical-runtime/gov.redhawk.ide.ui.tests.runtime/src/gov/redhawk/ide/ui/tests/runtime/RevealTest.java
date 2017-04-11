@@ -29,10 +29,10 @@ import gov.redhawk.ide.debug.LocalSca;
 import gov.redhawk.ide.debug.LocalScaDeviceManager;
 import gov.redhawk.ide.debug.ScaDebugPlugin;
 import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.ui.tests.runtime.stubs.AnalogDevice;
 import gov.redhawk.model.sca.RefreshDepth;
 import gov.redhawk.model.sca.ScaDevice;
-import gov.redhawk.sca.ui.views.ScaExplorer;
 import gov.redhawk.sca.util.OrbSession;
 
 public class RevealTest extends UITest {
@@ -65,7 +65,7 @@ public class RevealTest extends UITest {
 	 */
 	@Test
 	public void revealLaunchedDevice() throws Exception {
-		explorerView = bot.viewById(ScaExplorer.VIEW_ID);
+		explorerView = ViewUtils.getExplorerView(bot);
 		explorerView.show();
 		viewBot = explorerView.bot();
 		explorerTree = viewBot.tree();
