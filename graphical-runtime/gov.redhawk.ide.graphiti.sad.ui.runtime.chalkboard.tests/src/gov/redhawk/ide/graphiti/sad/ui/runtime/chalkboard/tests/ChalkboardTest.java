@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.junit.Assert;
@@ -63,7 +64,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 	}
 
 	/**
-	 * IDE-884 Create the chalkboard waveform diagram. Add components to diagram from palette and TargetSDR.
+	 * IDE-884 Open the chalkboard waveform diagram
 	 * IDE-658 Open chalkboard with components already launched in the Sandbox.
 	 * IDE-1187 Add namespaced component to chalkboard
 	 */
@@ -73,29 +74,34 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
-		assertHardLimit(editor.getEditPart(HARD_LIMIT));
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 
-		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(HARD_LIMIT));
+		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(HARD_LIMIT_1));
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, HARD_LIMIT_1);
 
 		// IDE-984 Make sure device cannot be added from Target SDR
 		DiagramTestUtils.dragDeviceFromTargetSDRToDiagram(gefBot, editor, "GPP");
-		Assert.assertNull("Unexpected device found in diagram", editor.getEditPart("GPP"));
+		try {
+			DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, "GPP_1");
+			Assert.fail("Unexpected device found in diagram");
+		} catch (TimeoutException e) {
+			// PASS - Correct behavior
+		}
 
 		// Add component to diagram from Target SDR
 		DiagramTestUtils.dragComponentFromTargetSDRToDiagram(gefBot, editor, HARD_LIMIT);
-		assertHardLimit(editor.getEditPart(HARD_LIMIT));
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 
-		// Open the chalkboard with components already launched
+		// Close, re-open the chalkboard with components already launched
 		editor.close();
 		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
-		Assert.assertNotNull(editor.getEditPart(HARD_LIMIT));
+		Assert.assertNotNull(editor.getEditPart(HARD_LIMIT_1));
 
 		// Add namespaced component to the chalkboard
-		String nameSpaceComp = "name.space.comp";
-		DiagramTestUtils.addFromPaletteToDiagram(editor, nameSpaceComp, 200, 300);
-		Assert.assertNotNull(editor.getEditPart(nameSpaceComp));
+		DiagramTestUtils.addFromPaletteToDiagram(editor, NAME_SPACE_COMP, 200, 300);
+		DiagramTestUtils.waitForComponentState(bot, editor, NAME_SPACE_COMP_1, ComponentState.STOPPED);
 	}
 
 	@Test
