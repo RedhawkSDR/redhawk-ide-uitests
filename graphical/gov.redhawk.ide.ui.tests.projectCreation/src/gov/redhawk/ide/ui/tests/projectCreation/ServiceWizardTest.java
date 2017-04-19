@@ -27,7 +27,7 @@ import gov.redhawk.ide.swtbot.ServiceUtils;
 import gov.redhawk.ide.ui.tests.projectCreation.util.StandardCodegenInfo;
 
 public class ServiceWizardTest extends ComponentWizardTest {
-	
+	private static final String SERVICE_INTERFACE = "IDL:CF/PortSupplier:1.0";
 
 	@Override
 	protected String getProjectType() {
