@@ -61,8 +61,8 @@ public class ExternalPortsTest extends UIRuntimeTest {
 
 	private void createConnection(final String portOneName, final String portOneGroup, final String portTwoName) {
 		// Open connect wizard
-		SWTBotTreeItem waveformTreeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(gefBot, WAVEFORM_PARENT_PATH, waveformFullName);
-		SWTBotTreeItem outPort = waveformTreeItem.expandNode("External Ports", portOneName);
+		SWTBotTreeItem outPort = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, new String[] { "Sandbox", waveformFullName, "External Ports" },
+			portOneName);
 		outPort.contextMenu("Connect").click();
 		final SWTBotShell connectShell = bot.shell("Connect");
 		final SWTBot connectBot = connectShell.bot();
