@@ -23,6 +23,7 @@ import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.ServiceUtils;
 import gov.redhawk.ide.ui.tests.projectCreation.util.StandardCodegenInfo;
 
 public class ServiceWizardTest extends ComponentWizardTest {
@@ -46,7 +47,7 @@ public class ServiceWizardTest extends ComponentWizardTest {
 	}
 
 	public void setServiceInWizard() {
-		getWizardBot().textWithLabel("Service Interface").setText("IDL:IDETEST/SampleInterface:1.0");
+		ServiceUtils.setServiceIdl(bot, SERVICE_INTERFACE);
 	}
 	
 	@Test
