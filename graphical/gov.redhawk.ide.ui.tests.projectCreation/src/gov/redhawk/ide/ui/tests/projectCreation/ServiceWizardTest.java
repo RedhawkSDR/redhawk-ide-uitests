@@ -19,6 +19,10 @@ import java.util.List;
 
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,7 +53,7 @@ public class ServiceWizardTest extends ComponentWizardTest {
 	public void setServiceInWizard() {
 		ServiceUtils.setServiceIdl(bot, SERVICE_INTERFACE);
 	}
-	
+
 	@Test
 	@Override
 	public void testPythonCreation() {
@@ -70,35 +74,94 @@ public class ServiceWizardTest extends ComponentWizardTest {
 		testServiceProjectCreation("ServiceWizardTest01", "Java", "Java Code Generator", "Default Service");
 		getWizardShell().close();
 	}
-	
+
 	@Test
 	@Override
 	public void testBackNext() {
 		setServiceInWizard();
 		super.testBackNext();
 	}
-	
+
 	@Test
 	@Override
 	public void testContributedPropertiesUI() {
 		setServiceInWizard();
 		super.testContributedPropertiesUI();
 	}
-	
+
 	@Test
 	@Override
 	public void testNonDefaultLocation() throws IOException {
 		setServiceInWizard();
 		super.testNonDefaultLocation();
 	}
-	
+
 	@Test
 	@Override
 	public void testUUID() {
 		setServiceInWizard();
 		super.testUUID();
 	}
-	
+
+	/**
+	 * IDE-1919 - Test filter functionality of the IDL Selection Wizard
+	 */
+	@Test
+	public void testIdlFilter() {
+		bot.button("Browse...", 1).click();
+		SWTBotShell idlShell = bot.shell("Select an interface");
+		final SWTBot idlBot = idlShell.bot();
+
+		// Check that non-standard interfaces are hidden
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "PortSupplier" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Resource" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CORBA_InitialReferences" }, false);
+		idlBot.text().setText(SERVICE_INTERFACE);
+		idlBot.sleep(250); // Wait a moment for the filter to update
+
+		// Check that filter works as expected
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "PortSupplier" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Resource" }, false);
+		assertIdlEntry(idlBot.tree(), new String[] { "CORBA_InitialReferences" }, false);
+
+		// Clear filter entry box and check that default state has returned
+		idlBot.toolbarButtonWithTooltip("Clear").click();
+		idlBot.sleep(250); // Wait a moment for the filter to update
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "PortSupplier" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Resource" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CORBA_InitialReferences" }, false);
+
+		// Click "Show all interfaces" and check that everything is visible
+		idlBot.checkBox().click();
+		idlBot.sleep(250); // Wait a moment for the filter to update
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "PortSupplier" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Resource" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CORBA_InitialReferences" }, true);
+
+		// Re-enter the filter text and test accordingly
+		idlBot.text().setText(SERVICE_INTERFACE);
+		idlBot.sleep(250); // Wait a moment for the filter to update
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "PortSupplier" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Resource" }, false);
+		assertIdlEntry(idlBot.tree(), new String[] { "CORBA_InitialReferences" }, false);
+
+		idlBot.button("Cancel").click();
+		getWizardBot().button("Cancel").click();
+	}
+
+	private void assertIdlEntry(SWTBotTree tree, String[] entryPath, boolean shouldAppear) {
+		try {
+			tree.expandNode(entryPath);
+			if (!shouldAppear) {
+				Assert.fail("Interface " + entryPath[entryPath.length - 1] + " should not be visible");
+			}
+		} catch (WidgetNotFoundException e) {
+			if (shouldAppear) {
+				Assert.fail("Expected interface not found: " + entryPath[entryPath.length - 1]);
+			}
+		}
+	}
+
 	/**
 	 * IDE-1111: Test creation of service with dots in the name
 	 */
@@ -110,5 +173,5 @@ public class ServiceWizardTest extends ComponentWizardTest {
 		verifyEditorTabPresent("IDE1111.spd.xml");
 		verifyEditorTabPresent("IDE1111.scd.xml");
 	}
-	
+
 }
