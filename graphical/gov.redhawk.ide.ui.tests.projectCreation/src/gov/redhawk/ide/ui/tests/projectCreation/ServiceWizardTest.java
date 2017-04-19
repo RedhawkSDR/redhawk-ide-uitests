@@ -21,13 +21,28 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Widget;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ServiceUtils;
 import gov.redhawk.ide.ui.tests.projectCreation.util.StandardCodegenInfo;
 
 public class ServiceWizardTest extends ComponentWizardTest {
+	
+	// The default service interface
 	private static final String SERVICE_INTERFACE = "IDL:CF/Logging:1.0";
+
+	/**
+	 * Abstracting this out to let individual test methods specify their desired IDL interface
+	 */
+	private String interfaceId;
+
+	@Before
+	@Override
+	public void before() throws Exception {
+		super.before();
+		setInterfaceId(SERVICE_INTERFACE);
+	}
 
 	@Override
 	protected String getProjectType() {
@@ -47,9 +62,9 @@ public class ServiceWizardTest extends ComponentWizardTest {
 	}
 
 	public void setServiceInWizard() {
-		ServiceUtils.setServiceIdl(bot, SERVICE_INTERFACE);
+		ServiceUtils.setServiceIdl(bot, getInterfaceId());
 	}
-	
+
 	@Test
 	@Override
 	public void testPythonCreation() {
@@ -72,21 +87,21 @@ public class ServiceWizardTest extends ComponentWizardTest {
 		testServiceProjectCreation("ServiceWizardTest01", "Java", "Java Code Generator", "Default Service");
 		getWizardShell().close();
 	}
-	
+
 	@Test
 	@Override
 	public void testBackNext() {
 		setServiceInWizard();
 		super.testBackNext();
 	}
-	
+
 	@Test
 	@Override
 	public void testContributedPropertiesUI() {
 		setServiceInWizard();
 		super.testContributedPropertiesUI();
 	}
-	
+
 	@Test
 	@Override
 	public void nonDefaultLocation() throws IOException {
@@ -94,7 +109,7 @@ public class ServiceWizardTest extends ComponentWizardTest {
 
 		super.nonDefaultLocation();
 	}
-	
+
 	@Test
 	@Override
 	public void uuid() {
@@ -102,7 +117,7 @@ public class ServiceWizardTest extends ComponentWizardTest {
 
 		super.uuid();
 	}
-	
+
 	/**
 	 * IDE-1111: Test creation of service with dots in the name
 	 */
@@ -114,5 +129,24 @@ public class ServiceWizardTest extends ComponentWizardTest {
 		verifyEditorTabPresent("IDE1111.spd.xml");
 		verifyEditorTabPresent("IDE1111.scd.xml");
 	}
-	
+
+	@Test
+	public void testPropertySetService() {
+		String projectName = "PropertySetService";
+		setInterfaceId("IDL:CF/Resource:1.0");
+
+		testServiceProjectCreation(projectName, "Python", null, null);
+		verifyEditorTabPresent(projectName + ".spd.xml");
+		verifyEditorTabPresent(projectName + ".prf.xml");
+		verifyEditorTabPresent(projectName + ".scd.xml");
+	}
+
+	public String getInterfaceId() {
+		return interfaceId;
+	}
+
+	public void setInterfaceId(String interfaceId) {
+		this.interfaceId = interfaceId;
+	}
+
 }
