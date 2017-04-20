@@ -130,10 +130,13 @@ public class ServiceWizardTest extends ComponentWizardTest {
 		verifyEditorTabPresent("IDE1111.scd.xml");
 	}
 
+	/**
+	 * IDE-1901 - Services whose IDL interface inherits form PropertySet should generate a prf.xml file 
+	 */
 	@Test
 	public void testPropertySetService() {
 		String projectName = "PropertySetService";
-		setInterfaceId("IDL:CF/Resource:1.0");
+		setInterfaceId("IDL:CF/PropertyEmitter:1.0");
 
 		testServiceProjectCreation(projectName, "Python", null, null);
 		verifyEditorTabPresent(projectName + ".spd.xml");
