@@ -113,35 +113,35 @@ public class ServiceWizardTest extends ComponentWizardTest {
 		final SWTBot idlBot = idlShell.bot();
 
 		// Check that non-standard interfaces are hidden
-		assertIdlEntry(idlBot.tree(), new String[] { "CF", "PortSupplier" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Logging" }, true);
 		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Resource" }, true);
 		assertIdlEntry(idlBot.tree(), new String[] { "CORBA_InitialReferences" }, false);
 		idlBot.text().setText(SERVICE_INTERFACE);
 		idlBot.sleep(250); // Wait a moment for the filter to update
 
 		// Check that filter works as expected
-		assertIdlEntry(idlBot.tree(), new String[] { "CF", "PortSupplier" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Logging" }, true);
 		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Resource" }, false);
 		assertIdlEntry(idlBot.tree(), new String[] { "CORBA_InitialReferences" }, false);
 
 		// Clear filter entry box and check that default state has returned
 		idlBot.toolbarButtonWithTooltip("Clear").click();
 		idlBot.sleep(250); // Wait a moment for the filter to update
-		assertIdlEntry(idlBot.tree(), new String[] { "CF", "PortSupplier" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Logging" }, true);
 		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Resource" }, true);
 		assertIdlEntry(idlBot.tree(), new String[] { "CORBA_InitialReferences" }, false);
 
 		// Click "Show all interfaces" and check that everything is visible
 		idlBot.checkBox().click();
 		idlBot.sleep(250); // Wait a moment for the filter to update
-		assertIdlEntry(idlBot.tree(), new String[] { "CF", "PortSupplier" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Logging" }, true);
 		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Resource" }, true);
 		assertIdlEntry(idlBot.tree(), new String[] { "CORBA_InitialReferences" }, true);
 
 		// Re-enter the filter text and test accordingly
 		idlBot.text().setText(SERVICE_INTERFACE);
 		idlBot.sleep(250); // Wait a moment for the filter to update
-		assertIdlEntry(idlBot.tree(), new String[] { "CF", "PortSupplier" }, true);
+		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Logging" }, true);
 		assertIdlEntry(idlBot.tree(), new String[] { "CF", "Resource" }, false);
 		assertIdlEntry(idlBot.tree(), new String[] { "CORBA_InitialReferences" }, false);
 
