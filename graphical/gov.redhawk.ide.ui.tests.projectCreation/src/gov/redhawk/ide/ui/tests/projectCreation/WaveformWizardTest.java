@@ -24,6 +24,7 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -182,19 +183,20 @@ public class WaveformWizardTest extends AbstractCreationWizardTest {
 	 */
 	@Test
 	public void projectNameRaceCondition() throws Exception {
+		final String PROJECT_NAME = "test_IDE_826";
+
+		// Type the project name, hit enter, type one additional bad character
 		SWTBotText projectNameField = getWizardBot().textWithLabel("Project name:");
-		projectNameField.setText("test_IDE_826");
-		getWizardBot().button("Finish").click();
+		projectNameField.typeText(PROJECT_NAME + "\n" + "\\");
 
-		// Try to change the name while the performFinish() is running
-		projectNameField.setText("test_IDE_826_bad");
+		try {
+			bot.waitUntil(Conditions.shellCloses(getWizardShell()));
+			Assert.fail("Wizard should not have closed");
+		} catch (TimeoutException e) {
+			// PASS - we expect this
+		}
 
+		getWizardBot().button("Cancel").click();
 		bot.waitUntil(Conditions.shellCloses(getWizardShell()));
-
-		SWTBotView navigatorView = bot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
-		navigatorView.show();
-		navigatorView.setFocus();
-
-		navigatorView.bot().tree().select("test_IDE_826");
 	}
 }

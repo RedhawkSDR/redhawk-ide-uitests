@@ -100,7 +100,12 @@ public abstract class AbstractCreationWizardTest extends UITest {
 
 		bot.menu("File").menu("New").menu("Project...").click();
 		wizardShell = bot.shell("New Project");
-		Assert.assertTrue(wizardShell.isActive());
+
+		// On el7, SWTBot tests seem to reach a point where the new project wizard is no longer activated when it opens
+		if (!wizardShell.isActive()) {
+			wizardShell.setFocus();
+		}
+
 		wizardBot = wizardShell.bot();
 		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(wizardBot, wizardBot.tree(), Arrays.asList("REDHAWK", getProjectType()));
 		treeItem.select();
