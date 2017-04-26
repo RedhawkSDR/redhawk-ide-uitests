@@ -9,11 +9,7 @@
  * http://www.eclipse.org/legal/epl-v10.html.
  *
  */
-package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
-
-import gov.redhawk.ide.swtbot.UIRuntimeTest;
-import gov.redhawk.ide.swtbot.ViewUtils;
-import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+package gov.redhawk.ide.ui.tests.runtime;
 
 import java.util.List;
 
@@ -25,13 +21,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * The purpose of this class is to test that selecting "Monitor Ports" on a waveform in the REDHAWK Explorer correctly adds
- * the ports of all child components to the Port Monitor view. The actual implementation of the Port Monitor View is
- * tested via a Jubula test that was labeled, at the time of this writing, as 'IDE-Runtime_Port_Monitor_View'
- * <p/>
- * TODO: Move to a more appropriate bundle
- */
+import gov.redhawk.ide.swtbot.ConsoleUtils;
+import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+
 public class PortMonitorViewTest extends UIRuntimeTest {
 
 	private static final String[] LOCAL_WAVEFORM_PARENT_PATH = { "Sandbox" };
@@ -50,14 +44,14 @@ public class PortMonitorViewTest extends UIRuntimeTest {
 
 	/**
 	 * IDE-1063
-	 * Enable "Monitor Ports" option on waveform in the REDHAWK Explorer to monitor all ports of all components
+	 * Use "Monitor Ports" option on waveform in the REDHAWK Explorer to monitor all ports of all components
 	 */
 	@Test
 	public void portMonitorWaveformTest() {
 		ScaExplorerTestUtils.startResourceInExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
 		ScaExplorerTestUtils.montiorWaveformPortsFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
 
-		ViewUtils.disableConsoleView(gefBot);
+		ConsoleUtils.disableAutoShowConsole(gefBot);
 
 		SWTBotView portMonitorView = ViewUtils.getPortMonitorView(gefBot);
 		portMonitorView.show();
