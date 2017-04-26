@@ -185,9 +185,10 @@ public class WaveformWizardTest extends AbstractCreationWizardTest {
 	public void projectNameRaceCondition() throws Exception {
 		final String PROJECT_NAME = "test_IDE_826";
 
-		// Type the project name, hit enter, type one additional bad character
+		// Type the project name, then hit enter followed (almost immediately) by one additional bad character
 		SWTBotText projectNameField = getWizardBot().textWithLabel("Project name:");
-		projectNameField.typeText(PROJECT_NAME + "\n" + "\\");
+		projectNameField.typeText(PROJECT_NAME);
+		projectNameField.typeText("\n\\", 0);
 
 		try {
 			bot.waitUntil(Conditions.shellCloses(getWizardShell()));
