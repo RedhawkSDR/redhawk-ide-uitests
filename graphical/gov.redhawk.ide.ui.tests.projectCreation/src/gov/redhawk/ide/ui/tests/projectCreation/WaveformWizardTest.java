@@ -21,10 +21,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.swt.finder.waits.Conditions;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
-import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -175,29 +172,4 @@ public class WaveformWizardTest extends AbstractCreationWizardTest {
 		});
 	}
 
-	/**
-	 * Tests a race condition - it was possible to enter an illegal character in the waveform name while completing
-	 * the new REDHAWK waveform wizard.
-	 * IDE-826 Race condition naming project / clicking finish
-	 * @throws Exception
-	 */
-	@Test
-	public void projectNameRaceCondition() throws Exception {
-		final String PROJECT_NAME = "test_IDE_826";
-
-		// Type the project name, then hit enter followed (almost immediately) by one additional bad character
-		SWTBotText projectNameField = getWizardBot().textWithLabel("Project name:");
-		projectNameField.typeText(PROJECT_NAME);
-		projectNameField.typeText("\n\\", 0);
-
-		try {
-			bot.waitUntil(Conditions.shellCloses(getWizardShell()));
-			Assert.fail("Wizard should not have closed");
-		} catch (TimeoutException e) {
-			// PASS - we expect this
-		}
-
-		getWizardBot().button("Cancel").click();
-		bot.waitUntil(Conditions.shellCloses(getWizardShell()));
-	}
 }
