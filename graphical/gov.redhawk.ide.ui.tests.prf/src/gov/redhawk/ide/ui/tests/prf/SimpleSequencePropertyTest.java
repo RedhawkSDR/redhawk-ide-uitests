@@ -14,9 +14,11 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.keyboard.Keyboard;
+import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.junit.Assert;
@@ -45,7 +47,7 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		Properties properties = getModelFromXml();
 		SimpleSequence simpleSeq = getSimpleSequence(properties);
 		for (String value : values) {
-			Assert.assertTrue("Values block did not update", simpleSeq.getValues().getValue().contains(value));
+			Assert.assertTrue("Values block did not contain '" + value + "'", simpleSeq.getValues().getValue().contains(value));
 		}
 
 		clearValues();
@@ -288,13 +290,11 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		SWTBotTable valuesTable = editorBot.tableWithLabel("Values:");
 		if (valuesTable.rowCount() > 0) {
 			for (int i = 0; i <= valuesTable.rowCount(); i++) {
-				valuesTable.select(0);
-				SWTBotButton removeButton = editorBot.button("Remove", 1);
-				if (removeButton.isEnabled()) {
-					editorBot.button("Remove", 1).click();
-				} else {
-					break;
-				}
+				valuesTable.click(0, 0);
+				// Press escape to avoid issues going from the cell's editor to the button
+				Keyboard keyboard = KeyboardFactory.getSWTKeyboard();
+				keyboard.pressShortcut(Keystrokes.ESC);
+				editorBot.button("Remove", 1).click();
 			}
 		}
 	}
