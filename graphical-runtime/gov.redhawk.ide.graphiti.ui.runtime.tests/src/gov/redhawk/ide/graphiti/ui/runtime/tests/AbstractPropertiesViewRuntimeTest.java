@@ -302,6 +302,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 		} else {
 			String newValue = PREPENDER + modelProp.getValue();
 			Assert.assertNotNull("TreeItem was null for: " + modelProp.getName(), treeItem);
+			treeItem.click(0);
 			StandardTestActions.writeToCell(gefBot, treeItem, 1, newValue);
 
 			viewCheck(newValue, treeItem);
