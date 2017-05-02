@@ -306,16 +306,14 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 	private void editSimpleProperty(SWTBotTreeItem treeItem) {
 		String oldValue = treeItem.cell(1);
 		String newValue;
+
+		treeItem.click(0);
 		if ("true".equals(oldValue)) {
-			treeItem.select();
-			treeItem.click(1);
-			newValue = Boolean.FALSE.toString();
-			keyboard.pressShortcut(Keystrokes.UP);
+			newValue = "false";
+			StandardTestActions.selectComboListFromCell(gefBot, treeItem, 1, newValue);
 		} else if ("false".equals(oldValue)) {
-			treeItem.select();
-			treeItem.click(1);
-			newValue = Boolean.TRUE.toString();
-			keyboard.pressShortcut(Keystrokes.DOWN);
+			newValue = "true";
+			StandardTestActions.selectComboListFromCell(gefBot, treeItem, 1, newValue);
 		} else {
 			newValue = PREPENDER + oldValue;
 			StandardTestActions.writeToCell(gefBot, treeItem, 1, newValue);
