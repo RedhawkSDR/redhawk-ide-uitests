@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -110,6 +111,30 @@ public class ConnectToDomainWizardTest extends UIRuntimeTest {
 		}
 	}
 
+	/**
+	 * IDE-1584 - Launch a device manager in a domain that has a unique display name
+	 * @throws CoreException
+	 */
+	@Test
+	public void launchDevMgrViaDisplayName() throws CoreException {
+		final String domainName = "testDomain";
+		final String displayName = "displayName";
+		final String nodeName = "DevMgr_localhost";
+
+		launchDomainManager(domainName);
+		connectViaNewDomainWizard(domainName, displayName);
+
+		SWTBotTreeItem nodeTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Target SDR", "Nodes" }, nodeName);
+		nodeTreeItem.contextMenu("Launch Device Manager").click();
+
+		SWTBotShell wizard = bot.shell("Launch Device Manager");
+		wizard.bot().table().select(displayName);
+		wizard.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(wizard));
+
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { displayName, "Device Managers" }, nodeName);
+	}
+
 	private void launchViaNewDomainWizard(String domainName, String[] deviceManagers) {
 		ScaExplorerTestUtils.launchDomainViaWizard(bot, domainName, deviceManagers);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
@@ -129,14 +154,14 @@ public class ConnectToDomainWizardTest extends UIRuntimeTest {
 		Assert.assertTrue(shell.bot().button("Finish").isEnabled());
 
 		if (!domainName.equals(displayName)) {
-			shell.bot().textWithLabel("Display Name:").setText(domainName);
+			shell.bot().textWithLabel("Domain Name:").setText(domainName);
 			Assert.assertEquals(domainName, shell.bot().textWithLabel("Domain Name:").getText());
 		}
 
 		shell.bot().button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 
-		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, displayName);
 	}
 
 	/**
