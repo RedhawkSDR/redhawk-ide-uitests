@@ -11,28 +11,30 @@
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
 import org.eclipse.emf.common.ui.URIEditorInput;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.tb.ColorDecorator;
-import org.eclipse.graphiti.tb.IDecorator;
-import org.eclipse.graphiti.util.IColorConstant;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.RGBA;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.core.graphiti.sad.ui.ext.ComponentShape;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
+import gov.redhawk.ide.swtbot.condition.WaitForColor;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
+import gov.redhawk.ide.swtbot.diagram.PortUtils;
+import gov.redhawk.ide.swtbot.diagram.PortUtils.PortState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.monitor.MonitorPlugin;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 
 public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
@@ -42,6 +44,19 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 	private static final String SANDBOX_CHALKBOARD_EDITOR_TOOLIP = "Sandbox chalkboard";
 
 	private RHBotGefEditor editor;
+	private long backupRefreshInterval = -1;
+
+	@Before
+	public void saveMonitorInterval() {
+		backupRefreshInterval = MonitorPlugin.getDefault().getRefreshInterval();
+	}
+
+	@After
+	public void resetMonitorInterval() {
+		if (backupRefreshInterval != -1) {
+			MonitorPlugin.getDefault().setRefreshInterval(backupRefreshInterval);
+		}
+	}
 
 	/**
 	 * Test the most basic functionality / presence of the waveform sandbox editor (on the chalkboard).
@@ -121,41 +136,27 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, "DataConverter_1", "dataFloat");
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
 
+		// Check stats every second so UI updates are responsive
+		MonitorPlugin.getDefault().setRefreshInterval(1000);
+
 		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN_1);
 		SWTBotTreeItem chalkboard = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox" }, "Chalkboard");
 		chalkboard.contextMenu("Monitor Ports").click();
 
-		synchronized (bot) {
-			try {
-				bot.wait(20000);
-				// Give the port enough time to turn red
-			} catch (InterruptedException e) {
-				// PASS
-			}
-		}
-
 		// The following port should be red, the data will have backed up as the DataConverter component has not started
-		SWTBotGefEditPart redPort = DiagramTestUtils.getDiagramProvidesPort(editor, "DataConverter_1", "dataFloat");
-		ContainerShape portModel = (ContainerShape) redPort.part().getModel();
-		IDecorator[] decorators = DiagramTestUtils.getPictogramElementDecorators(editor, portModel.getChildren().get(0));
-		checkDecoratorColor(new RGB(255, 0, 0), decorators);
+		// It takes about 20 seconds before the port goes red.
+		final SWTBotGefEditPart providesPort = DiagramTestUtils.getDiagramProvidesPort(editor, "DataConverter_1", "dataFloat");
+		bot.waitUntil(new WaitForColor(PortState.MONITOR_DATA_BAD.getColor()) {
+			@Override
+			protected RGBA getColor() {
+				return PortUtils.getPortColor(providesPort);
+			}
+		}, 30000);
 
 		// All other ports should be green, as there is no data flowing through them
 		for (String portName : dataConGreenPorts) {
 			SWTBotGefEditPart port = DiagramTestUtils.getDiagramProvidesPort(editor, "DataConverter_1", portName);
-			portModel = (ContainerShape) port.part().getModel();
-			decorators = DiagramTestUtils.getPictogramElementDecorators(editor, portModel.getChildren().get(0));
-			checkDecoratorColor(new RGB(0, 255, 0), decorators);
-		}
-	}
-
-	private void checkDecoratorColor(final RGB rgb, IDecorator[] decorators) {
-		for (IDecorator decorator : decorators) {
-			if (decorator instanceof ColorDecorator) {
-				IColorConstant bgc = ((ColorDecorator) decorator).getBackgroundColor();
-				final RGB decoratorRgb = new RGB(bgc.getRed(), bgc.getGreen(), bgc.getBlue());
-				Assert.assertEquals("Port did not match expected color", rgb, decoratorRgb);
-			}
+			PortUtils.assertPortStyling(port, PortState.MONITOR_DATA_GOOD);
 		}
 	}
 

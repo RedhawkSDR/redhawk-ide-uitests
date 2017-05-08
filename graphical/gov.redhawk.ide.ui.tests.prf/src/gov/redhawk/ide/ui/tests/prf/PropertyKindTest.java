@@ -130,6 +130,18 @@ public class PropertyKindTest extends UITest {
 			} else {
 				Assert.assertFalse(String.format("Message should not display in the list of combo items for property %s", item.getText()), foundMessage);
 			}
+
+			// IDE-1923 - make sure that 'message' remains an available property type for Structs, even when not currently selected
+			if ("struct".equals(item.getText())) {
+				combo.setSelection("property (default)");
+				for (String comboItem : combo.items()) {
+					if (comboItem.contains("message")) {
+						foundMessage = true;
+						break;
+					}
+				}
+				Assert.assertTrue(String.format("Couldn't find message in the list of combo items for property %s", item.getText()), foundMessage);
+			}
 		}
 	}
 
