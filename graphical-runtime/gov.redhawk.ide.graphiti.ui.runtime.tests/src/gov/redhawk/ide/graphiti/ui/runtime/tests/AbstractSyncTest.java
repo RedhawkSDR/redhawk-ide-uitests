@@ -30,7 +30,7 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
-public abstract class AbstractSyncText extends UIRuntimeTest {
+public abstract class AbstractSyncTest extends UIRuntimeTest {
 
 	private static final String PROP_TAB_NAME = "Properties";
 
@@ -73,8 +73,11 @@ public abstract class AbstractSyncText extends UIRuntimeTest {
 		parentPath.add(getWaveformOrNodeName());
 		final String[] PARENT_PATH = parentPath.toArray(new String[parentPath.size()]);
 
+		// Wait for everything to be present and in the correct state
 		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, PARENT_PATH, resourceA().getShortName(1));
 		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, PARENT_PATH, resourceB().getShortName(1));
+		DiagramTestUtils.waitForComponentState(bot, editor, resourceA().getShortName(1), ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, resourceB().getShortName(1), ComponentState.STOPPED);
 
 		DiagramTestUtils.startComponentFromDiagram(editor, resourceA().getShortName(1));
 		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, PARENT_PATH, resourceA().getShortName(1));
@@ -104,6 +107,9 @@ public abstract class AbstractSyncText extends UIRuntimeTest {
 		parentPath.add(getWaveformOrNodeName());
 		final String[] PARENT_PATH = parentPath.toArray(new String[parentPath.size()]);
 
+		// Wait for everything to be present and in the correct state
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, PARENT_PATH, resourceA().getShortName(1));
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, PARENT_PATH, resourceB().getShortName(1));
 		DiagramTestUtils.waitForComponentState(bot, editor, resourceA().getShortName(1), ComponentState.STOPPED);
 		DiagramTestUtils.waitForComponentState(bot, editor, resourceB().getShortName(1), ComponentState.STOPPED);
 
@@ -186,6 +192,7 @@ public abstract class AbstractSyncText extends UIRuntimeTest {
 
 		// Select resource in the diagram
 		editor.setFocus();
+		DiagramTestUtils.waitForComponentState(bot, editor, resourceA().getShortName(1), ComponentState.STOPPED);
 		SWTBotGefEditPart componentPart = editor.getEditPart(resourceA().getShortName(1));
 		componentPart.select();
 

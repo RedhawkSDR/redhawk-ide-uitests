@@ -13,11 +13,11 @@ package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.chalkboard.tests;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.After;
 
-import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractSyncText;
+import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractSyncTest;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.ComponentDescription;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
-public class DomWaveChalkboardSyncTest extends AbstractSyncText {
+public class DomWaveChalkboardSyncTest extends AbstractSyncTest {
 
 	private String domainName;
 

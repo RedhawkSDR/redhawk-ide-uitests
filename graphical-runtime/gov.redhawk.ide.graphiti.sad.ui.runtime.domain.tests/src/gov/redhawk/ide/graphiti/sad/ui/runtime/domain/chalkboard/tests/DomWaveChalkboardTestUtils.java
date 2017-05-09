@@ -40,8 +40,9 @@ public class DomWaveChalkboardTestUtils {
 
 		ScaExplorerTestUtils.launchWaveformFromDomain(bot, domainName, waveformName);
 		final String[] WAVEFORM_PARENT_PATH = new String[] { domainName, "Waveforms" };
-		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, WAVEFORM_PARENT_PATH, waveformName);
-		final String waveFormFullName = treeItem.getText();
+		SWTBotTreeItem waveformItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, WAVEFORM_PARENT_PATH, waveformName);
+		waveformItem.collapse();
+		final String waveFormFullName = waveformItem.getText();
 		bot.editorByTitle(waveFormFullName).close();
 
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, WAVEFORM_PARENT_PATH, waveFormFullName, DiagramType.GRAPHITI_CHALKBOARD);
