@@ -30,7 +30,7 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
-public abstract class AbstractSyncText extends UIRuntimeTest {
+public abstract class AbstractSyncTest extends UIRuntimeTest {
 
 	private static final String PROP_TAB_NAME = "Properties";
 
