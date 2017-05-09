@@ -11,6 +11,7 @@
 package gov.redhawk.ide.graphiti.sad.ui.runtime.domain.explorer.tests;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 
 import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
@@ -38,7 +39,8 @@ public class DomWaveTestUtils {
 
 		ScaExplorerTestUtils.launchWaveformFromDomain(bot, domainName, waveformName);
 		final String[] WAVEFORM_PARENT_PATH = new String[] { domainName, "Waveforms" };
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, WAVEFORM_PARENT_PATH, waveformName);
+		SWTBotTreeItem waveformItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, WAVEFORM_PARENT_PATH, waveformName);
+		waveformItem.collapse();
 		final String waveFormFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, WAVEFORM_PARENT_PATH, waveformName);
 		return new RHSWTGefBot().rhGefEditor(waveFormFullName);
 	}
