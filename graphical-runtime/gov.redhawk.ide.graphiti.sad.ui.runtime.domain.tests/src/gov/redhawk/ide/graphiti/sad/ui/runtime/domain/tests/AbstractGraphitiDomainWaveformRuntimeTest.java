@@ -47,7 +47,7 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 
 	@Before
 	public void beforeTest() throws Exception {
-		ScaExplorerTestUtils.launchDomain(bot, DOMAIN, DEVICE_MANAGER);
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, DOMAIN, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN);
 
 		ScaExplorerTestUtils.launchWaveformFromDomain(bot, DOMAIN, getWaveformName());
