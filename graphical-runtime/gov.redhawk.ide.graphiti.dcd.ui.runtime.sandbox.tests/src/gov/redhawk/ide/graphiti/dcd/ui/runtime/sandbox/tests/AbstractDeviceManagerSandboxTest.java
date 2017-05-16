@@ -41,10 +41,12 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 	static final String SERVICE_STUB_1 = "ServiceStub_1";
 	static final String SERVICE_STUB_2 = "ServiceStub_2";
 
-	protected RHSWTGefBot gefBot;
+	protected RHSWTGefBot gefBot;  // SUPPRESS CHECKSTYLE shared variable
 
+	@Override
 	@Before
-	public void beforeTest() throws Exception {
+	public void before() throws Exception {
+		super.before();
 		gefBot = new RHSWTGefBot();
 	}
 
