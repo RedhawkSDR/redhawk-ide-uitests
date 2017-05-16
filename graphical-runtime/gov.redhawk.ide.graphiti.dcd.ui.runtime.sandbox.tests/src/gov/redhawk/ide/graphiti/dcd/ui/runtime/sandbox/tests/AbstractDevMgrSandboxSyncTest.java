@@ -11,6 +11,9 @@
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -42,6 +45,39 @@ public abstract class AbstractDevMgrSandboxSyncTest extends AbstractDeviceManage
 	protected abstract String getResourceLaunchId();
 
 	protected abstract String getSecondResourceLaunchId();
+
+	/**
+	 * IDE-1879 - Adds resource via diagram palette, then removes with the delete hot key
+	 */
+	@Test
+	public void addRemoveWithHotKey_Diagram() {
+		// Launch resource
+		launchResourceInDiagram(getResourceId(), getResourceLaunchId());
+
+		// Press delete key
+		editor.getEditPart(getResourceId()).select();
+		KeyboardFactory.getSWTKeyboard().pressShortcut(Keystrokes.DELETE);
+
+		// Wait until resource not present in REDHAWK Explorer & Diagram
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, SANDBOX_DEVMGR_PATH, getResourceLaunchId());
+		Assert.assertNull(editor.getEditPart(getResourceId()));
+	}
+
+	/**
+	 * IDE-1879 - Adds resource via REDHAWK Explorer context menu, then removes with the delete hot key
+	 */
+	@Test
+	public void addRemoveWithHotKey_Explorer() {
+		// Launch resources
+		launchResourceInExplorer(bot, getResourceId(), getResourceLaunchId());
+
+		// Press delete key
+		SWTBotTreeItem item = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, SANDBOX_DEVMGR_PATH, getResourceLaunchId());
+		item.select().pressShortcut(Keystrokes.DELETE);
+
+		// Verify diagram
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, getResourceLaunchId());
+	}
 
 	/**
 	 * IDE-1037, IDE-1119
