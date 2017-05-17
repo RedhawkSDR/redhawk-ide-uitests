@@ -10,12 +10,17 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.spd;
 
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,12 +31,18 @@ import gov.redhawk.ide.swtbot.ErrorLogUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
+import gov.redhawk.ide.swtbot.finder.RHBot;
+import gov.redhawk.ide.swtbot.finder.widgets.RHBotFormText;
+import gov.redhawk.ide.swtbot.finder.widgets.RHBotSection;
 import gov.redhawk.ui.editor.SCAFormEditor;
 import mil.jpeojtrs.sca.spd.SoftPkg;
 import mil.jpeojtrs.sca.util.DceUuidUtil;
 
 public class ComponentOverviewTabTest extends UITest {
+
+	private static final String PROJECT_NAME = "CppComTest";
 
 	private SWTBotEditor editor;
 	private SoftPkg spd;
@@ -43,14 +54,13 @@ public class ComponentOverviewTabTest extends UITest {
 
 		StandardTestActions.importProject(SpdUiTestsActivator.getInstance().getBundle(), new Path("/workspace/CppComTest"), null);
 		// Ensure SPD file was created
-		SWTBotView view = bot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
+		SWTBotView view = ViewUtils.getProjectView(bot);
 		view.show();
 		view.bot().tree().setFocus();
-		view.bot().tree().getTreeItem("CppComTest").select();
-		view.bot().tree().getTreeItem("CppComTest").expand();
-		view.bot().tree().getTreeItem("CppComTest").getNode("CppComTest.spd.xml").doubleClick();
+		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(view.bot(), view.bot().tree(), Arrays.asList(PROJECT_NAME, PROJECT_NAME + ".spd.xml"));
+		treeItem.doubleClick();
 
-		editor = bot.editorByTitle("CppComTest");
+		editor = bot.editorByTitle(PROJECT_NAME);
 		editor.setFocus();
 		editorBot = editor.bot();
 		editorBot.cTabItem("Overview").activate();
@@ -138,7 +148,7 @@ public class ComponentOverviewTabTest extends UITest {
 	@Test
 	public void testPrf() {
 		editorBot.button("Browse...").click();
-		bot.tree().getTreeItem("CppComTest").getNode("CppComTest.prf.xml").select();
+		bot.tree().getTreeItem(PROJECT_NAME).getNode("CppComTest.prf.xml").select();
 		bot.button("OK").click();
 		assertFormValid();
 		editorBot.textWithLabel("Title:", 1).setText("CppComTest.prf.xml");
@@ -152,7 +162,7 @@ public class ComponentOverviewTabTest extends UITest {
 	@Test
 	public void testScd() {
 		editorBot.button("Browse...", 1).click();
-		bot.tree().getTreeItem("CppComTest").getNode("CppComTest.scd.xml").select();
+		bot.tree().getTreeItem(PROJECT_NAME).getNode("CppComTest.scd.xml").select();
 		bot.button("OK").click();
 		assertFormValid();
 		editorBot.textWithLabel("Title:", 2).setText("CppComTest.scd.xml");
@@ -196,5 +206,29 @@ public class ComponentOverviewTabTest extends UITest {
 		String errorMsg = ErrorLogUtils.checkErrorLogForMessage(gefBot, "Conflicting handlers");
 		Assert.assertNull(errorMsg, errorMsg);
 
+	}
+
+	/**
+	 * Tests using the header link
+	 */
+	@Test
+	public void headerLink() {
+		// Expand the section
+		RHBot rhBot = new RHBot(editorBot);
+		RHBotSection section = rhBot.section("Project Documentation");
+		section.expand();
+
+		// Press enter with focus on the hyper link
+		rhBot = new RHBot(section.widget);
+		RHBotFormText formText = rhBot.formText();
+		formText.setFocus();
+		Assert.assertEquals("Header", formText.widget.getSelectedLinkText());
+		KeyboardFactory.getSWTKeyboard().pressShortcut(Keystrokes.CR);
+
+		// Assert editor is open, file in project
+		SWTBotEditor secondEditor = bot.editorByTitle("HEADER");
+		secondEditor.close();
+		SWTBot projectViewBot = ViewUtils.getProjectView(bot).bot();
+		StandardTestActions.waitForTreeItemToAppear(projectViewBot, projectViewBot.tree(), Arrays.asList(PROJECT_NAME, "HEADER"));
 	}
 }
