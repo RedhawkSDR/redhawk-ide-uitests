@@ -17,6 +17,9 @@ import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.tb.IDecorator;
+import org.eclipse.graphiti.tb.ImageDecorator;
+import org.eclipse.graphiti.tb.TextDecorator;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
@@ -26,6 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.graphiti.sad.ui.diagram.patterns.HostCollocationPattern;
+import gov.redhawk.ide.graphiti.ui.diagram.providers.ImageProvider;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
@@ -604,6 +608,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void usesDeviceRefs() {
+		final String usesDeviceId = "FrontEndTuner_1";
 		RHBotGefEditor editor = hostCollocationAndUsesDeviceWaveform("usesDeviceRefs");
 
 		// Edit the HC
@@ -616,6 +621,11 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		shell.bot().button("Cancel").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 		Assert.assertFalse(editor.isDirty());
+		
+		// Verify decorators
+		ContainerShape pe = (ContainerShape) swtBotGefEditPart.part().getModel();
+		Assert.assertTrue("Host Collocation should not have decorators without uses devices refs",
+			DiagramTestUtils.getPictogramElementDecorators(editor, pe).length == 0);
 
 		// Edit the HC
 		swtBotGefEditPart = editor.getEditPart("collocation_1");
@@ -632,7 +642,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		Assert.assertEquals(1, shell.bot().table(0).rowCount());
 		Assert.assertEquals(0, shell.bot().table(1).rowCount());
 
-		shell.bot().table(0).select("Uses Device FrontEndTuner_1");
+		shell.bot().table(0).select("Uses Device " + usesDeviceId);
 		Assert.assertTrue(addButton.isEnabled());
 		Assert.assertFalse(removeButton.isEnabled());
 
@@ -642,7 +652,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		Assert.assertEquals(0, shell.bot().table(0).rowCount());
 		Assert.assertEquals(1, shell.bot().table(1).rowCount());
 
-		shell.bot().table(1).select("Uses Device FrontEndTuner_1");
+		shell.bot().table(1).select("Uses Device " + usesDeviceId);
 		Assert.assertFalse(addButton.isEnabled());
 		Assert.assertTrue(removeButton.isEnabled());
 
@@ -653,15 +663,29 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		Assert.assertEquals(0, shell.bot().table(1).rowCount());
 
 		// Add a single uses device
-		shell.bot().table(0).select("Uses Device FrontEndTuner_1");
+		shell.bot().table(0).select("Uses Device " + usesDeviceId);
 		addButton.click();
 		shell.bot().button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 
+		// Verify decorators
+		IDecorator[] decorators = DiagramTestUtils.getPictogramElementDecorators(editor, pe);
+		for (IDecorator dec : decorators) {
+			if (dec instanceof ImageDecorator) {
+				ImageDecorator imgDec = (ImageDecorator) dec;
+				Assert.assertTrue("Uses device ref image decorator missing", imgDec.getImageId().equals(ImageProvider.IMG_USES_DEVICE));
+				Assert.assertTrue("Uses device ref decorator tooltip missing", imgDec.getMessage().contains(usesDeviceId));
+			} else if (dec instanceof TextDecorator) {
+				TextDecorator textDec = (TextDecorator) dec;
+				Assert.assertTrue("Uses device ref text decorator missing", textDec.getText().equals(usesDeviceId));
+				Assert.assertTrue("Uses device ref decorator tooltip missing", textDec.getMessage().contains(usesDeviceId));
+			}
+		}
+
 		// Verify model
 		HostCollocation hc = DiagramTestUtils.getHostCollocationObject(editor, "collocation_1");
 		Assert.assertEquals(1, hc.getUsesDeviceRef().size());
-		Assert.assertEquals("FrontEndTuner_1", hc.getUsesDeviceRef().get(0).getRefid());
+		Assert.assertEquals(usesDeviceId, hc.getUsesDeviceRef().get(0).getRefid());
 
 		// Edit again
 		swtBotGefEditPart = editor.getEditPart("collocation_1");
@@ -675,7 +699,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		Assert.assertEquals(1, shell.bot().table(1).rowCount());
 
 		// Remove the uses device
-		shell.bot().table(1).select("Uses Device FrontEndTuner_1");
+		shell.bot().table(1).select("Uses Device " + usesDeviceId);
 		shell.bot().button("<- Remove").click();
 		shell.bot().button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
