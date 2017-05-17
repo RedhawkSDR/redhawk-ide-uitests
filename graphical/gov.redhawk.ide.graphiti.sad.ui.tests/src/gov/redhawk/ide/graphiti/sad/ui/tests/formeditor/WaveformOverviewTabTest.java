@@ -10,10 +10,14 @@
  */
 package gov.redhawk.ide.graphiti.sad.ui.tests.formeditor;
 
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
@@ -26,13 +30,19 @@ import gov.redhawk.ide.swtbot.EditorUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.finder.RHBot;
+import gov.redhawk.ide.swtbot.finder.widgets.RHBotFormText;
+import gov.redhawk.ide.swtbot.finder.widgets.RHBotSection;
 import gov.redhawk.model.sca.commands.ScaModelCommand;
 import gov.redhawk.ui.editor.SCAFormEditor;
 import mil.jpeojtrs.sca.sad.SoftwareAssembly;
 import mil.jpeojtrs.sca.util.DceUuidUtil;
 
 public class WaveformOverviewTabTest extends UITest {
+
+	private static final String PROJECT_NAME = "Waveform01";
 
 	private SWTBotEditor editor;
 	private SWTBot editorBot;
@@ -43,9 +53,9 @@ public class WaveformOverviewTabTest extends UITest {
 		super.before();
 
 		// Import project and open editor to overview tab
-		StandardTestActions.importProject(FrameworkUtil.getBundle(WaveformOverviewTabTest.class), new Path("/workspace/Waveform01"), null);
-		ProjectExplorerUtils.openProjectInEditor(bot, "Waveform01", "Waveform01.sad.xml");
-		this.editor = bot.editorByTitle("Waveform01");
+		StandardTestActions.importProject(FrameworkUtil.getBundle(WaveformOverviewTabTest.class), new Path("/workspace/" + PROJECT_NAME), null);
+		ProjectExplorerUtils.openProjectInEditor(bot, PROJECT_NAME, PROJECT_NAME + ".sad.xml");
+		this.editor = bot.editorByTitle(PROJECT_NAME);
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.OVERVIEW_TAB);
 		this.editorBot = editor.bot();
 
@@ -182,5 +192,29 @@ public class WaveformOverviewTabTest extends UITest {
 		editorBot.button("Remove").click();
 		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals(0, table.rowCount());
+	}
+
+	/**
+	 * Tests using the header link
+	 */
+	@Test
+	public void headerLink() {
+		// Expand the section
+		RHBot rhBot = new RHBot(editorBot);
+		RHBotSection section = rhBot.section("Project Documentation");
+		section.expand();
+
+		// Press enter with focus on the hyper link
+		rhBot = new RHBot(section.widget);
+		RHBotFormText formText = rhBot.formText();
+		formText.setFocus();
+		Assert.assertEquals("Header", formText.widget.getSelectedLinkText());
+		KeyboardFactory.getSWTKeyboard().pressShortcut(Keystrokes.CR);
+
+		// Assert editor is open, file in project
+		SWTBotEditor secondEditor = bot.editorByTitle("HEADER");
+		secondEditor.close();
+		SWTBot projectViewBot = ViewUtils.getProjectView(bot).bot();
+		StandardTestActions.waitForTreeItemToAppear(projectViewBot, projectViewBot.tree(), Arrays.asList(PROJECT_NAME, "HEADER"));
 	}
 }
