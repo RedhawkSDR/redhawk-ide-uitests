@@ -704,6 +704,10 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		shell.bot().button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 
+		// Verify decorators
+		Assert.assertTrue("Host Collocation should not have decorators without uses devices refs",
+			DiagramTestUtils.getPictogramElementDecorators(editor, pe).length == 0);
+		
 		// Verify model
 		hc = DiagramTestUtils.getHostCollocationObject(editor, "collocation_1");
 		Assert.assertEquals(0, hc.getUsesDeviceRef().size());
