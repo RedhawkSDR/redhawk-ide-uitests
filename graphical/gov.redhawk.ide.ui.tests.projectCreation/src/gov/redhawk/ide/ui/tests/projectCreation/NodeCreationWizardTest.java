@@ -30,7 +30,7 @@ import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 
-public class NodeCreationWizardTest extends AbstractCreationWizardTest {
+public class NodeCreationWizardTest extends AbstractCreationWizard2Test {
 
 	private static final String DOMAIN_COMBO_LABEL = "Domain Manager:";
 

@@ -30,7 +30,7 @@ import gov.redhawk.ide.ui.tests.projectCreation.util.StandardCodegenInfo;
 /**
  * IDE-1219
  */
-public class ComponentWizardTest extends AbstractCreationWizardTest {
+public class ComponentWizardTest extends AbstractCreationWizard2Test {
 
 	@Override
 	protected String getProjectType() {
@@ -201,7 +201,7 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		}
 
 		// IDE-70 - Package names for Java implementations should start with a lowercase letter.
-		if (lang != null && lang.equals("Java")) {
+		if (lang != null && "Java".equals(lang)) {
 			String packageText = getWizardBot().textWithLabel("Package:").getText();
 			Assert.assertFalse(packageText.isEmpty());
 			Assert.assertTrue(Character.isLowerCase(packageText.charAt(0)));
