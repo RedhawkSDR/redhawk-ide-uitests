@@ -38,7 +38,6 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 	protected static final String DEVICE_MANAGER = "AllPropertyTypes_DevMgr";
 	protected static final String DEVICE = "AllPropertyTypesDevice";
 	protected static final String DEVICE_NUM = DEVICE + "_1";
-	protected static final String DEVICE_STARTED = DEVICE_NUM + " STARTED";
 	
 	protected String[] deviceParentPath;
 
@@ -56,10 +55,10 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 	protected void prepareObject() {
 		domain = domain + (int) (1000.0 * Math.random());
 		deviceParentPath = new String[] { domain, "Device Managers", DEVICE_MANAGER };
-		ScaExplorerTestUtils.launchDomain(bot, domain, DEVICE_MANAGER);
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, deviceParentPath, DEVICE_NUM);
-		
+
 		ConsoleUtils.disableAutoShowConsole(gefBot);
 		treeItem.select();
 	}

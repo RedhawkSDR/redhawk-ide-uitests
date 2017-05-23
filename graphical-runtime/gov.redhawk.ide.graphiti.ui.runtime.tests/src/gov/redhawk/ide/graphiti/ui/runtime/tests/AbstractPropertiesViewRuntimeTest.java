@@ -92,13 +92,11 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	 * @param propTree
 	 */
 	protected void populatePropertyMap(SWTBotTreeItem[] treeItems) {
-
 		for (SWTBotTreeItem item : treeItems) {
 			propertyMap.put(item.cell(0), item.cell(1));
 			item.expand();
 			populatePropertyMap(item.getItems());
 		}
-
 	}
 
 	/**
@@ -345,19 +343,9 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 
 		if (modelValues[0] instanceof Boolean) {
 			for (int i = 0; i < modelValues.length; ++i) {
-				table.doubleClick(i, 0);
 				boolean boolValue = (Boolean) modelValues[i];
-				if (boolValue) {
-					bot.sleep(100);
-					keyboard.pressShortcut(Keystrokes.UP);
-					newValueArray[i] = Boolean.FALSE.toString();
-				} else {
-					bot.sleep(100);
-					keyboard.pressShortcut(Keystrokes.DOWN);
-					newValueArray[i] = Boolean.TRUE.toString();
-				}
-				keyboard.pressShortcut(Keystrokes.CR);
-				bot.sleep(100);
+				newValueArray[i] = new Boolean(!boolValue).toString();
+				StandardTestActions.selectComboListFromCell(gefBot, table, i, 0, newValueArray[i], true);
 			}
 		} else {
 			for (int i = 0; i < table.rowCount(); ++i) {

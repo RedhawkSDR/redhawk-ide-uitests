@@ -20,6 +20,7 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -113,6 +114,7 @@ public class ConnectToDomainWizardTest extends UIRuntimeTest {
 
 	/**
 	 * IDE-1584 - Launch a device manager in a domain that has a unique display name
+	 * IDE-1932 - Ensure extra ODM channel does not display
 	 * @throws CoreException
 	 */
 	@Test
@@ -133,6 +135,12 @@ public class ConnectToDomainWizardTest extends UIRuntimeTest {
 		bot.waitUntil(Conditions.shellCloses(wizard));
 
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { displayName, "Device Managers" }, nodeName);
+		try {
+			ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { displayName, "Event Channels" }, displayName + ".ODM_Channel", 5000);
+			Assert.fail("Superfluous ODM event channel created");
+		} catch (TimeoutException e) {
+			// PASS, this node shouldn't appear
+		}
 	}
 
 	private void launchViaNewDomainWizard(String domainName, String[] deviceManagers) {

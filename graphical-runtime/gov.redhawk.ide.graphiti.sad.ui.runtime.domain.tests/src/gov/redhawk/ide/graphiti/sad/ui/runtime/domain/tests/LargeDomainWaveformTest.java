@@ -33,13 +33,13 @@ public class LargeDomainWaveformTest extends AbstractGraphitiDomainWaveformRunti
 	 */
 	@Test
 	public void launchLargeWaveform() {
-		String waveFormFullName = getWaveFormFullName();
-		SWTBotGefEditor editor = gefBot.gefEditor(waveFormFullName);
+		final String[] waveformPath = ScaExplorerTestUtils.joinPaths(DOMAIN_WAVEFORM_PARENT_PATH, new String[] { getWaveFormFullName() });
+		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
 
 		String[] componentsList = { "SigGen_1", "HardLimit_1", "DataConverter_1", "SigGen_2", "SigGen_3", "SigGen_4", "DataConverter_2", "HardLimit_2",
 			"DataConverter_3", "DataConverter_4" };
 		for (String component : componentsList) {
-			ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, waveFormFullName, component);
+			ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, waveformPath, component);
 			DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, component);
 		}
 	}

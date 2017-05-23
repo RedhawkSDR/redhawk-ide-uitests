@@ -31,7 +31,7 @@ import mil.jpeojtrs.sca.spd.CodeFileType;
 /**
  * IDE-1219
  */
-public class ComponentWizardTest extends AbstractCreationWizardTest {
+public class ComponentWizardTest extends AbstractCreationWizard2Test {
 
 	private static final String COMP_PROJECT_TYPE = "REDHAWK Component Project";
 
@@ -239,7 +239,7 @@ public class ComponentWizardTest extends AbstractCreationWizardTest {
 		}
 
 		// IDE-70 - Package names for Java implementations should start with a lowercase letter.
-		if (lang != null && lang.equals("Java")) {
+		if (lang != null && "Java".equals(lang)) {
 			String packageText = getWizardBot().textWithLabel("Package:").getText();
 			Assert.assertFalse(packageText.isEmpty());
 			Assert.assertTrue(Character.isLowerCase(packageText.charAt(0)));

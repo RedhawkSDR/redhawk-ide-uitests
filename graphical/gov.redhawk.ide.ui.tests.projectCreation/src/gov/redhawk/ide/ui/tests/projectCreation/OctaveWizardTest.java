@@ -27,7 +27,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.FrameworkUtil;
 
-public class OctaveWizardTest extends AbstractCreationWizardTest {
+public class OctaveWizardTest extends AbstractCreationWizard2Test {
 
 	@Override
 	protected String getProjectType() {

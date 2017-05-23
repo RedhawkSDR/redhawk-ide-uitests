@@ -34,7 +34,7 @@ import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.model.sca.util.ModelUtil;
 import mil.jpeojtrs.sca.sad.SoftwareAssembly;
 
-public class WaveformWizardTest extends AbstractCreationWizardTest {
+public class WaveformWizardTest extends AbstractCreationWizard2Test {
 
 	@Override
 	protected String getProjectType() {

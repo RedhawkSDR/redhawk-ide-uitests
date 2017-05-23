@@ -19,6 +19,7 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 import org.eclipse.swtbot.eclipse.gef.finder.SWTGefBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 import org.junit.Before;
 
@@ -46,15 +47,14 @@ public abstract class AbstractGraphitiDomainWaveformRuntimeTest extends UIRuntim
 
 	@Before
 	public void beforeTest() throws Exception {
-		ScaExplorerTestUtils.launchDomain(bot, DOMAIN, DEVICE_MANAGER);
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, DOMAIN, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN);
 
 		ScaExplorerTestUtils.launchWaveformFromDomain(bot, DOMAIN, getWaveformName());
 		bot.waitUntil(new WaitForEditorCondition(), WaitForEditorCondition.DEFAULT_WAIT_FOR_EDITOR_TIME);
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveformName());
-
-		// Record the waveform's full name
-		waveFormFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveformName());
+		SWTBotTreeItem waveformItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, getWaveformName());
+		waveformItem.collapse();
+		waveFormFullName = waveformItem.getText();
 	}
 
 	protected abstract String getWaveformName();
