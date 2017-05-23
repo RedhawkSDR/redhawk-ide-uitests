@@ -340,19 +340,12 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 			String newValue;
 
 			if ("true".equals(oldValue)) {
-				table.doubleClick(i, 0);
-				bot.sleep(250);
-				keyboard.pressShortcut(Keystrokes.UP);
-				newValue = Boolean.FALSE.toString();
-				keyboard.pressShortcut(Keystrokes.CR);
+				newValue = "false";
+				StandardTestActions.selectComboListFromCell(gefBot, table, i, 0, newValue, true);
 			} else if ("false".equals(oldValue)) {
-				table.doubleClick(i, 0);
-				bot.sleep(250);
-				keyboard.pressShortcut(Keystrokes.DOWN);
-				newValue = Boolean.TRUE.toString();
-				keyboard.pressShortcut(Keystrokes.CR);
+				newValue = "true";
+				StandardTestActions.selectComboListFromCell(gefBot, table, i, 0, newValue, true);
 			} else {
-				table.doubleClick(i, 0);
 				newValue = PREPENDER + oldValue;
 				StandardTestActions.writeToCell(gefBot, table, i, 0, newValue, true);
 			}
