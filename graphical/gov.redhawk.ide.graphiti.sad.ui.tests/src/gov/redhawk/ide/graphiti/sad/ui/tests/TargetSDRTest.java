@@ -128,7 +128,7 @@ public class TargetSDRTest extends AbstractGraphitiTest {
 		ResourceSet resourceSet = new ResourceSetImpl();
 		Resource resource = resourceSet.createResource(URI.createURI(WAVEFORM_NAME + ".sad.xml"), SadPackage.eCONTENT_TYPE);
 		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
-		SoftwareAssembly sad = (SoftwareAssembly) resource.getContents().get(0);
+		SoftwareAssembly sad = SoftwareAssembly.Util.getSoftwareAssembly(resource);
 
 		// Verify assembly controller / start order were not changed
 		SadComponentInstantiation compInst1 = sad.getPartitioning().getComponentPlacement().get(0).getComponentInstantiation().get(0);
@@ -173,7 +173,7 @@ public class TargetSDRTest extends AbstractGraphitiTest {
 		ResourceSet resourceSet = new ResourceSetImpl();
 		Resource resource = resourceSet.createResource(URI.createURI(WAVEFORM_NAME + ".sad.xml"), SadPackage.eCONTENT_TYPE);
 		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
-		SoftwareAssembly sad = (SoftwareAssembly) resource.getContents().get(0);
+		SoftwareAssembly sad = SoftwareAssembly.Util.getSoftwareAssembly(resource);
 
 		// Verify the port was not marked external
 		Assert.assertNull(sad.getExternalPorts());

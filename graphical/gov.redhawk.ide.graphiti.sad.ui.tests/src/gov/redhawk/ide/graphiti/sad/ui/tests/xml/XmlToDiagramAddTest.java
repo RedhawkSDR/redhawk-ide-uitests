@@ -135,7 +135,7 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 		ResourceSet resourceSet = new ResourceSetImpl();
 		Resource resource = resourceSet.createResource(URI.createURI(waveformName + ".sad.xml"), SadPackage.eCONTENT_TYPE);
 		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
-		SoftwareAssembly sad = (SoftwareAssembly) resource.getContents().get(0);
+		SoftwareAssembly sad = SoftwareAssembly.Util.getSoftwareAssembly(resource);
 
 		// Create a connection from SigGen to a findby naming service
 		SadConnectInterface connection1 = SadFactory.eINSTANCE.createSadConnectInterface();
