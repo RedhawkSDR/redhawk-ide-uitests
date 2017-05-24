@@ -185,7 +185,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1, 10000);
 
 		// delete component from REDHAWK Explorer
-		ScaExplorerTestUtils.terminateLocalResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		ScaExplorerTestUtils.terminate(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, HARD_LIMIT_1);
 
 		// Launch component from TargetSDR

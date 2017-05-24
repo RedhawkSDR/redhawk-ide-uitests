@@ -33,7 +33,7 @@ public class DomWaveChalkboardTestUtils {
 	}
 
 	protected static RHBotGefEditor launchDomainAndWaveform(SWTWorkbenchBot bot, String domainName, String waveformName) {
-		ScaExplorerTestUtils.launchDomain(bot, domainName, DEVICE_MANAGER_WITH_GPP);
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domainName, DEVICE_MANAGER_WITH_GPP);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
 		final String[] GPP_PARENT_PATH = new String[] { domainName, "Device Managers", DEVICE_MANAGER_WITH_GPP };
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, GPP_PARENT_PATH, GPP_LOCALHOST);

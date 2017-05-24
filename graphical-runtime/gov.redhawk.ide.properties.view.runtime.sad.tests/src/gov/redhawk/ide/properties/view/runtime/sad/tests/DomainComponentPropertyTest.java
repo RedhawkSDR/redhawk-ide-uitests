@@ -57,7 +57,7 @@ public class DomainComponentPropertyTest extends AbstractPropertiesViewRuntimeTe
 	protected void prepareObject() {
 		domain = DomainComponentPropertyTest.class.getSimpleName() + "_" + (int) (1000.0 * Math.random());
 		domainWaveformParentPath = new String[] { domain, "Waveforms" };
-		ScaExplorerTestUtils.launchDomain(bot, domain, DEVICE_MANAGER);
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
 
 		ScaExplorerTestUtils.launchWaveformFromDomain(bot, domain, WAVEFORM);

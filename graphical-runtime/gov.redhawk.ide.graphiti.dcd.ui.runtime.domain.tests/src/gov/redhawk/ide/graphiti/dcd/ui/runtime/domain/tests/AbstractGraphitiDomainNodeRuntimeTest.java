@@ -47,7 +47,7 @@ public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTes
 
 	protected void launchDomainAndDevMgr(String deviceManager) {
 		String[] parentPath = new String[] { domain, "Device Managers" };
-		ScaExplorerTestUtils.launchDomain(bot, domain, deviceManager);
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, deviceManager);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, deviceManager);
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, parentPath, deviceManager, DiagramType.GRAPHITI_NODE_EXPLORER);
