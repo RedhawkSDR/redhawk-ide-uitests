@@ -44,7 +44,7 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 
 		// Launch the domain
 		domainName = "CorbaNameBrowserTest_" + (int) (1000.0 * Math.random());;
-		ScaExplorerTestUtils.launchDomain(bot, domainName, DEVICE_MANAGER);
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domainName, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
 
 		// Launch the namespaced waveform

@@ -61,7 +61,7 @@ public class FileManagerTest extends UIRuntimeTest {
 
 		// Launch a domain
 		final String domainName = getClass().getSimpleName() + "_showErrorDetails";
-		ScaExplorerTestUtils.launchDomain(bot, domainName, null);
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domainName);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
 
 		// Don't let the console steal focus, show the properties view

@@ -30,7 +30,7 @@ public class DevMgrDomainTestUtils {
 
 	protected static RHBotGefEditor launchDomainAndDevMgr(SWTWorkbenchBot bot, String domainName, String nodeName) {
 		String[] parentPath = new String[] { domainName, "Device Managers" };
-		ScaExplorerTestUtils.launchDomain(bot, domainName, nodeName);
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domainName, nodeName);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, nodeName);
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, parentPath, nodeName, DiagramType.GRAPHITI_NODE_EXPLORER);
