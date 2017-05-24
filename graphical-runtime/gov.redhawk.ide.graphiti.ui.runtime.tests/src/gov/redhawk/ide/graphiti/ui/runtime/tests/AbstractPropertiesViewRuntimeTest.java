@@ -31,8 +31,10 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
@@ -75,6 +77,11 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	protected abstract void prepareObject();
 
 	protected abstract EList<ScaAbstractProperty< ? >> getModelObjectProperties();
+
+	@BeforeClass
+	public static void disableAutoShowConsole() {
+		ConsoleUtils.disableAutoShowConsole();
+	}
 
 	@Before
 	public void beforeTest() {

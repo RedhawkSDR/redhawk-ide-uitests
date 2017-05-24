@@ -12,7 +12,6 @@ package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 
-import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
@@ -27,10 +26,6 @@ public class ExplorerComponentPropertyTest extends DomainComponentPropertyTest {
 		gefBot.gefEditor(waveformFullName).close();
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, domainWaveformParentPath, WAVEFORM, DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
 		SWTBotGefEditor editor = gefBot.gefEditor(waveformFullName);
-		
-		// Need to do this, or the Console view keeps popping up
-		ConsoleUtils.disableAutoShowConsole(gefBot);
-		
 		editor.click(COMPONENT);
 	}
 }
