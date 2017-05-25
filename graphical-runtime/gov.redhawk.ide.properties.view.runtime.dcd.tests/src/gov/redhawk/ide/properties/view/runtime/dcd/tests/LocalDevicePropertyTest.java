@@ -18,7 +18,6 @@ import org.junit.After;
 import gov.redhawk.ide.debug.LocalSca;
 import gov.redhawk.ide.debug.ScaDebugPlugin;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractPropertiesViewRuntimeTest;
-import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.ScaAbstractProperty;
 import gov.redhawk.model.sca.ScaDevice;
@@ -42,7 +41,6 @@ public class LocalDevicePropertyTest extends AbstractPropertiesViewRuntimeTest {
 	protected void prepareObject() {
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, DEVICE_NAME, "python");
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Device Manager" }, DEVICE_NAME_NUM);
-		ConsoleUtils.disableAutoShowConsole(gefBot);
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox", "Device Manager" }, DEVICE_NAME_NUM);
 		treeItem.select();
 	}

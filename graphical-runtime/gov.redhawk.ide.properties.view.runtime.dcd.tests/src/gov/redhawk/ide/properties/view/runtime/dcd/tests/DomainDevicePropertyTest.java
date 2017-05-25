@@ -58,8 +58,6 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, deviceParentPath, DEVICE_NUM);
-
-		ConsoleUtils.disableAutoShowConsole(gefBot);
 		treeItem.select();
 	}
 

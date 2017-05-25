@@ -67,8 +67,6 @@ public class DomainComponentPropertyTest extends AbstractPropertiesViewRuntimeTe
 		ArrayList<String> componentParentPath = new ArrayList<>(Arrays.asList(domainWaveformParentPath));
 		componentParentPath.add(waveformFullName);
 		
-		ConsoleUtils.disableAutoShowConsole(gefBot);
-		
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, componentParentPath.toArray(new String[] {}), COMPONENT_NUM);
 		treeItem.select();
 	}
