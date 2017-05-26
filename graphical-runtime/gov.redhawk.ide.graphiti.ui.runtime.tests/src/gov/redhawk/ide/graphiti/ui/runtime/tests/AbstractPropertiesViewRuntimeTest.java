@@ -91,6 +91,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	@After
 	public void afterTest() {
 		propertyMap.clear();
+		StandardTestActions.resetRefreshInterval();
 	}
 
 	/**
@@ -146,16 +147,25 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	 * 
 	 * IDE-1302 (for child classes that use devices)
 	 * IDE-1320 (for child classes that use a diagram)
+	 * @throws InterruptedException
 	 */
 	@Test
-	public void editPropertyViewToModel() {
-		StandardTestActions.setRefreshInterval(bot, 1000);
+	public void editPropertyViewToModel() throws InterruptedException {
+		StandardTestActions.setRefreshInterval(1000);
+		long readyTime = System.currentTimeMillis() + 10000;
+
 		prepareObject();
 
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		populatePropertyMap(propTree.getAllItems());
-
 		EList<ScaAbstractProperty< ? >> modelProps = getModelObjectProperties();
+
+		// Ensure our changes to the refresh interval have all taken effect (previous tasks have already come up for
+		// re-scheduling)
+		long sleepTime = readyTime - System.currentTimeMillis();
+		if (sleepTime > 0) {
+			Thread.sleep(sleepTime);
+		}
 
 		for (ScaAbstractProperty< ? > modelProp : modelProps) {
 			String name = modelProp.getName();
@@ -174,25 +184,31 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 				editStructSeqViewProperty(treeItem, (ScaStructSequenceProperty) modelProp);
 			}
 		}
-		
-		StandardTestActions.setRefreshInterval(bot, 10000);
 	}
 
 	/**
 	 * Edit property values for a resource in the model and confirm that the associated Property View values update
 	 * 
 	 * IDE-1302 (for child classes that use devices)
+	 * @throws InterruptedException
 	 */
 	@Test
-	public void editPropertyModelToView() {
-		StandardTestActions.setRefreshInterval(bot, 1000);
+	public void editPropertyModelToView() throws InterruptedException {
+		StandardTestActions.setRefreshInterval(1000);
+		long readyTime = System.currentTimeMillis() + 10000;
 
 		prepareObject();
 
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		populatePropertyMap(propTree.getAllItems());
-
 		EList<ScaAbstractProperty< ? >> modelProps = getModelObjectProperties();
+
+		// Ensure our changes to the refresh interval have all taken effect (previous tasks have already come up for
+		// re-scheduling)
+		long sleepTime = readyTime - System.currentTimeMillis();
+		if (sleepTime > 0) {
+			Thread.sleep(sleepTime);
+		}
 
 		for (ScaAbstractProperty< ? > modelProp : modelProps) {
 			// Check that the model property exists in the view
@@ -213,8 +229,6 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 				editStructSeqModelProperty((ScaStructSequenceProperty) modelProp, treeItem);
 			}
 		}
-		
-		StandardTestActions.setRefreshInterval(bot, 10000);
 	}
 
 	// ################################ EDIT PROPERTY TESTS MODEL TO VIEW ##################################/
