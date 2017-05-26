@@ -77,9 +77,9 @@ public class DomWaveChalkboardReleaseTest extends UIRuntimeTest {
 
 	private void showLocalReferences(boolean show) {
 		SWTBotView view = bot.viewById(ScaExplorerTestUtils.SCA_EXPLORER_VIEW_ID);
-		view.viewMenu().menu("Customize View...").click();
+		view.viewMenu().menu("Filters and Customization...").click();
 
-		SWTBotShell shell = bot.shell("Available Customizations");
+		SWTBotShell shell = bot.shell("Filters and Customization");
 		SWTBotTableItem hideLocalItem = shell.bot().table().getTableItem("Hide Local References");
 		if (show) {
 			hideLocalItem.uncheck();

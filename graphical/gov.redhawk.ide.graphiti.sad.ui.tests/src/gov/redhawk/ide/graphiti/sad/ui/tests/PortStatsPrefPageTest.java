@@ -46,7 +46,7 @@ public class PortStatsPrefPageTest extends AbstractGraphitiTest {
 
 		SWTBotButton applyButton = prefBot.button("Apply");
 		SWTBotButton defaultButton = prefBot.button("Restore Defaults");
-		SWTBotButton okButton = prefBot.button("OK");
+		SWTBotButton okButton = prefBot.button("Apply and Close");
 
 		Assert.assertNull("No error message should be present", getErrorMessage(prefShell));
 		Assert.assertTrue(applyButton.isEnabled());
