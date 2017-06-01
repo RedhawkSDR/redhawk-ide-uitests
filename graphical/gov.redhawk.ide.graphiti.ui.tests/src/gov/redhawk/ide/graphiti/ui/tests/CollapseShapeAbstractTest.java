@@ -440,6 +440,6 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 		if ((shouldCollapse && !prefCheckBox.isChecked()) || (!shouldCollapse && prefCheckBox.isChecked())) {
 			prefCheckBox.click();
 		}
-		prefBot.button("OK").click();
+		prefBot.button("Apply and Close").click();
 	}
 }
