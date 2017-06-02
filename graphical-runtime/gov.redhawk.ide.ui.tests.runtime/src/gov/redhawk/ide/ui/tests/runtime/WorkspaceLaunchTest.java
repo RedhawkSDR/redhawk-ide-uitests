@@ -10,21 +10,21 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.runtime;
 
-import java.util.Arrays;
-
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.forms.finder.SWTFormsBot;
 import org.eclipse.swtbot.forms.finder.widgets.SWTBotImageHyperlink;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
-import org.junit.Before;
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ComponentUtils;
@@ -41,14 +41,54 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
  * configuration.
  */
 public class WorkspaceLaunchTest extends UIRuntimeTest {
+
 	private static final String PROJECT_NAME = "cppComponent";
 	private static final String PROJECT_NAME_1 = PROJECT_NAME + "_1";
 
-	@Before
-	@Override
-	public void before() throws Exception {
-		super.before();
-		createProject(PROJECT_NAME);
+	private Boolean oldAutomatedMode;
+
+	@After
+	public void after() throws CoreException {
+		if (oldAutomatedMode != null) {
+			// Switch error dialogs back to previous setting
+			ErrorDialog.AUTOMATED_MODE = oldAutomatedMode;
+			oldAutomatedMode = null;
+		}
+		super.after();
+	}
+
+	@Test
+	public void badWorkspaceRunLaunchTest() {
+		badWorkspaceLaunchTest("Launch resource in the sandbox");
+	}
+
+	@Test
+	public void badWorkspaceDebugLaunchTest() {
+		badWorkspaceLaunchTest("Debug resource in the sandbox");
+	}
+
+	private void badWorkspaceLaunchTest(String linkText) {
+		createProject(PROJECT_NAME, false);
+
+		// Disable hiding errors
+		oldAutomatedMode = ErrorDialog.AUTOMATED_MODE;
+		ErrorDialog.AUTOMATED_MODE = false;
+
+		// Attempt launch via the Overview tab
+		ProjectExplorerUtils.openProjectInEditor(bot, PROJECT_NAME, PROJECT_NAME + ".spd.xml");
+		final SWTBotEditor editor = bot.editorByTitle(PROJECT_NAME);
+		editor.bot().cTabItem("Overview").activate();
+		SWTFormsBot formsBot = new SWTFormsBot();
+		SWTBotImageHyperlink link = formsBot.imageHyperlink("Launch resource in the sandbox");
+		link.click();
+
+		// Assert error
+		bot.waitUntil(Conditions.shellIsActive("Problem Occurred"), 15000);
+		SWTBotShell problemDialog = bot.shell("Problem Occurred");
+		String errorMsg = problemDialog.bot().label(1).getText();
+		Assert.assertTrue("Error message didn't seem descriptive enough", errorMsg.contains("does not exist (error number CF_EEXIST)"));
+		problemDialog.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(problemDialog));
 	}
 
 	/**
@@ -57,6 +97,7 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void workspaceRunLaunchTest() {
+		createProject(PROJECT_NAME, true);
 
 		// Launch via the Overview tab
 		ProjectExplorerUtils.openProjectInEditor(bot, PROJECT_NAME, PROJECT_NAME + ".spd.xml");
@@ -130,6 +171,8 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void workspaceDebugLaunchTest() {
+		createProject(PROJECT_NAME, true);
+
 		// Launch via the Overview tab
 		ProjectExplorerUtils.openProjectInEditor(bot, PROJECT_NAME, PROJECT_NAME + ".spd.xml");
 		final SWTBotEditor editor = bot.editorByTitle(PROJECT_NAME);
@@ -195,20 +238,24 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 		assertDebugLaunch(PROJECT_NAME_1);
 	}
 
-	private void createProject(String projectName) {
+	private void createProject(String projectName, boolean generateCode) {
 		// Create an generate a generic C++ shared address space component
 		ComponentUtils.createComponentProject(bot, projectName, "C++");
 
 		// Generate
 		SWTBotEditor editor = bot.editorByTitle(projectName);
+		if (!generateCode) {
+			return;
+		}
+
 		StandardTestActions.generateProject(bot, editor);
 
 		// Default file editor should open
 		bot.editorByTitle(projectName + ".cpp");
 
 		// Wait for the build to finish and any error markers to go away, then close editors
-		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), 60000);
-		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), 120000);
+		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
+		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), WaitForSeverityMarkers.TIMEOUT);
 	}
 
 	private void assertLaunch(String projectName) {
@@ -219,47 +266,36 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 
 	// Need a slightly more complicated check here, since the code will likely get caught debugging
 	private void assertDebugLaunch(final String projectName) {
-		try {
-			SWTBotShell shell = bot.shell("Confirm Perspective Switch");
-			shell.bot().checkBox().click();
-			shell.bot().button("No").click();
-		} catch (WidgetNotFoundException e) {
-			// Should only pop once, since we checked the box for "don't show again"
-		}
+		// Decline switching perspectives
+		SWTBotShell shell = bot.shell("Confirm Perspective Switch");
+		shell.bot().button("No").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 
-		final String[] parentPath = new String[] { "Sandbox", "Chalkboard" };
-
+		// Wait for editor to open when we break at main, then resume
 		bot.waitUntil(new DefaultCondition() {
-
-			private WidgetNotFoundException lastException = null;
-
-			@Override
-			public String getFailureMessage() {
-				if (lastException != null) {
-					return "Failed waiting for a tree item in the explorer view: " + lastException.toString();
-				} else {
-					return String.format("Unknown failure while waiting for a tree item in the explorer view. Parent path: %s. Tree item: %s.",
-						Arrays.deepToString(parentPath), projectName);
-				}
-			}
 
 			@Override
 			public boolean test() throws Exception {
-				try {
-					// Hammer F8 to make sure we are not caught in the debug process
-					bot.activeShell().pressShortcut(Keystrokes.F8);
-					ScaExplorerTestUtils.getTreeItemFromScaExplorer((SWTWorkbenchBot) bot, parentPath, projectName + " < DEBUGGING > ");
-				} catch (WidgetNotFoundException e) {
-					lastException = e;
-					return false;
-				}
-				lastException = null;
-				return true;
+				SWTBotEditor editor = ((SWTWorkbenchBot) bot).activeEditor();
+				return editor != null && editor.getTitle().contains("main");
 			}
-		}, 30000);
 
-		SWTBotTreeItem runtimeNode = ScaExplorerTestUtils.getTreeItemFromScaExplorer((SWTWorkbenchBot) bot, parentPath, projectName + " < DEBUGGING > ");
-		runtimeNode.contextMenu("Terminate").click();
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, projectName);
+			@Override
+			public String getFailureMessage() {
+				return "Editor didn't open after debug break in main()";
+			}
+		});
+		bot.menu().menu("Run", "Resume").click();
+
+		// Wait for the component to register and appear in the explorer view
+		final String[] parentPath = new String[] { "Sandbox", "Chalkboard" };
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, projectName + " < DEBUGGING > ");
+
+		// Click terminate, decline perspective switch, wait for component to disappear
+		treeItem.contextMenu("Terminate").click();
+		shell = bot.shell("Confirm Perspective Switch");
+		shell.bot().button("No").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, parentPath, projectName);
 	}
 }
