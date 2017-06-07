@@ -17,12 +17,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.ViewUtils;
-import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class PortPropertiesTest extends AbstractGraphitiChalkboardTest {
-
-	private RHBotGefEditor editor;
 
 	/**
 	 * IDE-1520 - Show IDL tree in port details for explorer view
