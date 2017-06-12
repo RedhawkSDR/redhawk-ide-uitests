@@ -78,7 +78,7 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 		ProjectExplorerUtils.openProjectInEditor(bot, PROJECT_NAME, PROJECT_NAME + ".spd.xml");
 		final SWTBotEditor editor = bot.editorByTitle(PROJECT_NAME);
 		editor.bot().cTabItem("Overview").activate();
-		SWTFormsBot formsBot = new SWTFormsBot();
+		SWTFormsBot formsBot = new SWTFormsBot(editor.getWidget());
 		SWTBotImageHyperlink link = formsBot.imageHyperlink("Launch resource in the sandbox");
 		link.click();
 
