@@ -33,6 +33,7 @@ import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
+import gov.redhawk.ide.swtbot.condition.WaitForCppIndexer;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
@@ -255,6 +256,7 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 
 		// Wait for the build to finish and any error markers to go away, then close editors
 		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
+		bot.waitUntil(new WaitForCppIndexer(), WaitForCppIndexer.TIMEOUT);
 		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), WaitForSeverityMarkers.TIMEOUT);
 	}
 
