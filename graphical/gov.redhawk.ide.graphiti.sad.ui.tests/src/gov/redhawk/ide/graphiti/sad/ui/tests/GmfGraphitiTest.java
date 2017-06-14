@@ -10,12 +10,12 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
-import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Test;
@@ -26,35 +26,27 @@ public class GmfGraphitiTest extends AbstractGraphitiTest {
 
 	@Test
 	public void openDiagramGmfAndGraphiti() {
-
 		waveformName = "Diagram_Type";
 
 		// Create a new empty waveform, close editor
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
-		gefBot.waitUntil(new WaitForEditorCondition());
-		SWTBotGefEditor editor = gefBot.gefEditor(waveformName);
+		SWTBotEditor editor = gefBot.gefEditor(waveformName);
 		editor.close();
 
-		// Focus on the project explorer view
-		SWTBotView projectView = gefBot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
+		// Find the SAD file in the project explorer
+		SWTBotView projectView = ViewUtils.getProjectView(bot);
 		projectView.setFocus();
 		SWTBotTree projectTree = projectView.bot().tree();
 		SWTBotTreeItem sadFileTreeItem = projectTree.expandNode(waveformName).getNode(waveformName + ".sad.xml");
 
-		// Open Graphiti editor
+		// Open Graphiti editor, then close
 		sadFileTreeItem.select().contextMenu("Open With").menu("Waveform Editor").click();
-
-		// Find the editor by name to ensure it opened, then close it
-		gefBot.waitUntil(new WaitForEditorCondition());
-		editor = gefBot.gefEditor(waveformName);
+		editor = gefBot.editorById("gov.redhawk.ide.graphiti.sad.ui.editor.presentation.SadEditorID");
 		editor.close();
 
-		// Open GMF editor
+		// Open GMF editor, then close
 		sadFileTreeItem.select().contextMenu("Open With").menu("Legacy Waveform Editor").click();
-
-		// Find the editor by name to ensure it opened, then close it
-		gefBot.waitUntil(new WaitForEditorCondition());
-		editor = gefBot.gefEditor(waveformName);
+		editor = gefBot.editorById("gov.redhawk.ide.sad.ui.editor.presentation.SadEditorID");
 		editor.close();
 	}
 }
