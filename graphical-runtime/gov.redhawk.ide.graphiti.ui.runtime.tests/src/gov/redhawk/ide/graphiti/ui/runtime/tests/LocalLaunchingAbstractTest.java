@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.AssertionFailedException;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -95,10 +94,8 @@ public abstract class LocalLaunchingAbstractTest extends UIRuntimeTest {
 				if (!"org.eclipse.ui".equals(status.getPlugin())) {
 					return;
 				}
-				if (status.getException() instanceof SWTException) {
-					if (((SWTException) status.getException()).throwable instanceof AssertionFailedException) {
-						assertionError = true;
-					}
+				if (status.getException() instanceof AssertionFailedException) {
+					assertionError = true;
 				}
 			}
 		};
