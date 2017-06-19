@@ -16,7 +16,10 @@ import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.EditorUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import mil.jpeojtrs.sca.sad.ExternalProperty;
+import mil.jpeojtrs.sca.sad.Port;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
+import mil.jpeojtrs.sca.sad.SadConnectInterface;
 
 /**
  * IDE-1940 & IDE-1941
@@ -43,6 +46,7 @@ public class WaveformComponentsTabTest extends AbstractWaveformTabTest {
 	}
 
 	/**
+	 * IDE-1940
 	 * Test changing a component instantiations ID via the Components Tab
 	 */
 	@Test
@@ -51,7 +55,7 @@ public class WaveformComponentsTabTest extends AbstractWaveformTabTest {
 			editorBot.tree().select(componentId);
 			final SadComponentInstantiation ci = sad.getComponentInstantiation(componentId);
 
-			// Sanity check to make sure the ID is what we this it is
+			// Sanity check to make sure the ID is what we think it is
 			Assert.assertEquals(componentId, ci.getId());
 
 			// Change the value and check that model was updated
@@ -78,14 +82,107 @@ public class WaveformComponentsTabTest extends AbstractWaveformTabTest {
 		}
 	}
 
-	/** Test changing a component instantiations usage name and naming service name via the Components Tab **/
+	/**
+	 * IDE-1976
+	 * Test changing ID also updates associated connections, external ports, and external props
+	 */
+	@Test
+	public void connectionRefId() {
+		final String componentId = components[0];
+		editorBot.tree().select(componentId);
+		final SadConnectInterface connection = sad.getConnections().getConnectInterface().get(0);
+
+		// Sanity check to make sure the connection is what we think it is
+		Assert.assertEquals(componentId, connection.getUsesPort().getComponentInstantiationRef().getRefid());
+
+		// Change the value and check that model was updated
+		editorBot.textWithLabel("Component ID:").selectAll().setText(componentId + SUFFIX);
+		editorBot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				Assert.assertEquals(componentId + SUFFIX, connection.getUsesPort().getComponentInstantiationRef().getRefid());
+				return true;
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Model uses port ref ID does not match Components tab ID field";
+			}
+		});
+	}
+
+	/**
+	 * IDE-1976
+	 * Test changing ID also updates associated connections, external ports, and external props
+	 */
+	@Test
+	public void externalPortRefId() {
+		final String componentId = components[0];
+		editorBot.tree().select(componentId);
+		final Port externalPort = sad.getExternalPorts().getPort().get(0);
+
+		// Sanity check to make sure the external port is what we think it is
+		Assert.assertEquals(componentId, externalPort.getComponentInstantiationRef().getRefid());
+
+		// Change the value and check that model was updated
+		editorBot.textWithLabel("Component ID:").selectAll().setText(componentId + SUFFIX);
+		editorBot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				Assert.assertEquals(componentId + SUFFIX, externalPort.getComponentInstantiationRef().getRefid());
+				return true;
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Model external port ref ID does not match Components tab ID field";
+			}
+		});
+	}
+
+	/**
+	 * IDE-1976
+	 * Test changing ID also updates associated connections, external ports, and external props
+	 */
+	@Test
+	public void externalPropRefId() {
+		final String componentId = components[2];
+		editorBot.tree().select(componentId);
+		final ExternalProperty externalProp = sad.getExternalProperties().getProperties().get(0);
+
+		// Sanity check to make sure the external property is what we think it is
+		Assert.assertEquals(componentId, externalProp.getCompRefID());
+
+		// Change the value and check that model was updated
+		editorBot.textWithLabel("Component ID:").selectAll().setText(componentId + SUFFIX);
+		editorBot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				Assert.assertEquals(componentId + SUFFIX, externalProp.getCompRefID());
+				return true;
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Model external property ref ID does not match Components tab ID field";
+			}
+		});
+	}
+
+	/**
+	 * IDE-1940
+	 * Test changing a component instantiations usage name and naming service name via the Components Tab
+	 **/
 	@Test
 	public void usageName() {
 		for (final String componentId : components) {
 			editorBot.tree().select(componentId);
 			final SadComponentInstantiation ci = sad.getComponentInstantiation(componentId);
 
-			// Sanity check to make sure the ID is what we this it is
+			// Sanity check to make sure the usage name is what we think it is
 			Assert.assertEquals(componentId, ci.getUsageName());
 			Assert.assertEquals(componentId, ci.getFindComponent().getNamingService().getName());
 
@@ -114,6 +211,10 @@ public class WaveformComponentsTabTest extends AbstractWaveformTabTest {
 		}
 	}
 
+	/**
+	 * IDE-1941
+	 * Test Component Tab logging config fields
+	 */
 	@Test
 	public void loggingConfiguration() {
 		for (String componentId : components) {

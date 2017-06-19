@@ -40,4 +40,25 @@
   <assemblycontroller>
     <componentinstantiationref refid="SigGen_1"/>
   </assemblycontroller>
+  <connections>
+    <connectinterface id="connection_1">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="SigGen_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="HardLimit_1"/>
+      </providesport>
+    </connectinterface>
+  </connections>
+  <externalports>
+    <port>
+      <usesidentifier>dataFloat_out</usesidentifier>
+      <componentinstantiationref refid="SigGen_1"/>
+    </port>
+  </externalports>
+  <externalproperties>
+    <property comprefid="HardLimit_1" propid="upper_limit" externalpropid="upper_limit"/>
+  </externalproperties>
 </softwareassembly>
