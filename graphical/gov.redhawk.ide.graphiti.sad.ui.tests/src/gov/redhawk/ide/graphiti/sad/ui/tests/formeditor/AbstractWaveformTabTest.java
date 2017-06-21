@@ -19,12 +19,12 @@ import org.osgi.framework.FrameworkUtil;
 
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.UITest;
+import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ui.editor.SCAFormEditor;
 import mil.jpeojtrs.sca.sad.SoftwareAssembly;
 
-public abstract class AbstractWaveformTabTest extends UITest {
+public abstract class AbstractWaveformTabTest extends AbstractGraphitiTest {
 
 	protected abstract String getProjectName();
 
@@ -42,7 +42,7 @@ public abstract class AbstractWaveformTabTest extends UITest {
 
 		String projectName = getProjectName();
 
-		// Import project and open editor to overview tab
+		// Import project and open editor to desired tab
 		StandardTestActions.importProject(FrameworkUtil.getBundle(AbstractWaveformTabTest.class), new Path("/workspace/" + projectName), null);
 		ProjectExplorerUtils.openProjectInEditor(bot, projectName, projectName + ".sad.xml");
 		this.editor = bot.editorByTitle(projectName);
