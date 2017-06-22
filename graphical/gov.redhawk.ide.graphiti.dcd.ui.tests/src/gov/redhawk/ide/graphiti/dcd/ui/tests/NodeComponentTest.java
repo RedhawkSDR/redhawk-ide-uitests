@@ -13,11 +13,8 @@ package gov.redhawk.ide.graphiti.dcd.ui.tests;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,7 +24,6 @@ import gov.redhawk.core.graphiti.ui.ext.RHContainerShape;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
-import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -126,51 +122,6 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart gefEditPart = editor.getEditPart(GPP);
 		DiagramTestUtils.deleteFromDiagram(editor, gefEditPart);
 		Assert.assertNull(editor.getEditPart(GPP));
-	}
-
-	/**
-	 * Devices selected in the diagram should have the properties of their corresponding
-	 * model objects correctly exposed in the default Eclipse properties view.
-	 */
-	@Test
-	public void checkChangesToPropertiesReflectedInDcd() {
-		projectName = "ReflectProperties";
-
-		// Create an empty node project
-		NodeUtils.createNewNodeProject(gefBot, projectName, DOMAIN_NAME);
-		editor = gefBot.rhGefEditor(projectName);
-		editor.setFocus();
-
-		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
-		propView.show();
-		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
-
-		// Edit one of the property values
-		editor.getEditPart(GPP).click();
-		propView.setFocus();
-		String propertyname = "loadCapacityPerCore";
-		String newValue = "1.023";
-		boolean foundProp = false;
-		for (SWTBotTreeItem item : propView.bot().tree().getAllItems()) {
-			if (item.getText().equals(propertyname)) {
-				foundProp = true;
-				item.click(1);
-				for (int i = 0; i < newValue.length(); i++) {
-					item.pressShortcut(Keystrokes.create(newValue.charAt(i)));
-				}
-				item.pressShortcut(Keystrokes.LF);
-				break;
-			}
-		}
-		Assert.assertTrue(foundProp);
-
-		// Make sure the edited property is updated in the XML
-		MenuUtils.save(editor);
-		editor = gefBot.rhGefEditor(projectName);
-		String regex = "(?s).*value=\"" + newValue + "\"/>.*</componentproperties>.*";
-		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
-		String editorText = editor.toTextEditor().getText();
-		Assert.assertTrue("The dcd.xml should include GPP's changed property", editorText.matches(regex));
 	}
 
 	/**
