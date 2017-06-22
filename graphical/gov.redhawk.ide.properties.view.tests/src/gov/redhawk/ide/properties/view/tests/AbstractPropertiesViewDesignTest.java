@@ -106,9 +106,9 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 	// #################### TEST METHODS ############################### //
 	/**
 	 * Edit property values in the properties view and confirm that they update in the respective XML file.
-	 * 
-	 * IDE-1202 (for child classes that use a sad.xml)
-	 * IDE-1139
+	 * IDE-728 Components selected in the diagram should display their properties in the properties view
+	 * IDE-1139 Property edits didn't actually occur
+	 * IDE-1202 Properties of a just-added component disappear
 	 */
 	@Test
 	public void editPropertyViewCheckXmlTest() throws IOException, InterruptedException {
@@ -153,7 +153,8 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 	}
 
 	/**
-	 * Edit property values in the respective XML file and confirm that they update in the properties view
+	 * Edit property values in the respective XML file and confirm that they update in the properties view. See
+	 * {@link #editPropertyViewCheckXmlTest()} for test references.
 	 * @throws IOException
 	 */
 	@Test

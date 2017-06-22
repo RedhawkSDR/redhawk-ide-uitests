@@ -27,7 +27,6 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
@@ -38,7 +37,6 @@ import gov.redhawk.ide.graphiti.sad.ui.diagram.patterns.HostCollocationPattern;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.sdr.ComponentsSubContainer;
 import gov.redhawk.ide.swtbot.MenuUtils;
-import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
@@ -165,37 +163,6 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		// ensure HardLimit_1 component business object is deleted
 		Assert.assertTrue("Expected there to be only 1 component left after deletion", hostCo.getComponentPlacement().size() == 1);
 		Assert.assertNotNull("ComponentFile for " + HARD_LIMIT + " no longer exists", hostCo.getComponentPlacement().get(0).getComponentFileRef().getFile());
-
-	}
-
-	/**
-	 * IDE-728
-	 * Components selected in the diagram should have the properties of their corresponding
-	 * model objects correctly exposed in the default Eclipse properties view.
-	 */
-	@Test
-	public void checkChangesToPropertiesReflectedInSad() {
-		waveformName = "IDE-728-Test";
-
-		WaveformUtils.createNewWaveform(gefBot, waveformName, SIG_GEN);
-		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
-		editor.getEditPart(SIG_GEN_1).click();
-		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
-		propView.show();
-		String propertyname = propView.bot().tree().cell(0, "Property").toString();
-		String newValue = "0.0";
-		for (SWTBotTreeItem item : propView.bot().tree().getAllItems()) {
-			if (item.getText().equals(propertyname)) {
-				item.click(1).pressShortcut(Keystrokes.create('0')[0]);
-				break;
-			}
-		}
-		editor.getEditPart(SIG_GEN_1).click();
-		MenuUtils.save(editor);
-		String regex = DiagramTestUtils.regexStringForProperty(propertyname, newValue);
-		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
-		String editorText = editor.toTextEditor().getText();
-		Assert.assertTrue("The sad.xml should include HardLimit's changed property", editorText.matches(regex));
 	}
 
 	/**
