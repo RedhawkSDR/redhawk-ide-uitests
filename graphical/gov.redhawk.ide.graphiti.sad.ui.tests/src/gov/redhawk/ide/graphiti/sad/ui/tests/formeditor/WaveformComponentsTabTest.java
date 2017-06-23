@@ -74,10 +74,38 @@ public class WaveformComponentsTabTest extends AbstractWaveformTabTest {
 			});
 
 			editorBot.textWithLabel("Usage Name:").selectAll().setText("");
-			EditorUtils.assertEditorTabInvalid(editor, EditorUtils.SAD_EDITOR_COMPONENTS_TAB_ID);
+			EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_COMPONENTS_TAB_ID);
+			editorBot.waitUntil(new DefaultCondition() {
+
+				@Override
+				public boolean test() throws Exception {
+					Assert.assertNull(ci.getUsageName());
+					Assert.assertNull(ci.getFindComponent());
+					return true;
+				}
+
+				@Override
+				public String getFailureMessage() {
+					return "Model elements were not removed when Components tab usage name field was cleared";
+				}
+			});
 
 			editorBot.textWithLabel("Usage Name:").selectAll().setText(componentId);
 			EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_COMPONENTS_TAB_ID);
+			editorBot.waitUntil(new DefaultCondition() {
+
+				@Override
+				public boolean test() throws Exception {
+					Assert.assertEquals(componentId, ci.getUsageName());
+					Assert.assertEquals(componentId, ci.getFindComponent().getNamingService().getName());
+					return true;
+				}
+
+				@Override
+				public String getFailureMessage() {
+					return "Model component instantiation usageName does not match Components tab usage name field";
+				}
+			});
 		}
 	}
 
