@@ -33,6 +33,7 @@ import gov.redhawk.ui.editor.SCAFormEditor;
 import mil.jpeojtrs.sca.scd.AbstractPort;
 import mil.jpeojtrs.sca.scd.Ports;
 import mil.jpeojtrs.sca.scd.Provides;
+import mil.jpeojtrs.sca.scd.SoftwareComponent;
 import mil.jpeojtrs.sca.scd.Uses;
 import mil.jpeojtrs.sca.spd.SoftPkg;
 
@@ -63,7 +64,7 @@ public abstract class AbstractPortsTabTest extends UITest {
 	private SWTBotEditor editor;
 	private SWTBot editorBot;
 
-	private SoftPkg spd;
+	private SoftwareComponent scd;
 
 	@Before
 	public void before() throws Exception {
@@ -81,8 +82,13 @@ public abstract class AbstractPortsTabTest extends UITest {
 		this.editorBot = editor.bot();
 		this.editorBot.cTabItem(PORTS_TAB_NAME).activate();
 
-		SCAFormEditor spdEditor = (SCAFormEditor) editor.getReference().getEditor(false);
-		this.spd = SoftPkg.Util.getSoftPkg(spdEditor.getMainResource());
+		SCAFormEditor scaEditor = (SCAFormEditor) editor.getReference().getEditor(false);
+		SoftPkg spd = SoftPkg.Util.getSoftPkg(scaEditor.getMainResource());
+		if (spd != null) {
+			scd = spd.getDescriptor().getComponent();
+		} else {
+			scd = SoftwareComponent.Util.getSoftwareComponent(scaEditor.getMainResource());
+		}
 
 		checkNoPortDetails();
 	}
@@ -154,7 +160,7 @@ public abstract class AbstractPortsTabTest extends UITest {
 		Assert.assertEquals("Number of ports in ports tree (UI)", 3, editorBot.tree().rowCount());
 
 		// The bi-directional port is actually two ports (one in each direction, both with the same name)
-		Ports ports = spd.getDescriptor().getComponent().getComponentFeatures().getPorts();
+		Ports ports = scd.getComponentFeatures().getPorts();
 		Assert.assertEquals("Number of Ports in scd.xml", 4, ports.getAllPorts().size());
 
 		editorBot.tree().getTreeItem("inTestPort").select();
