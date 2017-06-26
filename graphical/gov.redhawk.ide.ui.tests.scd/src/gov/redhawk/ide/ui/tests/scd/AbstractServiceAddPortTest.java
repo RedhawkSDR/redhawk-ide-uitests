@@ -12,8 +12,8 @@ package gov.redhawk.ide.ui.tests.scd;
 
 import gov.redhawk.ide.swtbot.ServiceUtils;
 import gov.redhawk.ide.swtbot.UITest;
-import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.junit.Assert;
@@ -23,18 +23,24 @@ import org.junit.Test;
  * IDE-980. Ensures that if a service implements an interface that derives from CF/PortSupplier then the button to add a
  * port in the component editor will be enabled.
  */
-public class ServiceAddPortTest extends UITest {
+public abstract class AbstractServiceAddPortTest extends UITest {
 
 	static final String PORTS_TAB_NAME = "Ports";
+
+	protected abstract SWTBotEditor openEditor(String projectName);
 
 	/**
 	 * Tests that the add button is enabled for a service project with the CF/PortSupplier IDL.
 	 */
 	@Test
 	public void testAddForPortSupplier() {
-		ServiceUtils.createServiceProject(bot, "TestProject", "IDL:CF/PortSupplier:1.0", "C++");
-		bot.waitUntil(new WaitForEditorCondition());
-		SWTBot editorBot = bot.activeEditor().bot();
+		String projectName = "testAddForPortSupplier";
+		ServiceUtils.createServiceProject(bot, projectName, "IDL:CF/PortSupplier:1.0", "C++");
+		bot.editorByTitle(projectName).close();
+
+		SWTBotEditor editor = openEditor(projectName);
+
+		SWTBot editorBot = editor.bot();
 		editorBot.cTabItem(PORTS_TAB_NAME).activate();
 		Assert.assertTrue("Add port button should be enabled", editorBot.button("Add").isEnabled());
 	}
@@ -44,9 +50,13 @@ public class ServiceAddPortTest extends UITest {
 	 */
 	@Test
 	public void testAddForPortSupplierChild() {
-		ServiceUtils.createServiceProject(bot, "TestProject", "IDL:CF/Device:1.0", "Python");
-		bot.waitUntil(new WaitForEditorCondition());
-		SWTBot editorBot = bot.activeEditor().bot();
+		String projectName = "testAddForPortSupplierChild";
+		ServiceUtils.createServiceProject(bot, projectName, "IDL:CF/Device:1.0", "Python");
+		bot.editorByTitle(projectName).close();
+
+		SWTBotEditor editor = openEditor(projectName);
+
+		SWTBot editorBot = editor.bot();
 		editorBot.cTabItem(PORTS_TAB_NAME).activate();
 		Assert.assertTrue("Add port button should be enabled", editorBot.button("Add").isEnabled());
 	}
@@ -58,9 +68,13 @@ public class ServiceAddPortTest extends UITest {
 	 */
 	@Test
 	public void testAddForNonPortSupplier() {
-		ServiceUtils.createServiceProject(bot, "TestProject", "IDL:CF/LifeCycle:1.0", "Java");
-		bot.waitUntil(new WaitForEditorCondition());
-		SWTBot editorBot = bot.activeEditor().bot();
+		String projectName = "testAddForNonPortSupplier";
+		ServiceUtils.createServiceProject(bot, projectName, "IDL:CF/LifeCycle:1.0", "Java");
+		bot.editorByTitle(projectName).close();
+
+		SWTBotEditor editor = openEditor(projectName);
+
+		SWTBot editorBot = editor.bot();
 		try {
 			editorBot.cTabItem(PORTS_TAB_NAME);
 		} catch (WidgetNotFoundException e) {

@@ -29,7 +29,6 @@ import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.EditorUtils;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.condition.SelectIDL;
-import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 import gov.redhawk.ui.editor.SCAFormEditor;
 import mil.jpeojtrs.sca.scd.AbstractPort;
 import mil.jpeojtrs.sca.scd.Ports;
@@ -37,7 +36,7 @@ import mil.jpeojtrs.sca.scd.Provides;
 import mil.jpeojtrs.sca.scd.Uses;
 import mil.jpeojtrs.sca.spd.SoftPkg;
 
-public class PortsTabTest extends UITest {
+public abstract class AbstractPortsTabTest extends UITest {
 	private static final String PORTS_TAB_NAME = "Ports";
 	private static final String PROG_LANG_CPP = "C++";
 
@@ -70,10 +69,14 @@ public class PortsTabTest extends UITest {
 	public void before() throws Exception {
 		super.before();
 
+		// Create a project, close the editor
 		ComponentUtils.createComponentProject(bot, PROJECT_NAME, PROG_LANG_CPP);
-		bot.waitUntil(new WaitForEditorCondition());
+		bot.editorByTitle(PROJECT_NAME).close();
 
-		editor = bot.activeEditor();
+		// Let the derived class open the correct editor
+		editor = openEditor(PROJECT_NAME);
+
+		// Setup
 		editor.setFocus();
 		this.editorBot = editor.bot();
 		this.editorBot.cTabItem(PORTS_TAB_NAME).activate();
@@ -83,6 +86,8 @@ public class PortsTabTest extends UITest {
 
 		checkNoPortDetails();
 	}
+
+	protected abstract SWTBotEditor openEditor(String projectName);
 
 	protected void assertFormValid() {
 		this.bot.sleep(SWTBotPreferences.DEFAULT_POLL_DELAY); // Allow form to have time to validate
@@ -137,12 +142,12 @@ public class PortsTabTest extends UITest {
 
 		editorBot.button(BUTTON_ADD).click();
 		editorBot.textWithLabel(LABEL_NAME).setText("outTestPort");
-		selectIDL(bot, IDL_MODULE, IDL_INTF, true);
+		selectIDL(editorBot, IDL_MODULE, IDL_INTF, true);
 		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("out <uses>");
 
 		editorBot.button(BUTTON_ADD).click();
 		editorBot.textWithLabel(LABEL_NAME).setText("bidirTestPort");
-		selectIDL(bot, IDL_MODULE, IDL_INTF, true);
+		selectIDL(editorBot, IDL_MODULE, IDL_INTF, true);
 		editorBot.comboBoxWithLabel(LABEL_DIRECTION).setSelection("bi-dir <uses/provides>");
 
 		assertFormValid();
