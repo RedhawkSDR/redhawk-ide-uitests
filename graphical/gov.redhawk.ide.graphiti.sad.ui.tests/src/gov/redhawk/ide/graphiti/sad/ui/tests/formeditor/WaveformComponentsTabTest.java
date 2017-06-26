@@ -45,6 +45,8 @@ public class WaveformComponentsTabTest extends AbstractWaveformTabTest {
 	/**
 	 * IDE-1940
 	 * Test changing a component instantiations usage name and naming service name via the Components Tab
+	 * IDE-1988
+	 * Test that clearing the Usage Name field appropriately impacts the model
 	 **/
 	@Test
 	public void usageName() {
@@ -74,6 +76,7 @@ public class WaveformComponentsTabTest extends AbstractWaveformTabTest {
 			});
 
 			editorBot.textWithLabel("Usage Name:").selectAll().setText("");
+			editorBot.sleep(600);
 			EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_COMPONENTS_TAB_ID);
 			editorBot.waitUntil(new DefaultCondition() {
 
