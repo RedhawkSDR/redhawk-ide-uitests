@@ -12,12 +12,16 @@ package gov.redhawk.ide.graphiti.sad.ui.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RunnableWithResult;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -45,6 +49,9 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.sad.HostCollocation;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 import mil.jpeojtrs.sca.sad.SadComponentPlacement;
+import mil.jpeojtrs.sca.sad.SadPackage;
+import mil.jpeojtrs.sca.sad.SoftwareAssembly;
+import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class WaveformComponentTest extends AbstractGraphitiTest {
 
@@ -166,41 +173,49 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 	}
 
 	/**
-	 * IDE-729
-	 * New components should be added to sad.xml when the diagram is saved. All edits to components
-	 * (such as changes to the usage name) should also be reflected in the sad.xml on save.
+	 * New components should be added to sad.xml even without a save.
+	 * 
+	 * IDE-1992
+	 * Make sure changing the usage name in the diagram also updates the naming service name
+	 * @throws IOException
 	 */
 	@Test
-	public void checkComponentsInSad() {
+	public void checkComponentsInSad() throws IOException {
 		waveformName = "IDE-729-Test";
+		final String editedUsageName = "NewName";
 
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
-		// Add a SigGen component instantiation to the diagram and save
+		// Add a components to the diagram. Should be added to the sad.xml, even without a save
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
-		MenuUtils.save(editor);
-
-		// Add a HardLimit component instantiation to the diagram.  Should be added to the sad.xml, even without a save
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
 
-		// Find expected xml string for SigGen and HardLimit components
-		final String sigGenSad = DiagramTestUtils.regexStringForComponent((ComponentShape) editor.getEditPart(SIG_GEN_1).part().getModel());
-		final String hardLimitSad = DiagramTestUtils.regexStringForComponent((ComponentShape) editor.getEditPart(HARD_LIMIT_1).part().getModel());
-
-		// Check to see if SigGen is included in the sad.xml
+		// Check that components are included in the sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
-		String editorText = editor.toTextEditor().getText();
-		Assert.assertTrue("The sad.xml should include SigGen's software assembly", editorText.matches(sigGenSad));
-		Assert.assertTrue("The sad.xml should include HardLimit's software assembly", editorText.matches(hardLimitSad));
+		SoftwareAssembly sad = getSoftwareAssembly(editor);
+
+		String[] componentIds = { SIG_GEN_1, HARD_LIMIT_1 };
+		for (String compId : componentIds) {
+			SadComponentInstantiation ci = sad.getComponentInstantiation(compId);
+			Assert.assertNotNull("Component Instantiation not found", ci);
+			Assert.assertEquals("Unexpected usaged name for " + ci.getId(), compId, ci.getUsageName());
+			Assert.assertEquals("Unexpected naming service name for " + ci.getId(), compId, ci.getFindComponent().getNamingService().getName());
+		}
+
+		// Edit SigGen's usage name in the diagram. Make sure both the usage name and the naming service name update in
+		// the sca model
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
+		ComponentShape compShape = DiagramTestUtils.getComponentShape(editor, SIG_GEN_1);
+		DiagramTestUtils.activateComponentDirectEditing(editor, editor.getEditPart(SIG_GEN_1), compShape);
+		editor.directEditType(editedUsageName);
 
-		// Save project and check to see if HardLimit is now in the sad.xml
-		MenuUtils.save(editor);
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
-		editorText = editor.toTextEditor().getText();
-		Assert.assertTrue("The sad.xml should include SigGen's software assembly", editorText.matches(sigGenSad));
-		Assert.assertTrue("The sad.xml should include HardLimit's software assembly", editorText.matches(hardLimitSad));
+		sad = getSoftwareAssembly(editor);
+		SadComponentInstantiation ci = sad.getComponentInstantiation(SIG_GEN_1);
+		Assert.assertNotNull("Component Instantiation not found", ci);
+		Assert.assertEquals("Unexpected usaged name for " + ci.getId(), editedUsageName, ci.getUsageName());
+		Assert.assertEquals("Unexpected naming service name for " + ci.getId(), editedUsageName, ci.getFindComponent().getNamingService().getName());
 	}
 
 	/**
@@ -395,4 +410,11 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		Assert.assertEquals("dataFloat", componentShape.getProvidesPortStubs().get(0).getProvides().getInterface().getName());
 	}
 
+	private SoftwareAssembly getSoftwareAssembly(RHBotGefEditor editor) throws IOException {
+		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
+		String editorText = editor.toTextEditor().getText();
+		Resource resource = resourceSet.createResource(org.eclipse.emf.common.util.URI.createURI("mem://temp.sad.xml"), SadPackage.eCONTENT_TYPE);
+		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
+		return SoftwareAssembly.Util.getSoftwareAssembly(resource);
+	}
 }

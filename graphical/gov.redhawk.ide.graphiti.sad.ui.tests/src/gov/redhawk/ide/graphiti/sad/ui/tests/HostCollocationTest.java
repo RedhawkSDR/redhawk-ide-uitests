@@ -537,9 +537,9 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 20, 150);
 
 		ContainerShape collocationShape = DiagramTestUtils.getHostCollocationShape(editor, HOST_CO_NAME);
-		Text nameText = DiagramTestUtils.getHostCollocationText(collocationShape);
+		Text nameText = DiagramTestUtils.getContainerShapeText(collocationShape);
 
-		DiagramTestUtils.activateDirectEditing(editor, editor.getEditPart(HOST_CO_NAME), nameText);
+		DiagramTestUtils.activateHostColDirectEditing(editor, editor.getEditPart(HOST_CO_NAME), nameText);
 		editor.directEditType(HOST_CO_NAME_2);
 
 		Assert.assertTrue(editor.isDirty());
