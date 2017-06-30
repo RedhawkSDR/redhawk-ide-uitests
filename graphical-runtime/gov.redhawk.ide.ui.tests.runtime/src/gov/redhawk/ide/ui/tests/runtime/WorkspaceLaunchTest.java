@@ -80,7 +80,7 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 		final SWTBotEditor editor = bot.editorByTitle(PROJECT_NAME);
 		editor.bot().cTabItem("Overview").activate();
 		SWTFormsBot formsBot = new SWTFormsBot(editor.getWidget());
-		SWTBotImageHyperlink link = formsBot.imageHyperlink("Launch resource in the sandbox");
+		SWTBotImageHyperlink link = formsBot.imageHyperlink(linkText);
 		link.click();
 
 		// Assert error
