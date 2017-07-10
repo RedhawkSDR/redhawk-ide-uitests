@@ -66,6 +66,9 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 	@Test
 	public void badWorkspaceDebugLaunchTest() {
 		badWorkspaceLaunchTest("Debug resource in the sandbox");
+		SWTBotShell shell = bot.shell("Confirm Perspective Switch");
+		shell.bot().button("No").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 	}
 
 	private void badWorkspaceLaunchTest(String linkText) {
@@ -90,8 +93,24 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 		Assert.assertTrue("Error message didn't seem descriptive enough", errorMsg.contains("does not exist (error number CF_EEXIST)"));
 		problemDialog.bot().button("OK").click();
 		bot.waitUntil(Conditions.shellCloses(problemDialog));
+
+		// Terminate ComponentHost
+		ConsoleUtils.removeTerminatedLaunches(bot);
+		bot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				ConsoleUtils.terminateProcess(WorkspaceLaunchTest.this.bot, "ComponentHost");
+				return true;
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Failed to terminate ComponentHost";
+			}
+		});
 	}
-	
+
 	/**
 	 * IDE-1989
 	 * Check that an error is not thrown when terminating a C++ workspace component launched in debug mode
