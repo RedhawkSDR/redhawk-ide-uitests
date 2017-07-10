@@ -104,7 +104,8 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 		SWTBotTreeItem node = ProjectExplorerUtils.selectNode(bot, PROJECT_NAME);
 		node.contextMenu("Debug As").menu("1 Component in the Sandbox").click();
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, PROJECT_NAME_1 + " < DEBUGGING > ");
-		ConsoleUtils.terminateProcess(bot, "ComponentHost_1");
+		ConsoleUtils.removeTerminatedLaunches(bot);
+		ConsoleUtils.terminateProcess(bot, "ComponentHost_1 < DEBUGGING >");
 		SWTBotShell shell = bot.shell("Confirm Perspective Switch");
 		shell.bot().button("No").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
