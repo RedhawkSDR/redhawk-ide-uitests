@@ -235,7 +235,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 		} else {
 			getWizardBot().radio("Analog Input (default)").click();
 			if (codegenInfo.getAnalogInputPorts() != -1) {
-				getWizardBot().spinnerWithLabel("Number of Analog input ports:").setSelection(codegenInfo.getAnalogInputPorts());
+				getWizardBot().spinnerWithLabel("Analog input ports:").setSelection(codegenInfo.getAnalogInputPorts());
 			}
 		}
 
