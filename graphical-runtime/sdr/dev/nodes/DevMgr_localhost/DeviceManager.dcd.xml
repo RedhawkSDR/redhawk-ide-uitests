@@ -16,7 +16,12 @@
         <usagename>GPP_localhost</usagename>
         <componentproperties>
           <structref refid="thresholds">
-            <simpleref refid="ignore" value="true"/>
+            <simpleref refid="cpu_idle" value="-1.0"/>
+            <simpleref refid="load_avg" value="-1.0"/>
+            <simpleref refid="mem_free" value="-1"/>
+            <simpleref refid="nic_usage" value="-1"/>
+            <simpleref refid="files_available" value="-1.0"/>
+            <simpleref refid="threads" value="-1.0"/>
           </structref>
         </componentproperties>
       </componentinstantiation>
