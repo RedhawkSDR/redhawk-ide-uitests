@@ -35,6 +35,16 @@ public class DevManagerSandboxLogConfigTest extends AbstractLogConfigTest {
 		return ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, GPP_PARENT_PATH, GPP_1);
 	}
 
+	@Override
+	protected String getLoggingResourceName() {
+		return GPP_1;
+	}
+
+	@Override
+	protected boolean canTailLog() {
+		return false;
+	}
+
 	@After
 	public void after() throws CoreException {
 		ScaExplorerTestUtils.terminate(bot, SANDBOX_PATH, DEVICE_MANAGER);

@@ -37,6 +37,16 @@ public class DevManagerLogConfigTest extends AbstractLogConfigTest {
 		return ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, GPP_LOCALHOST);
 	}
 
+	@Override
+	protected String getLoggingResourceName() {
+		return GPP_LOCALHOST;
+	}
+
+	@Override
+	protected boolean canTailLog() {
+		return true;
+	}
+
 	@After
 	public void after() {
 		if (domainName != null) {

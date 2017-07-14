@@ -51,6 +51,16 @@ public class DomainWaveformLogConfigTest extends AbstractLogConfigTest {
 		return ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, sigGenParentPath, SIGGEN_1);
 	}
 
+	@Override
+	protected String getLoggingResourceName() {
+		return SIGGEN_1;
+	}
+
+	@Override
+	protected boolean canTailLog() {
+		return true;
+	}
+
 	@After
 	public void after() throws CoreException {
 		if (domainName != null) {

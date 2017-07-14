@@ -34,6 +34,16 @@ public class LocalWaveformLogConfigTest extends AbstractLogConfigTest {
 		return ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, SIGGEN_1);
 	}
 
+	@Override
+	protected String getLoggingResourceName() {
+		return SIGGEN_1;
+	}
+
+	@Override
+	protected boolean canTailLog() {
+		return false;
+	}
+
 	@After
 	public void after() throws CoreException {
 		ScaExplorerTestUtils.releaseFromScaExplorer(bot, WAVEFORM_PARENT_PATH, TEST_WAVEFORM);

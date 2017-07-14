@@ -15,7 +15,9 @@ import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
@@ -34,9 +36,57 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 	protected abstract SWTBotTreeItem launchLoggingResource();
 
 	/**
+	 * @return The runtime name of the launched logging resource
+	 */
+	protected abstract String getLoggingResourceName();
+
+	/**
 	 * @return The title of the logging resource's console
 	 */
 	protected abstract String getConsoleTitle();
+
+	/**
+	 * @return If tailing the resource's log is allowed
+	 */
+	protected abstract boolean canTailLog();
+
+	/**
+	 * IDE-1009 Test setting the log level
+	 */
+	@Test
+	public void logLevel() {
+		// Launch the test resource, open the log level dialog
+		SWTBotTreeItem resourceTreeItem = launchLoggingResource();
+		ConsoleUtils.disableAutoShowConsole();
+		resourceTreeItem.contextMenu().menu("Logging", "Log Level").click();
+
+		// Change log level to TRACE
+		SWTBotShell shell = bot.shell("Set Debug Level");
+		shell.setFocus();
+		SWTBot dialogBot = shell.bot();
+		Assert.assertNotEquals("Should not start at TRACE logging level", "TRACE", dialogBot.comboBox().selection());
+		dialogBot.comboBox().setSelection("TRACE");
+		dialogBot.button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+
+		// Wait for log level to get changed
+		try {
+			SWTBotShell progressShell = bot.shell("Progress Information");
+			bot.waitUntil(Conditions.shellCloses(progressShell));
+		} catch (WidgetNotFoundException e) {
+			// The dialog may be too quick - it's okay if we don't see it
+		}
+
+		// Open the log level dialog again, ensure we're at TRACE, change to INFO
+		resourceTreeItem.contextMenu().menu("Logging", "Log Level").click();
+		shell = bot.shell("Set Debug Level");
+		shell.setFocus();
+		dialogBot = shell.bot();
+		Assert.assertEquals("TRACE", dialogBot.comboBox().selection());
+		dialogBot.comboBox().setSelection("INFO");
+		dialogBot.button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+	}
 
 	/**
 	 * IDE-1011 Test editing a running resource's logging configuration
@@ -50,10 +100,17 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 		resourceTreeItem.contextMenu().menu("Logging", "Edit Log Config").click();
 
 		// Handle warning dialog
-		bot.waitUntil(Conditions.shellIsActive("Opening Error Log Config"));
-		SWTBotShell warningShell = bot.shell("Opening Error Log Config");
-		warningShell.bot().button("Yes").click();
-		bot.waitUntil(Conditions.shellCloses(warningShell));
+		SWTBotShell warningShell = null;
+		try {
+			warningShell = bot.shell("Opening Error Log Config");
+		} catch (WidgetNotFoundException e) {
+			// PASS
+		} finally {
+			if (warningShell != null) {
+				warningShell.bot().button("Yes").click();
+				bot.waitUntil(Conditions.shellCloses(warningShell));
+			}
+		}
 
 		// Make sure the editor comes up (check for tab title)
 		SWTBotEditor editor = bot.editorByTitle("Edit Log Config");
@@ -109,6 +166,35 @@ public abstract class AbstractLogConfigTest extends UIRuntimeTest {
 		}
 
 		editor.close();
+	}
+
+	/**
+	 * IDE-1010 View log ('tail') of a running resource.
+	 */
+	@Test
+	public void tailLog() {
+		// Launch the test resource, open the log level dialog if applicable
+		SWTBotTreeItem resourceTreeItem = launchLoggingResource();
+		ConsoleUtils.disableAutoShowConsole();
+		SWTBotMenu menu = resourceTreeItem.contextMenu().menu("Logging", "Tail Log");
+		if (canTailLog()) {
+			menu.click();
+		} else {
+			boolean enabled = menu.isEnabled();
+			menu.hide();
+			Assert.assertFalse(enabled);
+			return;
+		}
+
+		// Configure for TRACE at root level
+		SWTBotShell shell = bot.shell("View log for " + getLoggingResourceName());
+		shell.bot().comboBox().setSelection("TRACE");
+		shell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+
+		// Check the console
+		ConsoleUtils.waitForConsole(bot, "Log events on channel");
+		ConsoleUtils.stopLogging(bot, "Log events on channel");
 	}
 
 	private class TraceInConsoleCondition extends DefaultCondition {
