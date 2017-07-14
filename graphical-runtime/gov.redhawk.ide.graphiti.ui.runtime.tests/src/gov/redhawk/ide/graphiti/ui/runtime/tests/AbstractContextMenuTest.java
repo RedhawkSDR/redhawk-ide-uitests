@@ -13,6 +13,7 @@ package gov.redhawk.ide.graphiti.ui.runtime.tests;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -70,6 +71,27 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 
 		DiagramTestUtils.changeLogLevelFromDiagram(editor, componentName, LogLevels.FATAL);
 		DiagramTestUtils.confirmLogLevelFromDiagram(editor, componentName, LogLevels.FATAL);
+
+		// Test edit log (IDE-1011)
+		editor.select(componentName);
+		editor.clickContextMenu("Edit Log Config");
+
+		// Handle warning dialog
+		SWTBotShell warningShell = null;
+		try {
+			warningShell = bot.shell("Opening Error Log Config");
+		} catch (WidgetNotFoundException e) {
+			// PASS
+		} finally {
+			if (warningShell != null) {
+				warningShell.bot().button("Yes").click();
+				bot.waitUntil(Conditions.shellCloses(warningShell));
+			}
+		}
+
+		SWTBotEditor logCfgEditor = bot.editorByTitle("Edit Log Config");
+		logCfgEditor.close();
+		editor.setFocus();
 
 		// Test tail log (IDE-1010)
 		if (supportsTailLog()) {

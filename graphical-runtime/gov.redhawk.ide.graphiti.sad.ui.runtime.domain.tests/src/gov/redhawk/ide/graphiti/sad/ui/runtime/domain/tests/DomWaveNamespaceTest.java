@@ -68,7 +68,7 @@ public class DomWaveNamespaceTest extends AbstractGraphitiDomainWaveformRuntimeT
 		wizardBot.waitUntil(new WaitForModalContext());
 		bot.sleep(ScaExplorerTestUtils.WIZARD_POST_MODAL_PROGRESS_DELAY);
 
-		// Make sure finish is disallowed when selecting a
+		// Make sure finish is disallowed when selecting a namespace folder
 		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(wizardBot, wizardBot.tree(), Arrays.asList(waveformNamespace.split("\\.")));
 		treeItem.select();
 		Assert.assertFalse(wizardBot.button("Finish").isEnabled());
@@ -77,10 +77,10 @@ public class DomWaveNamespaceTest extends AbstractGraphitiDomainWaveformRuntimeT
 		// Find our waveform and select. Again, selection will trigger a modal progress context.
 		treeItem = StandardTestActions.waitForTreeItemToAppear(wizardBot, wizardBot.tree(), Arrays.asList(waveformName.split("\\.")));
 		treeItem.select();
-		Assert.assertTrue(wizardBot.button("Finish").isEnabled());
-		Assert.assertTrue(wizardBot.button("Next >").isEnabled());
 		wizardBot.waitUntil(new WaitForModalContext());
 		bot.sleep(ScaExplorerTestUtils.WIZARD_POST_MODAL_PROGRESS_DELAY);
+		Assert.assertTrue(wizardBot.button("Finish").isEnabled());
+		Assert.assertTrue(wizardBot.button("Next >").isEnabled());
 
 		// Finish will launch the waveform, again triggering a modal progress context, then closing the dialog
 		bot.button("Finish").click();
