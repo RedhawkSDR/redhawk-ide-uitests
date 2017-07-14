@@ -75,9 +75,20 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 		// Test edit log (IDE-1011)
 		editor.select(componentName);
 		editor.clickContextMenu("Edit Log Config");
-		bot.waitUntil(Conditions.shellIsActive("Opening Error Log Config"));
-		SWTBotShell warningShell = bot.shell("Opening Error Log Config");
-		warningShell.bot().button("Yes").click();
+
+		// Handle warning dialog
+		SWTBotShell warningShell = null;
+		try {
+			warningShell = bot.shell("Opening Error Log Config");
+		} catch (WidgetNotFoundException e) {
+			// PASS
+		} finally {
+			if (warningShell != null) {
+				warningShell.bot().button("Yes").click();
+				bot.waitUntil(Conditions.shellCloses(warningShell));
+			}
+		}
+
 		SWTBotEditor logCfgEditor = bot.editorByTitle("Edit Log Config");
 		logCfgEditor.close();
 		editor.setFocus();
