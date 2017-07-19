@@ -27,6 +27,8 @@ public class PlottingTest extends UIRuntimeTest {
 
 	private static final String DOMAIN_NAME = "PlottingTest";
 	private static final String DEV_MGR_NAME = "DevMgr_localhost";
+	private static final String GPP = "GPP_localhost";
+
 	private static final String WAVEFORM = "ExampleWaveform05";
 	private static final String SIG_GEN_1 = "SigGen_1";
 
@@ -35,6 +37,9 @@ public class PlottingTest extends UIRuntimeTest {
 		super.before();
 		ScaExplorerTestUtils.launchDomainViaWizard(bot, DOMAIN_NAME, DEV_MGR_NAME);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN_NAME);
+		final String[] GPP_PARENT_PATH = new String[] { DOMAIN_NAME, "Device Managers", DEV_MGR_NAME };
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, GPP_PARENT_PATH, GPP);
+
 		ScaExplorerTestUtils.launchWaveformFromDomain(bot, DOMAIN_NAME, WAVEFORM);
 		SWTBotTreeItem sigGenTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { DOMAIN_NAME, "Waveforms", WAVEFORM },
 			SIG_GEN_1);
