@@ -17,6 +17,7 @@ import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractLocalContextMenuTest;
 import gov.redhawk.ide.graphiti.ui.runtime.tests.ComponentDescription;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
@@ -27,7 +28,6 @@ public class DevManagerSandboxContextMenuTest extends AbstractLocalContextMenuTe
 
 	private static final String[] SANDBOX_PATH = { "Sandbox" };
 	private static final String DEVICE_MANAGER = "Device Manager";
-	private static final String[] DEVICE_MANAGER_PATH = { "Sandbox", DEVICE_MANAGER };
 
 	private static final String DEVICE_STUB = "DeviceStub";
 	private static final String DEVICE_STUB_OUT = "dataFloat_out";
@@ -47,7 +47,7 @@ public class DevManagerSandboxContextMenuTest extends AbstractLocalContextMenuTe
 		RHBotGefEditor editor = DiagramTestUtils.openNodeChalkboardDiagram(bot);
 
 		DiagramTestUtils.addFromPaletteToDiagram(editor, getTestComponent().getFullName(), 0, 0);
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DEVICE_MANAGER_PATH, getTestComponent().getShortName(1));
+		DiagramTestUtils.waitForComponentState(bot, editor, getTestComponent().getShortName(1), ComponentState.STOPPED);
 
 		return editor;
 	}
