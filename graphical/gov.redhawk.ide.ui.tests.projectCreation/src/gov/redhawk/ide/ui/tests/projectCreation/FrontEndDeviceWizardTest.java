@@ -205,6 +205,10 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 		getWizardBot().button("Next >").click();
 
 		// FEI properties
+
+		// IDE-2022 Check that the remove button is disabled
+		Assert.assertFalse(getWizardBot().buttonWithTooltip("Remove property").isEnabled());
+
 		// TODO
 	}
 
