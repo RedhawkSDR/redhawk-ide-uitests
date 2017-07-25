@@ -71,7 +71,7 @@ public abstract class AbstractLocalContextMenuTest extends AbstractContextMenuTe
 	public void showConsole() {
 		RHBotGefEditor editor = launchDiagram();
 
-		ConsoleUtils.disableAutoShowConsole(bot);
+		ConsoleUtils.disableAutoShowConsole();
 		DiagramTestUtils.showConsole(editor, localTestComponent.getShortName(1));
 		bot.sleep(500);
 

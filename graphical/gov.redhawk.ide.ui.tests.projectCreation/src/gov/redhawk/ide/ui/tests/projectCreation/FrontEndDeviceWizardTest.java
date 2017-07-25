@@ -147,7 +147,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 	@Override
 	protected void setupCodeGeneration(ICodegenInfo iCodegenInfo, String lang) {
 		// IDE-70 - Package names for Java implementations should start with a lowercase letter.
-		if (lang != null && lang.equals("Java")) {
+		if ("Java".equals(lang)) {
 			String packageText = getWizardBot().textWithLabel("Package:").getText();
 			Assert.assertFalse(packageText.isEmpty());
 			Assert.assertTrue(Character.isLowerCase(packageText.charAt(0)));
@@ -205,6 +205,10 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 		getWizardBot().button("Next >").click();
 
 		// FEI properties
+
+		// IDE-2022 Check that the remove button is disabled
+		Assert.assertFalse(getWizardBot().buttonWithTooltip("Remove property").isEnabled());
+
 		// TODO
 	}
 
