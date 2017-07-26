@@ -261,7 +261,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 
 	private void transmitPage(FEICodegenInfo codegenInfo) {
 		if (codegenInfo.getDigitalInputPorts() != -1) {
-			getWizardBot().spinnerWithLabel("Number of Digital input ports:").setSelection(codegenInfo.getDigitalInputPorts());
+			getWizardBot().spinnerWithLabel("Digital input ports:").setSelection(codegenInfo.getDigitalInputPorts());
 		}
 		if (codegenInfo.getInputPortType() != null) {
 			SWTBotCombo combo = bot.comboBoxWithLabelInGroup("Digital Input Type:", "Transmitter Properties");
