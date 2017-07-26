@@ -17,6 +17,7 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CosNaming.NameComponent;
@@ -37,6 +38,11 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 
 	private String domainName;
 	private static final String DEVICE_MANAGER = "DevMgr_localhost";
+
+	@BeforeClass
+	public static void disaableConsoleAutoShow() {
+		ConsoleUtils.disableAutoShowConsole();
+	}
 
 	@Test
 	public void namespacedWaveformTest() {
@@ -79,7 +85,6 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 			String tmpName = domainName;
 			domainName = null;
 			ScaExplorerTestUtils.deleteDomainInstance(bot, tmpName);
-			ConsoleUtils.disableAutoShowConsole(bot);
 			ConsoleUtils.terminateProcess(bot, tmpName);
 		}
 	}
