@@ -13,6 +13,7 @@ package gov.redhawk.ide.graphiti.sad.ui.tests;
 import gov.redhawk.ide.graphiti.ui.tests.CollapseShapeAbstractTest;
 import gov.redhawk.ide.graphiti.ui.tests.ComponentDescription;
 import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 
 public class CollapseShapeTest extends CollapseShapeAbstractTest {
 
@@ -31,11 +32,21 @@ public class CollapseShapeTest extends CollapseShapeAbstractTest {
 		return new ComponentDescription("rh.HardLimit", new String[] { "dataFloat_in" }, new String[] { "dataFloat_out" });
 	}
 
+	protected void setup(String projectName, ComponentDescription description1, ComponentDescription description2) {
+		// Create new diagram with our two components
+		createNewDiagram(projectName);
+		setEditor(gefBot.rhGefEditor(projectName));
+		DiagramTestUtils.maximizeActiveWindow(gefBot);
+		DiagramTestUtils.addHostCollocationToDiagram(getEditor());
+		DiagramTestUtils.addFromPaletteToDiagram(getEditor(), description1.getFullName(), 15, 15);
+		DiagramTestUtils.addFromPaletteToDiagram(getEditor(), description2.getFullName(), 300, 0);
+	}
+
 	@Override
 	protected void createNewDiagram(String diagramName) {
 		WaveformUtils.createNewWaveform(bot, diagramName, null);
 	}
-	
+
 	@Override
 	protected EditorType getEditorType() {
 		return EditorType.SAD;

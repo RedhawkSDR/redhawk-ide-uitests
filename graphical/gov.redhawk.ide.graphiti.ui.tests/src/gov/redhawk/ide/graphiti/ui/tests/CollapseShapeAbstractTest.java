@@ -60,11 +60,12 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 	protected abstract ComponentDescription getComponentCDescription();
 
 	private ComponentDescription compC = getComponentCDescription();
-	
+
 	protected enum EditorType {
 		SAD,
 		DCD
 	};
+
 	protected abstract EditorType getEditorType();
 
 	@Before
@@ -260,20 +261,20 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 
 			SWTBotShell shell = bot.shell("Connect");
 			Assert.assertFalse(bot.button("Finish").isEnabled());
-			
+
 			SWTBotList sourceGroup = null;
 			SWTBotList targetGroup = null;
 			if (getEditorType() == EditorType.SAD) {
 				sourceGroup = bot.listInGroup(compA.getShortName(1) + " (Source)");
-				targetGroup = bot.listInGroup(compB.getShortName(1) + " (Target)");			
+				targetGroup = bot.listInGroup(compB.getShortName(1) + " (Target)");
 			} else {
 				sourceGroup = bot.listInGroup(projectName + ":" + compA.getShortName(1) + " (Source)");
 				targetGroup = bot.listInGroup(projectName + ":" + compB.getShortName(1) + " (Target)");
 			}
-			
+
 			sourceGroup.select(compA.getOutPort(i));
 			targetGroup.select(compB.getInPort(i));
-			
+
 			bot.button("Finish").click();
 			bot.waitUntil(Conditions.shellCloses(shell));
 		}
@@ -356,12 +357,24 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 	}
 
 	private void setup(ComponentDescription description1, ComponentDescription description2) {
-		// Create new waveform with our two components
+		setup(projectName, description1, description2);
+	}
+
+	protected void setup(String projectName, ComponentDescription description1, ComponentDescription description2) {
+		// Create new diagram with our two components
 		createNewDiagram(projectName);
-		editor = gefBot.rhGefEditor(projectName);
+		setEditor(gefBot.rhGefEditor(projectName));
 		DiagramTestUtils.maximizeActiveWindow(gefBot);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, description1.getFullName(), 0, 0);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, description2.getFullName(), 150, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(getEditor(), description1.getFullName(), 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(getEditor(), description2.getFullName(), 150, 0);
+	}
+
+	public void setEditor(RHBotGefEditor newEditor) {
+		editor = newEditor;
+	}
+
+	public RHBotGefEditor getEditor() {
+		return editor;
 	}
 
 	protected abstract void createNewDiagram(String diagramName);
