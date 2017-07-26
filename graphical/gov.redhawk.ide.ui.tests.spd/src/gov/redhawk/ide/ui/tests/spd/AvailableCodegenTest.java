@@ -16,11 +16,12 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.finder.RHBot;
@@ -29,6 +30,11 @@ import gov.redhawk.ide.swtbot.finder.RHBot;
  * IDE-1397 - Test invalid and deprecated code generators are not included as options in the SPD Implementations tab
  */
 public class AvailableCodegenTest extends UITest {
+
+	@BeforeClass
+	public static void setupPyDev() throws Exception {
+		StandardTestActions.configurePyDev();
+	}
 
 	@Test
 	public void cppProjectCodegens() throws CoreException {
@@ -52,14 +58,8 @@ public class AvailableCodegenTest extends UITest {
 	private void checkCodegenerators(String projectName, List<String> expectedCodegens) throws CoreException {
 		StandardTestActions.importProject(SpdUiTestsActivator.getInstance().getBundle(), new Path("/workspace/" + projectName), null);
 
-		// Ensure SPD file was created
-		SWTBotView view = bot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
-		view.show();
-		view.bot().tree().setFocus();
-		view.bot().tree().getTreeItem(projectName).select();
-		view.bot().tree().getTreeItem(projectName).expand();
-		view.bot().tree().getTreeItem(projectName).getNode(projectName + ".spd.xml").doubleClick();
-
+		// Open SPD file, switch to Implementation tab
+		ProjectExplorerUtils.openProjectInEditor(bot, projectName, projectName + ".spd.xml");
 		SWTBotEditor editor = bot.editorByTitle(projectName);
 		editor.setFocus();
 		RHBot editorBot = new RHBot(editor.bot());
