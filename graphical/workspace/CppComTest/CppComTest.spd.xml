@@ -31,6 +31,36 @@
     <programminglanguage name="C++"/>
     <humanlanguage name="EN"/>
     <os name="Linux"/>
+    <usesdevice id="usesdevice">
+	<propertyref refid="propRefID" value="propRefValue" />
+	<simpleref refid="simpleRefID" value="simpleRefValue" />
+	<simplesequenceref refid="simpleSequenceRefID">
+		<values>
+			<value>simpleSequenceRefValue1</value>
+			<value>simpleSequenceRefValue2</value>
+		</values>
+	</simplesequenceref>
+	<structref refid="structRefID">
+		<simpleref refid="structSimpleRefID" value="structSimpleRefValue" />
+		<simplesequenceref refid="structSimpleSequenceRefID">
+			<values>
+				<value>structSimpleSequenceRefValue1</value>
+				<value>structSimpleSequenceRefValue2</value>
+			</values>
+		</simplesequenceref>
+	</structref>
+	<structsequenceref refid="structSequenceRefID">
+		<structvalue>
+			<simpleref refid="structValueSimpleRefID" value="structValueSimpleRefValue" />
+			<simplesequenceref refid="structValueSimpleSequenceRefID">
+				<values>
+					<value>structValueSimpleSequenceRefValue1</value>
+					<value>structValueSimpleSequenceRefValue2</value>
+				</values>
+			</simplesequenceref>
+		</structvalue>
+	</structsequenceref>
+    </usesdevice>
     <processor name="x86"/>
     <processor name="x86_64"/>
   </implementation>
