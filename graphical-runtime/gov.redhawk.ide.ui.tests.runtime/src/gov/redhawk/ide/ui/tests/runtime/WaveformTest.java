@@ -29,7 +29,7 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class WaveformTest extends UIRuntimeTest {
 
-	SWTBot scaExplorerViewBot;
+	private SWTBot scaExplorerViewBot;
 
 	@Override
 	public void before() throws Exception {
@@ -57,7 +57,7 @@ public class WaveformTest extends UIRuntimeTest {
 		String waveformNameInSandbox = waveformTreeItem.getText();
 		String[] nodeParentPath = { "Sandbox", waveformNameInSandbox };
 		waveformTreeItem.expand(); // must expand otherwise will not see sub-items (e.g. Components) underneath this TreeItem)
-		ConsoleUtils.disableAutoShowConsole(bot);
+		ConsoleUtils.disableAutoShowConsole();
 
 		SWTBotView propertiesView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
 		propertiesView.show();
@@ -117,7 +117,7 @@ public class WaveformTest extends UIRuntimeTest {
 		String waveformNameInSandbox = waveformTreeItem.getText();
 		String[] nodeParentPath = { "Sandbox", waveformNameInSandbox };
 		waveformTreeItem.expand(); // must expand otherwise will not see sub-items (e.g. Components) underneath this TreeItem)
-		ConsoleUtils.disableAutoShowConsole(bot);
+		ConsoleUtils.disableAutoShowConsole();
 
 		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
 		propView.show();
