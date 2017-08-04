@@ -12,6 +12,7 @@ package gov.redhawk.ide.graphiti.sad.ui.tests;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
@@ -36,16 +37,18 @@ public class ExportTest extends AbstractGraphitiTest {
 
 		// Attempt to export and make sure warning dialog pops
 		StandardTestActions.exportProject(waveformName, bot);
-		bot.waitUntil(Conditions.shellIsActive("Project has errors"));
-		SWTBotShell shell = bot.shell("Project has errors");
-		shell.bot().button("Yes").click();
-		bot.waitUntil(Conditions.shellIsActive("Invalid Model"));
+		SWTBotShell shell;
+		try {
+			shell = bot.shell("Project has errors");
+			shell.bot().button("Yes").click();
+		} catch (WidgetNotFoundException e) {
+			// The project may not have had time to build and post errors before we started the export
+		}
 		shell = bot.shell("Invalid Model");
 		shell.bot().button("No").click();
-
-		// Make sure waveform did not export
 		bot.waitUntil(Conditions.shellCloses(shell));
 
+		// Make sure waveform did not export
 		try {
 			bot.waitUntil(new DefaultCondition() {
 				@Override
@@ -67,10 +70,8 @@ public class ExportTest extends AbstractGraphitiTest {
 
 		// Try to export again
 		StandardTestActions.exportProject(waveformName, bot);
-		bot.waitUntil(Conditions.shellIsActive("Project has errors"));
 		shell = bot.shell("Project has errors");
 		shell.bot().button("Yes").click();
-		bot.waitUntil(Conditions.shellIsActive("Invalid Model"));
 		shell = bot.shell("Invalid Model");
 		shell.bot().button("Yes").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
