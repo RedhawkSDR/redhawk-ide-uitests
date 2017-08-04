@@ -23,6 +23,9 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class TerminateTest extends UIRuntimeTest {
 
+	private static final String[] SANDBOX_PATH = { "Sandbox" };
+	private static final String CHALKBOARD = "Chalkboard";
+	private static final String[] CHALKBOARD_PATH = { "Sandbox", CHALKBOARD };
 	private static final String SIG_GEN = "rh.SigGen";
 	private static final String SIG_GEN_1 = "SigGen_1";
 
@@ -106,4 +109,25 @@ public class TerminateTest extends UIRuntimeTest {
 		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("SIGTERM"));
 	}
 
+	/**
+	 * IDE-955 After terminating the chalkboard, or all its components, it should no longer be started.
+	 */
+	@Test
+	public void chalkboardStopWhenEmpty() {
+		// Try terminating the chalkboard
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, "rh.SigGen", "cpp");
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIG_GEN_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, SANDBOX_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, SANDBOX_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.terminate(bot, SANDBOX_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, SANDBOX_PATH, CHALKBOARD);
+
+		// Try terminating a component in the chalkboard
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, "rh.SigGen", "cpp");
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIG_GEN_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, SANDBOX_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, SANDBOX_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.terminate(bot, CHALKBOARD_PATH, SIG_GEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, SANDBOX_PATH, CHALKBOARD);
+	}
 }

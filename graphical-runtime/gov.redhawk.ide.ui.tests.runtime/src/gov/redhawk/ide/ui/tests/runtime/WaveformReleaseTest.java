@@ -26,21 +26,26 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class WaveformReleaseTest extends UIRuntimeTest {
 
+	private static final String[] SANDBOX_PATH = { "Sandbox" };
+	private static final String CHALKBOARD = "Chalkboard";
+	private static final String[] CHALKBOARD_PATH = { "Sandbox", CHALKBOARD };
+
+	private static final String SIGGEN = "rh.SigGen";
+	private static final String SIGGEN_1 = "SigGen_1";
+
 	/**
 	 * IDE-913 - Ensure waveform release action completes successfully
 	 */
 	@Test
 	public void releaseWaveformTest() {
 		final String WAVEFORM = "ExampleWaveform01";
-		final String COMPONENT = "rh.SigGen";
-		final String COMPONENT_1 = "SigGen_1";
 		final String COMPONENT_IMPL = "python";
 		final String COMPONENT_PORT = "dataFloat_out";
 
 		SWTBotTreeItem waveformTreeItem = WaveformUtils.launchLocalWaveform(bot, WAVEFORM);
 		final String waveformFullName = waveformTreeItem.getText();
-		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, COMPONENT, COMPONENT_IMPL);
-		SWTBotTreeItem componentTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMPONENT_1);
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, COMPONENT_IMPL);
+		SWTBotTreeItem componentTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// Release waveform
 		waveformTreeItem.contextMenu("Release").click();
@@ -52,13 +57,36 @@ public class WaveformReleaseTest extends UIRuntimeTest {
 		connectWizard.setFocus();
 		boolean found = true;
 		try {
-			StandardTestActions.waitForTreeItemToAppear(connectWizard.bot(), connectWizard.bot().treeInGroup("Target"), Arrays.asList("Sandbox", waveformFullName));
+			StandardTestActions.waitForTreeItemToAppear(connectWizard.bot(), connectWizard.bot().treeInGroup("Target"),
+				Arrays.asList("Sandbox", waveformFullName));
 		} catch (TimeoutException ex) {
 			found = false;
 		}
 		Assert.assertFalse(found);
 		connectWizard.close();
 
-		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMPONENT_1);
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
+	}
+
+	/**
+	 * IDE-955 After releasing the chalkboard, or all its components, it should no longer be started.
+	 */
+	@Test
+	public void chalkboardStopWhenEmpty() {
+		// Try releasing the chalkboard
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, "rh.SigGen", "cpp");
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, SANDBOX_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, SANDBOX_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, SANDBOX_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, SANDBOX_PATH, CHALKBOARD);
+
+		// Try releasing a component in the chalkboard
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, "rh.SigGen", "cpp");
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
+		ScaExplorerTestUtils.startResourceInExplorer(bot, SANDBOX_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, SANDBOX_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, SANDBOX_PATH, CHALKBOARD);
 	}
 }

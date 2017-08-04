@@ -25,111 +25,89 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
+/**
+ * IDE-659 Tests the model map (i.e. sync between diagram and model state) by comparing with the explorer.
+ */
 public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 
-	private RHBotGefEditor editor;
-
 	/**
-	 * IDE-659
-	 * Adds, then removes a component via chalkboard diagram. Verify its no
-	 * longer present in REDHAWK Explorer or Diagram
+	 * Add then release a component via chalkboard diagram. Verify its no longer present in REDHAWK Explorer or diagram.
 	 */
 	@Test
-	public void addRemoveComponentInChalkboardDiagram() {
-		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+	public void addReleaseInDiagram() {
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 
-		// wait for component to show up in REDHAWK Explorer
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-
-		// RELEASE component from diagram
+		// Release component in diagram
 		DiagramTestUtils.releaseFromDiagram(editor, editor.getEditPart(HARD_LIMIT_1));
-
-		// wait until hard limit component not present in REDHAWK Explorer & Diagram
-		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-		Assert.assertNull(editor.getEditPart(HARD_LIMIT_1));
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 	}
 
 	/**
-	 * IDE-659
-	 * Adds, then terminates a component via chalkboard diagram. Verify it's no
-	 * longer present in REDHAWK Explorer or Diagram
+	 * Add then terminate a component via chalkboard diagram. Verify it's no longer present in REDHAWK Explorer or
+	 * diagram.
 	 */
 	@Test
-	public void addTerminateComponentInChalkboardDiagram() {
-		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+	public void addTerminateInDiagram() {
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add component to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 0, 0);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 
-		// wait for component to show up in REDHAWK Explorer
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-
-		// TERMINATE component from diagram
+		// Terminate component in diagram
 		DiagramTestUtils.terminateFromDiagram(editor, editor.getEditPart(HARD_LIMIT_1));
-
-		// wait until hard limit component not present in REDHAWK Explorer & Diagram
-		ScaExplorerTestUtils.waitUntilComponentDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-		Assert.assertNull(editor.getEditPart(HARD_LIMIT_1));
+		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 	}
 
 	/**
-	 * IDE-659
-	 * Adds, then removes a component connections via chalkboard diagram. Verify its no
-	 * longer present in REDHAWK Explorer
+	 * Add then removes a connection via chalkboard diagram. Verify it's no longer present in REDHAWK Explorer.
 	 */
 	@Test
-	public void addRemoveComponentConnectionInChalkboardDiagram() {
-		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+	public void addRemoveConnectionInDiagram() {
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add two components to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 
-		// wait for component to show up in REDHAWK Explorer (connections don't always work correctly if you don't
-		// wait.
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN_1);
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
-
-		// Get port edit parts
+		// Get port edit parts and draw connection
 		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN_1);
 		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
-
-		// Draw connection
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
-
-		// wait for connection to show up in REDHAWK Explorer
 		ScaExplorerTestUtils.waitUntilConnectionDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1, "dataFloat_out", "connection_1");
 
 		// Delete connection
 		List<SWTBotGefConnectionEditPart> sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
-		for (SWTBotGefConnectionEditPart con : sourceConnections) {
-			DiagramTestUtils.deleteFromDiagram(editor, con);
-		}
-
-		// wait until connection not present in REDHAWK Explorer
+		DiagramTestUtils.deleteFromDiagram(editor, sourceConnections.get(0));
 		ScaExplorerTestUtils.waitUntilConnectionDisappearsInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1, "dataFloat_out", "connection_1");
 	}
 
 	/**
-	 * IDE-659
-	 * Adds components, starts/stops them from Chalkboard Diagram and verifies
-	 * components in REDHAWK Explorer reflect changes
-	 * 
+	 * Adds components, starts/stops them from Chalkboard Diagram and verifies against REDHAWK Explorer.
 	 */
 	@Test
-	public void startStopComponentsFromChalkboardDiagram() {
-		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+	public void startStopInDiagram() {
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Add two components to diagram from palette
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, HARD_LIMIT_1);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 
 		// verify stopped
 		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
@@ -159,38 +137,40 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STOPPED);
 		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
-		// start both components
-		DiagramTestUtils.startComponentFromDiagram(editor, HARD_LIMIT);
-		DiagramTestUtils.startComponentFromDiagram(editor, SIGGEN);
-		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STARTED);
-		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STARTED);
-		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
-		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
+		// TODO: start both components
+
+		// TODO: stop chalkboard via menu
+
+		// TODO: start chalkboard via menu
 
 		// cleanup
-		ScaExplorerTestUtils.terminateWaveformFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.terminate(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
+		ScaExplorerTestUtils.waitUntilScaExplorerWaveformEmpty(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
 	}
 
 	/**
-	 * IDE-659
-	 * Adds, then removes a component via REDHAWK Explorer. Verify its no
-	 * longer present in Diagram
+	 * Add then removes a component via REDHAWK Explorer. Verify it's no longer present in the diagram.
 	 */
 	@Test
-	public void addRemoveComponentInScaExplorer() {
-		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+	public void addReleaseInExplorer() {
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1, 10000);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
 
-		// delete component from REDHAWK Explorer
-		ScaExplorerTestUtils.terminate(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		// Release component from REDHAWK Explorer
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, HARD_LIMIT_1);
+	}
+
+	@Test
+	public void addTerminateInExplorer() {
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1, 10000);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
 
 		// terminate chalkboard
 		ScaExplorerTestUtils.terminateWaveformFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
@@ -198,21 +178,19 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	}
 
 	/**
-	 * IDE-659
-	 * Adds, then removes component connections via REDHAWK Explorer. Verify its no
-	 * longer present in Chalkboard Diagram
+	 * Add then remove a connection via REDHAWK Explorer. Verify it's no longer present in the diagram.
 	 */
 	@Test
-	public void addRemoveComponentConnectionInScaExplorer() {
-		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+	public void addRemoveConnectionInExplorer() {
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Launch two components from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
 
 		// verify components were added to the diagram
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1, 10000);
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN_1, 10000);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN_1);
 
 		// create connection between components via REDHAWK Explorer
 		ScaExplorerTestUtils.connectPortsInScaExplorer(bot, CHALKBOARD_PATH, "connection_1", SIGGEN_1, "dataFloat_out", HARD_LIMIT_1, "dataFloat_in");
@@ -224,96 +202,78 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	}
 
 	/**
-	 * IDE-659
-	 * Adds components, starts/stops them from REDHAWK Explorer and verifies
-	 * components in diagram reflect appropriate color changes
-	 * 
+	 * Adds components, starts/stops them from REDHAWK Explorer and verifies components in diagram reflect appropriate
+	 * state.
 	 */
 	@Test
-	public void startStopComponentsFromScaExplorer() {
-		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+	public void startStopFromExplorer() {
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Launch two components from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN_1);
 
-		// verify components were added to the diagram
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, HARD_LIMIT_1, 10000);
-		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN, 10000);
-		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
-
-		// verify hard limit stopped
+		// verify stopped
 		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STOPPED);
 
 		// start hard limit from REDHAWK explorer
 		ScaExplorerTestUtils.startResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
-
-		// verify hardlimit started but siggen did not
-		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
-		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STARTED);
+		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT, ComponentState.STARTED);
 		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STOPPED);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// start SigGen from REDHAWK explorer
 		ScaExplorerTestUtils.startResourceInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
-
-		// verify SigGen started but siggen did not
 		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STARTED);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// stop hard limit from REDHAWK explorer
 		ScaExplorerTestUtils.stopResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
-
-		// verify hardlimit stopped, SigGen started
 		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
 		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STARTED);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// stop SigGen from REDHAWK explorer
 		ScaExplorerTestUtils.stopResourceInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
-
-		// verify SigGen stopped
-		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STOPPED);
+		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN, ComponentState.STOPPED);
+		ScaExplorerTestUtils.waitUntilResourceStoppedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// start both components
 		ScaExplorerTestUtils.startResourceInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
 		ScaExplorerTestUtils.startResourceInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
-
-		// verify both started
 		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STARTED);
 		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STARTED);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, HARD_LIMIT_1);
+		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		// stop chalkboard
 		ScaExplorerTestUtils.stopResourceInExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
-
-		// verify both components stopped
 		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STOPPED);
 		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STOPPED);
 
 		// start chalkboard
 		ScaExplorerTestUtils.startResourceInExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
-
-		// verify both components started
 		DiagramTestUtils.waitForComponentState(bot, editor, HARD_LIMIT_1, ComponentState.STARTED);
 		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STARTED);
 
 		// terminate, then stop chalkboard
-		ScaExplorerTestUtils.terminateWaveformFromScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
-
-		// wait for Chalkboard to be empty
+		ScaExplorerTestUtils.terminate(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
 		ScaExplorerTestUtils.waitUntilScaExplorerWaveformEmpty(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
-
-		// stop chalkboard
-		ScaExplorerTestUtils.stopResourceInExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
-
-		// wait for Chalkboard to be stopped
-		ScaExplorerTestUtils.waitUntilScaExplorerWaveformStopped(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
 	}
 
 	/**
 	 * IDE-1205 Make sure properties match whether component is selected in diagram or REDHAWK Explorer.
 	 */
 	@Test
-	public void changePropertiesInScaExplorer() {
-		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+	public void changePropertiesViaExplorerSelection() {
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
@@ -343,8 +303,8 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 	 * IDE-1205 Make sure properties match whether component is selected in diagram or REDHAWK Explorer.
 	 */
 	@Test
-	public void changePropertiesInChalkboardDiagram() {
-		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+	public void changePropertiesViaDiagramSelection() {
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
 		// Launch component from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIGGEN, "python");
