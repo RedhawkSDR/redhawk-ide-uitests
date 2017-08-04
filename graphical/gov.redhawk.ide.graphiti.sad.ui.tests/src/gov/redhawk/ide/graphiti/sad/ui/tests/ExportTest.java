@@ -10,6 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -21,6 +22,7 @@ import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
@@ -47,6 +49,7 @@ public class ExportTest extends AbstractGraphitiTest {
 		shell = bot.shell("Invalid Model");
 		shell.bot().button("No").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
+		bot.waitUntil(new WaitForTargetSdrRootLoad());
 
 		// Make sure waveform did not export
 		try {
@@ -70,11 +73,13 @@ public class ExportTest extends AbstractGraphitiTest {
 
 		// Try to export again
 		StandardTestActions.exportProject(waveformName, bot);
+		addSdrDomCleanupPath(new Path("/waveforms/" + waveformName));
 		shell = bot.shell("Project has errors");
 		shell.bot().button("Yes").click();
 		shell = bot.shell("Invalid Model");
 		shell.bot().button("Yes").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
+		bot.waitUntil(new WaitForTargetSdrRootLoad());
 
 		// Make sure waveform loaded into the Target SDR
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Target SDR", "Waveforms" }, waveformName);
