@@ -58,11 +58,17 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 		super.after();
 	}
 
+	/**
+	 * IDE-1965 Launch a shared address space component in run mode, but without generating it; check error message
+	 */
 	@Test
 	public void badWorkspaceRunLaunchTest() {
 		badWorkspaceLaunchTest("Launch resource in the sandbox");
 	}
 
+	/**
+	 * IDE-1965 Launch a shared address space component in debug mode, but without generating it; check error message
+	 */
 	@Test
 	public void badWorkspaceDebugLaunchTest() {
 		badWorkspaceLaunchTest("Debug resource in the sandbox");
