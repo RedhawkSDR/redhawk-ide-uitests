@@ -73,23 +73,22 @@ public class AllocWizard extends UIRuntimeTest {
 		wizardBot.sleep(VALIDATION_DELAY);
 		Assert.assertTrue("Finish should be enabled", wizardBot.button("Finish").isEnabled());
 
-		// Specify BW + SR (no-go)
+		// Specify      BW + SR (no-go)
 		cfText.setText("");
 		wizardBot.sleep(VALIDATION_DELAY);
 		Assert.assertFalse("Finish should be disabled", wizardBot.button("Finish").isEnabled());
-
-		// Specify CF + SR (no-go)
 		cfText.setText("100");
+
+		// Specify CF +      SR (no-go)
 		bwText.setText("");
 		wizardBot.sleep(VALIDATION_DELAY);
 		Assert.assertFalse("Finish should be disabled", wizardBot.button("Finish").isEnabled());
-
-		// Specify CF + BW (no-go)
 		bwText.setText("20");
+
+		// Specify CF + BW      (no-go)
 		srText.setText("");
 		wizardBot.sleep(VALIDATION_DELAY);
 		Assert.assertFalse("Finish should be disabled", wizardBot.button("Finish").isEnabled());
-
 		srText.setText("20");
 
 		// BW tolerance = 100% (ok)
