@@ -40,6 +40,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 	private static final String SIG_GEN_1 = "SigGen_1";
 	private static final String DATA_CONVERTER = "rh.DataConverter";
 	private static final String DATA_CONVERTER_1 = "DataConverter_1";
+	private static final long VALIDATION_DELAY = 500;
 
 	private String waveformName;
 
@@ -131,7 +132,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		String groupID = "group1";
 		String rfFlowID = "";
 
-		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor);
+		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor, 0, 0);
 		FETunerControl tunerControl = new FETunerControl(tunerType, newAllocationId, centerFrequency, bandwidth, sampleRate, deviceControl, rfFlowID, groupID);
 		UsesDeviceTestUtils.completeUsesFEDeviceWizard(bot, "sim_RX_DIGITIZER (/devices/sim_RX_DIGITIZER/)", tunerControl, null, null);
 
@@ -305,7 +306,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		final String newAllocationId = "678910";
 
 		// Add uses device for a FrontEnd tune
-		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor);
+		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor, 0, 0);
 		String[] providesPorts = new String[] { "dataDouble_in", "dataDouble2_in" };
 		String[] usesPorts = new String[] { "dataDouble_out", "dataDouble2_out" };
 		UsesDeviceTestUtils.completeUsesFEDeviceWizard(gefBot, existingAllocationId, newAllocationId, providesPorts, usesPorts);
@@ -364,7 +365,8 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 	}
 
 	/**
-	 * Make sure it looks like validation is working in the FrontEnd uses device wizard
+	 * IDE-1266 Make sure it looks like validation is working in the FrontEnd uses device wizard
+	 * IDE-1578 Use only a UUID for default allocation ID in design diagram (don't include username)
 	 */
 	@Test
 	public void usesDevice_WizardValidation() {
@@ -376,12 +378,12 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		editor.setFocus();
 
 		// Add uses device for a FrontEnd tuner
-		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor);
+		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor, 0, 0);
 
 		SWTBotShell allocateTunerShell = bot.shell("Allocate Tuner");
 		allocateTunerShell.setFocus();
 
-		// click next, Generic FrontEnd Device already selected
+		// Select Target Device page - click next, Generic FrontEnd Device already selected
 		bot.button("&Next >").click();
 
 		// Allocate Tuner page
@@ -391,12 +393,18 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		botText.setText("abc");
 		bot.button("&Next >").click();
 
-		// Tuner Allocation Page
+		// Tuner Allocation page - Can't progress initially; only a UUID in the new allocation ID box
+		Assert.assertFalse("Next should be disabled", bot.button("&Next >").isEnabled());
 		bot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), false));
+		String id = bot.textWithLabel("New Allocation ID").getText();
+		Assert.assertTrue("Allocation ID doesn't appear to be a UUID", id.matches("[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}"));
+
+		// Test validation for listening
 		SWTBotCombo comboField = bot.comboBox(0); // Allocation
 		comboField.setFocus();
 		comboField.setSelection("Listen to Existing Tuner by ID");
-		bot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), false));
+		bot.sleep(VALIDATION_DELAY);
+		Assert.assertFalse("Next should be disabled", bot.button("&Next >").isEnabled());
 		SWTBotText existingTunerAllocationIdText = bot.textWithLabel("Existing Tuner Allocation ID");
 		existingTunerAllocationIdText.setText("abc");
 		bot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), true));
