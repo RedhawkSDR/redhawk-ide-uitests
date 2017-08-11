@@ -10,9 +10,13 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.dcd.ui.tests;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.junit.Assert;
@@ -28,6 +32,10 @@ import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
+import mil.jpeojtrs.sca.dcd.DcdComponentPlacement;
+import mil.jpeojtrs.sca.dcd.DcdPackage;
+import mil.jpeojtrs.sca.dcd.DeviceConfiguration;
+import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class NodeComponentTest extends AbstractGraphitiTest {
 
@@ -35,6 +43,7 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 	private String projectName;
 	private static final String DOMAIN_NAME = "REDHAWK_DEV";
 	private static final String GPP = "GPP";
+	private static final String GPP_1 = "GPP_1";
 	private static final String SERVICE_STUB = "ServiceStub";
 
 	/**
@@ -72,6 +81,36 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 	}
 
 	/**
+	 * Test that a device is added/removed from the DCD without saving
+	 * 
+	 * IDE-1504 - Check that the componentfile element is removed once empty
+	 */
+	@Test
+	public void checkDeviceInDcd() throws IOException {
+		projectName = "DeviceTestNode";
+
+		NodeUtils.createNewNodeProject(bot, projectName, DOMAIN_NAME);
+		editor = gefBot.rhGefEditor(projectName);
+
+		// Add the device and check that it was added to the dcd.xml
+		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
+		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
+		DeviceConfiguration dcd = getDeviceConfiguration(editor);
+		DcdComponentPlacement placement = dcd.getPartitioning().getComponentPlacement().get(0);
+		DcdComponentInstantiation ci = placement.getComponentInstantiation().get(0);
+		Assert.assertNotNull("Device Instantiation not found", ci);
+		Assert.assertFalse("ComponentFile element not created", dcd.getComponentFiles().getComponentFile().isEmpty());
+
+		// Remove the device and check that it was removed from the dcd.xml
+		DiagramTestUtils.openTabInEditor(editor, "Diagram");
+		DiagramTestUtils.deleteFromDiagram(editor, editor.getEditPart(GPP_1));
+		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
+		dcd = getDeviceConfiguration(editor);
+		Assert.assertTrue("Device was not removed", dcd.getPartitioning().getComponentPlacement().isEmpty());
+		Assert.assertNull("ComponentFile element was not removed", dcd.getComponentFiles());
+	}
+
+	/**
 	 * IDE-1131
 	 * Name-spaced devices should have their component file id set to basename_UUID, not the fully qualified name
 	 * 
@@ -94,10 +133,11 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 		RHContainerShape deviceShape = (RHContainerShape) editor.getEditPart(deviceName).part().getModel();
 		final String componentFileString = "(?s).*<componentfile id=\"" + deviceBaseName + ".*";
 		final String deviceXmlString = DiagramTestUtils.regexStringForDevice(deviceShape);
-		
+
 		// IDE-1506 - check to make sure componentInstantiationId follows pattern of NodeName:DeviceName
 		DcdComponentInstantiation ci = (DcdComponentInstantiation) DUtil.getBusinessObject(deviceShape);
-		Assert.assertTrue("Component instantiation ID does not follow expected pattern (NodeName:DeviceName)", ci.getId().startsWith(projectName + ":" + deviceBaseName + "_"));
+		Assert.assertTrue("Component instantiation ID does not follow expected pattern (NodeName:DeviceName)",
+			ci.getId().startsWith(projectName + ":" + deviceBaseName + "_"));
 
 		// Check dcd.xml for string
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
@@ -201,5 +241,13 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 
 		// SERVICE_STUB should not have a port
 		Assert.assertTrue(serviceShape.getUsesPortStubs().size() == 0 && serviceShape.getProvidesPortStubs().size() == 0);
+	}
+
+	private DeviceConfiguration getDeviceConfiguration(RHBotGefEditor editor) throws IOException {
+		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
+		String editorText = editor.toTextEditor().getText();
+		Resource resource = resourceSet.createResource(org.eclipse.emf.common.util.URI.createURI("mem://temp.dcd.xml"), DcdPackage.eCONTENT_TYPE);
+		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
+		return DeviceConfiguration.Util.getDeviceConfiguration(resource);
 	}
 }
