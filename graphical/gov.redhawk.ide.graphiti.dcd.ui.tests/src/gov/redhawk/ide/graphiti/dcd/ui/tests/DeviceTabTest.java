@@ -11,11 +11,14 @@
 package gov.redhawk.ide.graphiti.dcd.ui.tests;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.NodeUtils;
@@ -26,31 +29,98 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 public class DeviceTabTest extends AbstractGraphitiTest {
 
 	private static final String DOMAIN_NAME = "REDHAWK_DEV";
-	private static final String GPP = "GPP";
-	private static final String GPP_1 = GPP + "_1";
+	private static final String PROJECT_NAME = "TestNode";
 
-	@Test
-	public void deviceDetailsSection() {
-		final String projectName = "TestNode";
-		final String newName = "A_New_Name";
+	private static final String GPP = "GPP";
+	private static final String SERVICE = "ServiceNoPorts";
+	private static final String PORT_SUP_SERVICE = "PortSupplierService";
+
+	private RHBotGefEditor editor;
+	private SWTBot editorBot;
+
+	@Override
+	@Before
+	public void before() throws Exception {
+		super.before();
 
 		// Create an empty node project
-		NodeUtils.createNewNodeProject(gefBot, projectName, DOMAIN_NAME);
-		RHBotGefEditor editor = gefBot.rhGefEditor(projectName);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
+		NodeUtils.createNewNodeProject(gefBot, PROJECT_NAME, DOMAIN_NAME);
+		editor = gefBot.rhGefEditor(PROJECT_NAME);
+		editorBot = editor.bot();
+	}
 
-		SWTBot editorBot = editor.bot();
-		editorBot.cTabItem("Devices").activate();
+	/**
+	 * Test form details section for devices in the device tab
+	 */
+	@Test
+	public void deviceDetailsSection() {
+		final SWTBotTreeItem treeItem = testAddElement(GPP);
+		testUsageName(treeItem, GPP);
 
-		// Confirm device is present in the devices table
+		// TODO: Test parent field
+		SWTBotCombo parentCombo = bot.comboBoxWithLabel("Parent:");
+
+		// TODO: Test properties tree
+		SWTBotTree tree = bot.treeInGroup("Properties");
+	}
+
+	/**
+	 * IDE-1502 - Test form details section for services in the device tab
+	 */
+	@Test
+	public void serviceDetailsSection() {
+		final SWTBotTreeItem treeItem = testAddElement(SERVICE);
+		testUsageName(treeItem, SERVICE);
+
+		try {
+			bot.comboBoxWithLabel("Parent:");
+		} catch (WidgetNotFoundException e) {
+			// PASS - Services sections should not have a parent view
+		}
+
+		try {
+			bot.treeInGroup("Properties");
+		} catch (WidgetNotFoundException e) {
+			// PASS - Services sections that do not inherit PortSupplier should not have a properties tree
+		}
+	}
+
+	/**
+	 * IDE-1502 - Test form details section for services in the device tab that inherit PortSupplier
+	 */
+	@Test
+	public void portSupplierServiceDetailsSection() {
+		final SWTBotTreeItem treeItem = testAddElement(PORT_SUP_SERVICE);
+		testUsageName(treeItem, PORT_SUP_SERVICE);
+
+		try {
+			bot.comboBoxWithLabel("Parent:");
+		} catch (WidgetNotFoundException e) {
+			// PASS - Services sections should not have a parent view
+		}
+
+		// TODO: Test properties tree
+		SWTBotTree tree = bot.treeInGroup("Properties");
+	}
+
+	private SWTBotTreeItem testAddElement(String elementName) {
+		// Add the element to the diagram
+		DiagramTestUtils.addFromPaletteToDiagram(editor, elementName, 0, 0);
+
+		// Confirm element is present in the devices table
+		editorBot.cTabItem("Devices / Services").activate();
 		SWTBotTree tree = editorBot.tree(0);
-		final SWTBotTreeItem treeItem = tree.getTreeItem(GPP_1);
+		return tree.getTreeItem(elementName + "_1");
+	}
 
-		// Edit usage name and test that the table entry updates accordingly
+	// Edit usage name and test that the table entry updates accordingly
+	private void testUsageName(final SWTBotTreeItem treeItem, final String elementName) {
 		SWTBotText nameText = editorBot.textWithLabel("Name:");
-		Assert.assertEquals("Usage name is incorrect in text field", GPP_1, nameText.getText());
+		Assert.assertEquals("Usage name is incorrect in text field", elementName + "_1", nameText.getText());
+
+		final String newName = "A_New_Name";
 		nameText.selectAll();
-		nameText.typeText("A_New_Name");
+		nameText.typeText(newName);
 		Assert.assertEquals("Usage name is incorrect in text field", newName, nameText.getText());
 
 		// Tree waits briefly before updating, so as not to update on every key stroke
@@ -65,7 +135,6 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 			public String getFailureMessage() {
 				return "Usage name is incorrect in devices table";
 			}
-
 		});
 	}
 }
