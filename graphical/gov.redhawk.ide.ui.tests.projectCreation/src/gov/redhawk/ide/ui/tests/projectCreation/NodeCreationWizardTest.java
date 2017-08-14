@@ -20,6 +20,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
@@ -29,10 +31,13 @@ import gov.redhawk.ide.codegen.util.ProjectCreator;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
+import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 
 public class NodeCreationWizardTest extends AbstractCreationWizard2Test {
 
 	private static final String DOMAIN_COMBO_LABEL = "Domain Manager:";
+
+	private RHSWTGefBot gefBot = new RHSWTGefBot();
 
 	@Override
 	protected String getProjectType() {
@@ -41,48 +46,45 @@ public class NodeCreationWizardTest extends AbstractCreationWizard2Test {
 
 	/**
 	 * IDE-1111: Test creation of node with dots in the name
+	 * IDE-1500: Test adding a device and service during node creation
 	 * IDE-1673: Ensure waveform .spec file directory block generates correctly
+	 * @throws IOException
+	 * @throws WidgetNotFoundException
 	 */
 	@Test
-	public void testNamespacedNodeCreation() {
-		final String nodeName = "namespaced.node.IDE1111";
-		createNodeWithDevice(nodeName, null, "name.space.device");
+	public void testNamespacedNodeCreation() throws WidgetNotFoundException, IOException {
+		final String projectName = "namespaced.node";
+		final String deviceName = "name.space.device";
+		final String serviceName = "name.space.service";
 
-		checkFiles(nodeName);
-	}
+		// Finish new node wizard
+		bot.textWithLabel("&Project name:").setText(projectName);
+		setDomainName();
+		bot.button("Next >").click();
+		StandardTestActions.selectNamespacedTreeItem(bot, bot.tree(0), deviceName);
+		StandardTestActions.selectNamespacedTreeItem(bot, bot.tree(1), serviceName);
+		bot.button("Finish").click();
 
-	private void setDomainName(String domainName) {
-		SWTBotCombo combo = bot.comboBoxWithLabel(DOMAIN_COMBO_LABEL);
-		if (domainName != null && domainName.length() > 0) {
-			combo.setSelection(domainName);
-		} else {
-			combo.setSelection(0);
-			if ("".equals(combo.getText())) { // allow test case to proceed if no items in drop down selection
-				combo.setText("RHIDE_NodeCreationWizardTest");
-			}
-		}
-	}
-
-	private void checkFiles(final String projectName) {
 		// Ensure DCD file was created
 		SWTBotView view = bot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
 		view.show();
-		view.bot().tree().setFocus();
-		view.bot().tree().getTreeItem(projectName).select();
-		view.bot().tree().getTreeItem(projectName).expand();
-		view.bot().tree().getTreeItem(projectName).getNode("DeviceManager.dcd.xml");
+		view.bot().tree().getTreeItem(projectName).expand().getNode("DeviceManager.dcd.xml");
 		bot.waitUntil(new WaitForEditorCondition(), 30000, 500);
 
-		SWTBotEditor editorBot = bot.activeEditor();
-		editorBot.bot().cTabItem("Overview").activate();
+		SWTBotEditor editor = bot.activeEditor();
+		editor.bot().cTabItem("Overview").activate();
+		Assert.assertEquals(projectName, editor.bot().textWithLabel("Name:").getText());
 
-		Assert.assertEquals(projectName, editorBot.bot().textWithLabel("Name:").getText());
+		// Make sure Device and Service show up in the diagram
+		editor.bot().cTabItem("Diagram").activate();
+		SWTBotGefEditor gefEditor = gefBot.rhGefEditor(projectName);
+		gefEditor.getEditPart(deviceName);
+		gefEditor.getEditPart(serviceName);
 
+		// Check that .spec file directory block is correct
 		final SWTBotTreeItem projectNode = ProjectExplorerUtils.selectNode(bot, projectName);
 		String expectedDirectoryBlock = ProjectCreator.createDirectoryBlock("%dir %{_prefix}/dev/nodes/" + projectName.replace('.', '/'));
 		final String[] expectedDirPaths = expectedDirectoryBlock.split("\n");
-
-		// Check that .spec file directory block is correct
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -103,25 +105,25 @@ public class NodeCreationWizardTest extends AbstractCreationWizard2Test {
 		});
 	}
 
-	private void createNodeWithDevice(String projectName, String domainName, String deviceName) {
-		bot.textWithLabel("&Project name:").setText(projectName);
-		setDomainName(domainName);
-		bot.button("Next >").click();
-		StandardTestActions.selectNamespacedTreeItem(bot, bot.tree(), deviceName);
-		bot.button("Finish").click();
-	}
-
 	@Override
 	public void nonDefaultLocation() throws IOException {
-		setDomainName(null);
+		setDomainName();
 
 		super.nonDefaultLocation();
 	}
 
 	@Override
 	public void uuid() {
-		setDomainName(null);
+		setDomainName();
 
 		super.uuid();
+	}
+
+	private void setDomainName() {
+		SWTBotCombo combo = bot.comboBoxWithLabel(DOMAIN_COMBO_LABEL);
+		combo.setSelection(0);
+		if ("".equals(combo.getText())) { // allow test case to proceed if no items in drop down selection
+			combo.setText("RHIDE_NodeCreationWizardTest");
+		}
 	}
 }
