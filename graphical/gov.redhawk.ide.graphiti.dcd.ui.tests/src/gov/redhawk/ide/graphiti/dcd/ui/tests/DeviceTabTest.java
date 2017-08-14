@@ -10,10 +10,12 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.dcd.ui.tests;
 
+import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -54,7 +56,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void deviceDetailsSection() {
-		final SWTBotTreeItem treeItem = testAddElement(GPP);
+		final SWTBotTreeItem treeItem = addElement(GPP);
 		testUsageName(treeItem, GPP);
 
 		// TODO: Test parent field
@@ -69,7 +71,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void serviceDetailsSection() {
-		final SWTBotTreeItem treeItem = testAddElement(SERVICE);
+		final SWTBotTreeItem treeItem = addElement(SERVICE);
 		testUsageName(treeItem, SERVICE);
 
 		try {
@@ -90,7 +92,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void portSupplierServiceDetailsSection() {
-		final SWTBotTreeItem treeItem = testAddElement(PORT_SUP_SERVICE);
+		final SWTBotTreeItem treeItem = addElement(PORT_SUP_SERVICE);
 		testUsageName(treeItem, PORT_SUP_SERVICE);
 
 		try {
@@ -103,7 +105,35 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		SWTBotTree tree = bot.treeInGroup("Properties");
 	}
 
-	private SWTBotTreeItem testAddElement(String elementName) {
+	/**
+	 * Support adding devices in the node editor
+	 */
+	@Test
+	public void addDeviceToExistingNode() {
+		addDialogTest(GPP, 0);
+	}
+
+	/**
+	 * IDE-1503 Support adding services in the node editor
+	 */
+	@Test
+	public void addServiceToExistingNode() {
+		addDialogTest(SERVICE, 1);
+	}
+
+	private void addDialogTest(String elementName, int treeIndex) {
+		editorBot.cTabItem("Devices / Services").activate();
+		editorBot.button("Add...").click();
+		bot.waitUntil(Conditions.shellIsActive("Add Devices / Services Wizard"));
+		SWTBotShell shell = bot.shell("Add Devices / Services Wizard");
+		shell.bot().tree(treeIndex).getTreeItem(elementName).click();
+		shell.bot().button("Finish").click();
+
+		SWTBotTree tree = editorBot.tree(0);
+		Assert.assertNotNull(elementName + " was not added to the node ", tree.getTreeItem(elementName + "_1"));
+	}
+
+	private SWTBotTreeItem addElement(String elementName) {
 		// Add the element to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, elementName, 0, 0);
 
