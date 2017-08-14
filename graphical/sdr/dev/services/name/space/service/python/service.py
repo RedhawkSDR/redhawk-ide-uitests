@@ -14,7 +14,7 @@ from omniORB import CORBA, URI, PortableServer
 from ossie.cf import CF
 from ossie.cf import CF__POA
 
-class service(CF__POA.PortSupplier):
+class service(CF__POA.LifeCycle):
 
     def __init__(self, name="service", execparams={}):
         self.name = name
@@ -23,7 +23,11 @@ class service(CF__POA.PortSupplier):
     def terminateService(self):
         pass
 
-    def getPort(self, name):
+    def initialize(self):
+        # TODO
+        pass
+
+    def releaseObject(self):
         # TODO
         pass
 

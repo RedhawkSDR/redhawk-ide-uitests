@@ -2,13 +2,13 @@
 <!DOCTYPE softwarecomponent PUBLIC "-//JTRS//DTD SCA V2.2.2 SCD//EN" "softwarecomponent.dtd">
 <softwarecomponent>
   <corbaversion>2.2</corbaversion>
-  <componentrepid repid="IDL:CF/PortSupplier:1.0"/>
+  <componentrepid repid="IDL:CF/LifeCycle:1.0"/>
   <componenttype>service</componenttype>
   <componentfeatures>
-    <supportsinterface repid="IDL:CF/PortSupplier:1.0" supportsname="PortSupplier"/>
+    <supportsinterface repid="IDL:CF/LifeCycle:1.0" supportsname="LifeCycle"/>
     <ports/>
   </componentfeatures>
   <interfaces>
-    <interface name="PortSupplier" repid="IDL:CF/PortSupplier:1.0"/>
+    <interface name="LifeCycle" repid="IDL:CF/LifeCycle:1.0"/>
   </interfaces>
 </softwarecomponent>
