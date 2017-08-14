@@ -30,7 +30,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	private static final String GPP_1 = GPP + "_1";
 
 	@Test
-	public void usageNameMapping() {
+	public void deviceDetailsSection() {
 		final String projectName = "TestNode";
 		final String newName = "A_New_Name";
 
