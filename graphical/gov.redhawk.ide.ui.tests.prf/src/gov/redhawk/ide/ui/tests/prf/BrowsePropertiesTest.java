@@ -20,10 +20,13 @@ import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.StandardTestActions;
 
-public class ImportPropertyTest extends AbstractPropertyTabTest {
+/**
+ * Tests for using the "Browse..." button on the "Properties" page of the SPD/PRF editors.
+ */
+public class BrowsePropertiesTest extends AbstractPropertyTabTest {
 
 	@Test
-	public void testAddPropertyFromBrowse() {
+	public void addFromTargetSdr() {
 		bot.button("Browse...").click();
 		SWTBot dialogBot = bot.shell("Browse Properties").bot();
 
@@ -38,7 +41,7 @@ public class ImportPropertyTest extends AbstractPropertyTabTest {
 	}
 
 	@Test
-	public void testBug1295_BrowseWizardValidation() {
+	public void validation() {
 		bot.button("Browse...").click();
 		SWTBot dialogBot = bot.shell("Browse Properties").bot();
 
