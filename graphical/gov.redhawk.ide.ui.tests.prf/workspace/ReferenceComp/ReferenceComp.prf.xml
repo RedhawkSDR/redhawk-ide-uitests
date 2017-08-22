@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="a" mode="readwrite" type="string">
+    <units>unita</units>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simplesequence id="b" mode="readwrite" type="boolean">
+    <units>unitb</units>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <struct id="c" mode="readwrite">
+    <simple id="d" type="double">
+      <units>unitd</units>
+    </simple>
+    <simplesequence id="e" type="float">
+      <units>unite</units>
+    </simplesequence>
+    <configurationkind kindtype="message"/>
+  </struct>
+  <structsequence id="f" mode="readwrite">
+    <struct id="g">
+      <description>desc g</description>
+      <simple id="h" type="long"/>
+      <simplesequence id="i" type="longlong"/>
+    </struct>
+    <configurationkind kindtype="property"/>
+  </structsequence>
+  <struct id="children1" mode="readwrite">
+    <simple id="j" type="octet">
+      <description>desc j</description>
+    </simple>
+    <simplesequence id="k" type="short">
+      <description>desc k</description>
+    </simplesequence>
+    <configurationkind kindtype="property"/>
+  </struct>
+  <structsequence id="children2" mode="readwrite">
+    <struct id="l">
+      <simple id="m" type="ulong"/>
+    </struct>
+    <configurationkind kindtype="allocation"/>
+  </structsequence>
+  <structsequence id="children3" mode="readwrite">
+    <struct id="children4">
+      <simple id="n" type="ulonglong"/>
+    </struct>
+    <configurationkind kindtype="property"/>
+  </structsequence>
+</properties>

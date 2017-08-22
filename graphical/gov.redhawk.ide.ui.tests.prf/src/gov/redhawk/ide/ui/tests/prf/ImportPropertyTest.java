@@ -10,13 +10,21 @@
  */
 package gov.redhawk.ide.ui.tests.prf;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 import gov.redhawk.ide.swtbot.StandardTestActions;
 
@@ -58,4 +66,65 @@ public class ImportPropertyTest extends AbstractPropertyTabTest {
 		Assert.assertFalse("Properties should be empty.", editor.bot().tree().hasItems());
 	}
 
+	/**
+	 * IDE-1438 Test adding properties from a project in the workspace.
+	 * @throws CoreException
+	 * @throws IOException
+	 */
+	@Test
+	public void addFromWorkspace() throws CoreException, IOException {
+		StandardTestActions.importProject(FrameworkUtil.getBundle(getClass()), new Path("workspace/ReferenceComp"), null);
+
+		editorBot.button("Browse...").click();
+		SWTBot dialogBot = bot.shell("Browse Properties").bot();
+		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(dialogBot, dialogBot.tree(), Arrays.asList("Workspace", "ReferenceComp"));
+		treeItem.select("a", "b", "c", "f");
+		dialogBot.button("Finish").click();
+
+		editorBot.button("Browse...").click();
+		dialogBot = bot.shell("Browse Properties").bot();
+		treeItem = StandardTestActions.waitForTreeItemToAppear(dialogBot, dialogBot.tree(), Arrays.asList("Workspace", "ReferenceComp", "children1"));
+		treeItem.select("j", "k");
+		dialogBot.button("Finish").click();
+
+		editorBot.button("Browse...").click();
+		dialogBot = bot.shell("Browse Properties").bot();
+		treeItem = StandardTestActions.waitForTreeItemToAppear(dialogBot, dialogBot.tree(), Arrays.asList("Workspace", "ReferenceComp", "children2"));
+		treeItem.select("l");
+		dialogBot.button("Finish").click();
+
+		editorBot.button("Browse...").click();
+		dialogBot = bot.shell("Browse Properties").bot();
+		treeItem = StandardTestActions.waitForTreeItemToAppear(dialogBot, dialogBot.tree(),
+			Arrays.asList("Workspace", "ReferenceComp", "children3", "children4"));
+		treeItem.select("n");
+		dialogBot.button("Finish").click();
+
+		bot.saveAllEditors();
+		try (
+			InputStream left = ResourcesPlugin.getWorkspace().getRoot().getProject("PropTest_Comp").getFile("PropTest_Comp.prf.xml").getContents();
+			InputStream right = getClass().getResourceAsStream("/testFiles/BrowseProperties_Workspace.prf.xml");
+			BufferedReader brLeft = new BufferedReader(new InputStreamReader(left));
+			BufferedReader brRight = new BufferedReader(new InputStreamReader(right))) {
+			// Begin at the properties tag
+			String leftLine = brLeft.readLine();
+			while (leftLine != null && !leftLine.contains("properties")) {
+				leftLine = brLeft.readLine();
+			}
+			String rightLine = brRight.readLine();
+			while (rightLine != null && !rightLine.contains("properties")) {
+				rightLine = brRight.readLine();
+			}
+
+			// Compare line by line
+			while (leftLine != null && rightLine != null) {
+				Assert.assertEquals(rightLine, leftLine);
+				leftLine = brLeft.readLine();
+				rightLine = brRight.readLine();
+			}
+			if (leftLine != rightLine) {
+				Assert.fail("Unexpected EOF");
+			}
+		}
+	}
 }

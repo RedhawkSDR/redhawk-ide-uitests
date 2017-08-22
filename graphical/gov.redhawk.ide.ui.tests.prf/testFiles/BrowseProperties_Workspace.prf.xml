@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="a" mode="readwrite" type="string">
+    <units>unita</units>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simplesequence id="b" mode="readwrite" type="boolean">
+    <units>unitb</units>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <struct id="c" mode="readwrite">
+    <simple id="d" type="double">
+      <units>unitd</units>
+    </simple>
+    <simplesequence id="e" type="float">
+      <units>unite</units>
+    </simplesequence>
+    <configurationkind kindtype="message"/>
+  </struct>
+  <structsequence id="f" mode="readwrite">
+    <struct id="g">
+      <description>desc g</description>
+      <simple id="h" type="long"/>
+      <simplesequence id="i" type="longlong"/>
+    </struct>
+    <configurationkind kindtype="property"/>
+  </structsequence>
+  <simple id="j" type="octet">
+    <description>desc j</description>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simplesequence id="k" type="short">
+    <description>desc k</description>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <struct id="l">
+    <simple id="m" type="ulong"/>
+    <configurationkind kindtype="property"/>
+  </struct>
+  <simple id="n" type="ulonglong">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+</properties>
