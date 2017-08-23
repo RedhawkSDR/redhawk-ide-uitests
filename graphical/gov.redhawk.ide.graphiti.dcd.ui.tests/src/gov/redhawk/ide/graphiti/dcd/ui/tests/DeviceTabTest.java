@@ -153,7 +153,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 			}
 		}
 
-		// Need to save no EMF error about elements with missing eResources occurs
+		// Need to save to make sure no EMF error about elements with missing eResources occurs
 		editor.save();
 		Assert.assertFalse(elementName + "was not removed from the SCA model", deviceFound);
 		Assert.assertNull(dcd.getComponentFiles());
