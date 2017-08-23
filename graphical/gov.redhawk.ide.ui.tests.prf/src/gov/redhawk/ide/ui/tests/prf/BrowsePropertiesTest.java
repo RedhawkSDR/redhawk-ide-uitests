@@ -130,4 +130,28 @@ public class BrowsePropertiesTest extends AbstractPropertyTabTest {
 			}
 		}
 	}
+
+	/**
+	 * IDE-1773 Test adding well-known properties.
+	 */
+	@Test
+	public void addWellKnown() {
+		final String CAT_DESC = "Well-known REDHAWK properties";
+		final String PROP_NAME = "LOGGING_CONFIG_URI";
+		final String PROP_DESC = "A URI that points to a log4j configuration file used for the device manager and all devices spawned by this device.";
+		final String PROP_TYPE = "string";
+
+		editorBot.button("Browse...").click();
+		SWTBot dialogBot = bot.shell("Browse Properties").bot();
+		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(dialogBot, dialogBot.tree(), Arrays.asList("Well-known properties", "REDHAWK"));
+		treeItem.select();
+		Assert.assertEquals(CAT_DESC, dialogBot.textWithLabel("Description:").getText());
+		treeItem.select(PROP_NAME);
+		Assert.assertEquals(PROP_DESC, dialogBot.textWithLabel("Description:").getText());
+		dialogBot.button("Finish").click();
+
+		assertFormValid();
+		editor.bot().tree().getTreeItem(PROP_NAME).select();
+		Assert.assertEquals(PROP_TYPE, bot.comboBoxWithLabel("Type*:").getText());
+	}
 }
