@@ -122,8 +122,10 @@ public class WaveformComponentsTabTest extends AbstractWaveformTabTest {
 			editorBot.tree().select(componentId);
 			final SadComponentInstantiation ci = sad.getComponentInstantiation(componentId);
 
-			// Sanity check to make sure that the box is unchecked is no logging config element exists
+			// Sanity check to make sure that the box is unchecked and no logging config element exists
 			Assert.assertFalse(editorBot.checkBoxWithLabel("Logging Configuration:").isChecked());
+			Assert.assertFalse(editorBot.comboBoxWithLabel("Log Level:").isEnabled());
+			Assert.assertFalse(editorBot.textWithLabel("Logging URI:").isEnabled());
 			Assert.assertNull(ci.getLoggingConfig());
 
 			// Enable logging config and check that the model element is created
