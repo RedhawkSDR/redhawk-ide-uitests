@@ -30,7 +30,6 @@ import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.NodeUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.dcd.DcdComponentPlacement;
 import mil.jpeojtrs.sca.dcd.DcdPackage;
@@ -60,11 +59,10 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		NodeUtils.createNewNodeProject(gefBot, PROJECT_NAME, DOMAIN_NAME);
 		editor = gefBot.rhGefEditor(PROJECT_NAME);
 		editorBot = editor.bot();
-		
+
 		editorBot.cTabItem("DeviceManager.dcd.xml").activate();
 		dcd = getDeviceConfiguration(editor);
 	}
-	
 
 	/**
 	 * IDE-1504 - Make sure removing a device also removes the component file, if it is no longer needed
@@ -102,39 +100,51 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		}
 		Assert.assertFalse("Component file for " + GPP + " was not removed", componentFileFound);
 	}
-	
+
 	/**
 	 * IDE-1505 - Test adding and removing a device via the Device tab
 	 * @throws IOException
 	 */
 	@Test
 	public void addRemoveDevice() throws IOException {
+		addRemoveTest(GPP, 0);
+	}
 
+	/**
+	 * IDE-1503 Support adding services in the node editor
+	 * @throws IOException
+	 */
+	@Test
+	public void addRemoveService() throws IOException {
+		addRemoveTest(SERVICE, 1);
+	}
+
+	private void addRemoveTest(String elementName, int tableIndex) throws IOException {
 		// Test adding a device
-		SWTBotTreeItem treeItem = addElement(GPP, 0);
+		SWTBotTreeItem treeItem = addElement(elementName, tableIndex);
 		boolean deviceFound = false;
 		dcd = getDeviceConfiguration(editor);
 		String nodeName = dcd.getName();
-		String deviceId = nodeName + ":" + GPP + "_1";
+		String deviceId = nodeName + ":" + elementName + "_1";
 		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
 			String ciId = placement.getComponentInstantiation().get(0).getId();
 			if (deviceId.equals(ciId)) {
 				deviceFound = true;
 			}
 		}
-		Assert.assertTrue(GPP + "was not added to the SCA model", deviceFound);
+		Assert.assertTrue(elementName + "was not added to the SCA model", deviceFound);
 		Assert.assertNotNull(dcd.getComponentFiles());
 
 		// Make sure device also appears in the diagram
 		editorBot.cTabItem("Diagram").activate();
-		Assert.assertNotNull(GPP + " was not added to the diagram", editor.getEditPart(GPP + "_1"));
+		Assert.assertNotNull(elementName + " was not added to the diagram", editor.getEditPart(elementName + "_1"));
 
 		// Test removing a device
-		editorBot.cTabItem("Devices").activate();
+		editorBot.cTabItem("Devices / Services").activate();
 		treeItem.select();
 		editorBot.button("Remove").click();
 		deviceFound = false;
-		waitForTreeItemToBeRemoved(GPP + "_1");
+		waitForTreeItemToBeRemoved(elementName + "_1");
 		dcd = getDeviceConfiguration(editor);
 		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
 			String ciId = placement.getComponentInstantiation().get(0).getId();
@@ -145,20 +155,12 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 
 		// Need to save no EMF error about elements with missing eResources occurs
 		editor.save();
-		Assert.assertFalse(GPP + "was not removed from the SCA model", deviceFound);
+		Assert.assertFalse(elementName + "was not removed from the SCA model", deviceFound);
 		Assert.assertNull(dcd.getComponentFiles());
 
 		// Make sure device was also removed from the Diagram
 		editorBot.cTabItem("Diagram").activate();
-		Assert.assertNull(GPP + " was not removed from the diagram", editor.getEditPart(GPP + "_1"));
-	}
-	
-	/**
-	 * IDE-1503 Support adding services in the node editor
-	 */
-	@Test
-	public void addRemoveService() {
-		addElement(SERVICE, 1);
+		Assert.assertNull(elementName + " was not removed from the diagram", editor.getEditPart(elementName + "_1"));
 	}
 
 	/**
@@ -222,7 +224,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 
 		final String newName = "A_New_Name";
 		nameText.selectAll();
-		nameText.typeText(newName);
+		nameText.setText(newName);
 		Assert.assertEquals("Usage name is incorrect in text field", newName, nameText.getText());
 
 		// Tree waits briefly before updating, so as not to update on every key stroke
@@ -251,7 +253,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		SWTBotTree tree = editorBot.tree(0);
 		return tree.getTreeItem(elementName + "_1");
 	}
-	
+
 	private void waitForTreeItemToBeRemoved(final String elementId) {
 		editorBot.waitUntil(new DefaultCondition() {
 
