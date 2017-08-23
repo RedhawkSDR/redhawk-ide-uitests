@@ -28,11 +28,14 @@ import org.osgi.framework.FrameworkUtil;
 
 import gov.redhawk.ide.swtbot.StandardTestActions;
 
-public class ImportPropertyTest extends AbstractPropertyTabTest {
+/**
+ * Tests for using the "Browse..." button on the "Properties" page of the SPD/PRF editors.
+ */
+public class BrowsePropertiesTest extends AbstractPropertyTabTest {
 
 	@Test
-	public void testAddPropertyFromBrowse() {
-		editorBot.button("Browse...").click();
+	public void addFromTargetSdr() {
+		bot.button("Browse...").click();
 		SWTBot dialogBot = bot.shell("Browse Properties").bot();
 
 		dialogBot.text().setText("frequency");
@@ -46,8 +49,8 @@ public class ImportPropertyTest extends AbstractPropertyTabTest {
 	}
 
 	@Test
-	public void testBug1295_BrowseWizardValidation() {
-		editorBot.button("Browse...").click();
+	public void validation() {
+		bot.button("Browse...").click();
 		SWTBot dialogBot = bot.shell("Browse Properties").bot();
 
 		List<String> path = Arrays.asList("Target SDR", "Components", "rh.SigGen", "frequency");

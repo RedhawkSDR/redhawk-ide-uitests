@@ -10,6 +10,11 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.dcd.ui.tests;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -27,6 +32,11 @@ import gov.redhawk.ide.swtbot.NodeUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import mil.jpeojtrs.sca.dcd.DcdComponentPlacement;
+import mil.jpeojtrs.sca.dcd.DcdPackage;
+import mil.jpeojtrs.sca.dcd.DeviceConfiguration;
+import mil.jpeojtrs.sca.partitioning.ComponentFile;
+import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class DeviceTabTest extends AbstractGraphitiTest {
 
@@ -39,6 +49,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 
 	private RHBotGefEditor editor;
 	private SWTBot editorBot;
+	private DeviceConfiguration dcd;
 
 	@Override
 	@Before
@@ -49,14 +60,113 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		NodeUtils.createNewNodeProject(gefBot, PROJECT_NAME, DOMAIN_NAME);
 		editor = gefBot.rhGefEditor(PROJECT_NAME);
 		editorBot = editor.bot();
+		
+		editorBot.cTabItem("DeviceManager.dcd.xml").activate();
+		dcd = getDeviceConfiguration(editor);
+	}
+	
+
+	/**
+	 * IDE-1504 - Make sure removing a device also removes the component file, if it is no longer needed
+	 * @throws IOException
+	 */
+	@Test
+	public void removeComponentFile() throws IOException {
+		addElement(GPP, 0);
+		addElement("DeviceStub", 0);
+
+		// Assert that componentFile elements were created for each device
+		String[] deviceNames = { GPP, "DeviceStub" };
+		dcd = getDeviceConfiguration(editor);
+		for (String deviceName : deviceNames) {
+			boolean componentFileFound = false;
+			for (ComponentFile file : dcd.getComponentFiles().getComponentFile()) {
+				if (file.getId().matches(deviceName + ".*")) {
+					componentFileFound = true;
+					break;
+				}
+			}
+			Assert.assertTrue("Component file for " + deviceName + " was not created", componentFileFound);
+		}
+
+		// Assert that the componentFile element for GPP was removed
+		editorBot.tree(0).getTreeItem(GPP + "_1").select();
+		editorBot.button("Remove").click();
+		waitForTreeItemToBeRemoved(GPP + "_1");
+		dcd = getDeviceConfiguration(editor);
+		boolean componentFileFound = false;
+		for (ComponentFile file : dcd.getComponentFiles().getComponentFile()) {
+			if (file.getId().matches(GPP + ".*")) {
+				componentFileFound = true;
+			}
+		}
+		Assert.assertFalse("Component file for " + GPP + " was not removed", componentFileFound);
+	}
+	
+	/**
+	 * IDE-1505 - Test adding and removing a device via the Device tab
+	 * @throws IOException
+	 */
+	@Test
+	public void addRemoveDevice() throws IOException {
+
+		// Test adding a device
+		SWTBotTreeItem treeItem = addElement(GPP, 0);
+		boolean deviceFound = false;
+		dcd = getDeviceConfiguration(editor);
+		String nodeName = dcd.getName();
+		String deviceId = nodeName + ":" + GPP + "_1";
+		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
+			String ciId = placement.getComponentInstantiation().get(0).getId();
+			if (deviceId.equals(ciId)) {
+				deviceFound = true;
+			}
+		}
+		Assert.assertTrue(GPP + "was not added to the SCA model", deviceFound);
+		Assert.assertNotNull(dcd.getComponentFiles());
+
+		// Make sure device also appears in the diagram
+		editorBot.cTabItem("Diagram").activate();
+		Assert.assertNotNull(GPP + " was not added to the diagram", editor.getEditPart(GPP + "_1"));
+
+		// Test removing a device
+		editorBot.cTabItem("Devices").activate();
+		treeItem.select();
+		editorBot.button("Remove").click();
+		deviceFound = false;
+		waitForTreeItemToBeRemoved(GPP + "_1");
+		dcd = getDeviceConfiguration(editor);
+		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
+			String ciId = placement.getComponentInstantiation().get(0).getId();
+			if (deviceId.equals(ciId)) {
+				deviceFound = true;
+			}
+		}
+
+		// Need to save no EMF error about elements with missing eResources occurs
+		editor.save();
+		Assert.assertFalse(GPP + "was not removed from the SCA model", deviceFound);
+		Assert.assertNull(dcd.getComponentFiles());
+
+		// Make sure device was also removed from the Diagram
+		editorBot.cTabItem("Diagram").activate();
+		Assert.assertNull(GPP + " was not removed from the diagram", editor.getEditPart(GPP + "_1"));
+	}
+	
+	/**
+	 * IDE-1503 Support adding services in the node editor
+	 */
+	@Test
+	public void addRemoveService() {
+		addElement(SERVICE, 1);
 	}
 
 	/**
-	 * Test form details section for devices in the device tab
+	 * IDE-2056 - Test form details section for devices in the device tab
 	 */
 	@Test
 	public void deviceDetailsSection() {
-		final SWTBotTreeItem treeItem = addElement(GPP);
+		final SWTBotTreeItem treeItem = addElement(GPP, 0);
 		testUsageName(treeItem, GPP);
 
 		// TODO: Test parent field
@@ -71,7 +181,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void serviceDetailsSection() {
-		final SWTBotTreeItem treeItem = addElement(SERVICE);
+		final SWTBotTreeItem treeItem = addElement(SERVICE, 1);
 		testUsageName(treeItem, SERVICE);
 
 		try {
@@ -92,7 +202,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void portSupplierServiceDetailsSection() {
-		final SWTBotTreeItem treeItem = addElement(PORT_SUP_SERVICE);
+		final SWTBotTreeItem treeItem = addElement(PORT_SUP_SERVICE, 1);
 		testUsageName(treeItem, PORT_SUP_SERVICE);
 
 		try {
@@ -103,44 +213,6 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 
 		// TODO: Test properties tree
 		SWTBotTree tree = bot.treeInGroup("Properties");
-	}
-
-	/**
-	 * Support adding devices in the node editor
-	 */
-	@Test
-	public void addDeviceToExistingNode() {
-		addDialogTest(GPP, 0);
-	}
-
-	/**
-	 * IDE-1503 Support adding services in the node editor
-	 */
-	@Test
-	public void addServiceToExistingNode() {
-		addDialogTest(SERVICE, 1);
-	}
-
-	private void addDialogTest(String elementName, int treeIndex) {
-		editorBot.cTabItem("Devices / Services").activate();
-		editorBot.button("Add...").click();
-		bot.waitUntil(Conditions.shellIsActive("Add Devices / Services Wizard"));
-		SWTBotShell shell = bot.shell("Add Devices / Services Wizard");
-		shell.bot().tree(treeIndex).getTreeItem(elementName).click();
-		shell.bot().button("Finish").click();
-
-		SWTBotTree tree = editorBot.tree(0);
-		Assert.assertNotNull(elementName + " was not added to the node ", tree.getTreeItem(elementName + "_1"));
-	}
-
-	private SWTBotTreeItem addElement(String elementName) {
-		// Add the element to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, elementName, 0, 0);
-
-		// Confirm element is present in the devices table
-		editorBot.cTabItem("Devices / Services").activate();
-		SWTBotTree tree = editorBot.tree(0);
-		return tree.getTreeItem(elementName + "_1");
 	}
 
 	// Edit usage name and test that the table entry updates accordingly
@@ -166,5 +238,49 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 				return "Usage name is incorrect in devices table";
 			}
 		});
+	}
+
+	private SWTBotTreeItem addElement(String elementName, int treeIndex) {
+		editorBot.cTabItem("Devices / Services").activate();
+		editorBot.button("Add...").click();
+		bot.waitUntil(Conditions.shellIsActive("Add Devices / Services Wizard"));
+		SWTBotShell shell = bot.shell("Add Devices / Services Wizard");
+		shell.bot().tree(treeIndex).getTreeItem(elementName).click();
+		shell.bot().button("Finish").click();
+
+		SWTBotTree tree = editorBot.tree(0);
+		return tree.getTreeItem(elementName + "_1");
+	}
+	
+	private void waitForTreeItemToBeRemoved(final String elementId) {
+		editorBot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				SWTBotTreeItem treeItem;
+				try {
+					treeItem = editorBot.tree(0).getTreeItem(elementId);
+				} catch (WidgetNotFoundException e) {
+					return true;
+				}
+				if (treeItem == null) {
+					return true;
+				}
+				return false;
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return elementId + " was not removed from 'All Devices' tree";
+			}
+		});
+	}
+
+	private DeviceConfiguration getDeviceConfiguration(RHBotGefEditor editor) throws IOException {
+		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
+		String editorText = editor.toTextEditor().getText();
+		Resource resource = resourceSet.createResource(org.eclipse.emf.common.util.URI.createURI("mem://temp.dcd.xml"), DcdPackage.eCONTENT_TYPE);
+		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
+		return DeviceConfiguration.Util.getDeviceConfiguration(resource);
 	}
 }
