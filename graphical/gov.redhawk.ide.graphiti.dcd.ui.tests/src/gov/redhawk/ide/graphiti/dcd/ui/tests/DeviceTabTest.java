@@ -49,6 +49,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	private static final String GPP = "GPP";
 	private static final String SERVICE = "ServiceNoPorts";
 	private static final String PORT_SUP_SERVICE = "PortSupplierService";
+	private static final String SERVICE_W_PROPS = "AllPropertyTypesService";
 
 	private RHBotGefEditor editor;
 	private SWTBot editorBot;
@@ -247,11 +248,11 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 
 	/**
 	 * IDE-1502 - Test form details section for services in the device tab
+	 * Also, test to make sure the parent combo and properties section do not display
 	 */
 	@Test
-	public void serviceDetailsSection() {
-		final SWTBotTreeItem treeItem = addElement(SERVICE, 1);
-		testUsageName(treeItem, SERVICE);
+	public void serviceUsageName() {
+		testUsageName(SERVICE, 0);
 
 		try {
 			bot.comboBoxWithLabel("Parent:");
@@ -268,20 +269,17 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 
 	/**
 	 * IDE-1502 - Test form details section for services in the device tab that inherit PortSupplier
+	 * Also, test to make sure the parent combo does not display
 	 */
 	@Test
-	public void portSupplierServiceDetailsSection() {
-		final SWTBotTreeItem treeItem = addElement(PORT_SUP_SERVICE, 1);
-		testUsageName(treeItem, PORT_SUP_SERVICE);
+	public void portSupplierUsageName() {
+		testUsageName(PORT_SUP_SERVICE, 0);
 
 		try {
 			bot.comboBoxWithLabel("Parent:");
 		} catch (WidgetNotFoundException e) {
 			// PASS - Services sections should not have a parent view
 		}
-
-		// TODO: Test properties tree
-		SWTBotTree tree = bot.treeInGroup("Properties");
 	}
 
 	// Edit usage name and test that the table entry updates accordingly
@@ -315,6 +313,11 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	@Test
 	public void devicePropertiesTable() throws IOException {
 		testPropertiesSection(GPP, 0, "threshold_cycle_time", "1000");
+	}
+
+	@Test
+	public void servicePropertiesTable() throws IOException {
+		testPropertiesSection(SERVICE_W_PROPS, 1, "simpleString", "HelloWorld");
 	}
 
 	private void testPropertiesSection(String elementName, int treeIndex, String propertyKey, final String newPropValue) throws IOException {
