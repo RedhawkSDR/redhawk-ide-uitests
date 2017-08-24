@@ -18,6 +18,8 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
@@ -29,11 +31,14 @@ import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.NodeUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
 import mil.jpeojtrs.sca.dcd.DcdComponentPlacement;
 import mil.jpeojtrs.sca.dcd.DcdPackage;
 import mil.jpeojtrs.sca.dcd.DeviceConfiguration;
 import mil.jpeojtrs.sca.partitioning.ComponentFile;
+import mil.jpeojtrs.sca.prf.SimpleRef;
 import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class DeviceTabTest extends AbstractGraphitiTest {
@@ -149,18 +154,6 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	}
 
 	/**
-	 * IDE-2056 - Test form details section for devices in the device tab
-	 */
-	@Test
-	public void deviceDetailsSection() {
-		final SWTBotTreeItem treeItem = addElement(GPP, 0);
-		testUsageName(treeItem, GPP);
-
-		// TODO: Test properties tree
-		SWTBotTree tree = bot.treeInGroup("Properties");
-	}
-
-	/**
 	 * IDE-2056, IDE-2065 - Test parent combo in devices tab
 	 * @throws IOException
 	 */
@@ -230,8 +223,19 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		}
 	}
 
+	/**
+	 * IDE-2056 - Test form details section for devices in the device tab
+	 */
+	@Test
+	public void deviceUsageName() {
+		testUsageName(GPP, 0);
+	}
+
 	// Edit usage name and test that the table entry updates accordingly
-	private void testUsageName(final SWTBotTreeItem treeItem, final String elementName) {
+	private void testUsageName(String elementName, int treeIndex) {
+		final SWTBotTreeItem treeItem = addElement(elementName, treeIndex);
+		treeItem.select();
+
 		SWTBotText nameText = editorBot.textWithLabel("Name:");
 		Assert.assertEquals("Usage name is incorrect in text field", elementName + "_1", nameText.getText());
 
@@ -255,6 +259,49 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		});
 	}
 
+	@Test
+	public void devicePropertiesTable() throws IOException {
+		testPropertiesSection(GPP, 0, "threshold_cycle_time", "1000");
+	}
+
+	private void testPropertiesSection(String elementName, int treeIndex, String propertyKey, final String newPropValue) throws IOException {
+		DiagramTestUtils.maximizeActiveWindow(gefBot);
+		SWTBotTreeItem treeItem = addElement(elementName, treeIndex);
+		treeItem.select();
+		final SWTBotTree propTree = bot.treeInGroup("Properties");
+		Assert.assertNotNull(propTree);
+		final SWTBotTreeItem propTreeItem = propTree.getTreeItem(propertyKey);
+		propTreeItem.select();
+		bot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				propTreeItem.click(1);
+				new SWTBot(propTree.widget).text().typeText(newPropValue);
+				KeyboardFactory.getSWTKeyboard().pressShortcut(Keystrokes.CR);
+				return true;
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Property table failed to gain focus";
+			}
+		}, 15000);
+		dcd = getDeviceConfiguration(editor);
+		DcdComponentInstantiation compInst = dcd.getPartitioning().getComponentPlacement().get(0).getComponentInstantiation().get(0);
+		Assert.assertNotNull(compInst.getComponentProperties());
+		SimpleRef prop = compInst.getComponentProperties().getSimpleRef().get(0);
+		Assert.assertEquals(propertyKey, prop.getRefID());
+		Assert.assertEquals(newPropValue, prop.getValue());
+	}
+
+	/**
+	 * Uses the add wizard to add either a service or device to the device configuration
+	 * @param elementName
+	 * @param treeIndex - 0 if a device, 1 if a service
+	 * @return returns a treeItem matching "<elementName>_1". NOTE: assumes "_1", so if you added multiple items of the
+	 * same type, you will need to get all other iterants manually
+	 */
 	private SWTBotTreeItem addElement(String elementName, int treeIndex) {
 		// Confirm element is present in the devices table
 		editorBot.cTabItem("Devices").activate();
