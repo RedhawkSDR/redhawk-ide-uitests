@@ -18,8 +18,9 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
+import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
@@ -30,11 +31,14 @@ import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.NodeUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
 import mil.jpeojtrs.sca.dcd.DcdComponentPlacement;
 import mil.jpeojtrs.sca.dcd.DcdPackage;
 import mil.jpeojtrs.sca.dcd.DeviceConfiguration;
 import mil.jpeojtrs.sca.partitioning.ComponentFile;
+import mil.jpeojtrs.sca.prf.SimpleRef;
 import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class DeviceTabTest extends AbstractGraphitiTest {
@@ -164,18 +168,81 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	}
 
 	/**
+	 * IDE-2056, IDE-2065 - Test parent combo in devices tab
+	 * @throws IOException
+	 */
+	@Test
+	public void parentCombo() throws IOException {
+		final String AGR_DEVICE = "AggregateDevice";
+
+		// Add devices
+		SWTBotTreeItem agrTreeItem = addElement(AGR_DEVICE, 0);
+		SWTBotTreeItem gppTreeItem = addElement(GPP, 0);
+
+		// Set the parent
+		gppTreeItem.select();
+		bot.comboBoxWithLabel("Parent:").setSelection(0);
+
+		// Assert that the parent is set in the editor and in the SCA model
+		agrTreeItem = editorBot.tree(0).getTreeItem(AGR_DEVICE + "_1");
+		Assert.assertNotNull(agrTreeItem.expand().getNode(GPP + "_1"));
+		dcd = getDeviceConfiguration(editor);
+		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
+			if (placement.getComponentInstantiation().get(0).getId().matches(".*" + GPP + ".*")) {
+				Assert.assertNotNull(placement.getCompositePartOfDevice());
+				Assert.assertTrue(placement.getCompositePartOfDevice().getRefID().matches(".*" + AGR_DEVICE + ".*"));
+			}
+		}
+
+		// Unset the parent
+		agrTreeItem.expand().getNode(GPP + "_1").select();
+		bot.button("Unset").click();
+
+		// Assert that the GPP device is no longer a composite part of the Aggregate Device
+		agrTreeItem = editorBot.tree(0).getTreeItem(AGR_DEVICE + "_1");
+		Assert.assertEquals(agrTreeItem.getItems().length, 0);
+		dcd = getDeviceConfiguration(editor);
+		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
+			if (placement.getComponentInstantiation().get(0).getId().matches(".*" + GPP + ".*")) {
+				Assert.assertNull(placement.getCompositePartOfDevice());
+			}
+		}
+
+		// Reset the parent
+		editorBot.tree(0).getTreeItem(GPP + "_1").select();
+		bot.comboBoxWithLabel("Parent:").setSelection(0);
+
+		// Run assertions
+		agrTreeItem = editorBot.tree(0).getTreeItem(AGR_DEVICE + "_1");
+		Assert.assertNotNull(agrTreeItem.expand().getNode(GPP + "_1"));
+		dcd = getDeviceConfiguration(editor);
+		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
+			if (placement.getComponentInstantiation().get(0).getId().matches(".*" + GPP + ".*")) {
+				Assert.assertNotNull(placement.getCompositePartOfDevice());
+				Assert.assertTrue(placement.getCompositePartOfDevice().getRefID().matches(".*" + AGR_DEVICE + ".*"));
+			}
+		}
+
+		// Delete parent
+		agrTreeItem = editorBot.tree(0).getTreeItem(AGR_DEVICE + "_1").select();
+		editorBot.button("Remove").click();
+
+		// Assert that the GPP device is no longer a composite part of the Aggregate Device
+		waitForTreeItemToBeRemoved(AGR_DEVICE + "_1");
+		dcd = getDeviceConfiguration(editor);
+		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
+			if (placement.getComponentInstantiation().get(0).getId().matches(".*" + GPP + ".*")) {
+				Assert.assertNull(placement.getCompositePartOfDevice());
+			}
+		}
+	}
+
+	/**
 	 * IDE-2056 - Test form details section for devices in the device tab
 	 */
 	@Test
-	public void deviceDetailsSection() {
-		final SWTBotTreeItem treeItem = addElement(GPP, 0);
-		testUsageName(treeItem, GPP);
-
-		// TODO: Test parent field
-		SWTBotCombo parentCombo = bot.comboBoxWithLabel("Parent:");
-
-		// TODO: Test properties tree
-		SWTBotTree tree = bot.treeInGroup("Properties");
+	public void deviceUsageName() {
+		testUsageName(GPP, 0);
 	}
 
 	/**
@@ -218,7 +285,10 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	}
 
 	// Edit usage name and test that the table entry updates accordingly
-	private void testUsageName(final SWTBotTreeItem treeItem, final String elementName) {
+	private void testUsageName(String elementName, int treeIndex) {
+		final SWTBotTreeItem treeItem = addElement(elementName, treeIndex);
+		treeItem.select();
+
 		SWTBotText nameText = editorBot.textWithLabel("Name:");
 		Assert.assertEquals("Usage name is incorrect in text field", elementName + "_1", nameText.getText());
 
@@ -242,6 +312,49 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		});
 	}
 
+	@Test
+	public void devicePropertiesTable() throws IOException {
+		testPropertiesSection(GPP, 0, "threshold_cycle_time", "1000");
+	}
+
+	private void testPropertiesSection(String elementName, int treeIndex, String propertyKey, final String newPropValue) throws IOException {
+		DiagramTestUtils.maximizeActiveWindow(gefBot);
+		SWTBotTreeItem treeItem = addElement(elementName, treeIndex);
+		treeItem.select();
+		final SWTBotTree propTree = bot.treeInGroup("Properties");
+		Assert.assertNotNull(propTree);
+		final SWTBotTreeItem propTreeItem = propTree.getTreeItem(propertyKey);
+		propTreeItem.select();
+		bot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				propTreeItem.click(1);
+				new SWTBot(propTree.widget).text().typeText(newPropValue);
+				KeyboardFactory.getSWTKeyboard().pressShortcut(Keystrokes.CR);
+				return true;
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Property table failed to gain focus";
+			}
+		}, 15000);
+		dcd = getDeviceConfiguration(editor);
+		DcdComponentInstantiation compInst = dcd.getPartitioning().getComponentPlacement().get(0).getComponentInstantiation().get(0);
+		Assert.assertNotNull(compInst.getComponentProperties());
+		SimpleRef prop = compInst.getComponentProperties().getSimpleRef().get(0);
+		Assert.assertEquals(propertyKey, prop.getRefID());
+		Assert.assertEquals(newPropValue, prop.getValue());
+	}
+
+	/**
+	 * Uses the add wizard to add either a service or device to the device configuration
+	 * @param elementName
+	 * @param treeIndex - 0 if a device, 1 if a service
+	 * @return returns a treeItem matching "<elementName>_1". NOTE: assumes "_1", so if you added multiple items of the
+	 * same type, you will need to get all other iterants manually
+	 */
 	private SWTBotTreeItem addElement(String elementName, int treeIndex) {
 		editorBot.cTabItem("Devices / Services").activate();
 		editorBot.button("Add...").click();
