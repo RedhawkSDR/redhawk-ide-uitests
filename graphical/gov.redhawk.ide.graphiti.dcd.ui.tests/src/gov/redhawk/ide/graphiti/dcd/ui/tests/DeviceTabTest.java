@@ -19,7 +19,6 @@ import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
@@ -157,11 +156,78 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		final SWTBotTreeItem treeItem = addElement(GPP, 0);
 		testUsageName(treeItem, GPP);
 
-		// TODO: Test parent field
-		SWTBotCombo parentCombo = bot.comboBoxWithLabel("Parent:");
-
 		// TODO: Test properties tree
 		SWTBotTree tree = bot.treeInGroup("Properties");
+	}
+
+	/**
+	 * IDE-2056, IDE-2065 - Test parent combo in devices tab
+	 * @throws IOException
+	 */
+	@Test
+	public void parentCombo() throws IOException {
+		final String AGR_DEVICE = "AggregateDevice";
+
+		// Add devices
+		SWTBotTreeItem agrTreeItem = addElement(AGR_DEVICE, 0);
+		SWTBotTreeItem gppTreeItem = addElement(GPP, 0);
+
+		// Set the parent
+		gppTreeItem.select();
+		bot.comboBoxWithLabel("Parent:").setSelection(0);
+
+		// Assert that the parent is set in the editor and in the SCA model
+		agrTreeItem = editorBot.tree(0).getTreeItem(AGR_DEVICE + "_1");
+		Assert.assertNotNull(agrTreeItem.expand().getNode(GPP + "_1"));
+		dcd = getDeviceConfiguration(editor);
+		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
+			if (placement.getComponentInstantiation().get(0).getId().matches(".*" + GPP + ".*")) {
+				Assert.assertNotNull(placement.getCompositePartOfDevice());
+				Assert.assertTrue(placement.getCompositePartOfDevice().getRefID().matches(".*" + AGR_DEVICE + ".*"));
+			}
+		}
+
+		// Unset the parent
+		agrTreeItem.expand().getNode(GPP + "_1").select();
+		bot.button("Unset").click();
+
+		// Assert that the GPP device is no longer a composite part of the Aggregate Device
+		agrTreeItem = editorBot.tree(0).getTreeItem(AGR_DEVICE + "_1");
+		Assert.assertEquals(agrTreeItem.getItems().length, 0);
+		dcd = getDeviceConfiguration(editor);
+		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
+			if (placement.getComponentInstantiation().get(0).getId().matches(".*" + GPP + ".*")) {
+				Assert.assertNull(placement.getCompositePartOfDevice());
+			}
+		}
+
+		// Reset the parent
+		editorBot.tree(0).getTreeItem(GPP + "_1").select();
+		bot.comboBoxWithLabel("Parent:").setSelection(0);
+
+		// Run assertions
+		agrTreeItem = editorBot.tree(0).getTreeItem(AGR_DEVICE + "_1");
+		Assert.assertNotNull(agrTreeItem.expand().getNode(GPP + "_1"));
+		dcd = getDeviceConfiguration(editor);
+		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
+			if (placement.getComponentInstantiation().get(0).getId().matches(".*" + GPP + ".*")) {
+				Assert.assertNotNull(placement.getCompositePartOfDevice());
+				Assert.assertTrue(placement.getCompositePartOfDevice().getRefID().matches(".*" + AGR_DEVICE + ".*"));
+			}
+		}
+
+		// Delete parent
+		agrTreeItem = editorBot.tree(0).getTreeItem(AGR_DEVICE + "_1").select();
+		editorBot.button("Remove").click();
+
+		// Assert that the GPP device is no longer a composite part of the Aggregate Device
+		waitForTreeItemToBeRemoved(AGR_DEVICE + "_1");
+		dcd = getDeviceConfiguration(editor);
+		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
+			if (placement.getComponentInstantiation().get(0).getId().matches(".*" + GPP + ".*")) {
+				Assert.assertNull(placement.getCompositePartOfDevice());
+			}
+		}
 	}
 
 	// Edit usage name and test that the table entry updates accordingly
