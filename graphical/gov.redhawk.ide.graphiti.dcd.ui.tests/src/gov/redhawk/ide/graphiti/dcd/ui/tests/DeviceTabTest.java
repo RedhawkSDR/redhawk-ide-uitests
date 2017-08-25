@@ -13,8 +13,10 @@ package gov.redhawk.ide.graphiti.dcd.ui.tests;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -25,11 +27,13 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.NodeUtils;
+import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -323,29 +327,19 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		testPropertiesSection(SERVICE_W_PROPS, 1, "simpleString", "HelloWorld");
 	}
 
-	private void testPropertiesSection(String elementName, int treeIndex, String propertyKey, final String newPropValue) throws IOException {
+	private void testPropertiesSection(String elementName, int treeIndex, final String propertyKey, final String newPropValue) throws IOException {
 		DiagramTestUtils.maximizeActiveWindow(gefBot);
-		SWTBotTreeItem treeItem = addElement(elementName, treeIndex);
-		treeItem.select();
-		final SWTBotTree propTree = bot.treeInGroup("Properties");
+		addElement(elementName, treeIndex);
+		addElement(elementName, treeIndex);
+		editorBot.tree(0).select(0);
+		final SWTBotTree propTree = editorBot.tree(1);
 		Assert.assertNotNull(propTree);
 		final SWTBotTreeItem propTreeItem = propTree.getTreeItem(propertyKey);
 		propTreeItem.select();
-		bot.waitUntil(new DefaultCondition() {
-
-			@Override
-			public boolean test() throws Exception {
-				propTreeItem.click(1);
-				new SWTBot(propTree.widget).text().typeText(newPropValue);
-				KeyboardFactory.getSWTKeyboard().pressShortcut(Keystrokes.CR);
-				return true;
-			}
-
-			@Override
-			public String getFailureMessage() {
-				return "Property table failed to gain focus";
-			}
-		}, 15000);
+		propTreeItem.click(1);
+		bot.sleep(500);
+		new SWTBot(propTree.widget).text().typeText(newPropValue);
+		KeyboardFactory.getSWTKeyboard().pressShortcut(Keystrokes.CR);
 		dcd = getDeviceConfiguration(editor);
 		DcdComponentInstantiation compInst = dcd.getPartitioning().getComponentPlacement().get(0).getComponentInstantiation().get(0);
 		Assert.assertNotNull(compInst.getComponentProperties());
@@ -395,6 +389,13 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 				return elementId + " was not removed from 'All Devices' tree";
 			}
 		});
+	}
+
+	@After
+	@Override
+	public void after() throws CoreException {
+		super.after();
+		StandardTestActions.cleanup(new SWTWorkbenchBot());
 	}
 
 	private DeviceConfiguration getDeviceConfiguration(RHBotGefEditor editor) throws IOException {
