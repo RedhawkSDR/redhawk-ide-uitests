@@ -252,16 +252,18 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void serviceUsageName() {
-		testUsageName(SERVICE, 0);
+		testUsageName(SERVICE, 1);
 
 		try {
 			bot.comboBoxWithLabel("Parent:");
+			Assert.fail("Service details pane should not have a parent combo box");
 		} catch (WidgetNotFoundException e) {
 			// PASS - Services sections should not have a parent view
 		}
 
 		try {
 			bot.treeInGroup("Properties");
+			Assert.fail("Service details pane should not have a properties table");
 		} catch (WidgetNotFoundException e) {
 			// PASS - Services sections that do not inherit PortSupplier should not have a properties tree
 		}
@@ -273,10 +275,11 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void portSupplierUsageName() {
-		testUsageName(PORT_SUP_SERVICE, 0);
+		testUsageName(PORT_SUP_SERVICE, 1);
 
 		try {
 			bot.comboBoxWithLabel("Parent:");
+			Assert.fail("Service details pane should not have a parent combo box");
 		} catch (WidgetNotFoundException e) {
 			// PASS - Services sections should not have a parent view
 		}
