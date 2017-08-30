@@ -18,7 +18,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.junit.After;
@@ -32,6 +34,7 @@ import gov.redhawk.ide.sdr.nodebooter.DomainManagerLauncherUtil;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.condition.WaitForWidgetEnablement;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 /**
@@ -110,6 +113,48 @@ public class ConnectToDomainWizardTest extends UIRuntimeTest {
 			String domainName = String.format(DOMAIN_NAME_FORMAT, i);
 			ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
 		}
+	}
+
+	/**
+	 * IDE-1778 Test validation in the wizard.
+	 */
+	@Test
+	public void validation() {
+		explorerView.toolbarPushButton("New Domain Connection").click();
+		SWTBotShell shell = bot.shell("New Domain Manager");
+
+		SWTBotText displayName = shell.bot().textWithLabel("Display Name:");
+		SWTBotText domainName = shell.bot().textWithLabel("Domain Name:");
+		SWTBotText nameService = shell.bot().textWithLabel("Name Service:");
+		SWTBotButton finish = shell.bot().button("Finish");
+
+		// We start out disabled (no display name / domain name yet)
+		Assert.assertFalse(finish.isEnabled());
+
+		// Set display name -> sets domain name. Everything should be ok.
+		displayName.setText("abc");
+		shell.bot().waitUntil(Conditions.widgetIsEnabled(finish));
+
+		// Clear the domain name
+		String oldText = domainName.getText();
+		domainName.setText("");
+		shell.bot().waitUntil(new WaitForWidgetEnablement(finish, false));
+
+		// Set the domain name back to what it was
+		domainName.setText(oldText);
+		shell.bot().waitUntil(Conditions.widgetIsEnabled(finish));
+
+		// Set an invalid naming service reference
+		oldText = nameService.getText();
+		nameService.setText("bad name service");
+		shell.bot().waitUntil(new WaitForWidgetEnablement(finish, false));
+
+		// Set a valid naming service reference
+		nameService.setText(oldText);
+		shell.bot().waitUntil(Conditions.widgetIsEnabled(finish));
+
+		shell.bot().button("Cancel").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 	}
 
 	/**
