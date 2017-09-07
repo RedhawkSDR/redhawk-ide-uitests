@@ -23,6 +23,8 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui.runtime.tests,
  gov.redhawk.logging.ui,
  gov.redhawk.ide.sdr,
  gov.redhawk.ide.debug,
- gov.redhawk.ide.sdr.ui
+ gov.redhawk.ide.sdr.ui,
+ gov.redhawk.core.graphiti.sad.ui,
+ gov.redhawk.ide.graphiti.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
