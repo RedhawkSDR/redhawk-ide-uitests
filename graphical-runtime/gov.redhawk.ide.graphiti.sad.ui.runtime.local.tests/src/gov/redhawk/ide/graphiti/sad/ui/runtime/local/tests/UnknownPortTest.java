@@ -24,7 +24,7 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
  */
 public class UnknownPortTest extends AbstractGraphitiTest {
 
-	private static final String COMP_NAME = "testIDE1095"; 
+	private static final String COMP_NAME = "testIDE1095";
 	private static final String COMP_NAME_1 = "testIDE1095_1";
 	private static final String PORT1 = "a_out";
 	private static final String PORT2 = "b_in";
@@ -33,7 +33,7 @@ public class UnknownPortTest extends AbstractGraphitiTest {
 	private static final String SCA_EXPLORER_VIEW_ID = "gov.redhawk.ui.sca_explorer";
 	private static final String[] CHALKBOARD_PARENT_PATH = { "Sandbox" };
 	private static final String CHALKBOARD = "Chalkboard";
-	
+
 	/**
 	 * IDE-1095
 	 * A device/component developer wants to have dynamic ports - so that under certain circumstances the getPort will
@@ -42,30 +42,25 @@ public class UnknownPortTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void confirmPortsAreDisplayed() {
-		
+
 		// Launch from TargetSDR
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, COMP_NAME, "python");
-		final String[] chalkboardPath = ScaExplorerTestUtils.joinPaths(CHALKBOARD_PARENT_PATH, new String[] {CHALKBOARD});
+		final String[] chalkboardPath = ScaExplorerTestUtils.joinPaths(CHALKBOARD_PARENT_PATH, new String[] { CHALKBOARD });
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, chalkboardPath, COMP_NAME_1);
 		SWTBotView scaExplorerView = bot.viewById(SCA_EXPLORER_VIEW_ID);
 		scaExplorerView.setFocus();
-		
-		// Check for the existence of each of the 3 ports which should be displayed
-		SWTBotTreeItem componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME_1, PORT1);
-		componentEntry.select();
-		componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME_1, PORT2);
-		componentEntry.select();
-		componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME_1, PORT3);
-		componentEntry.select();
-		
-		boolean widgetNotFound = false;
 
-		// Make sure the fourth port is not displayed, it is what returned the Unknown Port exception
+		// Check for the existence of each of the 3 ports which should be displayed
+		SWTBotTreeItem componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME_1);
+		componentEntry.select(PORT1);
+		componentEntry.select(PORT2);
+		componentEntry.select(PORT3);
+
 		try {
-			componentEntry = scaExplorerView.bot().tree().expandNode("Sandbox", "Chalkboard", COMP_NAME_1, PORT4);
+			componentEntry.select(PORT4);
+			Assert.fail("Port " + PORT4 + " should not be visible.");
 		} catch (WidgetNotFoundException wnfe) {
-			widgetNotFound = true;
+			// Should not be present
 		}
-		Assert.assertTrue("Port " + PORT4 + " should not be visible.", widgetNotFound);
 	}
 }
