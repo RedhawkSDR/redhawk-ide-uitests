@@ -48,7 +48,7 @@ public class DeleteProjectTest extends UIRuntimeTest {
 	@Test
 	public void closeEditorOnDelete() {
 		// Make a simple waveform and export it
-		String waveformName = "Test_Waveform";
+		String waveformName = "DeleteProjectTest";
 
 		// Create a new empty waveform and export it
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
