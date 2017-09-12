@@ -20,6 +20,8 @@ import org.junit.Test;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.condition.WaitForExport;
+import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
@@ -46,7 +48,7 @@ public class DeleteProjectTest extends UIRuntimeTest {
 	@Test
 	public void closeEditorOnDelete() {
 		// Make a simple waveform and export it
-		String waveformName = "Test_Waveform";
+		String waveformName = "DeleteProjectTest";
 
 		// Create a new empty waveform and export it
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
@@ -56,6 +58,8 @@ public class DeleteProjectTest extends UIRuntimeTest {
 		editor.save();
 		editor.close();
 		StandardTestActions.exportProject(waveformName, bot);
+		bot.waitUntil(new WaitForExport(), WaitForExport.TIMEOUT_SHORT);
+		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, new String[] { "Target SDR", "Waveforms" }, waveformName);
 
 		// Open its editor from the Target SDR
