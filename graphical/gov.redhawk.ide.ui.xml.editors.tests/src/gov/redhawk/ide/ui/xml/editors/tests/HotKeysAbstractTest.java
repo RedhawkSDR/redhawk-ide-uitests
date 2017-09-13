@@ -22,7 +22,7 @@ import gov.redhawk.ide.swtbot.UITest;
 
 public abstract class HotKeysAbstractTest extends UITest {
 
-	protected SWTBotEditor editor;
+	protected SWTBotEditor editor; // SUPPRESS CHECKSTYLE INLINE - package field
 	
 	/**
 	 * Imports a project, and opens the appropriate editor to the correct tab. Should set {@link #editor}.

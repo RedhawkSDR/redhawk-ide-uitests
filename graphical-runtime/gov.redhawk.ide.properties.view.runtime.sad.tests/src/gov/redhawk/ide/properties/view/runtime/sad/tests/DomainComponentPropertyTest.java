@@ -41,8 +41,8 @@ public class DomainComponentPropertyTest extends AbstractPropertiesViewRuntimeTe
 	protected static final String COMPONENT = "AllPropertyTypesComponent";
 	protected static final String COMPONENT_NUM = COMPONENT + "_1";
 
-	protected String[] domainWaveformParentPath;
-	protected String waveformFullName;
+	protected String[] domainWaveformParentPath; // SUPPRESS CHECKSTYLE INLINE - package field
+	protected String waveformFullName; // SUPPRESS CHECKSTYLE INLINE - package field
 	
 	@After
 	@Override

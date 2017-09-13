@@ -53,7 +53,7 @@ public class LocalWaveformComponentDiagramPropertyTest extends LocalComponentDia
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, COMP_NAME + "_1");
 		DiagramTestUtils.waitForComponentState(bot, editor, COMP_NAME + "_1", ComponentState.STOPPED);
 
-		ConsoleUtils.disableAutoShowConsole(gefBot);
+		ConsoleUtils.disableAutoShowConsole();
 		
 		editor.click(COMP_NAME);
 	}

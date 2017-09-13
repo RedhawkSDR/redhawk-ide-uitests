@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -35,12 +37,15 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 import gov.redhawk.core.graphiti.sad.ui.ext.ComponentShape;
 import gov.redhawk.ide.graphiti.sad.ui.diagram.patterns.HostCollocationPattern;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.sdr.ComponentsSubContainer;
 import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
+import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
@@ -326,7 +331,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		}
 	}
 
-	static List<String> getTargetSdrComponents(final SWTWorkbenchBot bot) {
+	private static List<String> getTargetSdrComponents(final SWTWorkbenchBot bot) {
 		LinkedList<String> list = new LinkedList<String>();
 
 		SWTBotView scaExplorerView = bot.viewByTitle("REDHAWK Explorer");
@@ -408,6 +413,37 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		// Both ports are of type dataFloat
 		Assert.assertEquals("dataFloat", componentShape.getUsesPortStubs().get(0).getUses().getInterface().getName());
 		Assert.assertEquals("dataFloat", componentShape.getProvidesPortStubs().get(0).getProvides().getInterface().getName());
+	}
+
+	/**
+	 * IDE-2063 - when deleting a component instantiation that shares a placement with one or more other component
+	 * instantiations, the placement itself should not be removed
+	 */
+	@Test
+	public void multiChildPlacement() throws CoreException, IOException {
+		final String projectName = "MultiChildPlacement";
+
+		// Import project and open editor to overview tab
+		StandardTestActions.importProject(FrameworkUtil.getBundle(WaveformComponentTest.class), new Path("/workspace/" + projectName), null);
+		ProjectExplorerUtils.openProjectInEditor(bot, projectName, projectName + ".sad.xml");
+		RHBotGefEditor editor = gefBot.rhGefEditor(projectName);
+
+		// Sanity check confirm that both components are in the same placement
+		SoftwareAssembly sad = getSoftwareAssembly(editor);
+		Assert.assertEquals("Incorrect number of components found", 2, sad.getAllComponentInstantiations().size());
+		Assert.assertTrue("Placement does not have multiple children",
+			sad.getPartitioning().getComponentPlacement().get(0).getComponentInstantiation().size() > 1);
+
+		// Delete a component in the diagram
+		SWTBotGefEditPart gefEditPart = editor.getEditPart(SIG_GEN_1);
+		DiagramTestUtils.deleteFromDiagram(editor, gefEditPart);
+		Assert.assertNull(editor.getEditPart(SIG_GEN_1));
+
+		// Ensure that the other component and the placement remain unchanged
+		sad = getSoftwareAssembly(editor);
+		Assert.assertNull("SigGen_1 was not removed from the SCA model", sad.getComponentInstantiation(SIG_GEN_1));
+		Assert.assertTrue("Placement has incorrect number of children",
+			sad.getPartitioning().getComponentPlacement().get(0).getComponentInstantiation().size() == 1);
 	}
 
 	private SoftwareAssembly getSoftwareAssembly(RHBotGefEditor editor) throws IOException {

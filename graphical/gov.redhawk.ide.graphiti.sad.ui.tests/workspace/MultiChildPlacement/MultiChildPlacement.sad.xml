@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softwareassembly PUBLIC "-//JTRS//DTD SCA V2.2.2 SAD//EN" "softwareassembly.dtd">
+<softwareassembly id="DCE:55a0672b-1331-400b-a0c5-a79de169778b" name="MultiChildPlacement">
+  <componentfiles>
+    <componentfile id="SigGen_d6d1dc41-108d-41e5-8ac9-98751959066a" type="SPD">
+      <localfile name="/components/rh/SigGen/SigGen.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="SigGen_d6d1dc41-108d-41e5-8ac9-98751959066a"/>
+      <componentinstantiation id="SigGen_1" startorder="0">
+        <usagename>SigGen_1</usagename>
+        <findcomponent>
+          <namingservice name="SigGen_1"/>
+        </findcomponent>
+      </componentinstantiation>
+      <componentinstantiation id="SigGen_2" startorder="1">
+        <usagename>SigGen_2</usagename>
+        <findcomponent>
+          <namingservice name="SigGen_2"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <assemblycontroller>
+    <componentinstantiationref refid="SigGen_1"/>
+  </assemblycontroller>
+</softwareassembly>

@@ -51,7 +51,7 @@ public class LaunchLocalWaveformTest extends UIRuntimeTest {
 		// Launch Local Waveform From Target SDR
 		ScaExplorerTestUtils.launchWaveformFromTargetSDR(gefBot, waveformName);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, waveformName);
-		ConsoleUtils.disableAutoShowConsole(gefBot);
+		ConsoleUtils.disableAutoShowConsole();
 
 		// Check that error log is still empty
 		String errorMsg = ErrorLogUtils.checkErrorLogForMessage(gefBot, waveformName);

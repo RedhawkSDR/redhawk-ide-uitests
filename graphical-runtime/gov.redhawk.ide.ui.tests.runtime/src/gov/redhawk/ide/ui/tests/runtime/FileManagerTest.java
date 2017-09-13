@@ -65,7 +65,7 @@ public class FileManagerTest extends UIRuntimeTest {
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
 
 		// Don't let the console steal focus, show the properties view
-		ConsoleUtils.disableAutoShowConsole(bot);
+		ConsoleUtils.disableAutoShowConsole();
 		SWTBotView propertiesView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
 		propertiesView.show();
 
