@@ -44,7 +44,7 @@ public class PropertyErrorTest extends UIRuntimeTest {
 	public void changePropertyError() {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, COMP, COMP_INST);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMP_1);
-		ConsoleUtils.disableAutoShowConsole(bot);
+		ConsoleUtils.disableAutoShowConsole();
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMP_1).select();
 
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties");

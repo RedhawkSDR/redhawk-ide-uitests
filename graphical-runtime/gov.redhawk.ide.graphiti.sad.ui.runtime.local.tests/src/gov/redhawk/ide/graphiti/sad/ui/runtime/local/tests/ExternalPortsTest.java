@@ -71,7 +71,7 @@ public class ExternalPortsTest extends UIRuntimeTest {
 		StandardTestActions.waitForTreeItemToAppear(connectBot, connectBot.treeInGroup(portOneGroup), Arrays.asList(portOneName));
 
 		// Find and connect to the other external port
-		final String portTwoGroup = portOneGroup.equals("Source") ? "Target" : "Source";
+		final String portTwoGroup = "Source".equals(portOneGroup) ? "Target" : "Source";
 		final String[] parentPath = { "Sandbox", waveformFullName, "External Ports" };
 
 		// Wait until the waveform fully displays and we can select the port

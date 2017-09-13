@@ -34,12 +34,12 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 	// Pulled this from AbstractGraphitiDomainNodeRuntimeTest -- Should be able to make another abstract test for all
 	// domain property tests that is
 	// in charge of launch and tearing down the domain
-	protected String domain = DomainDevicePropertyTest.class.getSimpleName() + "_" + (int) (1000.0 * Math.random());
+	protected String domain = DomainDevicePropertyTest.class.getSimpleName() + "_" + (int) (1000.0 * Math.random());  // SUPPRESS CHECKSTYLE INLINE - package field
 	protected static final String DEVICE_MANAGER = "AllPropertyTypes_DevMgr";
 	protected static final String DEVICE = "AllPropertyTypesDevice";
 	protected static final String DEVICE_NUM = DEVICE + "_1";
 	
-	protected String[] deviceParentPath;
+	protected String[] deviceParentPath; // SUPPRESS CHECKSTYLE INLINE - package field
 
 	@After
 	@Override

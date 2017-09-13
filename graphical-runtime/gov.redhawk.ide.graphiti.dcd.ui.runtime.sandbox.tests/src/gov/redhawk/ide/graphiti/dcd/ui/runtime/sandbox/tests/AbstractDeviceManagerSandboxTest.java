@@ -41,7 +41,7 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 	static final String SERVICE_STUB_1 = "ServiceStub_1";
 	static final String SERVICE_STUB_2 = "ServiceStub_2";
 
-	protected RHSWTGefBot gefBot;
+	protected RHSWTGefBot gefBot;  // SUPPRESS CHECKSTYLE INLINE - package field
 
 	@Before
 	public void beforeTest() throws Exception {

@@ -51,7 +51,7 @@ public class PortMonitorViewTest extends UIRuntimeTest {
 		ScaExplorerTestUtils.startResourceInExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
 		ScaExplorerTestUtils.montiorWaveformPortsFromScaExplorer(gefBot, LOCAL_WAVEFORM_PARENT_PATH, WAVEFORM_NAME);
 
-		ConsoleUtils.disableAutoShowConsole(gefBot);
+		ConsoleUtils.disableAutoShowConsole();
 
 		SWTBotView portMonitorView = ViewUtils.getPortMonitorView(gefBot);
 		portMonitorView.show();

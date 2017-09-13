@@ -55,11 +55,11 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 	private static final String PREPENDER = "5";
 
 	/** A Map of all properties found in the IDE's property view */
-	protected Map<String, String> propertyMap = new HashMap<String, String>();
+	private Map<String, String> propertyMap = new HashMap<String, String>();
 
-	SWTBotGefEditor editor;
-	protected RHSWTGefBot gefBot;
-	protected Keyboard keyboard = KeyboardFactory.getSWTKeyboard();
+	protected SWTBotGefEditor editor; // SUPPRESS CHECKSTYLE INLINE - package field
+	protected RHSWTGefBot gefBot; // SUPPRESS CHECKSTYLE INLINE - package field
+	protected Keyboard keyboard = KeyboardFactory.getSWTKeyboard(); // SUPPRESS CHECKSTYLE INLINE - package field
 
 	/**
 	 * Method should take necessary steps to:

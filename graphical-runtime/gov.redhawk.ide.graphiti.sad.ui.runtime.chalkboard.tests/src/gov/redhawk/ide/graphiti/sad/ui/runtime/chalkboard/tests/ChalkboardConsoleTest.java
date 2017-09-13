@@ -37,7 +37,7 @@ public class ChalkboardConsoleTest extends AbstractGraphitiChalkboardTest {
 
 		// Prepare Graphiti diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		bot.cTabItem(CONSOLE_VIEW_LABEL).activate();
 		SWTBotView consoleView = bot.activeView(); //.viewByTitle(CONSOLE_VIEW_LABEL);

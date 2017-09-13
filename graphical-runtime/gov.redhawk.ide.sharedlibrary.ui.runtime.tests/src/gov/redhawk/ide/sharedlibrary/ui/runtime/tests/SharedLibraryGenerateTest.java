@@ -30,7 +30,7 @@ import gov.redhawk.ide.swtbot.UIRuntimeTest;
  */
 public class SharedLibraryGenerateTest extends UIRuntimeTest {
 
-	SWTBotEditor editor;
+	private SWTBotEditor editor;
 
 	@BeforeClass
 	public static void beforeClassSetup() {

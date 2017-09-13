@@ -34,7 +34,7 @@ public class ChalkboardStartOrderTest extends AbstractGraphitiChalkboardTest {
 
 		// drag SigGen to diagram and verify loaded in REDHAWK explorer
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
-		ScaExplorerTestUtils.waitUntilComponentDisplaysInScaExplorer(bot, CHALKBOARD_PARENT_PATH, CHALKBOARD, SIGGEN_1);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 
 		SWTBotGefEditPart sigGenEditPart = editor.getEditPart(SIGGEN_1);
 		ComponentShape componentShape = (ComponentShape) sigGenEditPart.part().getModel();
