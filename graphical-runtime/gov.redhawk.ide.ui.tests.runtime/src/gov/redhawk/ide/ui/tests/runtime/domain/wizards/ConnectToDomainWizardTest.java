@@ -160,7 +160,7 @@ public class ConnectToDomainWizardTest extends UIRuntimeTest {
 	}
 
 	/**
-	 * IDE-1778 Test validation in the wizard.
+	 * IDE-1777, IDE-1778 Test validation in the wizard.
 	 */
 	@Test
 	public void validation() {
@@ -192,6 +192,7 @@ public class ConnectToDomainWizardTest extends UIRuntimeTest {
 		oldText = nameService.getText();
 		nameService.setText("bad name service");
 		shell.bot().waitUntil(new WaitForWidgetEnablement(finish, false));
+		Assert.assertEquals("Enter a valid name service reference", shell.bot().button().getToolTipText());
 
 		// Set a valid naming service reference
 		nameService.setText(oldText);
