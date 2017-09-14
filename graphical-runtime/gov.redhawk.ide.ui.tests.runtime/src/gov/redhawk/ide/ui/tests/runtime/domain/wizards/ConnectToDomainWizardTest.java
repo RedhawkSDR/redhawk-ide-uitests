@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
@@ -54,6 +55,49 @@ public class ConnectToDomainWizardTest extends UIRuntimeTest {
 	public void cleanup() throws Exception {
 		StandardTestActions.cleanUpLaunches();
 		StandardTestActions.cleanUpConnections();
+	}
+
+	/**
+	 * IDE-1777 Browse the existing domain(s) in the wizard and connect to one.
+	 * @throws CoreException
+	 */
+	@Test
+	public void connectViaWizardBrowseToExistingDomain() throws CoreException {
+		final String DOMAIN_NAME = "connectViaWizardBrowseToExistingDomain";
+		launchDomainManager(DOMAIN_NAME);
+
+		explorerView.toolbarPushButton("New Domain Connection").click();
+		SWTBotShell shell = bot.shell("New Domain Manager");
+
+		// Wait for domains to load, click the button
+		final SWTBotButton button = shell.bot().button();
+		shell.bot().waitUntil(new DefaultCondition() {
+			@Override
+			public boolean test() throws Exception {
+				return "Click to select a running domain".equals(button.getToolTipText());
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Domains were not found";
+			}
+		}, 15000);
+		button.click();
+
+		// Select our domain, click OK
+		SWTBotShell selectShell = bot.shell("Domain selection");
+		selectShell.bot().table().select(DOMAIN_NAME);
+		selectShell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(selectShell));
+
+		// Ensure the display name / domain name are correct
+		Assert.assertEquals("Unexpected display name", DOMAIN_NAME, shell.bot().textWithLabel("Display Name:").getText());
+		Assert.assertEquals("Unexpected domain name", DOMAIN_NAME, shell.bot().textWithLabel("Domain Name:").getText());
+
+		shell.bot().button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN_NAME);
 	}
 
 	/**
