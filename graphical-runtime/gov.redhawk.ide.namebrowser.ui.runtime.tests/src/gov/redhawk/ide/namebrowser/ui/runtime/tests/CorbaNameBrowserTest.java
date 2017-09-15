@@ -10,11 +10,12 @@
  *******************************************************************************/
 package gov.redhawk.ide.namebrowser.ui.runtime.tests;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -49,7 +50,8 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 		final String waveformName = "a.b.c.d.waveform";
 
 		// Launch the domain
-		domainName = "CorbaNameBrowserTest_" + (int) (1000.0 * Math.random());;
+		domainName = "CorbaNameBrowserTest_" + (int) (1000.0 * Math.random());
+		;
 		ScaExplorerTestUtils.launchDomainViaWizard(bot, domainName, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
 
@@ -58,26 +60,27 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 		String fullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, new String[] { domainName, "Waveforms" }, waveformName);
 
 		// Open the namebrowser and check for the waveform
-		bot.menu("Window").menu("Show View").menu("CORBA Name Browser").click();
-		SWTBotView view = bot.viewById("gov.redhawk.ui.views.namebrowserview");
+		SWTBotView view = ViewUtils.getCorbaNameBrowserView(bot);
+		view.show();
+		view.bot().comboBox().setText("corbaname::127.0.0.1");
 		view.bot().buttonWithTooltip("Connect to the specified host").click();
 		fullName = fullName.replace(".", "\\.");
-		
-		// Wait for the component nodes to appear
-		String[] path = { "127.0.0.1", domainName, fullName + "_1", "HardLimit_1" };
-		List<String> pathList = Arrays.asList(path);
+
+		// Find the namespaced waveform node
+		List<String> pathList = Arrays.asList("127.0.0.1", domainName, fullName + "_1");
 		StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), pathList);
-		
-		pathList = pathList.subList(0, pathList.size()-1);
-		SWTBotTreeItem node = StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), pathList);
-		Assert.assertTrue("Waveform children not displaying", node.getItems().length == 2);
+
+		// Find a child component node
+		pathList = new ArrayList<>(pathList);
+		pathList.add("HardLimit_1");
+		StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), pathList);
 	}
 
 	@After
-	public void after() {
+	public void after() throws CoreException {
 		SWTBotView view = ViewUtils.getCorbaNameBrowserView(bot);
 		if (view.bot().tree().hasItems()) {
-			view.bot().tree().select(0).contextMenu("Disconnect");
+			view.bot().tree().select(0).contextMenu("Disconnect").click();
 		}
 		ViewUtils.getExplorerView(bot).show();
 
@@ -87,10 +90,12 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 			ScaExplorerTestUtils.deleteDomainInstance(bot, tmpName);
 			ConsoleUtils.terminateProcess(bot, tmpName);
 		}
+
+		super.after();
 	}
 
 	/**
-	 * IDE-1752 Ensure the CORBA name browser displays both id and kind components of a {@link NameComponent}. 
+	 * IDE-1752 Ensure the CORBA name browser displays both id and kind components of a {@link NameComponent}.
 	 */
 	@Test
 	public void idWithKind() throws InvalidName {
@@ -108,11 +113,8 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 
 			SWTBotView view = ViewUtils.getCorbaNameBrowserView(bot);
 			view.show();
-			if (view.bot().tree().hasItems()) {
-				view.bot().tree().select(0).contextMenu("Refresh").click();
-			} else {
-				view.bot().buttonWithTooltip("Connect to the specified host").click();
-			}
+			view.bot().comboBox().setText("corbaname::127.0.0.1");
+			view.bot().buttonWithTooltip("Connect to the specified host").click();
 			StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), Arrays.asList("127.0.0.1", "myid.mykind"));
 		} finally {
 			if (namingContext != null) {
