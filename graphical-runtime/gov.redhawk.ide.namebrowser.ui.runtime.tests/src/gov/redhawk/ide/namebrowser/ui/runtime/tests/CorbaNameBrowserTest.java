@@ -10,7 +10,6 @@
  *******************************************************************************/
 package gov.redhawk.ide.namebrowser.ui.runtime.tests;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -66,13 +65,8 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 		view.bot().buttonWithTooltip("Connect to the specified host").click();
 		fullName = fullName.replace(".", "\\.");
 
-		// Find the namespaced waveform node
-		List<String> pathList = Arrays.asList("127.0.0.1", domainName, fullName + "_1");
-		StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), pathList);
-
-		// Find a child component node
-		pathList = new ArrayList<>(pathList);
-		pathList.add("HardLimit_1");
+		// Find the namespaced waveform node & a child component
+		List<String> pathList = Arrays.asList("127.0.0.1", domainName, fullName + "_1", "HardLimit_1");
 		StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), pathList);
 	}
 
