@@ -27,7 +27,7 @@ public abstract class AbstractTunerTest extends UIRuntimeTest {
 
 	protected static final String SANDBOX = "Sandbox";
 	protected static final String DEV_MGR = "Device Manager";
-	private static final String FEI_CONTAINER = "FrontEnd Tuners";
+	protected static final String FEI_CONTAINER = "FrontEnd Tuners";
 	private static final String CENTER_FREQ = "101";
 
 	protected abstract String getDeviceName();
@@ -44,8 +44,10 @@ public abstract class AbstractTunerTest extends UIRuntimeTest {
 			new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		waitForTunerDeallocation(feiContainer);
 
+		SWTBotShell mainShell = bot.activeShell();
 		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR }, getDeviceName() + "_1");
 		completeAllocateWizard();
+		mainShell.setFocus();
 		waitForTunerAllocation(feiContainer);
 
 		ScaExplorerTestUtils.deallocateAll(bot, new String[] { SANDBOX, DEV_MGR }, getDeviceName() + "_1");
@@ -63,8 +65,10 @@ public abstract class AbstractTunerTest extends UIRuntimeTest {
 			new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		waitForTunerDeallocation(feiContainer);
 
+		SWTBotShell mainShell = bot.activeShell();
 		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		completeAllocateWizard();
+		mainShell.setFocus();
 		waitForTunerAllocation(feiContainer);
 
 		ScaExplorerTestUtils.deallocateAll(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
@@ -81,8 +85,10 @@ public abstract class AbstractTunerTest extends UIRuntimeTest {
 			new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		SWTBotTreeItem tuner = waitForTunerDeallocation(feiContainer);
 
+		SWTBotShell mainShell = bot.activeShell();
 		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
 		completeAllocateWizard();
+		mainShell.setFocus();
 		tuner = waitForTunerAllocation(feiContainer);
 
 		ScaExplorerTestUtils.deallocate(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
@@ -93,13 +99,15 @@ public abstract class AbstractTunerTest extends UIRuntimeTest {
 	 * Allocate and deallocate a listener on a tuner.
 	 */
 	@Test
-	public void allocate_deallocate_listner() {
+	public void allocate_deallocate_listener() {
 		final SWTBotTreeItem feiContainer = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot,
 			new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		SWTBotTreeItem tuner = waitForTunerDeallocation(feiContainer);
 
+		SWTBotShell mainShell = bot.activeShell();
 		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
 		completeAllocateWizard();
+		mainShell.setFocus();
 		tuner = waitForTunerAllocation(feiContainer);
 
 		ScaExplorerTestUtils.addListener(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
@@ -119,8 +127,10 @@ public abstract class AbstractTunerTest extends UIRuntimeTest {
 			new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1" }, FEI_CONTAINER);
 		SWTBotTreeItem tuner = waitForTunerDeallocation(feiContainer);
 
+		SWTBotShell mainShell = bot.activeShell();
 		ScaExplorerTestUtils.allocate(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
 		completeAllocateWizard();
+		mainShell.setFocus();
 		tuner = waitForTunerAllocation(feiContainer);
 
 		ScaExplorerTestUtils.addListener(bot, new String[] { SANDBOX, DEV_MGR, getDeviceName() + "_1", FEI_CONTAINER }, tuner.getText());
@@ -136,6 +146,9 @@ public abstract class AbstractTunerTest extends UIRuntimeTest {
 		bot.waitUntil(new DefaultCondition() {
 			@Override
 			public boolean test() throws Exception {
+				feiContainer.collapse();
+				bot.sleep(200);
+				feiContainer.expand();
 				return feiContainer.getItems()[0].getText().startsWith("RX_DIGITIZER");
 			}
 
@@ -143,7 +156,7 @@ public abstract class AbstractTunerTest extends UIRuntimeTest {
 			public String getFailureMessage() {
 				return "Tuner was not allocated";
 			}
-		}, 10000);
+		}, 15000);
 		return feiContainer.getItems()[0];
 	}
 
@@ -151,6 +164,9 @@ public abstract class AbstractTunerTest extends UIRuntimeTest {
 		bot.waitUntil(new DefaultCondition() {
 			@Override
 			public boolean test() throws Exception {
+				feiContainer.collapse();
+				bot.sleep(200);
+				feiContainer.expand();
 				return "Unallocated RX_DIGITIZER: 1 available".equals(feiContainer.getItems()[0].getText());
 			}
 
@@ -166,6 +182,9 @@ public abstract class AbstractTunerTest extends UIRuntimeTest {
 		bot.waitUntil(new DefaultCondition() {
 			@Override
 			public boolean test() throws Exception {
+				feiTuner.collapse();
+				bot.sleep(200);
+				feiTuner.expand();
 				return feiTuner.getItems().length > 0;
 			}
 
@@ -174,21 +193,24 @@ public abstract class AbstractTunerTest extends UIRuntimeTest {
 				return "Tuner was not allocated";
 			}
 		}, 15000);
-		return feiTuner.expand().getItems()[0];
+		return feiTuner.getItems()[0];
 	}
 
 	private void waitForListenerDeallocation(final SWTBotTreeItem feiTuner) {
 		bot.waitUntil(new DefaultCondition() {
 			@Override
 			public boolean test() throws Exception {
+				feiTuner.collapse();
+				bot.sleep(200);
+				feiTuner.expand();
 				return feiTuner.getItems().length == 0;
 			}
 
 			@Override
 			public String getFailureMessage() {
-				return "Tuner was not allocated";
+				return "Listener was not deallocated";
 			}
-		}, 10000);
+		}, 15000);
 	}
 
 	private void completeAllocateWizard() {

@@ -24,13 +24,14 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 public class AllocDeallocCppTest extends AbstractTunerTest {
 
 	private static final String FEI_DEVICE = "rh.FmRdsSimulator";
+	private static final String FEI_DEVICE_1 = FEI_DEVICE + "_1";
 	private static final String FEI_DEVICE_IMPL = "cpp";
 
 	@Before
 	public void before() throws Exception {
 		super.before();
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, FEI_DEVICE, FEI_DEVICE_IMPL);
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { SANDBOX, DEV_MGR }, FEI_DEVICE + "_1");
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { SANDBOX, DEV_MGR }, FEI_DEVICE_1);
 	}
 
 	@After
