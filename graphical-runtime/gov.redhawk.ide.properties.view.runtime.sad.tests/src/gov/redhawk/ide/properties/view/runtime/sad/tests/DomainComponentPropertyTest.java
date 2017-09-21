@@ -12,13 +12,10 @@ package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
-import org.junit.Assert;
 
 import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractPropertiesViewRuntimeTest;
 import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
@@ -28,6 +25,7 @@ import gov.redhawk.model.sca.ScaAbstractProperty;
 import gov.redhawk.model.sca.ScaComponent;
 import gov.redhawk.model.sca.ScaDomainManagerRegistry;
 import gov.redhawk.model.sca.ScaWaveform;
+import gov.redhawk.model.sca.commands.ScaModelCommand;
 import gov.redhawk.sca.ScaPlugin;
 
 /**
@@ -72,24 +70,21 @@ public class DomainComponentPropertyTest extends AbstractPropertiesViewRuntimeTe
 	}
 
 	@Override
-	protected EList<ScaAbstractProperty< ? >> getModelObjectProperties() {
-		ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(Display.getCurrent());
-		ScaWaveform wave = null;
-		for (ScaWaveform waveform : registry.findDomain(domain).getWaveforms()) {
-			if (waveformFullName.equals(waveform.getName())) {
-				wave = waveform;
-				break;
+	protected List<ScaAbstractProperty< ? >> getModelObjectProperties() {
+		ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(null);
+		List<ScaAbstractProperty< ? >> props = ScaModelCommand.runExclusive(registry, () -> {
+			for (ScaWaveform waveform : registry.findDomain(domain).getWaveforms()) {
+				if (waveformFullName.equals(waveform.getName())) {
+					for (ScaComponent c : waveform.getComponents()) {
+						if (COMPONENT_NUM.equals(c.getName())) {
+							return new ArrayList<>(c.getProperties());
+						}
+					}
+					return null;
+				}
 			}
-		}
-
-		Assert.assertNotNull("Waveform " + waveformFullName + " could not be found in domain: " + domain, wave);
-
-		for (ScaComponent c : wave.getComponents()) {
-			if (COMPONENT_NUM.equals(c.getName())) {
-				return c.getProperties();
-			}
-		}
-
-		return new BasicEList<ScaAbstractProperty< ? >>();
+			return null;
+		});
+		return props;
 	}
 }

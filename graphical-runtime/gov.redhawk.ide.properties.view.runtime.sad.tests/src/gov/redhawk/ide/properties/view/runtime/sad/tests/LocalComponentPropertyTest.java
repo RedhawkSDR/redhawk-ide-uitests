@@ -10,8 +10,9 @@
  */
 package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 
@@ -21,6 +22,7 @@ import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractPropertiesViewRuntimeTe
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.ScaAbstractProperty;
 import gov.redhawk.model.sca.ScaComponent;
+import gov.redhawk.model.sca.commands.ScaModelCommand;
 
 /**
  * Tests properties of a locally launched component selected in the REDHAWK Explorer View
@@ -44,13 +46,16 @@ public class LocalComponentPropertyTest extends AbstractPropertiesViewRuntimeTes
 	}
 
 	@Override
-	protected EList<ScaAbstractProperty< ? >> getModelObjectProperties() {
+	protected List<ScaAbstractProperty< ? >> getModelObjectProperties() {
 		LocalSca localSca = ScaDebugPlugin.getInstance().getLocalSca();
-		for (ScaComponent c : localSca.getSandboxWaveform().getComponents()) {
-			if (COMP_NAME.equals(c.getProfileObj().getName())) {
-				return c.getProperties();
+		List<ScaAbstractProperty< ? >> props = ScaModelCommand.runExclusive(localSca, () -> {
+			for (ScaComponent c : localSca.getSandboxWaveform().getComponents()) {
+				if (COMP_NAME.equals(c.getProfileObj().getName())) {
+					return new ArrayList<>(c.getProperties());
+				}
 			}
-		}
-		return new BasicEList<ScaAbstractProperty< ? >>();
+			return null;
+		});
+		return props;
 	}
 }
