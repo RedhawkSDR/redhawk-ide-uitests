@@ -10,9 +10,10 @@
  */
 package gov.redhawk.ide.properties.view.runtime.dcd.tests;
 
-import org.eclipse.emf.common.util.BasicEList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 
@@ -25,21 +26,25 @@ import gov.redhawk.model.sca.ScaDevice;
 import gov.redhawk.model.sca.ScaDeviceManager;
 import gov.redhawk.model.sca.ScaDomainManager;
 import gov.redhawk.model.sca.ScaDomainManagerRegistry;
+import gov.redhawk.model.sca.commands.ScaModelCommand;
 import gov.redhawk.sca.ScaPlugin;
+import mil.jpeojtrs.sca.prf.util.PropertiesUtil;
 
 /**
  * Tests properties of a domain launched device selected in the REDHAWK Explorer View
  */
 public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest {
-	// Pulled this from AbstractGraphitiDomainNodeRuntimeTest -- Should be able to make another abstract test for all
-	// domain property tests that is
-	// in charge of launch and tearing down the domain
-	protected String domain = DomainDevicePropertyTest.class.getSimpleName() + "_" + (int) (1000.0 * Math.random());  // SUPPRESS CHECKSTYLE INLINE - package field
+
 	protected static final String DEVICE_MANAGER = "AllPropertyTypes_DevMgr";
 	protected static final String DEVICE = "AllPropertyTypesDevice";
 	protected static final String DEVICE_NUM = DEVICE + "_1";
-	
-	protected String[] deviceParentPath; // SUPPRESS CHECKSTYLE INLINE - package field
+
+	// Pulled this from AbstractGraphitiDomainNodeRuntimeTest -- Should be able to make another abstract test for all
+	// domain property tests that is
+	// in charge of launch and tearing down the domain
+	private String domain = DomainDevicePropertyTest.class.getSimpleName() + "_" + (int) (1000.0 * Math.random());
+
+	private String[] deviceParentPath;
 
 	@After
 	@Override
@@ -62,15 +67,24 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 	}
 
 	@Override
-	protected EList<ScaAbstractProperty< ? >> getModelObjectProperties() {
-		ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(Display.getCurrent());
-		ScaDomainManager dom = registry.findDomain(domain);
-		EList<ScaDeviceManager> devMgrs = dom.getDeviceManagers();
-		for (ScaDevice< ? > dev : devMgrs.get(0).getRootDevices()) {
-			if (DEVICE.equals(dev.getProfileObj().getName())) {
-				return dev.getProperties();
+	protected List<ScaAbstractProperty< ? >> getModelObjectProperties() {
+		final ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(null);
+		List<ScaAbstractProperty< ? >> props = ScaModelCommand.runExclusive(registry, () -> {
+			ScaDomainManager dom = registry.findDomain(domain);
+			EList<ScaDeviceManager> devMgrs = dom.getDeviceManagers();
+			for (ScaDevice< ? > dev : devMgrs.get(0).getRootDevices()) {
+				if (DEVICE_NUM.equals(dev.getLabel())) {
+					return dev.getProperties().stream() //
+							.filter(prop -> PropertiesUtil.canConfigureOrQuery(prop.getDefinition())) //
+							.collect(Collectors.toList());
+				}
 			}
-		}
-		return new BasicEList<ScaAbstractProperty< ? >>();
+			return null;
+		});
+		return props;
+	}
+
+	protected String getDomain() {
+		return domain;
 	}
 }

@@ -10,8 +10,9 @@
  */
 package gov.redhawk.ide.properties.view.runtime.dcd.tests;
 
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 
@@ -21,6 +22,8 @@ import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractPropertiesViewRuntimeTe
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.ScaAbstractProperty;
 import gov.redhawk.model.sca.ScaDevice;
+import gov.redhawk.model.sca.commands.ScaModelCommand;
+import mil.jpeojtrs.sca.prf.util.PropertiesUtil;
 
 /**
  * Tests properties of a locally launched device selected in the REDHAWK Explorer View
@@ -46,14 +49,18 @@ public class LocalDevicePropertyTest extends AbstractPropertiesViewRuntimeTest {
 	}
 
 	@Override
-	protected EList<ScaAbstractProperty< ? >> getModelObjectProperties() {
+	protected List<ScaAbstractProperty< ? >> getModelObjectProperties() {
 		LocalSca localSca = ScaDebugPlugin.getInstance().getLocalSca();
-		for (ScaDevice< ? > dev : localSca.getSandboxDeviceManager().getRootDevices()) {
-			if (DEVICE_NAME_NUM.equals(dev.getLabel())) {
-				return dev.getProperties();
+		List<ScaAbstractProperty< ? >> props = ScaModelCommand.runExclusive(localSca, () -> {
+			for (ScaDevice< ? > dev : localSca.getSandboxDeviceManager().getRootDevices()) {
+				if (DEVICE_NAME_NUM.equals(dev.getLabel())) {
+					return dev.getProperties().stream() //
+							.filter(prop -> PropertiesUtil.canConfigureOrQuery(prop.getDefinition())) //
+							.collect(Collectors.toList());
+				}
 			}
-		}
-
-		return new BasicEList<ScaAbstractProperty< ? >>();
+			return null;
+		});
+		return props;
 	}
 }

@@ -12,6 +12,7 @@ package gov.redhawk.ide.graphiti.ui.runtime.tests;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.command.Command;
@@ -76,7 +77,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	 */
 	protected abstract void prepareObject();
 
-	protected abstract EList<ScaAbstractProperty< ? >> getModelObjectProperties();
+	protected abstract List<ScaAbstractProperty< ? >> getModelObjectProperties();
 
 	@BeforeClass
 	public static void disableAutoShowConsole() {
@@ -120,7 +121,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		populatePropertyMap(propTree.getAllItems());
 
-		EList<ScaAbstractProperty< ? >> modelProps = getModelObjectProperties();
+		List<ScaAbstractProperty< ? >> modelProps = getModelObjectProperties();
 		for (ScaAbstractProperty< ? > modelProp : modelProps) {
 			Class< ? > propType = modelProp.getClass();
 
@@ -158,7 +159,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		populatePropertyMap(propTree.getAllItems());
-		EList<ScaAbstractProperty< ? >> modelProps = getModelObjectProperties();
+		List<ScaAbstractProperty< ? >> modelProps = getModelObjectProperties();
 
 		// Ensure our changes to the refresh interval have all taken effect (previous tasks have already come up for
 		// re-scheduling)
@@ -201,7 +202,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		populatePropertyMap(propTree.getAllItems());
-		EList<ScaAbstractProperty< ? >> modelProps = getModelObjectProperties();
+		List<ScaAbstractProperty< ? >> modelProps = getModelObjectProperties();
 
 		// Ensure our changes to the refresh interval have all taken effect (previous tasks have already come up for
 		// re-scheduling)
