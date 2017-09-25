@@ -10,7 +10,10 @@
  */
 package gov.redhawk.ide.properties.view.runtime.dcd.tests;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.EList;
@@ -39,6 +42,10 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 	protected static final String DEVICE = "AllPropertyTypesDevice";
 	protected static final String DEVICE_NUM = DEVICE + "_1";
 
+	protected static final String DEVICE_MANAGER_2 = "PropertyFilteringNode";
+	protected static final String DEVICE_NAME_2 = "PropertyFilteringDev";
+	protected static final String DEVICE_INST_2 = DEVICE_NAME_2 + "_1";
+
 	// Pulled this from AbstractGraphitiDomainNodeRuntimeTest -- Should be able to make another abstract test for all
 	// domain property tests that is
 	// in charge of launch and tearing down the domain
@@ -56,14 +63,32 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 		super.afterTest();
 	}
 
+	private void launch(String deviceMgr, String deviceInstance) {
+		domain = domain + (int) (1000.0 * Math.random());
+		deviceParentPath = new String[] { domain, "Device Managers", deviceMgr };
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, deviceMgr);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, deviceParentPath, deviceInstance);
+		treeItem.select();
+	}
+
 	@Override
 	protected void prepareObject() {
-		domain = domain + (int) (1000.0 * Math.random());
-		deviceParentPath = new String[] { domain, "Device Managers", DEVICE_MANAGER };
-		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEVICE_MANAGER);
-		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
-		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, deviceParentPath, DEVICE_NUM);
-		treeItem.select();
+		launch(DEVICE_MANAGER, DEVICE_NUM);
+	}
+
+	@Override
+	protected Set<String> setupPropertyFiltering() {
+		launch(DEVICE_MANAGER_2, DEVICE_INST_2);
+
+		Set<String> nonFilteredIDs = new HashSet<>();
+		Collections.addAll(nonFilteredIDs, //
+			"prop_ro", "prop_rw", "prop_wo", //
+			"alloc_ro", "alloc_rw", //
+			"exec_ro", "exec_rw", //
+			"config_ro", "config_rw", "config_wo", //
+			"commandline_ro", "commandline_rw", "commandline_wo");
+		return nonFilteredIDs;
 	}
 
 	@Override

@@ -10,6 +10,8 @@
  */
 package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
+import java.util.Set;
+
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -23,8 +25,18 @@ public class LocalComponentDiagramPropertyTest extends LocalComponentPropertyTes
 	protected void prepareObject() {
 		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, COMP_NAME, 0, 0);
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, COMP_NAME + "_1");
-		DiagramTestUtils.waitForComponentState(bot, editor, COMP_NAME + "_1", ComponentState.STOPPED);
-		editor.click(COMP_NAME);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, COMP_INST);
+		DiagramTestUtils.waitForComponentState(bot, editor, COMP_INST, ComponentState.STOPPED);
+		editor.click(COMP_INST);
+	}
+
+	@Override
+	protected Set<String> setupPropertyFiltering() {
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, COMP_NAME_2, 0, 0);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, COMP_INST_2);
+		DiagramTestUtils.waitForComponentState(bot, editor, COMP_INST_2, ComponentState.STOPPED);
+		editor.click(COMP_INST_2);
+		return getNonFilteredPropertyIDs();
 	}
 }

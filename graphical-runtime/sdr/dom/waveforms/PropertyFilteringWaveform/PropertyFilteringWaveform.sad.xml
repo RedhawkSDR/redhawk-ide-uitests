@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softwareassembly PUBLIC "-//JTRS//DTD SCA V2.2.2 SAD//EN" "softwareassembly.dtd">
+<softwareassembly id="DCE:37c858f1-df61-49fc-9fbd-0ba475e13602" name="PropertyFilteringWaveform">
+  <componentfiles>
+    <componentfile id="PropertyFilteringComp_790dad49-5d4e-4015-87c7-3a88ec8f450d" type="SPD">
+      <localfile name="/components/PropertyFilteringComp/PropertyFilteringComp.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="PropertyFilteringComp_790dad49-5d4e-4015-87c7-3a88ec8f450d"/>
+      <componentinstantiation id="PropertyFilteringComp_1">
+        <usagename>PropertyFilteringComp_1</usagename>
+        <findcomponent>
+          <namingservice name="PropertyFilteringComp_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <assemblycontroller>
+    <componentinstantiationref refid="PropertyFilteringComp_1"/>
+  </assemblycontroller>
+</softwareassembly>

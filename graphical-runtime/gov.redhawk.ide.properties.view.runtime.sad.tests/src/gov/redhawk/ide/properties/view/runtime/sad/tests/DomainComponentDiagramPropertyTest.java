@@ -10,6 +10,8 @@
  */
 package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
+import java.util.Set;
+
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
@@ -27,5 +29,15 @@ public class DomainComponentDiagramPropertyTest extends DomainComponentPropertyT
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, domainWaveformParentPath, WAVEFORM, DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
 		SWTBotGefEditor editor = gefBot.gefEditor(waveformFullName);
 		editor.click(COMPONENT);
+	}
+
+	@Override
+	protected Set<String> setupPropertyFiltering() {
+		Set<String> nonFilteredIDs = super.setupPropertyFiltering();
+		gefBot.gefEditor(waveformFullName).close();
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, domainWaveformParentPath, WAVEFORM_2, DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
+		SWTBotGefEditor editor = gefBot.gefEditor(waveformFullName);
+		editor.click(COMPONENT_NAME_2);
+		return nonFilteredIDs;
 	}
 }

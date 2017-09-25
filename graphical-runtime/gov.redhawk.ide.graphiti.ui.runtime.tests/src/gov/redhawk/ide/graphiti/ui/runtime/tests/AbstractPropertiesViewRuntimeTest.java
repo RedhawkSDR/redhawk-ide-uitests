@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.util.EList;
@@ -76,6 +77,13 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	 * - do initial object selection
 	 */
 	protected abstract void prepareObject();
+
+	/**
+	 * Performs setup for {@link #propertyFiltering()}. Should launch the object, open the property view, select the
+	 * object.
+	 * @return The IDs of all properties that should be shown.
+	 */
+	protected abstract Set<String> setupPropertyFiltering();
 
 	protected abstract List<ScaAbstractProperty< ? >> getModelObjectProperties();
 
@@ -229,6 +237,26 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 			} else if (propType.equals(ScaStructSequencePropertyImpl.class)) {
 				editStructSeqModelProperty((ScaStructSequenceProperty) modelProp, treeItem);
 			}
+		}
+	}
+
+	/**
+	 * IDE-2082 Tests filtering of properties (only things that can be configured/queried should be shown).
+	 */
+	@Test
+	public void propertyFiltering() {
+		Set<String> requiredIDs = setupPropertyFiltering();
+
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		for (SWTBotTreeItem treeItem : propTree.getAllItems()) {
+			String id = treeItem.cell(0);
+			if (!requiredIDs.remove(id)) {
+				Assert.fail("Found property '" + id + "' in the properties view that should not be present");
+			}
+		}
+
+		if (requiredIDs.size() > 0) {
+			Assert.fail("The properties view didn't contain the following properties: " + requiredIDs.toString());
 		}
 	}
 

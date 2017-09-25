@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE deviceconfiguration PUBLIC "-//JTRS//DTD SCA V2.2.2 DCD//EN" "deviceconfiguration.dtd">
+<deviceconfiguration id="DCE:88a3da35-c474-47d2-8af5-d484e6613123" name="PropertyFilteringNode">
+  <devicemanagersoftpkg>
+    <localfile name="/mgr/DeviceManager.spd.xml"/>
+  </devicemanagersoftpkg>
+  <componentfiles>
+    <componentfile id="PropertyFilteringDev_b2cedc17-9619-4712-aae3-52cb35d39374" type="SPD">
+      <localfile name="/devices/PropertyFilteringDev/PropertyFilteringDev.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="PropertyFilteringDev_b2cedc17-9619-4712-aae3-52cb35d39374"/>
+      <componentinstantiation id="PropertyFilteringNode:PropertyFilteringDev_1">
+        <usagename>PropertyFilteringDev_1</usagename>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <domainmanager>
+    <namingservice name="REDHAWK_DEV/REDHAWK_DEV"/>
+  </domainmanager>
+</deviceconfiguration>

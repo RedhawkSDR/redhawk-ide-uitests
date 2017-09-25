@@ -12,7 +12,10 @@ package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
@@ -34,14 +37,18 @@ import gov.redhawk.sca.ScaPlugin;
 public class DomainComponentPropertyTest extends AbstractPropertiesViewRuntimeTest {
 	private String domain = DomainComponentPropertyTest.class.getSimpleName() + "_";
 	protected static final String DEVICE_MANAGER = "DevMgr_localhost";
-	protected static final String WAVEFORM = "AllPropertyTypesWaveform";
 
+	protected static final String WAVEFORM = "AllPropertyTypesWaveform";
 	protected static final String COMPONENT = "AllPropertyTypesComponent";
 	protected static final String COMPONENT_NUM = COMPONENT + "_1";
 
+	protected static final String WAVEFORM_2 = "PropertyFilteringWaveform";
+	protected static final String COMPONENT_NAME_2 = "PropertyFilteringComp";
+	protected static final String COMPONENT_INST_2 = COMPONENT_NAME_2 + "_1";
+
 	protected String[] domainWaveformParentPath; // SUPPRESS CHECKSTYLE INLINE - package field
 	protected String waveformFullName; // SUPPRESS CHECKSTYLE INLINE - package field
-	
+
 	@After
 	@Override
 	public void afterTest() {
@@ -51,22 +58,39 @@ public class DomainComponentPropertyTest extends AbstractPropertiesViewRuntimeTe
 		super.afterTest();
 	}
 
-	@Override
-	protected void prepareObject() {
+	private void launch(String waveform, String componentInstance) {
 		domain = DomainComponentPropertyTest.class.getSimpleName() + "_" + (int) (1000.0 * Math.random());
 		domainWaveformParentPath = new String[] { domain, "Waveforms" };
 		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
 
-		ScaExplorerTestUtils.launchWaveformFromDomain(bot, domain, WAVEFORM);
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, domainWaveformParentPath, WAVEFORM);
-		waveformFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, domainWaveformParentPath, WAVEFORM);
+		ScaExplorerTestUtils.launchWaveformFromDomain(bot, domain, waveform);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, domainWaveformParentPath, waveform);
+		waveformFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, domainWaveformParentPath, waveform);
 
 		ArrayList<String> componentParentPath = new ArrayList<>(Arrays.asList(domainWaveformParentPath));
 		componentParentPath.add(waveformFullName);
 		
-		SWTBotTreeItem treeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, componentParentPath.toArray(new String[] {}), COMPONENT_NUM);
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, componentParentPath.toArray(new String[] {}), componentInstance);
 		treeItem.select();
+	}
+
+	@Override
+	protected void prepareObject() {
+		launch(WAVEFORM, COMPONENT_NUM);
+	}
+
+	@Override
+	protected Set<String> setupPropertyFiltering() {
+		launch(WAVEFORM_2, COMPONENT_INST_2);
+
+		Set<String> nonFilteredIDs = new HashSet<>();
+		Collections.addAll(nonFilteredIDs, //
+			"prop_ro", "prop_rw", "prop_wo", //
+			"exec_ro", "exec_rw", //
+			"config_ro", "config_rw", "config_wo", //
+			"commandline_ro", "commandline_rw", "commandline_wo");
+		return nonFilteredIDs;
 	}
 
 	@Override

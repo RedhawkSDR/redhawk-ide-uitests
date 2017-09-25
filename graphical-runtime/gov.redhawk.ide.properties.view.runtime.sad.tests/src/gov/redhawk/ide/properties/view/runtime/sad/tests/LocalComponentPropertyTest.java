@@ -11,7 +11,10 @@
 package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
@@ -30,19 +33,27 @@ import gov.redhawk.model.sca.commands.ScaModelCommand;
 public class LocalComponentPropertyTest extends AbstractPropertiesViewRuntimeTest {
 
 	protected static final String COMP_NAME = "AllPropertyTypesComponent";
+	protected static final String COMP_INST = COMP_NAME + "_1";
+
+	protected static final String COMP_NAME_2 = "PropertyFilteringComp";
+	protected static final String COMP_INST_2 = COMP_NAME_2 + "_1";
 
 	@After
 	@Override
 	public void afterTest() {
-		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMP_NAME + "_1");
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox" }, "Chalkboard");
 		super.afterTest();
 	};
 
+	private void launch(String componentName, String componentInstance) {
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, componentName, "python");
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, componentInstance);
+		treeItem.select();
+	}
+
 	@Override
 	protected void prepareObject() {
-		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, COMP_NAME, "python");
-		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMP_NAME + "_1");
-		treeItem.select();
+		launch(COMP_NAME, COMP_INST);
 	}
 
 	@Override
@@ -57,5 +68,21 @@ public class LocalComponentPropertyTest extends AbstractPropertiesViewRuntimeTes
 			return null;
 		});
 		return props;
+	}
+
+	@Override
+	protected Set<String> setupPropertyFiltering() {
+		launch(COMP_NAME_2, COMP_INST_2);
+		return getNonFilteredPropertyIDs();
+	}
+
+	protected Set<String> getNonFilteredPropertyIDs() {
+		Set<String> nonFilteredIDs = new HashSet<>();
+		Collections.addAll(nonFilteredIDs, //
+			"prop_ro", "prop_rw", "prop_wo", //
+			"exec_ro", "exec_rw", //
+			"config_ro", "config_rw", "config_wo", //
+			"commandline_ro", "commandline_rw", "commandline_wo");
+		return nonFilteredIDs;
 	}
 }
