@@ -27,7 +27,7 @@ public class DevMgrDomainContextMenuTest extends AbstractContextMenuTest {
 	@Override
 	protected RHBotGefEditor launchDiagram() {
 		domainName = DevMgrDomainTestUtils.generateDomainName();
-		return DevMgrDomainTestUtils.launchDomainAndDevMgr(bot, domainName, DEVICE_MANAGER);
+		return DevMgrDomainTestUtils.launchDomainAndDevMgr(bot, domainName, DEVICE_MANAGER, getTestComponent().getShortName(1));
 	}
 
 	@After
