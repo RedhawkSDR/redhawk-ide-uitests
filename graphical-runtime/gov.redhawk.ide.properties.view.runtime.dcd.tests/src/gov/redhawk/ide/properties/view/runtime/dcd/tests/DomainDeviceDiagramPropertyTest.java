@@ -8,24 +8,20 @@
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package gov.redhawk.ide.properties.view.runtime.sad.tests;
+package gov.redhawk.ide.properties.view.runtime.dcd.tests;
 
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
-/**
- * Tests properties of a domain launched component selected in the Explorer Diagram
- */
-public class ExplorerComponentPropertyTest extends DomainComponentPropertyTest {
-
+public class DomainDeviceDiagramPropertyTest extends DomainDevicePropertyTest {
+	
 	@Override
 	protected void prepareObject() {
 		super.prepareObject();
-		gefBot.gefEditor(waveformFullName).close();
-		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, domainWaveformParentPath, WAVEFORM, DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
-		SWTBotGefEditor editor = gefBot.gefEditor(waveformFullName);
-		editor.click(COMPONENT);
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[]{getDomain(), "Device Managers"}, DEVICE_MANAGER, DiagramType.GRAPHITI_NODE_EXPLORER);
+		SWTBotGefEditor editor = gefBot.gefEditor(DEVICE_MANAGER);
+		editor.click(DEVICE_NUM);
 	}
 }
