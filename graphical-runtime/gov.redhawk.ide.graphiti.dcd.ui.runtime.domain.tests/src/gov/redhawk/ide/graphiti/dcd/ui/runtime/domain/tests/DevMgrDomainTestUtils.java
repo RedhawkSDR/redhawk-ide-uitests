@@ -28,13 +28,23 @@ public class DevMgrDomainTestUtils {
 		return "SWTBOT_TEST_" + (int) (1000.0 * Math.random());
 	}
 
-	protected static RHBotGefEditor launchDomainAndDevMgr(SWTWorkbenchBot bot, String domainName, String nodeName) {
-		String[] parentPath = new String[] { domainName, "Device Managers" };
-		ScaExplorerTestUtils.launchDomainViaWizard(bot, domainName, nodeName);
+	/**
+	 * Launches the specified domain and device managers. Waits for the specified resource in the device manager to be
+	 * present, then opens node explorer diagram.
+	 * @param bot
+	 * @param domainName The name of the domain to launch
+	 * @param devMgrName The name of the device manager to launch
+	 * @param resourceName The device/service to wait for during launch
+	 * @return The diagram that was just opened
+	 */
+	protected static RHBotGefEditor launchDomainAndDevMgr(SWTWorkbenchBot bot, String domainName, String devMgrName, String resourceName) {
+		String[] devMgrsPath = new String[] { domainName, "Device Managers" };
+		String[] devMgrPath = new String[] { domainName, "Device Managers", devMgrName };
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domainName, devMgrName);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, nodeName);
-		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, parentPath, nodeName, DiagramType.GRAPHITI_NODE_EXPLORER);
-		return new RHSWTGefBot().rhGefEditor(nodeName);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, devMgrPath, resourceName);
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, devMgrsPath, devMgrName, DiagramType.GRAPHITI_NODE_EXPLORER);
+		return new RHSWTGefBot().rhGefEditor(devMgrName);
 	}
 
 	protected static void cleanup(SWTWorkbenchBot bot, String domainName) {
