@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
@@ -72,11 +73,16 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 
 	protected abstract void selectObject();
 
-	protected abstract void setEditor();
-
 	protected abstract ComponentProperties getModelPropertiesFromEditor() throws IOException;
 
 	protected abstract void writeModelPropertiesToEditor(ComponentProperties componentProps) throws IOException;
+
+	/**
+	 * Performs setup for {@link #propertyFiltering()}. Should launch the object, open the property view, select the
+	 * object.
+	 * @return The IDs of all properties that should be shown.
+	 */
+	protected abstract Set<String> setupPropertyFiltering();
 
 	@Before
 	public void beforeTest() {
@@ -177,6 +183,26 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 		propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		populatePropertyMap(propTree.getAllItems());
 		checkProps(xmlPropertyMap);
+	}
+
+	/**
+	 * IDE-2082 Tests filtering of properties (only things that can be overridden should be shown).
+	 */
+	@Test
+	public void propertyFiltering() {
+		Set<String> requiredIDs = setupPropertyFiltering();
+
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		for (SWTBotTreeItem treeItem : propTree.getAllItems()) {
+			String id = treeItem.cell(0);
+			if (!requiredIDs.remove(id)) {
+				Assert.fail("Found property '" + id + "' in the properties view that should not be present");
+			}
+		}
+
+		if (requiredIDs.size() > 0) {
+			Assert.fail("The properties view didn't contain the following properties: " + requiredIDs.toString());
+		}
 	}
 
 	private ComponentProperties updatePropsInXml(SWTBotTree propTree, ComponentProperties componentProps) {

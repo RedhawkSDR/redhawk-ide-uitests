@@ -14,7 +14,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -42,23 +45,23 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 
 	private static final String WAVEFORM_NAME = "AllPropertyTypesDesignWf";
 	private static final String COMPONENT_NAME = "AllPropertyTypesComponent";
+
+	private static final String WAVEFORM_NAME_2 = "PropertyFilteringWaveform";
+	private static final String COMPONENT_NAME_2 = "PropertyFilteringComp";
+	private static final String COMPONENT_INST_2 = COMPONENT_NAME_2 + "_1";
+
 	private SoftwareAssembly sad = null;
 
 	@Override
 	protected void prepareObject() {
 		WaveformUtils.createNewWaveform(bot, WAVEFORM_NAME, COMPONENT_NAME);
-		setEditor();
+		editor = gefBot.gefEditor(WAVEFORM_NAME);
 		editor.click(COMPONENT_NAME);
 	}
 
 	@Override
 	protected void selectObject() {
 		editor.click(COMPONENT_NAME);
-	}
-
-	@Override
-	protected void setEditor() {
-		editor = gefBot.gefEditor(WAVEFORM_NAME);
 	}
 
 	@Override
@@ -83,6 +86,21 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 		sad.getAllComponentInstantiations().get(0).setComponentProperties(componentProps);
 		sad.eResource().save(outputStream, null);
 		editor.toTextEditor().setText(outputStream.toString());
+	}
+
+	@Override
+	protected Set<String> setupPropertyFiltering() {
+		WaveformUtils.createNewWaveform(bot, WAVEFORM_NAME_2, COMPONENT_NAME_2);
+		editor = gefBot.gefEditor(WAVEFORM_NAME_2);
+		editor.click(COMPONENT_INST_2);
+
+		Set<String> nonFilteredIDs = new HashSet<>();
+		Collections.addAll(nonFilteredIDs, //
+			"prop_ro", "prop_rw", "prop_wo", //
+			"exec_rw", "exec_wo", //
+			"config_rw", "config_wo", //
+			"commandline_ro", "commandline_rw", "commandline_wo");
+		return nonFilteredIDs;
 	}
 
 	// ### Class Specific Tests ### //
@@ -111,7 +129,7 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 		SWTBotEditor tmpEditor = bot.activeEditor();
 		tmpEditor.bot().cTabItem("Diagram").activate();
 
-		setEditor();
+		editor = gefBot.gefEditor(WAVEFORM_NAME);
 		selectObject();
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		Assert.assertNotNull("Property window does not populate", propTree);
@@ -127,7 +145,7 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 		final String simpleSeqDouble = "simpleSeqDouble";
 
 		prepareObject();
-		setEditor();
+		editor = gefBot.gefEditor(WAVEFORM_NAME);
 		selectObject();
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 

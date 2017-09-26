@@ -13,6 +13,9 @@ package gov.redhawk.ide.properties.view.tests;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -32,6 +35,11 @@ public class DesignDevicePropertyTest extends AbstractPropertiesViewDesignTest {
 	protected static final String DOMAIN_NAME = "REDHAWK_DEV";
 	protected static final String NODE_NAME = "AllPropertyTypesNode";
 	private static final String DEVICE_NAME = "AllPropertyTypesDevice";
+
+	protected static final String NODE_NAME_2 = "PropertyFilteringNode";
+	private static final String DEVICE_NAME_2 = "PropertyFilteringDev";
+	private static final String DEVICE_INST_2 = DEVICE_NAME_2 + "_1";
+
 	private DeviceConfiguration dcd = null;
 
 	@Override
@@ -47,7 +55,6 @@ public class DesignDevicePropertyTest extends AbstractPropertiesViewDesignTest {
 		editor.click(DEVICE_NAME);
 	}
 
-	@Override
 	protected void setEditor() {
 		editor = gefBot.rhGefEditor(NODE_NAME);
 	}
@@ -74,5 +81,21 @@ public class DesignDevicePropertyTest extends AbstractPropertiesViewDesignTest {
 		dcd.getPartitioning().getComponentPlacement().get(0).getComponentInstantiation().get(0).setComponentProperties(componentProps);
 		dcd.eResource().save(outputStream, null);
 		editor.toTextEditor().setText(outputStream.toString());
+	}
+
+	@Override
+	protected Set<String> setupPropertyFiltering() {
+		NodeUtils.createNewNodeProject(bot, NODE_NAME_2, DOMAIN_NAME);
+		editor = gefBot.rhGefEditor(NODE_NAME_2);
+		DiagramTestUtils.addFromPaletteToDiagram((RHBotGefEditor) editor, DEVICE_NAME_2, 0, 0);
+		editor.click(DEVICE_INST_2);
+
+		Set<String> nonFilteredIDs = new HashSet<>();
+		Collections.addAll(nonFilteredIDs, //
+			"prop_ro", "prop_rw", "prop_wo", //
+			"exec_rw", "exec_wo", //
+			"config_rw", "config_wo", //
+			"commandline_ro", "commandline_rw", "commandline_wo");
+		return nonFilteredIDs;
 	}
 }
