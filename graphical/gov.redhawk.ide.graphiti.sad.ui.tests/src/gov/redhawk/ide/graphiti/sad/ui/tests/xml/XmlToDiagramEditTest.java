@@ -30,6 +30,7 @@ import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.StartOrderUtils;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
@@ -164,9 +165,9 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		// Verify componentOne is set as assembly Controller
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 		ComponentShape componentShapeOne = DiagramTestUtils.getComponentShape(editor, SIG_GEN_1);
-		Assert.assertEquals("Setup for test is flawed, componentOne is not the assembly controller", ComponentUtils.getStartOrderText(componentShapeOne).getValue(), "0");
+		Assert.assertEquals("Setup for test is flawed, componentOne is not the assembly controller", StartOrderUtils.getStartOrderText(componentShapeOne).getValue(), "0");
 		ComponentShape componentShapeTwo = DiagramTestUtils.getComponentShape(editor, HARD_LIMIT_1);
-		Assert.assertEquals("Setup for test is flawed, componentTwo is the assembly controller", ComponentUtils.getStartOrderText(componentShapeTwo).getValue(), "1");
+		Assert.assertEquals("Setup for test is flawed, componentTwo is the assembly controller", StartOrderUtils.getStartOrderText(componentShapeTwo).getValue(), "1");
 
 		// Edit content of sad.xml, change assembly controller from componentOne to componentTwo
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");

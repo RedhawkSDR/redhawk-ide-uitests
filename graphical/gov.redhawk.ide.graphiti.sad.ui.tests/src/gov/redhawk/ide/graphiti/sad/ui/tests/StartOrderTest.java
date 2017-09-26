@@ -21,10 +21,11 @@ import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.StartOrderUtils;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 
 public class StartOrderTest extends AbstractGraphitiTest {
-	
+
 	private static final String DATA_CONVERTER = "rh.DataConverter";
 	private static final String DATA_CONVERTER_1 = "DataConverter_1";
 	private static final String HARD_LIMIT = "rh.HardLimit";
@@ -59,11 +60,11 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		Assert.assertTrue("Assembly controller was not updated correctly", ComponentUtils.isAssemblyController(gefBot, editor, HARD_LIMIT_1));
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ZERO, componentOneObj.getStartOrder());
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ONE, componentTwoObj.getStartOrder());
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, HARD_LIMIT_1, "0", true));
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, SIG_GEN_1, "1", false));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, HARD_LIMIT_1, "0", true));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, SIG_GEN_1, "1", false));
 
 		// Decrement start order test - Assert new start orders and new assembly controller assignment
-		ComponentUtils.decrementStartOrder(editor, HARD_LIMIT_1);
+		StartOrderUtils.moveStartOrderLater(editor, HARD_LIMIT_1);
 		MenuUtils.save(editor);
 		componentOneObj = DiagramTestUtils.getComponentObject(editor, HARD_LIMIT_1);
 		componentTwoObj = DiagramTestUtils.getComponentObject(editor, SIG_GEN_1);
@@ -71,11 +72,11 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		Assert.assertTrue("Assembly controller was not updated correctly", ComponentUtils.isAssemblyController(gefBot, editor, SIG_GEN_1));
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ONE, componentOneObj.getStartOrder());
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ZERO, componentTwoObj.getStartOrder());
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, HARD_LIMIT_1, "1", false));
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, SIG_GEN_1, "0", true));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, HARD_LIMIT_1, "1", false));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, SIG_GEN_1, "0", true));
 
 		// Increment start order test - Assert new start orders and new assembly controller assignment
-		ComponentUtils.incrementStartOrder(editor, HARD_LIMIT_1);
+		StartOrderUtils.moveStartOrderEarlier(editor, HARD_LIMIT_1);
 		MenuUtils.save(editor);
 		componentOneObj = DiagramTestUtils.getComponentObject(editor, HARD_LIMIT_1);
 		componentTwoObj = DiagramTestUtils.getComponentObject(editor, SIG_GEN_1);
@@ -83,8 +84,8 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		Assert.assertFalse("Assembly controller was not updated correctly", ComponentUtils.isAssemblyController(gefBot, editor, SIG_GEN_1));
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ZERO, componentOneObj.getStartOrder());
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ONE, componentTwoObj.getStartOrder());
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, HARD_LIMIT_1, "0", true));
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, SIG_GEN_1, "1", false));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, HARD_LIMIT_1, "0", true));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, SIG_GEN_1, "1", false));
 
 		// Set a new assembly controller - Assert new start orders and new assembly controller assignment
 		ComponentUtils.setAsAssemblyController(editor, SIG_GEN_1);
@@ -95,8 +96,8 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		Assert.assertTrue("Assembly controller was not updated correctly", ComponentUtils.isAssemblyController(gefBot, editor, SIG_GEN_1));
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ONE, componentOneObj.getStartOrder());
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ZERO, componentTwoObj.getStartOrder());
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, HARD_LIMIT_1, "1", false));
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, SIG_GEN_1, "0", true));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, HARD_LIMIT_1, "1", false));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, SIG_GEN_1, "0", true));
 	}
 
 	/**
@@ -115,7 +116,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
 
 		// Add additional components to the diagram
-		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 10,  150);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 10, 150);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 200, 10);
 		// Get component objects
 		SadComponentInstantiation compNoStartOrderObj = DiagramTestUtils.getComponentObject(editor, SIG_GEN_1);
@@ -132,7 +133,7 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Start order is incorrect", 2, componentTwoObj.getStartOrder().intValue());
 
 		// Decrement start order of component one - Assert new start orders and new assembly controller assignment
-		ComponentUtils.decrementStartOrder(editor, HARD_LIMIT_1);
+		StartOrderUtils.moveStartOrderLater(editor, HARD_LIMIT_1);
 		MenuUtils.save(editor);
 		compNoStartOrderObj = DiagramTestUtils.getComponentObject(editor, SIG_GEN_1);
 		componentOneObj = DiagramTestUtils.getComponentObject(editor, HARD_LIMIT_1);
@@ -144,12 +145,12 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Model object start order is incorrect", 2, componentOneObj.getStartOrder().intValue());
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ONE, componentTwoObj.getStartOrder());
 
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, SIG_GEN_1, "", true));
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, HARD_LIMIT_1, "2", false));
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, DATA_CONVERTER_1, "1", false));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, SIG_GEN_1, "", true));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, HARD_LIMIT_1, "2", false));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, DATA_CONVERTER_1, "1", false));
 
 		// Increment start order test - Assert new start orders and new assembly controller assignment
-		ComponentUtils.incrementStartOrder(editor, HARD_LIMIT_1);
+		StartOrderUtils.moveStartOrderEarlier(editor, HARD_LIMIT_1);
 		MenuUtils.save(editor);
 		compNoStartOrderObj = DiagramTestUtils.getComponentObject(editor, SIG_GEN_1);
 		componentOneObj = DiagramTestUtils.getComponentObject(editor, HARD_LIMIT_1);
@@ -162,9 +163,9 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ONE, componentOneObj.getStartOrder());
 		Assert.assertEquals("Model object start order is incorrect", 2, componentTwoObj.getStartOrder().intValue());
 
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, SIG_GEN_1, "", true));
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, HARD_LIMIT_1, "1", false));
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, DATA_CONVERTER_1, "2", false));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, SIG_GEN_1, "", true));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, HARD_LIMIT_1, "1", false));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, DATA_CONVERTER_1, "2", false));
 
 		// Set a new assembly controller - Assert new start orders and new assembly controller assignment
 		ComponentUtils.setAsAssemblyController(editor, DATA_CONVERTER_1);
@@ -180,9 +181,9 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ONE, componentOneObj.getStartOrder());
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ZERO, componentTwoObj.getStartOrder());
 
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, SIG_GEN_1, "", false));
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, HARD_LIMIT_1, "1", false));
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, DATA_CONVERTER_1, "0", true));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, SIG_GEN_1, "", false));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, HARD_LIMIT_1, "1", false));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, DATA_CONVERTER_1, "0", true));
 
 		// Reset the object with (start order == null) to be the assembly controller - Assert new start orders and new
 		// assembly controller assignment
@@ -199,9 +200,9 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Model object start order is incorrect", 2, componentOneObj.getStartOrder().intValue());
 		Assert.assertEquals("Model object start order is incorrect", BigInteger.ONE, componentTwoObj.getStartOrder());
 
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, SIG_GEN_1, "", true));
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, HARD_LIMIT_1, "2", false));
-		Assert.assertTrue("Graphical start order object is incorrect", ComponentUtils.correctStylingAndValue(editor, DATA_CONVERTER_1, "1", false));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, SIG_GEN_1, "", true));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, HARD_LIMIT_1, "2", false));
+		Assert.assertTrue("Graphical start order object is incorrect", StartOrderUtils.correctStartOrderStylingAndValue(editor, DATA_CONVERTER_1, "1", false));
 	}
 
 	/**
@@ -235,13 +236,14 @@ public class StartOrderTest extends AbstractGraphitiTest {
 
 		// Confirm start order numbers have adjusted appropriately
 		for (int i = 0; i < componentInstance.length - 1; i++) {
-			Assert.assertTrue("Start order is incorrect for " + componentInstance[i],  ComponentUtils.correctStylingAndValue(editor, componentInstance[i], Integer.toString(i + 1), false));
+			Assert.assertTrue("Start order is incorrect for " + componentInstance[i],
+				StartOrderUtils.correctStartOrderStylingAndValue(editor, componentInstance[i], Integer.toString(i + 1), false));
 		}
 
 		// Check new assembly controller
 		MenuUtils.save(editor);
 		assemblyController = componentInstance[componentInstance.length - 1];
-		Assert.assertTrue(ComponentUtils.correctStylingAndValue(editor, assemblyController, "0", true));
+		Assert.assertTrue(StartOrderUtils.correctStartOrderStylingAndValue(editor, assemblyController, "0", true));
 		Assert.assertTrue(ComponentUtils.isAssemblyController(gefBot, editor, assemblyController));
 	}
 
@@ -277,12 +279,12 @@ public class StartOrderTest extends AbstractGraphitiTest {
 
 		// Confirm start order numbers have adjusted appropriately
 		for (int i = 0; i < componentInstance.length - 1; i++) {
-			Assert.assertTrue(ComponentUtils.correctStylingAndValue(editor, componentInstance[i], Integer.toString(i + 1), false));
+			Assert.assertTrue(StartOrderUtils.correctStartOrderStylingAndValue(editor, componentInstance[i], Integer.toString(i + 1), false));
 		}
 
 		// Check new assembly controller
 		MenuUtils.save(editor);
-		Assert.assertTrue(ComponentUtils.correctStylingAndValue(editor, assemblyController, "0", true));
+		Assert.assertTrue(StartOrderUtils.correctStartOrderStylingAndValue(editor, assemblyController, "0", true));
 		Assert.assertTrue(ComponentUtils.isAssemblyController(gefBot, editor, assemblyController));
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.OVERVIEW_TAB);
 		Assert.assertTrue(editor.bot().ccomboBoxWithLabel("Controller:").getText().contains(assemblyController));
@@ -305,12 +307,11 @@ public class StartOrderTest extends AbstractGraphitiTest {
 		int xCoord = 0;
 		for (int i = 0; i < componentInstance.length; i++) {
 			DiagramTestUtils.addFromPaletteToDiagram(editor, component[i], xCoord, 0);
-			Assert.assertEquals(i, ComponentUtils.getStartOrder(editor, componentInstance[i]));
+			Assert.assertEquals(i, StartOrderUtils.getStartOrder(editor, componentInstance[i]));
 			xCoord += 250;
 		}
 		// Check first added is assembly controller
 		Assert.assertTrue(ComponentUtils.isAssemblyController(gefBot, editor, componentInstance[0]));
 	}
-
 
 }

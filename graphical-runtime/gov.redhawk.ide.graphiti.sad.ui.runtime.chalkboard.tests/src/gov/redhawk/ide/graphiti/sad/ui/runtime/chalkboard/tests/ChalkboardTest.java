@@ -33,6 +33,7 @@ import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils.PortState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.StartOrderUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.monitor.MonitorPlugin;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
@@ -273,7 +274,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		Assert.assertEquals("outer text should match component type", HARD_LIMIT, ComponentUtils.getOuterText(componentShape).getValue());
 		Assert.assertEquals("inner text should match component usage name", ci.getUsageName(), ComponentUtils.getInnerText(componentShape).getValue());
 		Assert.assertNotNull("component supported interface graphic should not be null", ComponentUtils.getLollipop(componentShape));
-		Assert.assertNull("start order shape/text should be null", ComponentUtils.getStartOrderText(componentShape));
+		Assert.assertNull("start order shape/text should be null", StartOrderUtils.getStartOrderText(componentShape));
 
 		// HardLimit only has the two ports
 		Assert.assertTrue(componentShape.getUsesPortStubs().size() == 1 && componentShape.getProvidesPortStubs().size() == 1);

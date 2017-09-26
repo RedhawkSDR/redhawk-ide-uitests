@@ -51,6 +51,7 @@ import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.StartOrderUtils;
 import mil.jpeojtrs.sca.sad.HostCollocation;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 import mil.jpeojtrs.sca.sad.SadComponentPlacement;
@@ -403,7 +404,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		Assert.assertEquals("outer text should match component type", HARD_LIMIT, ComponentUtils.getOuterText(componentShape).getValue());
 		Assert.assertEquals("inner text should match component usage name", ci.getUsageName(), ComponentUtils.getInnerText(componentShape).getValue());
 		Assert.assertNotNull("component supported interface graphic should not be null", ComponentUtils.getLollipop(componentShape));
-		Assert.assertNotNull("start order shape/text should not be null", ComponentUtils.getStartOrderText(componentShape));
+		Assert.assertNotNull("start order shape/text should not be null", StartOrderUtils.getStartOrderText(componentShape));
 		String acMessage = "should" + ((isAssemblyController) ? "" : " not") + " be assembly controller";
 		Assert.assertTrue(acMessage, isAssemblyController == ComponentUtils.isAssemblyController(componentShape));
 

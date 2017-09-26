@@ -16,9 +16,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.core.graphiti.sad.ui.ext.ComponentShape;
-import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.StartOrderUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class ChalkboardStartOrderTest extends AbstractGraphitiChalkboardTest {
@@ -38,6 +38,6 @@ public class ChalkboardStartOrderTest extends AbstractGraphitiChalkboardTest {
 
 		SWTBotGefEditPart sigGenEditPart = editor.getEditPart(SIGGEN_1);
 		ComponentShape componentShape = (ComponentShape) sigGenEditPart.part().getModel();
-		Assert.assertNull("Start Order ellipse should not be created during runtime", ComponentUtils.getStartOrderEllipseShape(componentShape));
+		Assert.assertNull("Start Order ellipse should not be created during runtime", StartOrderUtils.getStartOrderEllipseShape(componentShape));
 	}
 }

@@ -16,8 +16,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.core.graphiti.sad.ui.ext.ComponentShape;
-import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.StartOrderUtils;
 
 public class LocalWaveformRuntimeStartOrderTest extends AbstractGraphitiLocalWaveformRuntimeTest {
 
@@ -32,6 +32,6 @@ public class LocalWaveformRuntimeStartOrderTest extends AbstractGraphitiLocalWav
 
 		SWTBotGefEditPart sigGenEditPart = editor.getEditPart(SIGGEN_1);
 		ComponentShape componentShape = (ComponentShape) sigGenEditPart.part().getModel();
-		Assert.assertNull("Start Order ellipse should not be created during runtime", ComponentUtils.getStartOrderEllipseShape(componentShape));
+		Assert.assertNull("Start Order ellipse should not be created during runtime", StartOrderUtils.getStartOrderEllipseShape(componentShape));
 	}
 }
