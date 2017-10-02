@@ -40,10 +40,10 @@ public class WaveformOverviewTabTest extends AbstractWaveformTabTest {
 	protected String getProjectName() {
 		return PROJECT_NAME;
 	}
-	
+
 	@Override
 	protected String getTabName() {
-		 return DiagramTestUtils.OVERVIEW_TAB;
+		return DiagramTestUtils.OVERVIEW_TAB;
 	}
 
 	@Test
@@ -133,8 +133,42 @@ public class WaveformOverviewTabTest extends AbstractWaveformTabTest {
 	}
 
 	@Test
+	public void waveformOptions() {
+		RHBot rhEditorBot = new RHBot(editor.bot());
+		RHBotSection section = rhEditorBot.section("Waveform Options");
+		section.expand();
+
+		// Test adding a new option
+		editorBot.button("Add", 0).click();
+		SWTBotTable table = editorBot.table(0);
+		Assert.assertEquals(1, table.rowCount());
+		Assert.assertEquals("Option Name", table.getTableItem(0).getText(0));
+		Assert.assertEquals("Option Value", table.getTableItem(0).getText(1));
+		Assert.assertNotNull(sad.getOptions());
+		Assert.assertEquals(1, sad.getOptions().getOption().size());
+		Assert.assertEquals("Option Name", sad.getOptions().getOption().get(0).getName());
+		Assert.assertEquals("Option Value", sad.getOptions().getOption().get(0).getValue());
+
+		// Test editing an option
+		table.select(0);
+		StandardTestActions.selectComboListFromCell(rhEditorBot, table, 0, 0, "STOP_TIMEOUT", false);
+		editorBot.sleep(600);
+		Assert.assertEquals("STOP_TIMEOUT", sad.getOptions().getOption().get(0).getName());
+
+		table.select(0);
+		StandardTestActions.writeToCell(editorBot, table, 0, 1, "True", false);
+		editorBot.sleep(600);
+		Assert.assertEquals("True", sad.getOptions().getOption().get(0).getValue());
+
+		// Test removing an option
+		editorBot.button("Remove", 0).click();
+		Assert.assertEquals(0, table.rowCount());
+		Assert.assertNull(sad.getOptions());
+	}
+
+	@Test
 	public void externalPorts() {
-		editorBot.button("Add").click();
+		editorBot.button("Add", 1).click();
 		SWTBotShell shell = bot.shell("Add external Port");
 
 		shell.bot().table(0).select("SigGen_1");
@@ -153,7 +187,7 @@ public class WaveformOverviewTabTest extends AbstractWaveformTabTest {
 		shell.bot().button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 
-		SWTBotTable table = editorBot.table();
+		SWTBotTable table = editorBot.table(1);
 		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals(1, table.rowCount());
 		Assert.assertEquals("DataConverter_1", table.getTableItem(0).getText(0));
@@ -172,7 +206,7 @@ public class WaveformOverviewTabTest extends AbstractWaveformTabTest {
 		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals("extern", sad.getExternalPorts().getPort().get(0).getExternalName());
 
-		editorBot.button("Remove").click();
+		editorBot.button("Remove", 1).click();
 		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals(0, table.rowCount());
 	}
