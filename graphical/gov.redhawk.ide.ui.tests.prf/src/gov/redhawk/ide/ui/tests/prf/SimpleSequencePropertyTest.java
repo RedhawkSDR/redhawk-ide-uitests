@@ -328,24 +328,37 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 
 	private void testValuesUTCTime(SWTBotTable valuesViewer) {
 		setType("utctime", "real");
+
 		editorBot.button("Add...").click();
 		SWTBotShell shell = bot.shell("New Value");
 		shell.bot().textWithLabel("Value:").setText("2017:01:02::03:04:05");
 		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
 		shell.bot().textWithLabel("Value:").setText("123");
 		Assert.assertFalse("OK should not be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("now");
+		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
+		shell.bot().textWithLabel("Value:").setText("abc");
+		Assert.assertFalse("OK should not be enabled", shell.bot().button("OK").isEnabled());
 		shell.bot().textWithLabel("Value:").setText("2017:01:02::03:04:05.123456");
 		Assert.assertTrue("OK should be enabled", shell.bot().button("OK").isEnabled());
 		shell.bot().button("OK").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
+
 		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "2017:01:02::03:04:05", false, true);
+		assertFormValid();
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "123", false, true);
+		assertFormInvalid();
+		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "now", false, true);
 		assertFormValid();
 		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "abc", false, true);
 		assertFormInvalid();
 		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "2017:01:02::03:04:05.123456", false, true);
 		assertFormValid();
+
 		addValue(editorBot, "2000:12:31::23:59:59.999999");
+		addValue(editorBot, "now");
 		assertFormValid();
+
 		clearValues();
 	}
 

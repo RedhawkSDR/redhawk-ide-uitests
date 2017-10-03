@@ -294,6 +294,10 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 		assertFormInvalid();
 		editorBot.textWithLabel(valueLabel).setText("2017:01:02::03:04:05.123456");
 		assertFormValid();
+		editorBot.textWithLabel(valueLabel).setText("abc");
+		assertFormInvalid();
+		editorBot.textWithLabel(valueLabel).setText("now");
+		assertFormValid();
 		editorBot.textWithLabel(valueLabel).setText("");
 		assertFormValid();
 
