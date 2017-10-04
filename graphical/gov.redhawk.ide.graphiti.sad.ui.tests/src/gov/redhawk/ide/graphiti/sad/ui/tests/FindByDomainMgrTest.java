@@ -21,11 +21,11 @@ public class FindByDomainMgrTest extends AbstractFindByTest {
 	private static final String FIND_BY_TYPE = FindByUtils.FIND_BY_DOMAIN_MANAGER;
 	private static final String FIND_BY_NAME = FindByUtils.FIND_BY_DOMAIN_MANAGER;
 
-	@Ignore
+	@Ignore("This test is not applicable to FindByDomainMgr")
 	@Test
 	@Override
 	public void editFindBy() throws IOException {
-		// PASS - This test is not applicable to FindByDomainMgr
+		// PASS
 	}
 
 	@Override

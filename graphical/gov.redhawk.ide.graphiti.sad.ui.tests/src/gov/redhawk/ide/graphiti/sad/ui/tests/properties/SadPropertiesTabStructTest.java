@@ -35,9 +35,9 @@ public class SadPropertiesTabStructTest extends SadAbstractPropertiesTabTest {
 	}
 
 	@Override
-	@Ignore
+	@Ignore("Needs to be implemented")
 	public void setEnum() {
-		// TODO: Remove method
+		// TODO
 	}
 
 	@Override
@@ -52,9 +52,9 @@ public class SadPropertiesTabStructTest extends SadAbstractPropertiesTabTest {
 	}
 
 	@Override
-	@Ignore
+	@Ignore("Needs to be implemented")
 	public void setString() {
-		// TODO: Remove method
+		// TODO
 	}
 
 	@Override
