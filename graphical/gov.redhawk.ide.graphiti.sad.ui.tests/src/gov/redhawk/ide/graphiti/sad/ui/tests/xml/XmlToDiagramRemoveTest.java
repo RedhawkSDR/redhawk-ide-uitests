@@ -22,6 +22,7 @@ import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.finder.RHBot;
 import mil.jpeojtrs.sca.sad.HostCollocation;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 
@@ -190,7 +191,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		//switch to overview tab and verify there are external ports
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.OVERVIEW_TAB);
-		Assert.assertEquals("There are no external ports", 1, bot.table(0).rowCount());
+		Assert.assertEquals("There are no external ports", 1, new RHBot(bot).section("External Ports").bot().table().rowCount());
 
 		// Edit content of (remove external port) sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -208,7 +209,7 @@ public class XmlToDiagramRemoveTest extends AbstractGraphitiTest {
 
 		//switch to overview tab and verify there are no external ports
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
-		Assert.assertEquals("There are external ports", 0, bot.table(0).rowCount());
+		Assert.assertEquals("There are external ports", 0, new RHBot(bot).section("External Ports").bot().table().rowCount());
 	}
 
 	/**
