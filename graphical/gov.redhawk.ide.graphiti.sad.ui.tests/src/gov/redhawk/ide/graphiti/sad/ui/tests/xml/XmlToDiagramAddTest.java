@@ -36,6 +36,7 @@ import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
+import gov.redhawk.ide.swtbot.finder.RHBot;
 import mil.jpeojtrs.sca.partitioning.FindBy;
 import mil.jpeojtrs.sca.partitioning.FindByStub;
 import mil.jpeojtrs.sca.partitioning.PartitioningFactory;
@@ -227,7 +228,7 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 
 		// switch to overview tab and verify there are no external ports
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
-		Assert.assertEquals("There are external ports", 0, bot.table(0).rowCount());
+		Assert.assertEquals("There are external ports", 0, new RHBot(bot).section("External Ports").bot().table().rowCount());
 
 		// Edit content of sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -247,7 +248,7 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 
 		// switch to overview tab and verify there are external ports
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
-		Assert.assertEquals("There are no external ports", 1, bot.table(0).rowCount());
+		Assert.assertEquals("There are no external ports", 1, new RHBot(bot).section("External Ports").bot().table().rowCount());
 	}
 
 	/**
