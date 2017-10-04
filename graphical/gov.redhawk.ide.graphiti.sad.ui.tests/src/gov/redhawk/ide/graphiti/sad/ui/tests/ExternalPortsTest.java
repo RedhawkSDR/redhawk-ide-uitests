@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTableItem;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,6 +32,7 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils.PortState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.finder.RHBot;
 import mil.jpeojtrs.sca.sad.SadPackage;
 import mil.jpeojtrs.sca.sad.SoftwareAssembly;
 import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
@@ -78,11 +80,12 @@ public class ExternalPortsTest extends AbstractGraphitiTest {
 		// remove both ports via Overview tab
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
 		int numPorts = 2;
+		SWTBot sectionBot = new RHBot(bot).section("External Ports").bot();
 		while (numPorts > 0) {
-			bot.table(0).select(0);
-			bot.button("Remove").click();
+			sectionBot.table().select(0);
+			sectionBot.button("Remove").click();
 			numPorts--;
-			Assert.assertEquals("External port not removed", numPorts, bot.table(0).rowCount());
+			Assert.assertEquals("External port not removed", numPorts, sectionBot.table().rowCount());
 		}
 
 		// Confirm that no external ports exist in diagram
@@ -95,7 +98,9 @@ public class ExternalPortsTest extends AbstractGraphitiTest {
 
 	private void addPortViaWizard(RHBotGefEditor editor, String componentName, String portName, String externalName) {
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
-		bot.button("Add").click();
+		SWTBot sectionBot = new RHBot(bot).section("External Ports").bot();
+		sectionBot.button("Add").click();
+
 		SWTBotShell addExternalPortShell = bot.shell("Add external Port");
 		final SWTBot wizardBot = addExternalPortShell.bot();
 		addExternalPortShell.activate();
@@ -108,7 +113,7 @@ public class ExternalPortsTest extends AbstractGraphitiTest {
 
 		// Confirm port was added
 		wizardBot.button("Finish").click();
-		assertOverviewTableDetails(componentName, portName, externalName);
+		assertOverviewTableDetails(sectionBot.table(), componentName, portName, externalName);
 	}
 
 	/**
@@ -142,8 +147,9 @@ public class ExternalPortsTest extends AbstractGraphitiTest {
 
 		// Check that the overview tab shows the external ports
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
-		assertOverviewTableDetails(HARD_LIMIT_1, HARD_LIMIT_USES, "");
-		assertOverviewTableDetails(HARD_LIMIT_2, HARD_LIMIT_USES, HARD_LIMIT_USES + "_1");
+		SWTBot sectionBot = new RHBot(bot).section("External Ports").bot();
+		assertOverviewTableDetails(sectionBot.table(), HARD_LIMIT_1, HARD_LIMIT_USES, "");
+		assertOverviewTableDetails(sectionBot.table(), HARD_LIMIT_2, HARD_LIMIT_USES, HARD_LIMIT_USES + "_1");
 
 		// Mark uses ports as non-external // TODO: May need to refresh usesEditParts
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -152,7 +158,7 @@ public class ExternalPortsTest extends AbstractGraphitiTest {
 
 		// Check that ports were removed from overview tab
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
-		Assert.assertEquals("External ports were not removed correctly", 0, bot.table(0).rowCount());
+		Assert.assertEquals("External ports were not removed correctly", 0, sectionBot.table().rowCount());
 
 		// ##### Check PROVIDES ports ##### //
 		// Mark provides ports as external
@@ -163,8 +169,8 @@ public class ExternalPortsTest extends AbstractGraphitiTest {
 		markPortExternal(editor, hardLimit2ProvidesEditPart, true);
 
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
-		assertOverviewTableDetails(HARD_LIMIT_1, HARD_LIMIT_PROVIDES, "");
-		assertOverviewTableDetails(HARD_LIMIT_2, HARD_LIMIT_PROVIDES, HARD_LIMIT_PROVIDES + "_1");
+		assertOverviewTableDetails(sectionBot.table(), HARD_LIMIT_1, HARD_LIMIT_PROVIDES, "");
+		assertOverviewTableDetails(sectionBot.table(), HARD_LIMIT_2, HARD_LIMIT_PROVIDES, HARD_LIMIT_PROVIDES + "_1");
 
 		// Mark uses ports as non-external // TODO: May need to refresh usesEditParts
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
@@ -173,7 +179,7 @@ public class ExternalPortsTest extends AbstractGraphitiTest {
 
 		// Check that ports were removed from overview tab
 		DiagramTestUtils.openTabInEditor(editor, "Overview");
-		Assert.assertEquals("External ports were not removed correctly", 0, bot.table(0).rowCount());
+		Assert.assertEquals("External ports were not removed correctly", 0, sectionBot.table().rowCount());
 	}
 
 	private void markPortExternal(RHBotGefEditor editor, SWTBotGefEditPart portEditPart, boolean markExternal) {
@@ -289,8 +295,8 @@ public class ExternalPortsTest extends AbstractGraphitiTest {
 		PortUtils.assertPortStyling(hardLimit1UsesEditPart, PortState.EXTERNAL_PORT);
 	}
 
-	private void assertOverviewTableDetails(String componentName, String portName, String externalName) {
-		SWTBotTableItem tableItem = bot.table(0).getTableItem(componentName);
+	private void assertOverviewTableDetails(SWTBotTable table, String componentName, String portName, String externalName) {
+		SWTBotTableItem tableItem = table.getTableItem(componentName);
 		Assert.assertEquals("Incorrect component name displayed", componentName, tableItem.getText(0));
 		Assert.assertEquals("Incorrect port name displayed", portName, tableItem.getText(1));
 		Assert.assertEquals("Incorrect external port name displayed", externalName, tableItem.getText(2));

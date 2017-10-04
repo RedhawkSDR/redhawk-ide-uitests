@@ -21,11 +21,11 @@ public class FindByFileMgrTest extends AbstractFindByTest {
 	private static final String FIND_BY_TYPE = FindByUtils.FIND_BY_FILE_MANAGER;
 	private static final String FIND_BY_NAME = FindByUtils.FIND_BY_FILE_MANAGER;
 
-	@Ignore
+	@Ignore("This test is not applicable to FindByFileMgr")
 	@Test
 	@Override
 	public void editFindBy() throws IOException {
-		// PASS - This test is not applicable to FindByFileMgr
+		// PASS
 	}
 
 	@Override
