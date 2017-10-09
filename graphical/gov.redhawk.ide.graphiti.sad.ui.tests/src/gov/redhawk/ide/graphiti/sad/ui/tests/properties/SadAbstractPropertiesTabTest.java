@@ -21,41 +21,39 @@ import org.junit.Test;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.WaveformUtils;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 
 public abstract class SadAbstractPropertiesTabTest extends UITest {
 
-	private static final String SIG_GEN = "rh.SigGen";
-	protected static final String SIG_GEN_1 = "SigGen_1";
-	private static final String DATA_CONVERTER = "rh.DataConverter";
-	protected static final String DATA_CONVERTER_1 = "DataConverter_1";
-
-	private static final int COLUMN_NAME = 0;
+	protected static final int COLUMN_NAME = 0;
 	private static final int COLUMN_VALUE = 3;
 
 	private SWTBot editorBot;
+
+	protected SWTBot getEditorBot() {
+		return editorBot;
+	}
 
 	@Before
 	public void before() throws Exception {
 		super.before();
 
-		WaveformUtils.createNewWaveform(bot, "SadAbstractPropertiesTabTest", SIG_GEN);
+		WaveformUtils.createNewWaveform(bot, "SadAbstractPropertiesTabTest", null);
 		RHBotGefEditor editor = new RHSWTGefBot().rhGefEditor("SadAbstractPropertiesTabTest");
-		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 150, 0);
+		addComponents(editor);
 
 		editorBot = editor.bot();
 		editorBot.cTabItem("Properties").activate();
 	}
 
+	protected abstract void addComponents(RHBotGefEditor editor);
+
+	/**
+	 * Should test that the component instances are present in the properties tree.
+	 */
 	@Test
-	public void componentsPresent() {
-		SWTBotTreeItem[] topLevelItems = editorBot.tree().getAllItems();
-		Assert.assertEquals(2, topLevelItems.length);
-		Assert.assertEquals(SIG_GEN_1, topLevelItems[0].cell(COLUMN_NAME));
-		Assert.assertEquals(DATA_CONVERTER_1, topLevelItems[1].cell(COLUMN_NAME));
-	}
+	public abstract void componentsPresent();
 
 	protected abstract List<String> getBooleanPath();
 
@@ -63,9 +61,21 @@ public abstract class SadAbstractPropertiesTabTest extends UITest {
 	public void setBoolean() {
 		List<String> path = getBooleanPath();
 		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(editorBot, editorBot.tree(), path);
+		treeItem.click(COLUMN_NAME);
 		setPropertyEnum(treeItem, "true");
 		setPropertyEnum(treeItem, "false");
 		setPropertyEnum(treeItem, "");
+	}
+
+	protected abstract List<String> getCharPath();
+
+	@Test
+	public void setChar() {
+		List<String> path = getCharPath();
+		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(editorBot, editorBot.tree(), path);
+		treeItem.click(COLUMN_NAME);
+		setPropertyValue(treeItem, "a", "a");
+		setPropertyValue(treeItem, "bb", "a");
 	}
 
 	protected abstract List<String> getDoublePath();
@@ -74,13 +84,17 @@ public abstract class SadAbstractPropertiesTabTest extends UITest {
 	public void setDouble() {
 		List<String> path = getDoublePath();
 		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(editorBot, editorBot.tree(), path);
+		treeItem.click(COLUMN_NAME);
 		setPropertyValue(treeItem, "abc", "");
 		setPropertyValue(treeItem, "123", "123");
 		setPropertyValue(treeItem, "4.56", "4.56");
 		setPropertyValue(treeItem, "-7.8e9", "-7.8e9");
+		setPropertyValue(treeItem, "-321", "-321");
 	}
 
 	protected abstract List<String> getEnumPath();
+
+	protected abstract List<String> getEnumValues();
 
 	/**
 	 * IDE-1082
@@ -89,8 +103,26 @@ public abstract class SadAbstractPropertiesTabTest extends UITest {
 	public void setEnum() {
 		List<String> path = getEnumPath();
 		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(editorBot, editorBot.tree(), path);
-		setPropertyEnum(treeItem, "Complex");
+		treeItem.click(COLUMN_NAME);
+		Assert.assertTrue(getEnumValues().size() > 0);
+		for (String value : getEnumValues()) {
+			setPropertyEnum(treeItem, value);
+		}
 		setPropertyEnum(treeItem, "");
+	}
+
+	protected abstract List<String> getFloatPath();
+
+	@Test
+	public void setFloat() {
+		List<String> path = getFloatPath();
+		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(editorBot, editorBot.tree(), path);
+		treeItem.click(COLUMN_NAME);
+		setPropertyValue(treeItem, "abc", "");
+		setPropertyValue(treeItem, "123", "123");
+		setPropertyValue(treeItem, "4.56", "4.56");
+		setPropertyValue(treeItem, "-7.8e9", "-7.8e9");
+		setPropertyValue(treeItem, "-321", "-321");
 	}
 
 	protected abstract List<String> getLongPath();
@@ -99,11 +131,32 @@ public abstract class SadAbstractPropertiesTabTest extends UITest {
 	public void setLong() {
 		List<String> path = getLongPath();
 		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(editorBot, editorBot.tree(), path);
+		treeItem.click(COLUMN_NAME);
 		setPropertyValue(treeItem, "abc", "");
 		setPropertyValue(treeItem, "123", "123");
 		setPropertyValue(treeItem, "4.56", "123");
 		setPropertyValue(treeItem, "-7.8e9", "123");
+		setPropertyValue(treeItem, "-321", "-321");
 	}
+
+	protected abstract List<String> getLongLongPath();
+
+	@Test
+	public void setLongLong() {
+		List<String> path = getLongLongPath();
+		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(editorBot, editorBot.tree(), path);
+		treeItem.click(COLUMN_NAME);
+		setPropertyValue(treeItem, "abc", "");
+		setPropertyValue(treeItem, "123", "123");
+		setPropertyValue(treeItem, "4.56", "123");
+		setPropertyValue(treeItem, "-7.8e9", "123");
+		setPropertyValue(treeItem, "-321", "-321");
+	}
+
+	// TODO: objref
+	// TODO: octet
+	// TODO: short
+	// TODO: octet
 
 	protected abstract List<String> getStringPath();
 
@@ -111,9 +164,14 @@ public abstract class SadAbstractPropertiesTabTest extends UITest {
 	public void setString() {
 		List<String> path = getStringPath();
 		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(editorBot, editorBot.tree(), path);
+		treeItem.click(COLUMN_NAME);
 		setPropertyValue(treeItem, "abc", "abc");
 		setPropertyValue(treeItem, "123", "123");
 	}
+
+	// TODO: ulong
+	// TODO: ulonglong
+	// TODO: ushort
 
 	private void setPropertyValue(SWTBotTreeItem propertyItem, String typeText, String expectedCellValue) {
 		StandardTestActions.writeToCell(editorBot, propertyItem, COLUMN_VALUE, typeText);

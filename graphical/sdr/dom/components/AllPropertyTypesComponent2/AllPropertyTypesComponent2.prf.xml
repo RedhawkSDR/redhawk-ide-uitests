@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="simple_boolean" mode="readwrite" type="boolean">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="simple_char" mode="readwrite" type="char">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="simple_double" mode="readwrite" type="double">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="simple_float" mode="readwrite" type="float">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="simple_long" mode="readwrite" type="long">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="simple_longlong" mode="readwrite" type="longlong">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="simple_objref" mode="readwrite" type="objref">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="simple_octet" mode="readwrite" type="octet">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="simple_short" mode="readwrite" type="short">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="simple_string" mode="readwrite" type="string">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="simple_ulong" mode="readwrite" type="ulong">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="simple_ulonglong" mode="readwrite" type="ulonglong">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="simple_ushort" mode="readwrite" type="ushort">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simplesequence id="simplesequence_boolean" mode="readwrite" type="boolean">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <simplesequence id="simplesequence_char" mode="readwrite" type="char">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <simplesequence id="simplesequence_double" mode="readwrite" type="double">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <simplesequence id="simplesequence_float" mode="readwrite" type="float">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <simplesequence id="simplesequence_long" mode="readwrite" type="long">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <simplesequence id="simplesequence_longlong" mode="readwrite" type="longlong">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <simplesequence id="simplesequence_objref" mode="readwrite" type="objref">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <simplesequence id="simplesequence_octet" mode="readwrite" type="octet">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <simplesequence id="simplesequence_short" mode="readwrite" type="short">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <simplesequence id="simplesequence_string" mode="readwrite" type="string">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <simplesequence id="simplesequence_ulong" mode="readwrite" type="ulong">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <simplesequence id="simplesequence_ulonglong" mode="readwrite" type="ulonglong">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <simplesequence id="simplesequence_ushort" mode="readwrite" type="ushort">
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simplesequence>
+  <struct id="struct" mode="readwrite">
+    <simple id="struct::simple_boolean" mode="readwrite" type="boolean">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simple id="struct::simple_char" mode="readwrite" type="char">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simple id="struct::simple_double" mode="readwrite" type="double">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simple id="struct::simple_float" mode="readwrite" type="float">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simple id="struct::simple_long" mode="readwrite" type="long">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simple id="struct::simple_longlong" mode="readwrite" type="longlong">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simple id="struct::simple_objref" mode="readwrite" type="objref">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simple id="struct::simple_octet" mode="readwrite" type="octet">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simple id="struct::simple_short" mode="readwrite" type="short">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simple id="struct::simple_string" mode="readwrite" type="string">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simple id="struct::simple_ulong" mode="readwrite" type="ulong">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simple id="struct::simple_ulonglong" mode="readwrite" type="ulonglong">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simple id="struct::simple_ushort" mode="readwrite" type="ushort">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simple>
+    <simplesequence id="struct::simplesequence_boolean" mode="readwrite" type="boolean">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <simplesequence id="struct::simplesequence_char" mode="readwrite" type="char">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <simplesequence id="struct::simplesequence_double" mode="readwrite" type="double">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <simplesequence id="struct::simplesequence_float" mode="readwrite" type="float">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <simplesequence id="struct::simplesequence_long" mode="readwrite" type="long">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <simplesequence id="struct::simplesequence_longlong" mode="readwrite" type="longlong">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <simplesequence id="struct::simplesequence_objref" mode="readwrite" type="objref">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <simplesequence id="struct::simplesequence_octet" mode="readwrite" type="octet">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <simplesequence id="struct::simplesequence_short" mode="readwrite" type="short">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <simplesequence id="struct::simplesequence_string" mode="readwrite" type="string">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <simplesequence id="struct::simplesequence_ulong" mode="readwrite" type="ulong">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <simplesequence id="struct::simplesequence_ulonglong" mode="readwrite" type="ulonglong">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <simplesequence id="struct::simplesequence_ushort" mode="readwrite" type="ushort">
+      <kind kindtype="property"/>
+      <action type="external"/>
+    </simplesequence>
+    <configurationkind kindtype="property"/>
+  </struct>
+  <structsequence id="structsequence" mode="readwrite">
+    <struct id="structsequence::struct">
+      <simple id="structsequence::simple_boolean" mode="readwrite" type="boolean">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="structsequence::simple_char" mode="readwrite" type="char">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="structsequence::simple_double" mode="readwrite" type="double">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="structsequence::simple_float" mode="readwrite" type="float">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="structsequence::simple_long" mode="readwrite" type="string">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="structsequence::simple_longlong" mode="readwrite" type="longlong">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="structsequence::simple_objref" mode="readwrite" type="objref">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="structsequence::simple_octet" mode="readwrite" type="octet">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="structsequence::simple_short" mode="readwrite" type="short">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="structsequence::simple_string" mode="readwrite" type="string">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="structsequence::simple_ulong" mode="readwrite" type="ulong">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="structsequence::simple_ulonglong" mode="readwrite" type="ulonglong">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="structsequence::simple_ushort" mode="readwrite" type="ushort">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simplesequence id="structsequence::simplesequence_boolean" mode="readwrite" type="boolean">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+      <simplesequence id="structsequence::simplesequence_char" mode="readwrite" type="char">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+      <simplesequence id="structsequence::simplesequence_double" mode="readwrite" type="double">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+      <simplesequence id="structsequence::simplesequence_float" mode="readwrite" type="float">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+      <simplesequence id="structsequence::simplesequence_long" mode="readwrite" type="string">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+      <simplesequence id="structsequence::simplesequence_longlong" mode="readwrite" type="longlong">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+      <simplesequence id="structsequence::simplesequence_objref" mode="readwrite" type="objref">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+      <simplesequence id="structsequence::simplesequence_octet" mode="readwrite" type="octet">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+      <simplesequence id="structsequence::simplesequence_short" mode="readwrite" type="short">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+      <simplesequence id="structsequence::simplesequence_string" mode="readwrite" type="string">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+      <simplesequence id="structsequence::simplesequence_ulong" mode="readwrite" type="ulong">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+      <simplesequence id="structsequence::simplesequence_ulonglong" mode="readwrite" type="ulonglong">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+      <simplesequence id="structsequence::simplesequence_ushort" mode="readwrite" type="ushort">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simplesequence>
+    </struct>
+    <configurationkind kindtype="property"/>
+  </structsequence>
+</properties>
