@@ -13,54 +13,81 @@ package gov.redhawk.ide.graphiti.sad.ui.tests.properties;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Ignore;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.Assert;
+
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
 public class SadPropertiesTabStructTest extends SadAbstractPropertiesTabTest {
 
-	private static final String DATA_CONVERTER_STRUCT1 = "scaleOutput";
-	private static final String DATA_CONVERTER_STRUCT1_BOOLEAN = "charPort"; // IDE-1474
-	private static final String DATA_CONVERTER_STRUCT2 = "floatingPointRange";
-	private static final String DATA_CONVERTER_STRUCT2_DOUBLE = "minimum"; // IDE-1474
-	private static final String DATA_CONVERTER_STRUCT3 = "transformProperties";
-	private static final String DATA_CONVERTER_STRUCT3_LONG = "fftSize"; // IDE-1474
+	private static final String ALLPROPS = "AllPropertyTypesComponent2";
+	private static final String ALLPROPS_1 = "AllPropertyTypesComponent2_1";
+	private static final String STRUCT = "struct";
+	private static final String PREFIX = "struct::simple_";
+
+	private static final String FILE_READER = "rh.FileReader";
+	private static final String FILE_READER_1 = "FileReader_1";
+
+	@Override
+	protected void addComponents(RHBotGefEditor editor) {
+		DiagramTestUtils.addFromPaletteToDiagram(editor, ALLPROPS, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, FILE_READER, 150, 0);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, ALLPROPS_1);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, FILE_READER_1);
+	}
+
+	@Override
+	public void componentsPresent() {
+		SWTBotTreeItem[] topLevelItems = getEditorBot().tree().getAllItems();
+		Assert.assertEquals(2, topLevelItems.length);
+		Assert.assertEquals(ALLPROPS_1, topLevelItems[0].cell(COLUMN_NAME));
+		Assert.assertEquals(FILE_READER_1, topLevelItems[1].cell(COLUMN_NAME));
+	}
 
 	@Override
 	protected List<String> getBooleanPath() {
-		return Arrays.asList(DATA_CONVERTER_1, DATA_CONVERTER_STRUCT1, DATA_CONVERTER_STRUCT1_BOOLEAN);
+		return Arrays.asList(ALLPROPS_1, STRUCT, PREFIX + "boolean");
+	}
+
+	@Override
+	protected List<String> getCharPath() {
+		return Arrays.asList(ALLPROPS_1, STRUCT, PREFIX + "char");
 	}
 
 	@Override
 	protected List<String> getDoublePath() {
-		return Arrays.asList(DATA_CONVERTER_1, DATA_CONVERTER_STRUCT2, DATA_CONVERTER_STRUCT2_DOUBLE);
-	}
-
-	@Override
-	@Ignore("Needs to be implemented")
-	public void setEnum() {
-		// TODO
+		return Arrays.asList(ALLPROPS_1, STRUCT, PREFIX + "double");
 	}
 
 	@Override
 	protected List<String> getEnumPath() {
-		// TODO
-		return null;
+		return Arrays.asList(FILE_READER_1, "default_timestamp", "tcmode");
+	}
+
+	@Override
+	protected List<String> getEnumValues() {
+		// This is just a subset
+		return Arrays.asList("TCM_OFF", "TCM_CPU", "TCM_ZTC");
+	}
+
+	@Override
+	protected List<String> getFloatPath() {
+		return Arrays.asList(ALLPROPS_1, STRUCT, PREFIX + "float");
 	}
 
 	@Override
 	protected List<String> getLongPath() {
-		return Arrays.asList(DATA_CONVERTER_1, DATA_CONVERTER_STRUCT3, DATA_CONVERTER_STRUCT3_LONG);
+		return Arrays.asList(ALLPROPS_1, STRUCT, PREFIX + "long");
 	}
 
 	@Override
-	@Ignore("Needs to be implemented")
-	public void setString() {
-		// TODO
+	protected List<String> getLongLongPath() {
+		return Arrays.asList(ALLPROPS_1, STRUCT, PREFIX + "longlong");
 	}
 
 	@Override
 	protected List<String> getStringPath() {
-		// TODO
-		return null;
+		return Arrays.asList(ALLPROPS_1, STRUCT, PREFIX + "string");
 	}
-
 }
