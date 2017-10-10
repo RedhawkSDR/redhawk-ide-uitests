@@ -10,34 +10,43 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.waits.ICondition;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 
 public class DeleteProjectTest extends AbstractGraphitiTest {
 
 	private static final String SIG_GEN = "rh.SigGen";
-
-	private String waveformName;
 
 	/**
 	 * IDE-880
 	 * Diagram editor should close if the respective project is deleted
 	 */
 	@Test
-	public void confirmEditorClosesOnDelete() {
-		waveformName = "Delete_and_Close";
+	public void project() {
+		String waveformName = "DeleteProjectTest_project";
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
@@ -59,7 +68,7 @@ public class DeleteProjectTest extends AbstractGraphitiTest {
 		gefBot.button("OK").click();
 
 		// Make sure the editor closed
-		bot.waitUntil(new ICondition() {
+		bot.waitUntil(new DefaultCondition() {
 
 			@Override
 			public boolean test() throws Exception {
@@ -67,17 +76,56 @@ public class DeleteProjectTest extends AbstractGraphitiTest {
 			}
 
 			@Override
-			public void init(SWTBot bot) {
+			public String getFailureMessage() {
+				return "Editor did not close";
+			}
 
+		});
+		editors = gefBot.editors();
+		Assert.assertEquals("Editor did not close", 0, editors.size());
+	}
+
+	/**
+	 * IDE-2054 - Make sure editor closes when it's resource is deleted from the TargetSDR
+	 * @throws CoreException
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
+	@Test
+	public void targetSDR() throws CoreException, IOException, URISyntaxException {
+		String waveformName = getClass().getSimpleName();
+
+		// Copy the test waveform to the target SDR
+		URI sourceURI = FileLocator.toFileURL(getClass().getResource("/testFiles/" + waveformName)).toURI();
+		IFileStore source = EFS.getStore(sourceURI);
+		IFileStore target = EFS.getStore(URI.create("sdrdom:/waveforms/" + waveformName));
+		addSdrDomCleanupPath(new Path("/waveforms").append(waveformName));
+		source.copy(target, EFS.NONE, null);
+
+		// Refresh target SDR
+		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Target SDR" }, null).contextMenu().menu("Refresh").click();
+		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
+
+		// Open editor for the waveform
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Target SDR", "Waveforms" }, waveformName);
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(bot, new String[] { "Target SDR", "Waveforms" }, waveformName, DiagramType.GRAPHITI_WAVEFORM_EDITOR);
+		bot.editorByTitle(getClass().getSimpleName());
+
+		// Delete the waveform from the Target SDR
+		ScaExplorerTestUtils.deleteFromTargetSdr(bot, new String[] { "Target SDR", "Waveforms" }, waveformName);
+
+		// Confirm that the editor closes
+		bot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				return ((SWTWorkbenchBot) bot).editors().size() == 0;
 			}
 
 			@Override
 			public String getFailureMessage() {
 				return "Editor did not close";
 			}
-
-		}, 30000, 1000);
-		editors = gefBot.editors();
-		Assert.assertEquals("Editor did not close", 0, editors.size());
+		});
 	}
 }
