@@ -10,13 +10,18 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.projectCreation;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
@@ -32,6 +37,10 @@ import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
+import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
+import mil.jpeojtrs.sca.dcd.DcdPackage;
+import mil.jpeojtrs.sca.dcd.DeviceConfiguration;
+import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class NodeCreationWizardTest extends AbstractCreationWizard2Test {
 
@@ -56,12 +65,13 @@ public class NodeCreationWizardTest extends AbstractCreationWizard2Test {
 		final String projectName = "namespaced.node";
 		final String deviceName = "name.space.device";
 		final String serviceName = "name.space.service";
+		final String gppDeviceName = "GPP";
 
 		// Finish new node wizard
 		bot.textWithLabel("&Project name:").setText(projectName);
 		setDomainName();
 		bot.button("Next >").click();
-		StandardTestActions.selectNamespacedTreeItem(bot, bot.tree(0), deviceName);
+		StandardTestActions.selectNamespacedTreeItems(bot, bot.tree(0), deviceName, gppDeviceName);
 		StandardTestActions.selectNamespacedTreeItem(bot, bot.tree(1), serviceName);
 		bot.button("Finish").click();
 
@@ -79,7 +89,17 @@ public class NodeCreationWizardTest extends AbstractCreationWizard2Test {
 		editor.bot().cTabItem("Diagram").activate();
 		SWTBotGefEditor gefEditor = gefBot.rhGefEditor(projectName);
 		gefEditor.getEditPart(deviceName);
+		gefEditor.getEditPart(gppDeviceName);
 		gefEditor.getEditPart(serviceName);
+
+		// Check start order
+		DeviceConfiguration dcd = getDeviceConfiguration(editor);
+		DcdComponentInstantiation gppDevice = dcd.getComponentInstantiation("namespaced.node:GPP_1");
+		Assert.assertEquals("GPP device start order is incorrect", BigInteger.ZERO, gppDevice.getStartOrder());
+		DcdComponentInstantiation device = dcd.getComponentInstantiation("namespaced.node:device_1");
+		Assert.assertEquals("Name spaced device start order is incorrect", BigInteger.ONE, device.getStartOrder());
+		DcdComponentInstantiation service = dcd.getComponentInstantiation("namespaced.node:service_1");
+		Assert.assertNull("Services that don't implement Resource should not receive a start order", service.getStartOrder());
 
 		// Check that .spec file directory block is correct
 		final SWTBotTreeItem projectNode = ProjectExplorerUtils.selectNode(bot, projectName);
@@ -103,6 +123,14 @@ public class NodeCreationWizardTest extends AbstractCreationWizard2Test {
 				}
 			}
 		});
+	}
+
+	private DeviceConfiguration getDeviceConfiguration(SWTBotEditor editor) throws IOException {
+		String editorText = editor.toTextEditor().getText();
+		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
+		Resource resource = resourceSet.createResource(URI.createURI("mem://temp.dcd.xml"), DcdPackage.eCONTENT_TYPE);
+		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
+		return DeviceConfiguration.Util.getDeviceConfiguration(resource);
 	}
 
 	@Override
