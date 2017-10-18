@@ -13,43 +13,13 @@ package gov.redhawk.ide.ui.tests.prf;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
-import org.junit.Assert;
 import org.junit.Test;
-
-import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 
 public class SimplePropertyTest extends AbstractPropertyTest {
 
 	@Override
 	protected void createType() {
 		editorBot.button("Add Simple").click();
-	}
-
-	/**
-	 * IDE-1548 - do not allow selection of command-line attribute for non-property type properties
-	 * @throws CoreException
-	 */
-	@Test
-	public void testCommandLine() throws CoreException {
-		SWTBotCombo kindCombo = editorBot.comboBoxWithLabel("Kind:");
-		SWTBotCheckBox cmdLineBox = editorBot.checkBox("Pass on command line");
-		kindCombo.setSelection("allocation");
-		Assert.assertFalse(cmdLineBox.isEnabled());
-		bot.sleep(200);
-		editor.saveAndClose();
-
-		ProjectExplorerUtils.openProjectInEditor(bot, "PropTest_Comp", "PropTest_Comp.spd.xml");
-		editor = bot.editorByTitle("PropTest_Comp");
-		editorBot = editor.bot();
-
-		kindCombo = editorBot.comboBoxWithLabel("Kind:");
-		cmdLineBox = editorBot.checkBox("Pass on command line");
-		Assert.assertEquals(kindCombo.getText(), "allocation");
-		Assert.assertFalse(cmdLineBox.isEnabled());
-		kindCombo.setSelection("property (default)");
-		Assert.assertTrue(cmdLineBox.isEnabled());
 	}
 
 	@Test

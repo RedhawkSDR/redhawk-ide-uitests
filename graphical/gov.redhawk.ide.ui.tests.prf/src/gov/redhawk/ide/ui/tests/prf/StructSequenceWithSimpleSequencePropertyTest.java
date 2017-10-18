@@ -67,26 +67,15 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 	}
 
 	@Test
-	public void testIDSimpleSequence() throws CoreException {
+	public void testSimpleSequenceID() throws CoreException {
 		selectSimpleSequence();
 		super.testID();
 	}
 
 	@Test
-	public void testNameSimpleSequence() {
+	public void testSimpleSequenceName() {
 		selectSimpleSequence();
 		super.testName();
-	}
-
-	@Override
-	public void testValueAutoUpdate() throws IOException {
-		selectSimpleSequence();
-		super.testValueAutoUpdate();
-	}
-
-	@Override
-	protected SimpleSequence getSimpleSequence(Properties properties) {
-		return properties.getStructSequence().get(0).getStruct().getSimpleSequence().get(0);
 	}
 
 	@Test
@@ -276,8 +265,13 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 	}
 
 	@Override
-	public void testAction() {
-		// Disable Action element for Struct sequences
+	public void testValueAutoUpdate() throws IOException {
+		selectSimpleSequence();
+		super.testValueAutoUpdate();
 	}
 
+	@Override
+	protected SimpleSequence getSimpleSequence(Properties properties) {
+		return properties.getStructSequence().get(0).getStruct().getSimpleSequence().get(0);
+	}
 }

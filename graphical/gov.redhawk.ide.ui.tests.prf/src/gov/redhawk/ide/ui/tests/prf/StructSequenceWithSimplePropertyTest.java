@@ -54,13 +54,25 @@ public class StructSequenceWithSimplePropertyTest extends SimplePropertyTest {
 	}
 
 	@Test
-	public void testIDSimple() throws CoreException {
+	public void testStructID() throws CoreException {
+		selectStruct();
+		super.testID();
+	}
+
+	@Test
+	public void testSimpleID() throws CoreException {
 		selectSimple();
 		super.testID();
 	}
 
 	@Test
-	public void testNameSimple() {
+	public void testStructName() {
+		selectStruct();
+		super.testName();
+	}
+
+	@Test
+	public void testSimpleName() {
 		selectSimple();
 		super.testName();
 	}
@@ -163,18 +175,6 @@ public class StructSequenceWithSimplePropertyTest extends SimplePropertyTest {
 	}
 
 	@Test
-	public void testIDStruct() throws CoreException {
-		selectStruct();
-		super.testID();
-	}
-
-	@Test
-	public void testNameStruct() {
-		selectStruct();
-		super.testName();
-	}
-
-	@Test
 	public void testDescriptionStruct() {
 		selectStruct();
 		super.testDescription();
@@ -220,10 +220,4 @@ public class StructSequenceWithSimplePropertyTest extends SimplePropertyTest {
 	public void testKind() throws IOException {
 		testKind(false, false);
 	}
-
-	@Override
-	public void testAction() {
-		// Disable Action element for Struct sequences
-	}
-
 }

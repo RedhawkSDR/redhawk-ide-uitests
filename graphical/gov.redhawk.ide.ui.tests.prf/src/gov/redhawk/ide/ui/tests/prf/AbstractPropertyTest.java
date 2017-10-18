@@ -77,27 +77,6 @@ public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 	}
 
 	@Test
-	public void testAction() {
-		editorBot.comboBoxWithLabel("Action:").setSelection("eq");
-		assertFormValid();
-
-		editorBot.comboBoxWithLabel("Action:").setSelection("ge");
-		assertFormValid();
-
-		editorBot.comboBoxWithLabel("Action:").setSelection("gt");
-		assertFormValid();
-
-		editorBot.comboBoxWithLabel("Action:").setSelection("le");
-		assertFormValid();
-
-		editorBot.comboBoxWithLabel("Action:").setSelection("lt");
-		assertFormValid();
-
-		editorBot.comboBoxWithLabel("Action:").setSelection("ne");
-		assertFormValid();
-	}
-
-	@Test
 	public void testRange() {
 		editorBot.comboBox().setSelection("boolean");
 		assertFormValid();

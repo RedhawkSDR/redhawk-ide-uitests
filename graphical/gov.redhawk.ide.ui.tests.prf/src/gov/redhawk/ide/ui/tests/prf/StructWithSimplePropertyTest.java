@@ -43,15 +43,15 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 	}
 
 	@Test
-	public void testSimpleName() {
-		selectSimple();
-		super.testName();
-	}
-
-	@Test
 	public void testSimpleID() throws CoreException {
 		selectSimple();
 		super.testID();
+	}
+
+	@Test
+	public void testSimpleName() {
+		selectSimple();
+		super.testName();
 	}
 
 	@Test
@@ -177,10 +177,4 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 		editorBot.textWithLabel("ID*:").setText("SID2");
 		assertFormValid();
 	}
-
-	@Override
-	public void testAction() {
-		// No Action element available for structs or simples within structs
-	}
-
 }

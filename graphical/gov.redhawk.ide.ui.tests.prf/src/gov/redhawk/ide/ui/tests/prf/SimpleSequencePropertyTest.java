@@ -19,65 +19,26 @@ import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import mil.jpeojtrs.sca.prf.Properties;
 import mil.jpeojtrs.sca.prf.SimpleSequence;
 
 public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 
-	/**
-	 * IDE-152
-	 * Check that adding values to a SimpleSequence via the "Properties" tab automatically updates the prf.xml
-	 * @throws IOException
-	 */
+	@Override
+	protected void createType() {
+		editorBot.button("Add Sequence").click();
+	}
+
 	@Test
-	public void testValueAutoUpdate() throws IOException {
-		String[] values = { "string1", "string2", "string3" };
-		for (String value : values) {
-			addValue(editorBot, value);
-		}
-		assertFormValid();
-
-		// Check xml
-		Properties properties = getModelFromXml();
-		SimpleSequence simpleSeq = getSimpleSequence(properties);
-		for (String value : values) {
-			Assert.assertTrue("Values block did not contain '" + value + "'", simpleSeq.getValues().getValue().contains(value));
-		}
-
-		clearValues();
-	}
-
-	protected SimpleSequence getSimpleSequence(Properties properties) {
-		return properties.getSimpleSequence().get(0);
-	}
-
-public void testValuesChar() {
+	public void testValuesChar() {
 		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
 		testValuesChar(valuesViewer);
-	}
-
-	// IDE-1484 - ensure remove button is enabled immediately upon editor opening
-	@Test
-	public void testRemoveButton() {
-		setType("long (32-bit)", "");
-		addValue(editorBot, "1");
-		addValue(editorBot, "2");
-		editor.saveAndClose();
-		ProjectExplorerUtils.openProjectInEditor(bot, "PropTest_Comp", "PropTest_Comp.spd.xml");
-		editor = bot.editorByTitle("PropTest_Comp");
-		SWTBotButton removeButton = editor.bot().button("Remove", 1);
-		bot.table().select(0);
-		Assert.assertTrue(removeButton.isEnabled());
-		removeButton.click();
-		Assert.assertEquals("Value was not removed", 1, bot.table().rowCount());
 	}
 
 	@Test
@@ -418,11 +379,6 @@ public void testValuesChar() {
 	}
 
 	@Override
-	protected void createType() {
-		editorBot.button("Add Sequence").click();
-	}
-
-	@Override
 	public void testEnum() throws CoreException {
 		// Override to do nothing since Simple Sequences do not have enums
 	}
@@ -432,5 +388,32 @@ public void testValuesChar() {
 		assertFormValid();
 
 		testKind(false, false);
+	}
+
+	/**
+	 * IDE-152
+	 * Check that adding values to a SimpleSequence via the "Properties" tab automatically updates the prf.xml
+	 * @throws IOException
+	 */
+	@Test
+	public void testValueAutoUpdate() throws IOException {
+		String[] values = { "string1", "string2", "string3" };
+		for (String value : values) {
+			addValue(editorBot, value);
+		}
+		assertFormValid();
+
+		// Check xml
+		Properties properties = getModelFromXml();
+		SimpleSequence simpleSeq = getSimpleSequence(properties);
+		for (String value : values) {
+			Assert.assertTrue("Values block did not contain '" + value + "'", simpleSeq.getValues().getValue().contains(value));
+		}
+
+		clearValues();
+	}
+
+	protected SimpleSequence getSimpleSequence(Properties properties) {
+		return properties.getSimpleSequence().get(0);
 	}
 }
