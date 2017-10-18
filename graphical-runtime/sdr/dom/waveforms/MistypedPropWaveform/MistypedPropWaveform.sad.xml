@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softwareassembly PUBLIC "-//JTRS//DTD SCA V2.2.2 SAD//EN" "softwareassembly.dtd">
+<softwareassembly id="DCE:99c411e2-e9d4-4fda-8bd6-a1a94e0f3f68" name="MistypedPropWaveform">
+  <description>Contains a SigGen simple property that is incorrectly referenced as a simplesequence property</description>
+  <componentfiles>
+    <componentfile id="HardLimit_93d48b27-db0e-4312-a997-f5419c93bbbf" type="SPD">
+      <localfile name="/components/rh/HardLimit/HardLimit.spd.xml"/>
+    </componentfile>
+    <componentfile id="SigGen_719d81a1-bf90-430e-8c4a-68a45ae1fa1f" type="SPD">
+      <localfile name="/components/rh/SigGen/SigGen.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="HardLimit_93d48b27-db0e-4312-a997-f5419c93bbbf"/>
+      <componentinstantiation id="HardLimit_1" startorder="0">
+        <usagename>HardLimit_1</usagename>
+        <findcomponent>
+          <namingservice name="HardLimit_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="SigGen_719d81a1-bf90-430e-8c4a-68a45ae1fa1f"/>
+      <componentinstantiation id="SigGen_1" startorder="1">
+        <usagename>SigGen_1</usagename>
+        <componentproperties>
+          <simplesequenceref refid="frequency">
+            <values>
+              <value>1</value>
+            </values>
+          </simplesequenceref>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="SigGen_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <assemblycontroller>
+    <componentinstantiationref refid="HardLimit_1"/>
+  </assemblycontroller>
+  <externalproperties>
+    <property comprefid="SigGen_1" propid="frequency" externalpropid="frequencyExt"/>
+  </externalproperties>
+</softwareassembly>
