@@ -31,11 +31,10 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 	@Override
 	public void before() throws Exception {
 		super.before();
-		editorBot.sleep(600);
 
 		SWTBotTree tree = editorBot.tree();
 		tree.expandNode("ID").select("Struct");
-		editorBot.textWithLabel("ID*:").setText("Struct");
+		editorBot.textWithLabel(NAME_FIELD).setText("Struct");
 		editorBot.sleep(600);
 
 		tree.expandNode("ID", "Struct").select("Simple");
@@ -43,7 +42,7 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 
 		tree.getTreeItem("ID").getNode("Struct").select().contextMenu("New").menu("Simple Sequence").click();
 		tree.expandNode("ID", "Struct").select("Simple Sequence");
-		editorBot.textWithLabel("ID*:").setText("Simple Sequence");
+		editorBot.textWithLabel(NAME_FIELD).setText("Simple Sequence");
 		editorBot.sleep(600);
 
 		selectStructSequence();
@@ -67,15 +66,125 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 	}
 
 	@Test
+	public void testID() throws CoreException {
+		// ID should already be set
+		Assert.assertEquals("ID", editorBot.textWithLabel(ID_FIELD).getText());
+
+		// Set ID to empty - error, children lose their prefix
+		editorBot.textWithLabel(ID_FIELD).setText("");
+		assertFormInvalid();
+		selectStruct();
+		Assert.assertEquals("Struct", editorBot.textWithLabel(ID_FIELD).getText());
+		selectSimpleSequence();
+		Assert.assertEquals("Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStructSequence();
+
+		// Set ID to a DCE - ok, children still have no prefix
+		editorBot.textWithLabel(ID_FIELD).setText("DCE:12345678-9abc-def0-1234-56789abcdef0");
+		assertFormValid();
+		selectStruct();
+		Assert.assertEquals("Struct", editorBot.textWithLabel(ID_FIELD).getText());
+		selectSimpleSequence();
+		Assert.assertEquals("Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStructSequence();
+
+		// Set ID to something valid - ok, children have prefix
+		editorBot.textWithLabel(ID_FIELD).setText("hello");
+		assertFormValid();
+		selectStruct();
+		Assert.assertEquals("hello::Struct", editorBot.textWithLabel(ID_FIELD).getText());
+		selectSimpleSequence();
+		Assert.assertEquals("hello::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+	}
+
+	@Test
+	public void testStructID() throws CoreException {
+		selectStruct();
+
+		// ID should already be set
+		Assert.assertEquals("ID::Struct", editorBot.textWithLabel(ID_FIELD).getText());
+
+		// Set ID to empty - error, child simple not affected
+		editorBot.textWithLabel(ID_FIELD).setText("");
+		assertFormInvalid();
+		selectSimpleSequence();
+		Assert.assertEquals("ID::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStruct();
+
+		// Set ID to a DCE - ok, child simple not affected
+		editorBot.textWithLabel(ID_FIELD).setText("DCE:12345678-9abc-def0-1234-56789abcdef0");
+		assertFormValid();
+		selectSimpleSequence();
+		Assert.assertEquals("ID::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStruct();
+
+		// Set ID to something valid - ok, child simple not affected
+		editorBot.textWithLabel(ID_FIELD).setText("hello");
+		assertFormValid();
+		selectSimpleSequence();
+		Assert.assertEquals("ID::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+	}
+
+	@Test
 	public void testSimpleSequenceID() throws CoreException {
 		selectSimpleSequence();
-		super.testID();
+
+		// ID should already be set
+		Assert.assertEquals("ID::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+
+		editorBot.textWithLabel(ID_FIELD).setText("");
+		assertFormInvalid();
+		editorBot.textWithLabel(ID_FIELD).setText("hello");
+		assertFormValid();
+	}
+
+	@Test
+	public void testName() {
+		// Set name to empty - no ID changes
+		editorBot.textWithLabel(NAME_FIELD).setText("");
+		editorBot.sleep(600);
+		Assert.assertEquals("ID", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStruct();
+		Assert.assertEquals("ID::Struct", editorBot.textWithLabel(ID_FIELD).getText());
+		selectSimpleSequence();
+		Assert.assertEquals("ID::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStructSequence();
+
+		// Set name to valid - IDs change
+		editorBot.textWithLabel(NAME_FIELD).setText("Name1");
+		editorBot.sleep(600);
+		Assert.assertEquals("Name1", editorBot.textWithLabel(ID_FIELD).getText());
+		editorBot.tree().getTreeItem("Name1").select("Struct");
+		Assert.assertEquals("Name1::Struct", editorBot.textWithLabel(ID_FIELD).getText());
+		editorBot.tree().getTreeItem("Name1").getNode("Struct").select("Simple Sequence");
+		Assert.assertEquals("Name1::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+	}
+
+	@Test
+	public void testStructName() {
+		// Set name to empty - no ID changes
+		editorBot.textWithLabel(NAME_FIELD).setText("");
+		editorBot.sleep(600);
+		Assert.assertEquals("ID", editorBot.textWithLabel(ID_FIELD).getText());
+		selectSimpleSequence();
+		Assert.assertEquals("ID::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStruct();
+
+		// Set name to valid - my ID changes, child ID same
+		editorBot.textWithLabel(NAME_FIELD).setText("Name1");
+		editorBot.sleep(600);
+		Assert.assertEquals("ID::Name1", editorBot.textWithLabel(ID_FIELD).getText());
+		editorBot.tree().getTreeItem("ID").getNode("Name1").select("Simple Sequence");
+		Assert.assertEquals("ID::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
 	}
 
 	@Test
 	public void testSimpleSequenceName() {
 		selectSimpleSequence();
-		super.testName();
+
+		editorBot.textWithLabel(NAME_FIELD).setText("Name1");
+		assertFormValid();
+		Assert.assertEquals("ID::Name1", editorBot.textWithLabel(ID_FIELD).getText());
 	}
 
 	@Test
@@ -159,18 +268,6 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 	public void testDescriptionSimpleSequence() {
 		selectSimpleSequence();
 		super.testDescription();
-	}
-
-	@Test
-	public void testIDStruct() throws CoreException {
-		selectStruct();
-		super.testID();
-	}
-
-	@Test
-	public void testNameStruct() {
-		selectStruct();
-		super.testName();
 	}
 
 	@Test

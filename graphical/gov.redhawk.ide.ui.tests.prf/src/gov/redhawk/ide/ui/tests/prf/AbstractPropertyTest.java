@@ -36,12 +36,16 @@ import mil.jpeojtrs.sca.prf.StructSequence;
 
 public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 
+	protected static final String ID_FIELD = "ID*:";
+	protected static final String NAME_FIELD = "Name:";
+
 	@Before
 	public void before() throws Exception {
 		super.before();
 
 		createType();
-		editorBot.textWithLabel("ID*:").setText("ID");
+		editorBot.textWithLabel(NAME_FIELD).setText("ID");
+		editorBot.sleep(600);
 	}
 
 	protected abstract void createType();
@@ -52,20 +56,12 @@ public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 	}
 
 	@Test
-	public void testID() throws CoreException {
-		editorBot.textWithLabel("ID*:").setText("");
-		assertFormInvalid();
-		editorBot.textWithLabel("ID*:").setText("hello");
-		assertFormValid();
-	}
-
-	@Test
 	public void testUniqueID() {
 		assertFormValid();
 		editorBot.button("Add Simple").click();
-		editorBot.textWithLabel("ID*:").setText("ID");
+		editorBot.textWithLabel(ID_FIELD).setText("ID");
 		assertFormInvalid();
-		editorBot.textWithLabel("ID*:").setText("ID2");
+		editorBot.textWithLabel(ID_FIELD).setText("ID2");
 		assertFormValid();
 	}
 
@@ -254,12 +250,6 @@ public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 	@Test
 	public void testDescription() {
 		editorBot.textWithLabel("Description:").setText("This is a test");
-		assertFormValid();
-	}
-
-	@Test
-	public void testName() {
-		editorBot.textWithLabel("Name:").setText("Name1");
 		assertFormValid();
 	}
 

@@ -13,6 +13,7 @@ package gov.redhawk.ide.ui.tests.prf;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class SimplePropertyTest extends AbstractPropertyTest {
@@ -20,6 +21,24 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 	@Override
 	protected void createType() {
 		editorBot.button("Add Simple").click();
+	}
+
+	@Test
+	public void testID() throws CoreException {
+		// ID should already be set
+		Assert.assertEquals("ID", editorBot.textWithLabel(ID_FIELD).getText());
+
+		editorBot.textWithLabel(ID_FIELD).setText("");
+		assertFormInvalid();
+		editorBot.textWithLabel(ID_FIELD).setText("hello");
+		assertFormValid();
+	}
+
+	@Test
+	public void testName() {
+		editorBot.textWithLabel(NAME_FIELD).setText("Name1");
+		assertFormValid();
+		Assert.assertEquals("Name1", editorBot.textWithLabel(ID_FIELD).getText());
 	}
 
 	@Test

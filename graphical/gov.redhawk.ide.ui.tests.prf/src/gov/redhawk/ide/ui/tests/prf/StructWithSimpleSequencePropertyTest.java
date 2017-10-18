@@ -13,6 +13,7 @@ package gov.redhawk.ide.ui.tests.prf;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Assert;
 import org.junit.Test;
 
 import mil.jpeojtrs.sca.prf.Properties;
@@ -28,14 +29,13 @@ public class StructWithSimpleSequencePropertyTest extends SimpleSequenceProperty
 	@Override
 	public void before() throws Exception {
 		super.before();
-		editorBot.sleep(600);
 
 		editorBot.tree().expandNode("ID").select("Simple");
 		editorBot.button("Remove").click();
 
 		editorBot.tree().select("ID").contextMenu("New").menu("Simple Sequence").click();
 		selectSimpleSequence();
-		editorBot.textWithLabel("ID*:").setText("Simple Sequence");
+		editorBot.textWithLabel(NAME_FIELD).setText("Simple Sequence");
 		editorBot.sleep(600);
 
 		selectStruct();
@@ -50,15 +50,69 @@ public class StructWithSimpleSequencePropertyTest extends SimpleSequenceProperty
 	}
 
 	@Test
+	public void testID() throws CoreException {
+		// ID should already be set
+		Assert.assertEquals("ID", editorBot.textWithLabel(ID_FIELD).getText());
+
+		// Set ID to empty - error, child loses prefix
+		editorBot.textWithLabel(ID_FIELD).setText("");
+		assertFormInvalid();
+		selectSimpleSequence();
+		Assert.assertEquals("Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStruct();
+
+		// Set ID to a DCE - ok, child still has no prefix
+		editorBot.textWithLabel(ID_FIELD).setText("DCE:12345678-9abc-def0-1234-56789abcdef0");
+		assertFormValid();
+		selectSimpleSequence();
+		Assert.assertEquals("Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStruct();
+
+		// Set ID to something valid - ok, child has prefix
+		editorBot.textWithLabel(ID_FIELD).setText("hello");
+		assertFormValid();
+		selectSimpleSequence();
+		Assert.assertEquals("hello::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+	}
+
+	@Test
 	public void testSimpleSequenceID() throws CoreException {
 		selectSimpleSequence();
-		super.testID();
+
+		// ID should already be set
+		Assert.assertEquals("ID::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+
+		editorBot.textWithLabel(ID_FIELD).setText("");
+		assertFormInvalid();
+		editorBot.textWithLabel(ID_FIELD).setText("hello");
+		assertFormValid();
+	}
+
+	@Test
+	public void testName() {
+		// Set name to empty - no ID changes
+		editorBot.textWithLabel(NAME_FIELD).setText("");
+		editorBot.sleep(600);
+		Assert.assertEquals("ID", editorBot.textWithLabel(ID_FIELD).getText());
+		selectSimpleSequence();
+		Assert.assertEquals("ID::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStruct();
+
+		// Set name to valid - IDs change
+		editorBot.textWithLabel(NAME_FIELD).setText("Name1");
+		editorBot.sleep(600);
+		Assert.assertEquals("Name1", editorBot.textWithLabel(ID_FIELD).getText());
+		editorBot.tree().getTreeItem("Name1").select("Simple Sequence");
+		Assert.assertEquals("Name1::Simple Sequence", editorBot.textWithLabel(ID_FIELD).getText());
 	}
 
 	@Test
 	public void testSimpleSequenceName() {
 		selectSimpleSequence();
-		super.testName();
+
+		editorBot.textWithLabel(NAME_FIELD).setText("Name1");
+		assertFormValid();
+		Assert.assertEquals("ID::Name1", editorBot.textWithLabel(ID_FIELD).getText());
 	}
 
 	@Test

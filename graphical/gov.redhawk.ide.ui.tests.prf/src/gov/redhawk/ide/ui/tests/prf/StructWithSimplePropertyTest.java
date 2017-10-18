@@ -13,6 +13,7 @@ package gov.redhawk.ide.ui.tests.prf;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class StructWithSimplePropertyTest extends SimplePropertyTest {
@@ -25,10 +26,9 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 	@Override
 	public void before() throws Exception {
 		super.before();
-		editorBot.sleep(600);
 
 		editorBot.tree().expandNode("ID").select("Simple");
-		editorBot.textWithLabel("ID*:").setText("Simple");
+		editorBot.textWithLabel(NAME_FIELD).setText("Simple");
 		editorBot.sleep(600);
 
 		selectStruct();
@@ -43,15 +43,69 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 	}
 
 	@Test
+	public void testID() throws CoreException {
+		// ID should already be set
+		Assert.assertEquals("ID", editorBot.textWithLabel(ID_FIELD).getText());
+
+		// Set ID to empty - error, child loses prefix
+		editorBot.textWithLabel(ID_FIELD).setText("");
+		assertFormInvalid();
+		selectSimple();
+		Assert.assertEquals("Simple", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStruct();
+
+		// Set ID to a DCE - ok, child still has no prefix
+		editorBot.textWithLabel(ID_FIELD).setText("DCE:12345678-9abc-def0-1234-56789abcdef0");
+		assertFormValid();
+		selectSimple();
+		Assert.assertEquals("Simple", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStruct();
+
+		// Set ID to something valid - ok, child has prefix
+		editorBot.textWithLabel(ID_FIELD).setText("hello");
+		assertFormValid();
+		selectSimple();
+		Assert.assertEquals("hello::Simple", editorBot.textWithLabel(ID_FIELD).getText());
+	}
+
+	@Test
 	public void testSimpleID() throws CoreException {
 		selectSimple();
-		super.testID();
+
+		// ID should already be set
+		Assert.assertEquals("ID::Simple", editorBot.textWithLabel(ID_FIELD).getText());
+
+		editorBot.textWithLabel(ID_FIELD).setText("");
+		assertFormInvalid();
+		editorBot.textWithLabel(ID_FIELD).setText("hello");
+		assertFormValid();
+	}
+
+	@Test
+	public void testName() {
+		// Set name to empty - no ID changes
+		editorBot.textWithLabel(NAME_FIELD).setText("");
+		editorBot.sleep(600);
+		Assert.assertEquals("ID", editorBot.textWithLabel(ID_FIELD).getText());
+		selectSimple();
+		Assert.assertEquals("ID::Simple", editorBot.textWithLabel(ID_FIELD).getText());
+		selectStruct();
+
+		// Set name to valid - IDs change
+		editorBot.textWithLabel(NAME_FIELD).setText("Name1");
+		editorBot.sleep(600);
+		Assert.assertEquals("Name1", editorBot.textWithLabel(ID_FIELD).getText());
+		editorBot.tree().getTreeItem("Name1").select("Simple");
+		Assert.assertEquals("Name1::Simple", editorBot.textWithLabel(ID_FIELD).getText());
 	}
 
 	@Test
 	public void testSimpleName() {
 		selectSimple();
-		super.testName();
+
+		editorBot.textWithLabel(NAME_FIELD).setText("Name1");
+		assertFormValid();
+		Assert.assertEquals("ID::Name1", editorBot.textWithLabel(ID_FIELD).getText());
 	}
 
 	@Test
@@ -154,9 +208,9 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 	@Override
 	public void testUniqueID() {
 		selectSimple();
-		editorBot.textWithLabel("ID*:").setText("ID");
+		editorBot.textWithLabel(ID_FIELD).setText("ID");
 		assertFormInvalid();
-		editorBot.textWithLabel("ID*:").setText("SID");
+		editorBot.textWithLabel(ID_FIELD).setText("SID");
 		assertFormValid();
 
 		super.testUniqueID();
@@ -174,7 +228,7 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 	public void testAddSecondSimple() {
 		editorBot.tree().getTreeItem("ID").select().contextMenu("New").menu("Simple").click();
 		assertFormInvalid();
-		editorBot.textWithLabel("ID*:").setText("SID2");
+		editorBot.textWithLabel(ID_FIELD).setText("SID2");
 		assertFormValid();
 	}
 }

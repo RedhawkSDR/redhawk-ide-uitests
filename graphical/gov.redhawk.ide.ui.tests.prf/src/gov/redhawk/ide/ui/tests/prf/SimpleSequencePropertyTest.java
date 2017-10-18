@@ -36,6 +36,25 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 	}
 
 	@Test
+	public void testID() throws CoreException {
+		// ID should already be set
+		assertFormValid();
+		Assert.assertEquals("ID", editorBot.textWithLabel(ID_FIELD).getText());
+
+		editorBot.textWithLabel(ID_FIELD).setText("");
+		assertFormInvalid();
+		editorBot.textWithLabel(ID_FIELD).setText("hello");
+		assertFormValid();
+	}
+
+	@Test
+	public void testName() {
+		editorBot.textWithLabel(NAME_FIELD).setText("Name1");
+		assertFormValid();
+		Assert.assertEquals("Name1", editorBot.textWithLabel(ID_FIELD).getText());
+	}
+
+	@Test
 	public void testValuesChar() {
 		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
 		testValuesChar(valuesViewer);
