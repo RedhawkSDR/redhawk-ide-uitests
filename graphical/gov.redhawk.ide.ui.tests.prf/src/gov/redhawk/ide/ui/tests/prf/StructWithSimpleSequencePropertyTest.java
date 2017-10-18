@@ -50,26 +50,15 @@ public class StructWithSimpleSequencePropertyTest extends SimpleSequenceProperty
 	}
 
 	@Test
-	public void testSimpleSequenceName() {
-		selectSimpleSequence();
-		super.testName();
-	}
-
-	@Test
 	public void testSimpleSequenceID() throws CoreException {
 		selectSimpleSequence();
 		super.testID();
 	}
 
-	@Override
-	public void testValueAutoUpdate() throws IOException {
+	@Test
+	public void testSimpleSequenceName() {
 		selectSimpleSequence();
-		super.testValueAutoUpdate();
-	}
-
-	@Override
-	protected SimpleSequence getSimpleSequence(Properties properties) {
-		return properties.getStruct().get(0).getSimpleSequence().get(0);
+		super.testName();
 	}
 
 	@Test
@@ -127,8 +116,13 @@ public class StructWithSimpleSequencePropertyTest extends SimpleSequenceProperty
 	}
 
 	@Override
-	public void testAction() {
-		// No Action element available for structs or simple sequences within structs
+	public void testValueAutoUpdate() throws IOException {
+		selectSimpleSequence();
+		super.testValueAutoUpdate();
 	}
 
+	@Override
+	protected SimpleSequence getSimpleSequence(Properties properties) {
+		return properties.getStruct().get(0).getSimpleSequence().get(0);
+	}
 }

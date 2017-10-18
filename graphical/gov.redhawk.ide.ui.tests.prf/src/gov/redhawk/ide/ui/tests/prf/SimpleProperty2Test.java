@@ -23,6 +23,29 @@ import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
  */
 public class SimpleProperty2Test extends AbstractPropertyTabTest {
 
+	@Test
+	public void testAction() {
+		editorBot.button("Add Simple").click();
+		editorBot.textWithLabel("ID*:").setText("ID");
+		editorBot.comboBoxWithLabel("Action:").setSelection("eq");
+		assertFormValid();
+
+		editorBot.comboBoxWithLabel("Action:").setSelection("ge");
+		assertFormValid();
+
+		editorBot.comboBoxWithLabel("Action:").setSelection("gt");
+		assertFormValid();
+
+		editorBot.comboBoxWithLabel("Action:").setSelection("le");
+		assertFormValid();
+
+		editorBot.comboBoxWithLabel("Action:").setSelection("lt");
+		assertFormValid();
+
+		editorBot.comboBoxWithLabel("Action:").setSelection("ne");
+		assertFormValid();
+	}
+
 	/**
 	 * IDE-1548 - do not allow selection of command-line attribute for non-property type properties immediately after
 	 * opening the editor.

@@ -30,31 +30,9 @@ import mil.jpeojtrs.sca.prf.SimpleSequence;
 
 public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 
-	/**
-	 * IDE-152
-	 * Check that adding values to a SimpleSequence via the "Properties" tab automatically updates the prf.xml
-	 * @throws IOException
-	 */
-	@Test
-	public void testValueAutoUpdate() throws IOException {
-		String[] values = { "string1", "string2", "string3" };
-		for (String value : values) {
-			addValue(editorBot, value);
-		}
-		assertFormValid();
-
-		// Check xml
-		Properties properties = getModelFromXml();
-		SimpleSequence simpleSeq = getSimpleSequence(properties);
-		for (String value : values) {
-			Assert.assertTrue("Values block did not contain '" + value + "'", simpleSeq.getValues().getValue().contains(value));
-		}
-
-		clearValues();
-	}
-
-	protected SimpleSequence getSimpleSequence(Properties properties) {
-		return properties.getSimpleSequence().get(0);
+	@Override
+	protected void createType() {
+		editorBot.button("Add Sequence").click();
 	}
 
 	@Test
@@ -300,11 +278,6 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 	}
 
 	@Override
-	protected void createType() {
-		editorBot.button("Add Sequence").click();
-	}
-
-	@Override
 	public void testEnum() throws CoreException {
 		// Override to do nothing since Simple Sequences do not have enums
 	}
@@ -314,5 +287,32 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		assertFormValid();
 
 		testKind(false, false);
+	}
+
+	/**
+	 * IDE-152
+	 * Check that adding values to a SimpleSequence via the "Properties" tab automatically updates the prf.xml
+	 * @throws IOException
+	 */
+	@Test
+	public void testValueAutoUpdate() throws IOException {
+		String[] values = { "string1", "string2", "string3" };
+		for (String value : values) {
+			addValue(editorBot, value);
+		}
+		assertFormValid();
+
+		// Check xml
+		Properties properties = getModelFromXml();
+		SimpleSequence simpleSeq = getSimpleSequence(properties);
+		for (String value : values) {
+			Assert.assertTrue("Values block did not contain '" + value + "'", simpleSeq.getValues().getValue().contains(value));
+		}
+
+		clearValues();
+	}
+
+	protected SimpleSequence getSimpleSequence(Properties properties) {
+		return properties.getSimpleSequence().get(0);
 	}
 }

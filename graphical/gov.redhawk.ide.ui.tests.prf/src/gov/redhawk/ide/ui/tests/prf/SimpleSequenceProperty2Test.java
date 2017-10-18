@@ -25,6 +25,29 @@ import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
  */
 public class SimpleSequenceProperty2Test extends AbstractPropertyTabTest {
 
+	@Test
+	public void testAction() {
+		editorBot.button("Add Sequence").click();
+		editorBot.textWithLabel("ID*:").setText("ID");
+		editorBot.comboBoxWithLabel("Action:").setSelection("eq");
+		assertFormValid();
+
+		editorBot.comboBoxWithLabel("Action:").setSelection("ge");
+		assertFormValid();
+
+		editorBot.comboBoxWithLabel("Action:").setSelection("gt");
+		assertFormValid();
+
+		editorBot.comboBoxWithLabel("Action:").setSelection("le");
+		assertFormValid();
+
+		editorBot.comboBoxWithLabel("Action:").setSelection("lt");
+		assertFormValid();
+
+		editorBot.comboBoxWithLabel("Action:").setSelection("ne");
+		assertFormValid();
+	}
+
 	/**
 	 * IDE-1484 - ensure remove button is enabled immediately upon editor opening
 	 */
