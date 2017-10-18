@@ -19,13 +19,11 @@ import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import mil.jpeojtrs.sca.prf.Properties;
 import mil.jpeojtrs.sca.prf.SimpleSequence;
@@ -59,7 +57,7 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		return properties.getSimpleSequence().get(0);
 	}
 
-	@Test // SUPPRESS CHECKSTYLE INLINE
+	@Test
 	public void testValues() throws CoreException {
 		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
 		// Start with type selected as string
@@ -259,20 +257,6 @@ public class SimpleSequencePropertyTest extends AbstractPropertyTest {
 		addValue(editorBot, "efg");
 		assertFormValid();
 		clearValues();
-
-		// IDE-1484 - ensure remove button is enabled immediately upon editor opening
-		setType("long (32-bit)", "");
-		addValue(editorBot, "1");
-		addValue(editorBot, "2");
-		editor.save();
-		editor.close();
-		ProjectExplorerUtils.openProjectInEditor(bot, "PropTest_Comp", "PropTest_Comp.spd.xml");
-		editor = bot.editorByTitle("PropTest_Comp");
-		SWTBotButton removeButton = editor.bot().button("Remove", 1);
-		bot.table().select(0);
-		Assert.assertTrue(removeButton.isEnabled());
-		removeButton.click();
-		Assert.assertEquals("Value was not removed", 1, bot.table().rowCount());
 	}
 
 	private void setType(String type, String complex) {
