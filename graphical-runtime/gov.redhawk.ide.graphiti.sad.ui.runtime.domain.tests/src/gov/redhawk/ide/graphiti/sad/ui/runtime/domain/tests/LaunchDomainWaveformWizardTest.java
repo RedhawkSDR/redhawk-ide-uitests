@@ -30,7 +30,7 @@ public class LaunchDomainWaveformWizardTest extends UIRuntimeTest {
 
 	@Test
 	public void launchWaveformWithWildcard() {
-		final String waveformNameWildcard = "*HardLimit";
+		final String waveformNameWildcard = "HardLimit";
 		final String waveformNameFull = "SigGenToHardLimitWF";
 
 		ScaExplorerTestUtils.launchDomainViaWizard(bot, DOMAIN, DEVICE_MANAGER);
@@ -53,7 +53,7 @@ public class LaunchDomainWaveformWizardTest extends UIRuntimeTest {
 		SWTBotTreeItem[] visibleItems = wizardBot.tree().getAllItems();
 		Assert.assertEquals("Unexpected number of visible waveforms", 2, visibleItems.length);
 		for (SWTBotTreeItem item : visibleItems) {
-			Assert.assertTrue(item.getText().matches("." + waveformNameWildcard + ".*"));
+			Assert.assertTrue(item.getText().matches(".*" + waveformNameWildcard + ".*"));
 		}
 
 		// Launch waveform and confirm it is added to the domain
