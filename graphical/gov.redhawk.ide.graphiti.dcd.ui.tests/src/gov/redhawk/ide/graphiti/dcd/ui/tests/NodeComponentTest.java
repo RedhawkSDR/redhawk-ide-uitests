@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
@@ -24,7 +25,6 @@ import org.junit.Test;
 
 import gov.redhawk.core.graphiti.dcd.ui.ext.DeviceShape;
 import gov.redhawk.core.graphiti.dcd.ui.ext.ServiceShape;
-import gov.redhawk.core.graphiti.ui.ext.RHContainerShape;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
@@ -35,6 +35,7 @@ import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
 import mil.jpeojtrs.sca.dcd.DcdComponentPlacement;
 import mil.jpeojtrs.sca.dcd.DcdPackage;
 import mil.jpeojtrs.sca.dcd.DeviceConfiguration;
+import mil.jpeojtrs.sca.partitioning.ComponentInstantiation;
 import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class NodeComponentTest extends AbstractGraphitiTest {
@@ -45,6 +46,7 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 	private static final String GPP = "GPP";
 	private static final String GPP_1 = "GPP_1";
 	private static final String SERVICE_STUB = "ServiceStub";
+	private static final String SERVICE_STUB_1 = "ServiceStub_1";
 
 	/**
 	 * IDE-988
@@ -65,19 +67,23 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SERVICE_STUB, 300, 200);
 
 		// Confirm created object is as expected
-		assertGPP(editor.getEditPart(GPP));
-		DiagramTestUtils.deleteFromDiagram(editor, editor.getEditPart(GPP));
-		assertServiceStub(editor.getEditPart(SERVICE_STUB));
-		DiagramTestUtils.deleteFromDiagram(editor, editor.getEditPart(SERVICE_STUB));
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, GPP_1);
+		assertGPP(editor.getEditPart(GPP_1));
+		DiagramTestUtils.deleteFromDiagram(editor, editor.getEditPart(GPP_1));
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SERVICE_STUB_1);
+		assertServiceStub(editor.getEditPart(SERVICE_STUB_1));
+		DiagramTestUtils.deleteFromDiagram(editor, editor.getEditPart(SERVICE_STUB_1));
 
 		// Add to diagram from Target SDR
 		DiagramTestUtils.dragDeviceFromTargetSDRToDiagram(gefBot, editor, GPP);
-		editor.drag(editor.getEditPart(GPP), 10, 50);
-		assertGPP(editor.getEditPart(GPP));
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, GPP_1);
+		editor.drag(editor.getEditPart(GPP_1), 10, 50);
+		assertGPP(editor.getEditPart(GPP_1));
 
 		DiagramTestUtils.dragServiceFromTargetSDRToDiagram(gefBot, editor, SERVICE_STUB);
-		editor.select(editor.getEditPart(SERVICE_STUB));
-		assertServiceStub(editor.getEditPart(SERVICE_STUB));
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SERVICE_STUB_1);
+		editor.select(editor.getEditPart(SERVICE_STUB_1));
+		assertServiceStub(editor.getEditPart(SERVICE_STUB_1));
 	}
 
 	/**
@@ -116,34 +122,36 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 	 * 
 	 * IDE-1506
 	 * Update how IDs are generated for new devices / services
+	 * @throws IOException
 	 */
 	@Test
-	public void checkNameSpacedDeviceInDcd() {
-		projectName = "NameSpacedDeviceTest";
-		String deviceName = "name.space.device";
-		String deviceBaseName = "device";
+	public void checkNameSpacedDeviceInDcd() throws IOException {
+		final String PROJECT_NAME = "NameSpacedDeviceTest";
+		final String DEVICE_NAME = "name.space.device";
+		final String CF_ID_PREFIX = "device_";
+		final String CI_ID = "NameSpacedDeviceTest:device_1";
+		final String CI_USAGENAME = "device_1";
 
-		NodeUtils.createNewNodeProject(bot, projectName, DOMAIN_NAME);
-		editor = gefBot.rhGefEditor(projectName);
-
-		DiagramTestUtils.addFromPaletteToDiagram(editor, deviceName, 0, 0);
+		// Create the node
+		NodeUtils.createNewNodeProject(bot, PROJECT_NAME, DOMAIN_NAME);
+		editor = gefBot.rhGefEditor(PROJECT_NAME);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_NAME, 0, 0);
 		MenuUtils.save(editor);
 
-		// Build expected xml string for device
-		RHContainerShape deviceShape = (RHContainerShape) editor.getEditPart(deviceName).part().getModel();
-		final String componentFileString = "(?s).*<componentfile id=\"" + deviceBaseName + ".*";
-		final String deviceXmlString = DiagramTestUtils.regexStringForDevice(deviceShape);
-
-		// IDE-1506 - check to make sure componentInstantiationId follows pattern of NodeName:DeviceName
-		DcdComponentInstantiation ci = (DcdComponentInstantiation) DUtil.getBusinessObject(deviceShape);
-		Assert.assertTrue("Component instantiation ID does not follow expected pattern (NodeName:DeviceName)",
-			ci.getId().startsWith(projectName + ":" + deviceBaseName + "_"));
-
-		// Check dcd.xml for string
+		// Load DCD model from the text of the XML editor
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
 		String editorText = editor.toTextEditor().getText();
-		Assert.assertTrue("The componentfile should only include the NodeName:DeviceName", editorText.matches(componentFileString));
-		Assert.assertTrue("The dcd.xml should include " + deviceName + "'s device configuration", editorText.matches(deviceXmlString));
+		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
+		Resource resource = resourceSet.createResource(URI.createURI("mem://temp.dcd.xml"), DcdPackage.eCONTENT_TYPE);
+		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
+		DeviceConfiguration dcd = DeviceConfiguration.Util.getDeviceConfiguration(resource);
+
+		// Verify model is correct
+		String compFileId = dcd.getComponentFiles().getComponentFile().get(0).getId();
+		Assert.assertTrue("The component file's ID should start with '" + CF_ID_PREFIX + "'", compFileId.startsWith(CF_ID_PREFIX));
+		ComponentInstantiation ci = dcd.getPartitioning().getComponentPlacement().get(0).getComponentInstantiation().get(0);
+		Assert.assertEquals("Incorrect componentinstantiation id", CI_ID, ci.getId());
+		Assert.assertEquals("Incorrect usagename", CI_USAGENAME, ci.getUsageName());
 	}
 
 	/**
