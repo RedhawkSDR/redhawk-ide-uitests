@@ -10,6 +10,8 @@
  */
 package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
+import java.util.Set;
+
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.junit.After;
@@ -32,30 +34,35 @@ import gov.redhawk.model.sca.ScaComponent;
  */
 public class LocalWaveformComponentDiagramPropertyTest extends LocalComponentDiagramPropertyTest {
 
-	public static final String WAVEFORM_NAME = "AllPropertyTypesWaveform";
 	private String waveformFullName;
 
 	@After
 	@Override
 	public void afterTest() {
-		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox" }, waveformFullName);
+		if (waveformFullName != null) {
+			ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox" }, waveformFullName);
+		}
+		super.afterTest();
+	}
+
+	private void launch(String waveformName, String componentInstance) {
+		ScaExplorerTestUtils.launchWaveformFromTargetSDR(gefBot, waveformName);
+		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, new String[] { "Sandbox" }, waveformName);
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[] { "Sandbox" }, waveformName, DiagramType.GRAPHITI_CHALKBOARD);
+		waveformFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(gefBot, new String[] { "Sandbox" }, waveformName);
+		Assert.assertNotNull("Waveform full name did not populate", waveformFullName);
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformFullName);
+
+		DiagramTestUtils.waitForComponentState(bot, editor, componentInstance, ComponentState.STOPPED);
+
+		ConsoleUtils.disableAutoShowConsole();
+
+		editor.click(componentInstance);
 	}
 
 	@Override
 	protected void prepareObject() {
-		ScaExplorerTestUtils.launchWaveformFromTargetSDR(gefBot, WAVEFORM_NAME);
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(gefBot, new String[] { "Sandbox" }, WAVEFORM_NAME);
-		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[] { "Sandbox" }, WAVEFORM_NAME, DiagramType.GRAPHITI_CHALKBOARD);
-		waveformFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(gefBot, new String[] { "Sandbox" }, WAVEFORM_NAME);
-		Assert.assertNotNull("Waveform full name did not populate", waveformFullName);
-		RHBotGefEditor editor = gefBot.rhGefEditor(waveformFullName);
-		
-		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, COMP_NAME + "_1");
-		DiagramTestUtils.waitForComponentState(bot, editor, COMP_NAME + "_1", ComponentState.STOPPED);
-
-		ConsoleUtils.disableAutoShowConsole();
-		
-		editor.click(COMP_NAME);
+		launch(WAVEFORM, COMP_INST);
 	}
 
 	@Override
@@ -72,5 +79,11 @@ public class LocalWaveformComponentDiagramPropertyTest extends LocalComponentDia
 			}
 		}
 		return new BasicEList<ScaAbstractProperty< ? >>();
+	}
+
+	@Override
+	protected Set<String> setupPropertyFiltering() {
+		launch(WAVEFORM_2, COMP_INST_2);
+		return getNonFilteredPropertyIDs();
 	}
 }
