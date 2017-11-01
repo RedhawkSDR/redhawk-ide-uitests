@@ -28,18 +28,24 @@ import gov.redhawk.ide.swtbot.StandardTestActions;
 import mil.jpeojtrs.sca.prf.Properties;
 import mil.jpeojtrs.sca.prf.SimpleSequence;
 
-public class SimpleSequencePropertyTest extends AbstractPropertyTest {
+public class SimpleSequencePropertyTest extends AbstractPropertyTest<SimpleSequence> {
 
 	@Override
 	protected void createType() {
 		editorBot.button("Add Sequence").click();
 	}
+	
+	@Override
+	protected SimpleSequence getModelObject() throws IOException {
+		return getModelFromXml().getSimpleSequence().get(0);
+	}
 
 	@Test
-	public void testValues() throws CoreException {
+	public void testValues() throws CoreException, IOException {
 		SWTBotTable valuesViewer = editorBot.tableWithLabel("Values:");
 		// Start with type selected as string
-		addValue(editorBot, "true");
+		addValue(editorBot, "\"\"");
+		Assert.assertEquals("Double-quotes did not convert to empty string", "", getModelObject().getValues().getValue().get(0));
 		assertFormValid();
 		StandardTestActions.writeToCell(editorBot, valuesViewer, 0, 0, "a", false, true);
 		assertFormValid();

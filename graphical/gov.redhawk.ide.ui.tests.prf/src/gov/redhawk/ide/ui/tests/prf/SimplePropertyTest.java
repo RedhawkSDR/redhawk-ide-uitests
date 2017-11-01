@@ -13,13 +13,21 @@ package gov.redhawk.ide.ui.tests.prf;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Assert;
 import org.junit.Test;
 
-public class SimplePropertyTest extends AbstractPropertyTest {
+import mil.jpeojtrs.sca.prf.Simple;
+
+public class SimplePropertyTest extends AbstractPropertyTest<Simple> {
 
 	@Override
 	protected void createType() {
 		editorBot.button("Add Simple").click();
+	}
+	
+	@Override
+	protected Simple getModelObject() throws IOException {
+		return getModelFromXml().getSimple().get(0);
 	}
 
 	@Test
@@ -28,14 +36,15 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 	}
 
 	@Test
-	public void testValue() throws CoreException {
+	public void testValue() throws CoreException, IOException {
 		testValue("Value:");
 	}
 
-	protected void testValue(String valueLabel) throws CoreException {
+	protected void testValue(String valueLabel) throws CoreException, IOException {
 		editorBot.textWithLabel(valueLabel).setText("stringValue");
 		assertFormValid();
 		editorBot.textWithLabel(valueLabel).setText("\"\"");
+		Assert.assertEquals("Double-quotes did not convert to empty string", "", getModelObject().getValue());
 		assertFormValid();
 
 		editorBot.textWithLabel(valueLabel).setText("");

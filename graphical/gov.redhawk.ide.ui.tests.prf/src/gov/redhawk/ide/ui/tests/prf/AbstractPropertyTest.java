@@ -34,7 +34,7 @@ import mil.jpeojtrs.sca.prf.SimpleSequence;
 import mil.jpeojtrs.sca.prf.Struct;
 import mil.jpeojtrs.sca.prf.StructSequence;
 
-public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
+public abstract class AbstractPropertyTest<T> extends AbstractPropertyTabTest {
 
 	@Before
 	public void before() throws Exception {
@@ -45,6 +45,7 @@ public abstract class AbstractPropertyTest extends AbstractPropertyTabTest {
 	}
 
 	protected abstract void createType();
+	protected abstract T getModelObject() throws IOException;
 
 	@Test
 	public void testCreate() throws CoreException {

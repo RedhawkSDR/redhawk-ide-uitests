@@ -53,6 +53,11 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 	protected void createType() {
 		editorBot.button("Add StructSeq").click();
 	}
+	
+	@Override
+	protected SimpleSequence getModelObject() throws IOException {
+		return getModelFromXml().getStructSequence().get(0).getStruct().getSimpleSequence().get(0);
+	}
 
 	protected void selectStructSequence() {
 		editorBot.tree().select("ID");
@@ -80,7 +85,7 @@ public class StructSequenceWithSimpleSequencePropertyTest extends SimpleSequence
 
 	@Test
 	@Override
-	public void testValues() throws CoreException {
+	public void testValues() throws CoreException, IOException {
 		selectSimpleSequence();
 		super.testValues();
 	}
