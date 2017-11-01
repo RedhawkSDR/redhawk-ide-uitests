@@ -32,9 +32,11 @@ import gov.redhawk.model.sca.commands.ScaModelCommand;
  */
 public class LocalComponentPropertyTest extends AbstractPropertiesViewRuntimeTest {
 
+	public static final String WAVEFORM = "AllPropertyTypesWaveform";
 	protected static final String COMP_NAME = "AllPropertyTypesComponent";
 	protected static final String COMP_INST = COMP_NAME + "_1";
 
+	protected static final String WAVEFORM_2 = "PropertyFilteringWaveform";
 	protected static final String COMP_NAME_2 = "PropertyFilteringComp";
 	protected static final String COMP_INST_2 = COMP_NAME_2 + "_1";
 
