@@ -16,11 +16,18 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class SimplePropertyTest extends AbstractPropertyTest {
+import mil.jpeojtrs.sca.prf.Simple;
+
+public class SimplePropertyTest extends AbstractPropertyTest<Simple> {
 
 	@Override
 	protected void createType() {
 		editorBot.button("Add Simple").click();
+	}
+	
+	@Override
+	protected Simple getModelObject() throws IOException {
+		return getModelFromXml().getSimple().get(0);
 	}
 
 	@Test
@@ -47,7 +54,7 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 	}
 
 	@Test
-	public void testValueString() throws CoreException {
+	public void testValueString() throws CoreException, IOException {
 		testValueString("Value:");
 	}
 
@@ -96,10 +103,11 @@ public class SimplePropertyTest extends AbstractPropertyTest {
 		testValueUTCTime("Value:");
 	}
 
-	protected void testValueString(String valueLabel) {
+	protected void testValueString(String valueLabel) throws IOException {
 		editorBot.textWithLabel(valueLabel).setText("stringValue");
 		assertFormValid();
 		editorBot.textWithLabel(valueLabel).setText("\"\"");
+		Assert.assertEquals("Double-quotes did not convert to empty string", "", getModelObject().getValue());
 		assertFormValid();
 
 		editorBot.textWithLabel(valueLabel).setText("");

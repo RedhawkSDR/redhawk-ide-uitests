@@ -11,6 +11,7 @@
 package gov.redhawk.ide.ui.tests.prf;
 
 import gov.redhawk.ide.swtbot.StandardTestActions;
+import mil.jpeojtrs.sca.prf.Simple;
 
 import java.io.IOException;
 
@@ -39,6 +40,11 @@ public class StructSequenceWithSimplePropertyTest extends SimplePropertyTest {
 	@Override
 	protected void createType() {
 		editorBot.button("Add StructSeq").click();
+	}
+	
+	@Override
+	protected Simple getModelObject() throws IOException {
+		return getModelFromXml().getStructSequence().get(0).getStruct().getSimple().get(0);
 	}
 
 	protected void selectStructSequence() {
@@ -177,7 +183,7 @@ public class StructSequenceWithSimplePropertyTest extends SimplePropertyTest {
 
 	@Test
 	@Override
-	public void testValueString() throws CoreException {
+	public void testValueString() throws CoreException, IOException {
 		selectSimple();
 		testValueString("Default Value:");
 	}

@@ -16,11 +16,18 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import mil.jpeojtrs.sca.prf.Simple;
+
 public class StructWithSimplePropertyTest extends SimplePropertyTest {
 
 	@Override
 	protected void createType() {
 		editorBot.button("Add Struct").click();
+	}
+	
+	@Override
+	protected Simple getModelObject() throws IOException {
+		return getModelFromXml().getStruct().get(0).getSimple().get(0);
 	}
 
 	@Override
@@ -110,7 +117,7 @@ public class StructWithSimplePropertyTest extends SimplePropertyTest {
 
 	@Test
 	@Override
-	public void testValueString() throws CoreException {
+	public void testValueString() throws CoreException, IOException {
 		selectSimple();
 		super.testValueString();
 	}

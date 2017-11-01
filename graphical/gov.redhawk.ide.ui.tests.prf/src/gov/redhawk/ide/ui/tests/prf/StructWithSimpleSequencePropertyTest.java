@@ -25,6 +25,11 @@ public class StructWithSimpleSequencePropertyTest extends SimpleSequenceProperty
 	protected void createType() {
 		editorBot.button("Add Struct").click();
 	}
+	
+	@Override
+	protected SimpleSequence getModelObject() throws IOException {
+		return getModelFromXml().getStruct().get(0).getSimpleSequence().get(0);
+	}
 
 	@Override
 	public void before() throws Exception {
@@ -166,7 +171,7 @@ public class StructWithSimpleSequencePropertyTest extends SimpleSequenceProperty
 
 	@Test
 	@Override
-	public void testValuesString() {
+	public void testValuesString() throws IOException {
 		selectSimpleSequence();
 		super.testValuesString();
 	}
