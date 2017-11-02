@@ -23,11 +23,14 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.impl.ScaDeviceManagerImpl;
@@ -60,7 +63,8 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		Assert.assertEquals("Device manager explorer editor class is incorrect", EDITOR_NAME, editorPart.getClass().getName());
 		IEditorInput editorInput = editorPart.getEditorInput();
 		Assert.assertEquals("Device manager explorer editor's input object is incorrect", ScaFileStoreEditorInput.class, editorInput.getClass());
-		Assert.assertEquals("Device manager explorer editor's input SCA object is incorrect", ScaDeviceManagerImpl.class, ((ScaFileStoreEditorInput) editorInput).getScaObject().getClass());
+		Assert.assertEquals("Device manager explorer editor's input SCA object is incorrect", ScaDeviceManagerImpl.class,
+			((ScaFileStoreEditorInput) editorInput).getScaObject().getClass());
 
 		// IDE-1668
 		Assert.assertEquals("Incorrect title", DEVICE_MANAGER, editorPart.getTitle());
@@ -69,6 +73,13 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		// IDE-1089 test
 		nodeEditor.bot().cTabItem("DeviceManager.dcd.xml").activate();
 		nodeEditor.bot().cTabItem("Diagram").activate();
+
+		// IDE-1347 - Check that properties are visible in the properties view when the diagram is selected
+		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
+		editor.click(0, 0);
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTreeItem treeItem = propTable.getTreeItem("DOMAIN_NAME");
+		Assert.assertEquals(treeItem.cell(1), getDomainName());
 
 		// check that device is removed from editor when released in the Sca Explorer
 		ScaExplorerTestUtils.releaseFromScaExplorer(bot, devMgrPath, GPP_LOCALHOST);

@@ -19,6 +19,8 @@ import org.junit.Test;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
+import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class DomainWaveformTest extends UIRuntimeTest {
@@ -47,6 +49,30 @@ public class DomainWaveformTest extends UIRuntimeTest {
 
 		waveformItem.select();
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTreeItem treeItem = propTable.getTreeItem("lower_limit");
+		Assert.assertEquals(treeItem.cell(1), "-1.0");
+		treeItem = propTable.getTreeItem("upper_limit");
+		Assert.assertEquals(treeItem.cell(1), "1.0");
+		treeItem = propTable.getTreeItem("frequencyExt");
+		Assert.assertEquals(treeItem.cell(1), "1000.0 Hz");
+	}
+
+	/**
+	 * IDE-1347 - Test that waveform properties are visible when the waveform diagram is selected
+	 */
+	@Test
+	public void waveformEditorPropertyView() {
+		final String waveformName = "MistypedPropWaveform";
+
+		ScaExplorerTestUtils.launchWaveformFromDomain(bot, DOMAIN, waveformName);
+		bot.waitUntil(new WaitForEditorCondition(), WaitForEditorCondition.DEFAULT_WAIT_FOR_EDITOR_TIME);
+		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
+
+		final String waveFormFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, DOMAIN_WAVEFORM_PARENT_PATH, waveformName);
+		RHBotGefEditor editor = new RHSWTGefBot().rhGefEditor(waveFormFullName);
+		editor.click(0, 0);
+
 		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
 		SWTBotTreeItem treeItem = propTable.getTreeItem("lower_limit");
 		Assert.assertEquals(treeItem.cell(1), "-1.0");

@@ -61,4 +61,8 @@ public abstract class AbstractGraphitiDomainNodeRuntimeTest extends UIRuntimeTes
 		NodeBooterLauncherUtil.getInstance().terminateAll();
 		ConsoleUtils.removeTerminatedLaunches(bot);
 	}
+
+	public String getDomainName() {
+		return domain;
+	}
 }
