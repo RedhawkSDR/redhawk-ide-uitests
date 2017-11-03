@@ -12,11 +12,15 @@ package gov.redhawk.ide.graphiti.dcd.ui.tests;
 
 import java.math.BigInteger;
 
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
+import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -44,15 +48,15 @@ public class StartOrderTest extends AbstractGraphitiTest {
 	public void changeStartOrderTest() {
 		nodeName = "Change_Start_Order";
 
-		// Create a new empty waveform
+		// Create a new empty node
 		NodeUtils.createNewNodeProject(bot, nodeName, DOMAIN);
 		RHBotGefEditor editor = gefBot.rhGefEditor(nodeName);
 
-		// Add components to the diagram
+		// Add devices to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 100, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 100, 150);
 
-		// Get component objects
+		// Get device objects
 		DcdComponentInstantiation gppCompInst = DiagramTestUtils.getDeviceObject(editor, GPP_1);
 		DcdComponentInstantiation deviceStubCompInst = DiagramTestUtils.getDeviceObject(editor, DEVICE_STUB_1);
 
@@ -93,18 +97,29 @@ public class StartOrderTest extends AbstractGraphitiTest {
 	public void changeStartOrderWithNullTest() {
 		nodeName = "Null_Start_Order";
 
-		// Create a new waveform with an assembly controller
-		// ...when assembly controllers are added from the new project wizard they don't have a start order
-		// ...this is kind of a hack
 		NodeUtils.createNewNodeProject(bot, nodeName, DOMAIN, GPP);
 		RHBotGefEditor editor = gefBot.rhGefEditor(nodeName);
+		final DcdComponentInstantiation tmpGpp = DiagramTestUtils.getDeviceObject(editor, GPP);
 
-		// Add additional components to the diagram
+		// GPP will be created with a start order, so set it to null now and refresh the diagram
+		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(tmpGpp);
+		editingDomain.getCommandStack().execute(new RecordingCommand(editingDomain) {
+
+			@Override
+			protected void doExecute() {
+				tmpGpp.setStartOrder(null);
+			}
+		});
+		editor.saveAndClose();
+		ProjectExplorerUtils.openProjectInEditor(bot, nodeName, "DeviceManager.dcd.xml");
+		editor = gefBot.rhGefEditor(nodeName);
+
+		// Add an additional device and service to the diagram
 		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 10, 150);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SERVICE_STUB, 200, 10);
 		MenuUtils.save(editor);
 
-		// Get component objects
+		// Get device/service objects
 		DcdComponentInstantiation gppCompInst = DiagramTestUtils.getDeviceObject(editor, GPP);
 		DcdComponentInstantiation deviceStubCompInst = DiagramTestUtils.getDeviceObject(editor, DEVICE_STUB);
 		DcdComponentInstantiation serviceStubCompInst = DiagramTestUtils.getDeviceObject(editor, SERVICE_STUB);
