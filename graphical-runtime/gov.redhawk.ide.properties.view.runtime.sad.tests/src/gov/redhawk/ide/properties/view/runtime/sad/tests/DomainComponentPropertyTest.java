@@ -81,9 +81,12 @@ public class DomainComponentPropertyTest extends AbstractPropertiesViewRuntimeTe
 	}
 
 	@Override
-	protected Set<String> setupPropertyFiltering() {
+	protected void setupPropertyFiltering() {
 		launch(WAVEFORM_2, COMPONENT_INST_2);
+	}
 
+	@Override
+	protected Set<String> getNonFilteredPropertyIDs() {
 		Set<String> nonFilteredIDs = new HashSet<>();
 		Collections.addAll(nonFilteredIDs, //
 			"prop_ro", "prop_rw", "prop_wo", //

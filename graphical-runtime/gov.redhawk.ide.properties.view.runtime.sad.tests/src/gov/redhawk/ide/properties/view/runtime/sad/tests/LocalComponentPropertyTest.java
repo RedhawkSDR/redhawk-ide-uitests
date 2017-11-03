@@ -73,11 +73,11 @@ public class LocalComponentPropertyTest extends AbstractPropertiesViewRuntimeTes
 	}
 
 	@Override
-	protected Set<String> setupPropertyFiltering() {
+	protected void setupPropertyFiltering() {
 		launch(COMP_NAME_2, COMP_INST_2);
-		return getNonFilteredPropertyIDs();
 	}
 
+	@Override
 	protected Set<String> getNonFilteredPropertyIDs() {
 		Set<String> nonFilteredIDs = new HashSet<>();
 		Collections.addAll(nonFilteredIDs, //

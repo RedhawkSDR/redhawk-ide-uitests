@@ -78,14 +78,19 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	 */
 	protected abstract void prepareObject();
 
+	protected abstract List<ScaAbstractProperty< ? >> getModelObjectProperties();
+
 	/**
 	 * Performs setup for {@link #propertyFiltering()}. Should launch the object, open the property view, select the
 	 * object.
-	 * @return The IDs of all properties that should be shown.
 	 */
-	protected abstract Set<String> setupPropertyFiltering();
+	protected abstract void setupPropertyFiltering();
 
-	protected abstract List<ScaAbstractProperty< ? >> getModelObjectProperties();
+	/**
+	 * Used by {@link #propertyFiltering()}.
+	 * @return The set of properties that should be displayed
+	 */
+	protected abstract Set<String> getNonFilteredPropertyIDs();
 
 	@BeforeClass
 	public static void disableAutoShowConsole() {
@@ -245,7 +250,8 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void propertyFiltering() {
-		Set<String> requiredIDs = setupPropertyFiltering();
+		setupPropertyFiltering();
+		Set<String> requiredIDs = getNonFilteredPropertyIDs();
 
 		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
 		for (SWTBotTreeItem treeItem : propTree.getAllItems()) {

@@ -10,8 +10,6 @@
  */
 package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
-import java.util.Set;
-
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -31,12 +29,11 @@ public class LocalComponentDiagramPropertyTest extends LocalComponentPropertyTes
 	}
 
 	@Override
-	protected Set<String> setupPropertyFiltering() {
+	protected void setupPropertyFiltering() {
 		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, COMP_NAME_2, 0, 0);
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, COMP_INST_2);
 		DiagramTestUtils.waitForComponentState(bot, editor, COMP_INST_2, ComponentState.STOPPED);
 		editor.click(COMP_INST_2);
-		return getNonFilteredPropertyIDs();
 	}
 }

@@ -10,8 +10,6 @@
  */
 package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
-import java.util.Set;
-
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.junit.After;
@@ -82,8 +80,7 @@ public class LocalWaveformComponentDiagramPropertyTest extends LocalComponentDia
 	}
 
 	@Override
-	protected Set<String> setupPropertyFiltering() {
+	protected void setupPropertyFiltering() {
 		launch(WAVEFORM_2, COMP_INST_2);
-		return getNonFilteredPropertyIDs();
 	}
 }
