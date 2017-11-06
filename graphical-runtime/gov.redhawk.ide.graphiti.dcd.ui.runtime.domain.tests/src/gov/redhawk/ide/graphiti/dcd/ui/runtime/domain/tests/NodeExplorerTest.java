@@ -111,14 +111,23 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		// Launch the node to be used for this test
 		launchDomainAndDevMgr(connectionDeviceManager);
 
-		// Test that connections cannot be deleted
+		// Get reference to the connection
 		editor = gefBot.gefEditor(connectionDeviceManager);
 		editor.setFocus();
 		SWTBotGefEditPart dOneUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, dOne, doubleOutPort);
 		SWTBotGefConnectionEditPart dOneConn = DiagramTestUtils.getSourceConnectionsFromPort(editor, dOneUsesEditPart).get(0);
 		String connectionId = getConnectionId(dOneConn);
 
+		// Check that connection properties are visible
+		dOneConn.select();
+		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Advanced");
+		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
+		Assert.assertEquals(treeItem.cell(1), connectionId);
+
+		// Test that connection cannot be deleted.
 		// Have to try and delete with the hot-key since the context menu for "delete" should not exist
+		editor.setFocus();
 		dOneConn.select();
 		dOneConn.click();
 		Robot robot = new Robot();
