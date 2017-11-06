@@ -78,9 +78,12 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 	}
 
 	@Override
-	protected Set<String> setupPropertyFiltering() {
+	protected void setupPropertyFiltering() {
 		launch(DEVICE_MANAGER_2, DEVICE_INST_2);
+	}
 
+	@Override
+	protected Set<String> getNonFilteredPropertyIDs() {
 		Set<String> nonFilteredIDs = new HashSet<>();
 		Collections.addAll(nonFilteredIDs, //
 			"prop_ro", "prop_rw", "prop_wo", //

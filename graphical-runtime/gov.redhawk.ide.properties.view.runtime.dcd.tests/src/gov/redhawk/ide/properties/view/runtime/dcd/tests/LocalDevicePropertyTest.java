@@ -75,11 +75,11 @@ public class LocalDevicePropertyTest extends AbstractPropertiesViewRuntimeTest {
 	}
 
 	@Override
-	protected Set<String> setupPropertyFiltering() {
+	protected void setupPropertyFiltering() {
 		launch(DEVICE_NAME_2, DEVICE_INST_2);
-		return getNonFilteredPropertyIDs();
 	}
 
+	@Override
 	protected Set<String> getNonFilteredPropertyIDs() {
 		Set<String> nonFilteredIDs = new HashSet<>();
 		Collections.addAll(nonFilteredIDs, //

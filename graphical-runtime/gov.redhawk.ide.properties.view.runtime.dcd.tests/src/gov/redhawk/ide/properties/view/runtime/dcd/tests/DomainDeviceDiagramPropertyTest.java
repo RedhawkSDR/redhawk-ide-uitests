@@ -10,8 +10,6 @@
  */
 package gov.redhawk.ide.properties.view.runtime.dcd.tests;
 
-import java.util.Set;
-
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
@@ -29,12 +27,11 @@ public class DomainDeviceDiagramPropertyTest extends DomainDevicePropertyTest {
 	}
 
 	@Override
-	protected Set<String> setupPropertyFiltering() {
-		Set<String> nonFilteredIDs = super.setupPropertyFiltering();
+	protected void setupPropertyFiltering() {
+		super.setupPropertyFiltering();
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[] { getDomain(), "Device Managers" }, DEVICE_MANAGER_2,
 			DiagramType.GRAPHITI_NODE_EXPLORER);
 		SWTBotGefEditor editor = gefBot.gefEditor(DEVICE_MANAGER_2);
 		editor.click(DEVICE_INST_2);
-		return nonFilteredIDs;
 	}
 }
