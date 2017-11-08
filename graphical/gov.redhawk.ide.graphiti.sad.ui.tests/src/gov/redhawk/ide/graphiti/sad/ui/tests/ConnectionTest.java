@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
@@ -115,18 +116,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 			Assert.assertTrue("Only arrowhead decorator should be present", decorator.getGraphicsAlgorithm() instanceof Polyline);
 		}
 
-		// IDE-1582 - Check that connection properties are available in the properties view
-		SWTBotGefConnectionEditPart connEditPart = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart).get(0);
-		SadConnectInterface connInterface = (SadConnectInterface) ((FreeFormConnection) connEditPart.part().getModel()).getLink().getBusinessObjects().get(0);
-		String connectionId = connInterface.getId();
-		connEditPart.select();
-		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
-		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
-		Assert.assertEquals(connectionId, treeItem.cell(1));
-
 		// Check sad.xml new for connection
-		editor.setFocus();
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
 		editorText = editor.toTextEditor().getText();
 		Assert.assertTrue("The sad.xml should include a new connection", editorText.matches("(?s).*<connectinterface id=\"connection_1\">.*"));
@@ -155,6 +145,51 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertTrue("Source connections should be empty, all connections were deleted", sourceConnections.isEmpty());
 		Assert.assertTrue("All connections should have been deleted", diagram.getConnections().isEmpty());
+	}
+
+	/**
+	 * IDE-1582 - Check that connection properties are available in the properties view
+	 */
+	@Test
+	public void modifyConnection() {
+		waveformName = "modifyConnectionWaveform";
+
+		// Create an empty waveform project
+		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
+
+		// Add components to diagram from palette
+		RHBotGefEditor editor = gefBot.rhGefEditor(waveformName);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, SIG_GEN, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, HARD_LIMIT, 300, 0);
+
+		// Get component edit parts and container shapes
+		SWTBotGefEditPart sourceComponentEditPart = editor.getEditPart(SIG_GEN_1);
+		ContainerShape sourceContainerShape = (ContainerShape) sourceComponentEditPart.part().getModel();
+		SWTBotGefEditPart targetComponentEditPart = editor.getEditPart(HARD_LIMIT_1);
+		ContainerShape targetContainerShape = (ContainerShape) targetComponentEditPart.part().getModel();
+
+		// Get port edit parts
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1);
+
+		// Draw the connection and save
+		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
+		MenuUtils.save(editor);
+		Connection connection = DUtil.getIncomingConnectionsContainedInContainerShape(targetContainerShape).get(0);
+
+		// Modify connection
+		SWTBotGefConnectionEditPart connEditPart = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart).get(0);
+		SadConnectInterface connInterface = (SadConnectInterface) ((FreeFormConnection) connEditPart.part().getModel()).getLink().getBusinessObjects().get(0);
+		String connectionId = connInterface.getId();
+		connEditPart.select();
+		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
+		Assert.assertEquals(connectionId, treeItem.cell(1));
+		final String newConnId = "newConnectionId";
+		StandardTestActions.writeToCell(bot, treeItem, 1, newConnId);
+		connection = DUtil.getOutgoingConnectionsContainedInContainerShape(sourceContainerShape).get(0);
+		Assert.assertEquals((DUtil.getBusinessObject(connection, SadConnectInterface.class)).getId(), newConnId);
 	}
 
 	/**

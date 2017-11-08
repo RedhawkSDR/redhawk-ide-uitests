@@ -28,6 +28,7 @@ import org.junit.Test;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
+import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.ConnectionUtils;
@@ -117,18 +118,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		ProvidesPortStub providesPort = (ProvidesPortStub) DUtil.getBusinessObject(connection.getEnd());
 		Assert.assertEquals("Connect provides port not correct", providesPort, DUtil.getBusinessObject((ContainerShape) providesEditPart.part().getModel()));
 
-		// IDE-1582 - Check that connection properties are available in the properties view
-		SWTBotGefConnectionEditPart connEditPart = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart).get(0);
-		DcdConnectInterface connInterface = (DcdConnectInterface) ((FreeFormConnection) connEditPart.part().getModel()).getLink().getBusinessObjects().get(0);
-		String connectionId = connInterface.getId();
-		connEditPart.select();
-		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
-		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
-		Assert.assertEquals(connectionId, treeItem.cell(1));
-
 		// Check dcd.xml new for connection
-		editor.setFocus();
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
 		editorText = editor.toTextEditor().getText();
 		Assert.assertTrue("The dcd.xml should include a new connection", editorText.matches("(?s).*<connectinterface id=\"connection_1\">.*"));
@@ -157,6 +147,52 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		sourceConnections = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart);
 		Assert.assertTrue("Source connections should be empty, all connections were deleted", sourceConnections.isEmpty());
 		Assert.assertTrue("All connections should have been deleted", diagram.getConnections().isEmpty());
+	}
+
+	/**
+	 * IDE-1582 - Check that connection properties are available in the properties view
+	 */
+	@Test
+	public void modifyConnection() {
+		projectName = "modifyConnectionTest";
+
+		// Create an empty node project
+		NodeUtils.createNewNodeProject(gefBot, projectName, DOMAIN_NAME);
+		editor = gefBot.rhGefEditor(projectName);
+		editor.setFocus();
+
+		// Add to diagram from palette
+		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
+		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 300, 200);
+
+		// Get component edit parts and container shapes
+		SWTBotGefEditPart sourceEditPart = editor.getEditPart(DEVICE_STUB_1);
+		ContainerShape sourceShape = (ContainerShape) sourceEditPart.part().getModel();
+		SWTBotGefEditPart targetEditPart = editor.getEditPart(DEVICE_STUB_2);
+		ContainerShape targetShape = (ContainerShape) targetEditPart.part().getModel();
+
+		// Get port edit parts
+		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, DEVICE_STUB_1, DEVICE_STUB_OUT);
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB_2, DEVICE_STUB_IN);
+
+		// Draw the connection and save
+		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
+		MenuUtils.save(editor);
+		Connection connection = DUtil.getIncomingConnectionsContainedInContainerShape(targetShape).get(0);
+
+		// Modify connection
+		SWTBotGefConnectionEditPart connEditPart = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart).get(0);
+		DcdConnectInterface connInterface = (DcdConnectInterface) ((FreeFormConnection) connEditPart.part().getModel()).getLink().getBusinessObjects().get(0);
+		String connectionId = connInterface.getId();
+		connEditPart.select();
+		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
+		Assert.assertEquals(connectionId, treeItem.cell(1));
+		final String newConnId = "newConnectionId";
+		StandardTestActions.writeToCell(bot, treeItem, 1, newConnId);
+		connection = DUtil.getOutgoingConnectionsContainedInContainerShape(sourceShape).get(0);
+		Assert.assertEquals((DUtil.getBusinessObject(connection, DcdConnectInterface.class)).getId(), newConnId);
 	}
 
 	/**
