@@ -10,11 +10,8 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -31,9 +28,7 @@ import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.sad.SadComponentPlacement;
-import mil.jpeojtrs.sca.sad.SadPackage;
 import mil.jpeojtrs.sca.sad.SoftwareAssembly;
-import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class ComponentTabTest extends AbstractGraphitiTest {
 
@@ -58,7 +53,7 @@ public class ComponentTabTest extends AbstractGraphitiTest {
 		editorBot = editor.bot();
 
 		editorBot.cTabItem(PROJECT_NAME + ".sad.xml").activate();
-		sad = getSoftwareAssembly(editor);
+		sad = WaveformUtils.getSoftwareAssembly(editor);
 	}
 
 	/**
@@ -73,7 +68,7 @@ public class ComponentTabTest extends AbstractGraphitiTest {
 		addElement(SIGGEN_2, RH_SIGGEN);
 
 		// Make sure the components were added to the SCA Model
-		sad = getSoftwareAssembly(editor);
+		sad = WaveformUtils.getSoftwareAssembly(editor);
 		String[] componentIds = { SIGGEN_1, SIGGEN_2 };
 		for (String id : componentIds) {
 			boolean componentFound = false;
@@ -100,7 +95,7 @@ public class ComponentTabTest extends AbstractGraphitiTest {
 		editorBot.button("Remove").click();
 		boolean componentFound = false;
 		waitForTreeItemToBeRemoved(SIGGEN_1);
-		sad = getSoftwareAssembly(editor);
+		sad = WaveformUtils.getSoftwareAssembly(editor);
 		for (SadComponentPlacement placement : sad.getPartitioning().getComponentPlacement()) {
 			String ciId = placement.getComponentInstantiation().get(0).getId();
 			if (SIGGEN_1.equals(ciId)) {
@@ -152,14 +147,4 @@ public class ComponentTabTest extends AbstractGraphitiTest {
 			}
 		});
 	}
-
-	private SoftwareAssembly getSoftwareAssembly(RHBotGefEditor editor) throws IOException {
-		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
-		String editorText = editor.toTextEditor().getText();
-		Resource resource = resourceSet.createResource(org.eclipse.emf.common.util.URI.createURI("mem://temp.sad.xml"), SadPackage.eCONTENT_TYPE);
-		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
-		return SoftwareAssembly.Util.getSoftwareAssembly(resource);
-
-	}
-
 }

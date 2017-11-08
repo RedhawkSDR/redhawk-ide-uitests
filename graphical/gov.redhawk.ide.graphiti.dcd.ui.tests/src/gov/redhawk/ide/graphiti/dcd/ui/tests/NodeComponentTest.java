@@ -101,7 +101,7 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 		// Add the device and check that it was added to the dcd.xml
 		DiagramTestUtils.addFromPaletteToDiagram(editor, GPP, 0, 0);
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
-		DeviceConfiguration dcd = getDeviceConfiguration(editor);
+		DeviceConfiguration dcd = NodeUtils.getDeviceConfiguration(editor);
 		DcdComponentPlacement placement = dcd.getPartitioning().getComponentPlacement().get(0);
 		DcdComponentInstantiation ci = placement.getComponentInstantiation().get(0);
 		Assert.assertNotNull("Device Instantiation not found", ci);
@@ -111,7 +111,7 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
 		DiagramTestUtils.deleteFromDiagram(editor, editor.getEditPart(GPP_1));
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
-		dcd = getDeviceConfiguration(editor);
+		dcd = NodeUtils.getDeviceConfiguration(editor);
 		Assert.assertTrue("Device was not removed", dcd.getPartitioning().getComponentPlacement().isEmpty());
 		Assert.assertNull("ComponentFile element was not removed", dcd.getComponentFiles());
 	}
@@ -249,13 +249,5 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 
 		// SERVICE_STUB should not have a port
 		Assert.assertTrue(serviceShape.getUsesPortStubs().size() == 0 && serviceShape.getProvidesPortStubs().size() == 0);
-	}
-
-	private DeviceConfiguration getDeviceConfiguration(RHBotGefEditor editor) throws IOException {
-		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
-		String editorText = editor.toTextEditor().getText();
-		Resource resource = resourceSet.createResource(org.eclipse.emf.common.util.URI.createURI("mem://temp.dcd.xml"), DcdPackage.eCONTENT_TYPE);
-		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
-		return DeviceConfiguration.Util.getDeviceConfiguration(resource);
 	}
 }

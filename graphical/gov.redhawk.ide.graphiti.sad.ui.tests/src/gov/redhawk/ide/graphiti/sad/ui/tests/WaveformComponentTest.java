@@ -12,7 +12,6 @@ package gov.redhawk.ide.graphiti.sad.ui.tests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -22,8 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RunnableWithResult;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -55,9 +52,7 @@ import gov.redhawk.ide.swtbot.diagram.StartOrderUtils;
 import mil.jpeojtrs.sca.sad.HostCollocation;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 import mil.jpeojtrs.sca.sad.SadComponentPlacement;
-import mil.jpeojtrs.sca.sad.SadPackage;
 import mil.jpeojtrs.sca.sad.SoftwareAssembly;
-import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class WaveformComponentTest extends AbstractGraphitiTest {
 
@@ -199,7 +194,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 
 		// Check that components are included in the sad.xml
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
-		SoftwareAssembly sad = getSoftwareAssembly(editor);
+		SoftwareAssembly sad = WaveformUtils.getSoftwareAssembly(editor);
 
 		String[] componentIds = { SIG_GEN_1, HARD_LIMIT_1 };
 		for (String compId : componentIds) {
@@ -217,7 +212,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		editor.directEditType(editedUsageName);
 
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
-		sad = getSoftwareAssembly(editor);
+		sad = WaveformUtils.getSoftwareAssembly(editor);
 		SadComponentInstantiation ci = sad.getComponentInstantiation(SIG_GEN_1);
 		Assert.assertNotNull("Component Instantiation not found", ci);
 		Assert.assertEquals("Unexpected usaged name for " + ci.getId(), editedUsageName, ci.getUsageName());
@@ -430,7 +425,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		RHBotGefEditor editor = gefBot.rhGefEditor(projectName);
 
 		// Sanity check confirm that both components are in the same placement
-		SoftwareAssembly sad = getSoftwareAssembly(editor);
+		SoftwareAssembly sad = WaveformUtils.getSoftwareAssembly(editor);
 		Assert.assertEquals("Incorrect number of components found", 2, sad.getAllComponentInstantiations().size());
 		Assert.assertTrue("Placement does not have multiple children",
 			sad.getPartitioning().getComponentPlacement().get(0).getComponentInstantiation().size() > 1);
@@ -441,17 +436,9 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		Assert.assertNull(editor.getEditPart(SIG_GEN_1));
 
 		// Ensure that the other component and the placement remain unchanged
-		sad = getSoftwareAssembly(editor);
+		sad = WaveformUtils.getSoftwareAssembly(editor);
 		Assert.assertNull("SigGen_1 was not removed from the SCA model", sad.getComponentInstantiation(SIG_GEN_1));
 		Assert.assertTrue("Placement has incorrect number of children",
 			sad.getPartitioning().getComponentPlacement().get(0).getComponentInstantiation().size() == 1);
-	}
-
-	private SoftwareAssembly getSoftwareAssembly(RHBotGefEditor editor) throws IOException {
-		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
-		String editorText = editor.toTextEditor().getText();
-		Resource resource = resourceSet.createResource(org.eclipse.emf.common.util.URI.createURI("mem://temp.sad.xml"), SadPackage.eCONTENT_TYPE);
-		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
-		return SoftwareAssembly.Util.getSoftwareAssembly(resource);
 	}
 }

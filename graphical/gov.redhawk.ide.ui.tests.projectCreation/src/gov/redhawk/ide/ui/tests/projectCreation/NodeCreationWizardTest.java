@@ -10,7 +10,6 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.projectCreation;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -19,11 +18,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -33,14 +28,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.codegen.util.ProjectCreator;
+import gov.redhawk.ide.swtbot.NodeUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
+import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
-import mil.jpeojtrs.sca.dcd.DcdPackage;
 import mil.jpeojtrs.sca.dcd.DeviceConfiguration;
-import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class NodeCreationWizardTest extends AbstractCreationWizard2Test {
 
@@ -81,7 +76,7 @@ public class NodeCreationWizardTest extends AbstractCreationWizard2Test {
 		view.bot().tree().getTreeItem(projectName).expand().getNode("DeviceManager.dcd.xml");
 		bot.waitUntil(new WaitForEditorCondition(), 30000, 500);
 
-		SWTBotEditor editor = bot.activeEditor();
+		RHBotGefEditor editor = gefBot.rhGefEditor(projectName);
 		editor.bot().cTabItem("Overview").activate();
 		Assert.assertEquals(projectName, editor.bot().textWithLabel("Name:").getText());
 
@@ -93,7 +88,7 @@ public class NodeCreationWizardTest extends AbstractCreationWizard2Test {
 		gefEditor.getEditPart(serviceName);
 
 		// Check start order
-		DeviceConfiguration dcd = getDeviceConfiguration(editor);
+		DeviceConfiguration dcd = NodeUtils.getDeviceConfiguration(editor);
 		DcdComponentInstantiation gppDevice = dcd.getComponentInstantiation("namespaced.node:GPP_1");
 		Assert.assertEquals("GPP device start order is incorrect", BigInteger.ZERO, gppDevice.getStartOrder());
 		DcdComponentInstantiation device = dcd.getComponentInstantiation("namespaced.node:device_1");
@@ -123,14 +118,6 @@ public class NodeCreationWizardTest extends AbstractCreationWizard2Test {
 				}
 			}
 		});
-	}
-
-	private DeviceConfiguration getDeviceConfiguration(SWTBotEditor editor) throws IOException {
-		String editorText = editor.toTextEditor().getText();
-		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
-		Resource resource = resourceSet.createResource(URI.createURI("mem://temp.dcd.xml"), DcdPackage.eCONTENT_TYPE);
-		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
-		return DeviceConfiguration.Util.getDeviceConfiguration(resource);
 	}
 
 	@Override

@@ -10,13 +10,8 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.dcd.ui.tests;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -27,23 +22,19 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.NodeUtils;
-import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
 import mil.jpeojtrs.sca.dcd.DcdComponentPlacement;
-import mil.jpeojtrs.sca.dcd.DcdPackage;
 import mil.jpeojtrs.sca.dcd.DeviceConfiguration;
 import mil.jpeojtrs.sca.partitioning.ComponentFile;
 import mil.jpeojtrs.sca.prf.SimpleRef;
-import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class DeviceTabTest extends AbstractGraphitiTest {
 
@@ -70,7 +61,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		editorBot = editor.bot();
 
 		editorBot.cTabItem("DeviceManager.dcd.xml").activate();
-		dcd = getDeviceConfiguration(editor);
+		dcd = NodeUtils.getDeviceConfiguration(editor);
 	}
 
 	/**
@@ -84,7 +75,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 
 		// Assert that componentFile elements were created for each device
 		String[] deviceNames = { GPP, "DeviceStub" };
-		dcd = getDeviceConfiguration(editor);
+		dcd = NodeUtils.getDeviceConfiguration(editor);
 		for (String deviceName : deviceNames) {
 			boolean componentFileFound = false;
 			for (ComponentFile file : dcd.getComponentFiles().getComponentFile()) {
@@ -100,7 +91,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		editorBot.tree(0).getTreeItem(GPP + "_1").select();
 		editorBot.button("Remove").click();
 		waitForTreeItemToBeRemoved(GPP + "_1");
-		dcd = getDeviceConfiguration(editor);
+		dcd = NodeUtils.getDeviceConfiguration(editor);
 		boolean componentFileFound = false;
 		for (ComponentFile file : dcd.getComponentFiles().getComponentFile()) {
 			if (file.getId().matches(GPP + ".*")) {
@@ -132,7 +123,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		// Test adding a device
 		SWTBotTreeItem treeItem = addElement(elementName, tableIndex);
 		boolean deviceFound = false;
-		dcd = getDeviceConfiguration(editor);
+		dcd = NodeUtils.getDeviceConfiguration(editor);
 		String nodeName = dcd.getName();
 		String deviceId = nodeName + ":" + elementName + "_1";
 		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
@@ -153,8 +144,8 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		treeItem.select();
 		editorBot.button("Remove").click();
 		deviceFound = false;
-		waitForTreeItemToBeRemoved(elementName + "_1");
-		dcd = getDeviceConfiguration(editor);
+		waitForTreeItemToBeRemoved(GPP + "_1");
+		dcd = NodeUtils.getDeviceConfiguration(editor);
 		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
 			String ciId = placement.getComponentInstantiation().get(0).getId();
 			if (deviceId.equals(ciId)) {
@@ -191,7 +182,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		// Assert that the parent is set in the editor and in the SCA model
 		agrTreeItem = editorBot.tree(0).getTreeItem(AGR_DEVICE + "_1");
 		Assert.assertNotNull(agrTreeItem.expand().getNode(GPP + "_1"));
-		dcd = getDeviceConfiguration(editor);
+		dcd = NodeUtils.getDeviceConfiguration(editor);
 		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
 			if (placement.getComponentInstantiation().get(0).getId().matches(".*" + GPP + ".*")) {
 				Assert.assertNotNull(placement.getCompositePartOfDevice());
@@ -206,7 +197,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		// Assert that the GPP device is no longer a composite part of the Aggregate Device
 		agrTreeItem = editorBot.tree(0).getTreeItem(AGR_DEVICE + "_1");
 		Assert.assertEquals(agrTreeItem.getItems().length, 0);
-		dcd = getDeviceConfiguration(editor);
+		dcd = NodeUtils.getDeviceConfiguration(editor);
 		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
 			if (placement.getComponentInstantiation().get(0).getId().matches(".*" + GPP + ".*")) {
 				Assert.assertNull(placement.getCompositePartOfDevice());
@@ -220,7 +211,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		// Run assertions
 		agrTreeItem = editorBot.tree(0).getTreeItem(AGR_DEVICE + "_1");
 		Assert.assertNotNull(agrTreeItem.expand().getNode(GPP + "_1"));
-		dcd = getDeviceConfiguration(editor);
+		dcd = NodeUtils.getDeviceConfiguration(editor);
 		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
 			if (placement.getComponentInstantiation().get(0).getId().matches(".*" + GPP + ".*")) {
 				Assert.assertNotNull(placement.getCompositePartOfDevice());
@@ -234,7 +225,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 
 		// Assert that the GPP device is no longer a composite part of the Aggregate Device
 		waitForTreeItemToBeRemoved(AGR_DEVICE + "_1");
-		dcd = getDeviceConfiguration(editor);
+		dcd = NodeUtils.getDeviceConfiguration(editor);
 		for (DcdComponentPlacement placement : dcd.getPartitioning().getComponentPlacement()) {
 			if (placement.getComponentInstantiation().get(0).getId().matches(".*" + GPP + ".*")) {
 				Assert.assertNull(placement.getCompositePartOfDevice());
@@ -340,7 +331,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		bot.sleep(500);
 		new SWTBot(propTree.widget).text().typeText(newPropValue);
 		KeyboardFactory.getSWTKeyboard().pressShortcut(Keystrokes.CR);
-		dcd = getDeviceConfiguration(editor);
+		dcd = NodeUtils.getDeviceConfiguration(editor);
 		DcdComponentInstantiation compInst = dcd.getPartitioning().getComponentPlacement().get(0).getComponentInstantiation().get(0);
 		Assert.assertNotNull(compInst.getComponentProperties());
 		SimpleRef prop = compInst.getComponentProperties().getSimpleRef().get(0);
@@ -389,20 +380,5 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 				return elementId + " was not removed from 'All Devices' tree";
 			}
 		});
-	}
-
-	@After
-	@Override
-	public void after() throws CoreException {
-		super.after();
-		StandardTestActions.cleanup(new SWTWorkbenchBot());
-	}
-
-	private DeviceConfiguration getDeviceConfiguration(RHBotGefEditor editor) throws IOException {
-		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
-		String editorText = editor.toTextEditor().getText();
-		Resource resource = resourceSet.createResource(org.eclipse.emf.common.util.URI.createURI("mem://temp.dcd.xml"), DcdPackage.eCONTENT_TYPE);
-		resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
-		return DeviceConfiguration.Util.getDeviceConfiguration(resource);
 	}
 }
