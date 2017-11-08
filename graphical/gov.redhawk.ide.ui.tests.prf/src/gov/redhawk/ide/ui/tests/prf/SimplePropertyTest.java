@@ -44,8 +44,8 @@ public class SimplePropertyTest extends AbstractPropertyTest<Simple> {
 		editorBot.textWithLabel(valueLabel).setText("stringValue");
 		assertFormValid();
 		editorBot.textWithLabel(valueLabel).setText("\"\"");
-		Assert.assertEquals("Double-quotes did not convert to empty string", "", getModelObject().getValue());
 		assertFormValid();
+		Assert.assertEquals("Double-quotes did not convert to empty string", "", getModelObject().getValue());
 
 		editorBot.textWithLabel(valueLabel).setText("");
 		assertFormValid();
