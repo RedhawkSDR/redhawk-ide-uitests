@@ -16,15 +16,19 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.NodeUtils;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.ConnectionUtils;
 import gov.redhawk.ide.swtbot.diagram.ConnectionUtils.ConnectionState;
@@ -33,6 +37,7 @@ import gov.redhawk.ide.swtbot.diagram.PortUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils.PortState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHTestBotCanvas;
+import mil.jpeojtrs.sca.dcd.DcdConnectInterface;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
@@ -112,7 +117,18 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		ProvidesPortStub providesPort = (ProvidesPortStub) DUtil.getBusinessObject(connection.getEnd());
 		Assert.assertEquals("Connect provides port not correct", providesPort, DUtil.getBusinessObject((ContainerShape) providesEditPart.part().getModel()));
 
+		// IDE-1582 - Check that connection properties are available in the properties view
+		SWTBotGefConnectionEditPart connEditPart = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart).get(0);
+		DcdConnectInterface connInterface = (DcdConnectInterface) ((FreeFormConnection) connEditPart.part().getModel()).getLink().getBusinessObjects().get(0);
+		String connectionId = connInterface.getId();
+		connEditPart.select();
+		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
+		Assert.assertEquals(connectionId, treeItem.cell(1));
+
 		// Check dcd.xml new for connection
+		editor.setFocus();
 		DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
 		editorText = editor.toTextEditor().getText();
 		Assert.assertTrue("The dcd.xml should include a new connection", editorText.matches("(?s).*<connectinterface id=\"connection_1\">.*"));

@@ -18,14 +18,18 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForEditorCondition;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
@@ -38,6 +42,7 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHTestBotCanvas;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesPortStub;
+import mil.jpeojtrs.sca.sad.SadConnectInterface;
 
 public class ConnectionTest extends AbstractGraphitiTest {
 
@@ -110,7 +115,18 @@ public class ConnectionTest extends AbstractGraphitiTest {
 			Assert.assertTrue("Only arrowhead decorator should be present", decorator.getGraphicsAlgorithm() instanceof Polyline);
 		}
 
+		// IDE-1582 - Check that connection properties are available in the properties view
+		SWTBotGefConnectionEditPart connEditPart = DiagramTestUtils.getSourceConnectionsFromPort(editor, usesEditPart).get(0);
+		SadConnectInterface connInterface = (SadConnectInterface) ((FreeFormConnection) connEditPart.part().getModel()).getLink().getBusinessObjects().get(0);
+		String connectionId = connInterface.getId();
+		connEditPart.select();
+		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
+		Assert.assertEquals(connectionId, treeItem.cell(1));
+
 		// Check sad.xml new for connection
+		editor.setFocus();
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
 		editorText = editor.toTextEditor().getText();
 		Assert.assertTrue("The sad.xml should include a new connection", editorText.matches("(?s).*<connectinterface id=\"connection_1\">.*"));
@@ -120,7 +136,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		bot.toolbarButtonWithTooltip(undoTooltip).click();
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
 		editorText = editor.toTextEditor().getText();
-		Assert.assertFalse("The sad.xml should include a new connection", editorText.matches("(?s).*<connectinterface id=\"connection_1\">.*"));
+		Assert.assertFalse("The sad.xml should not include a connection", editorText.matches("(?s).*<connectinterface id=\"connection_1\">.*"));
 		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.DIAGRAM_TAB);
 
 		bot.toolbarButtonWithTooltip(redoTooltip).click();
