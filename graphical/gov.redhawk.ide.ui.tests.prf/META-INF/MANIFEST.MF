@@ -10,5 +10,6 @@ Require-Bundle: gov.redhawk.ide.ui.xml.editors.tests,
  org.eclipse.emf.ecore,
  mil.jpeojtrs.sca.prf,
  mil.jpeojtrs.sca.util,
- org.eclipse.ui.forms
+ org.eclipse.ui.forms,
+ gov.redhawk.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
