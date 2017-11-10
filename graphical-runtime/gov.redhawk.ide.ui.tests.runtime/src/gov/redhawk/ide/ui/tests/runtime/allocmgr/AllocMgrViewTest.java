@@ -122,6 +122,7 @@ public class AllocMgrViewTest extends UITest {
 
 	@After
 	public void teardownDomain() {
+		// Remove the fake domain from the model
 		ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(null);
 		ScaModelCommand.execute(registry, () -> {
 			ScaDomainManager domMgr = registry.findDomain(DOMAIN_1);
@@ -130,6 +131,7 @@ public class AllocMgrViewTest extends UITest {
 			}
 		});
 
+		// Dispose CORBA objects
 		allocMgrStub = null;
 		if (session != null) {
 			session.dispose();
@@ -159,11 +161,15 @@ public class AllocMgrViewTest extends UITest {
 			}
 		}
 
-		// Remove an allocation status, wait for the row to disappear
+		// Remove an allocation status in the alloc mgr; when it gets polled the row should disappear
 		AllocationStatusType[] statuses = allocMgrStub.allocations(null);
 		allocMgrStub.stub_setAllocationStatuses(Arrays.copyOf(statuses, statuses.length - 1));
 		IPreferenceAccessor preferences = new ScopedPreferenceAccessor(InstanceScope.INSTANCE, "gov.redhawk.sca.model.provider.refresh"); //$NON-NLS-1$
 		long delay = preferences.getLong("refreshInterval");
 		bot.waitUntil(Conditions.treeHasRows(tree, statuses.length - 1), delay + 1000);
+
+		// Use the context menu to deallocate one of the allocations
+		tree.select(0).contextMenu().menu("Deallocate").click();
+		bot.waitUntil(Conditions.treeHasRows(tree, statuses.length - 2));
 	}
 }
