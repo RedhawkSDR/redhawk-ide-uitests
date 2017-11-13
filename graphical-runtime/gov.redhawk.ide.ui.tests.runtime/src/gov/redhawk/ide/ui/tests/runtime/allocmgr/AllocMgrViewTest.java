@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
@@ -24,7 +23,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
+import org.omg.CORBA.StringSeqHelper;
 import org.omg.PortableServer.POA;
 
 import CF.AllocationManager;
@@ -36,8 +37,10 @@ import CF.DeviceManagerPOATie;
 import CF.DevicePOATie;
 import CF.DomainManager;
 import CF.DomainManagerPOATie;
+import CF.PropertiesHelper;
 import CF.AllocationManagerPackage.AllocationStatusType;
 import CF.AllocationManagerPackage.InvalidAllocationId;
+import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
@@ -49,9 +52,7 @@ import gov.redhawk.model.sca.ScaDomainManagerRegistry;
 import gov.redhawk.model.sca.ScaFactory;
 import gov.redhawk.model.sca.commands.ScaModelCommand;
 import gov.redhawk.sca.ScaPlugin;
-import gov.redhawk.sca.util.IPreferenceAccessor;
 import gov.redhawk.sca.util.OrbSession;
-import gov.redhawk.sca.util.ScopedPreferenceAccessor;
 
 public class AllocMgrViewTest extends UITest {
 
@@ -114,14 +115,30 @@ public class AllocMgrViewTest extends UITest {
 
 		// Give the allocation manager some fake entries using both domains' objects
 		List<AllocationStatusType> statuses = new ArrayList<>();
-		statuses.add(new AllocationStatusType("allocid_abc", DOMAIN_1, new DataType[0], dev, devMgr, "source_abc"));
+		Any any1 = orb.create_any();
+		any1.insert_double(1.23);
+		Any any2 = orb.create_any();
+		Any any2a = orb.create_any();
+		StringSeqHelper.insert(any2a, new String[] { "a", "b", "c" });
+		Any any2b = orb.create_any();
+		any2b.insert_double(4.56);
+		PropertiesHelper.insert(any2, new DataType[] { new CF.DataType("a", any2a), new CF.DataType("b", any2b) });
+		CF.DataType[] abcProps = new CF.DataType[] { //
+			new CF.DataType("double", any1),
+			new CF.DataType("struct", any2),
+		};
+		statuses.add(new AllocationStatusType("allocid_abc", DOMAIN_1, abcProps, dev, devMgr, "source_abc"));
 		statuses.add(new AllocationStatusType("allocid_def", DOMAIN_2, new DataType[0], dev, devMgr, "source_def"));
 		statuses.add(new AllocationStatusType("allocid_ghi", DOMAIN_1, new DataType[0], dev2, devMgr2, "source_ghi"));
 		allocMgrStub.stub_setAllocationStatuses(statuses.toArray(new AllocationStatusType[statuses.size()]));
+
+		StandardTestActions.setRefreshInterval(1000);
 	}
 
 	@After
 	public void teardownDomain() {
+		StandardTestActions.resetRefreshInterval();
+
 		// Remove the fake domain from the model
 		ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(null);
 		ScaModelCommand.execute(registry, () -> {
@@ -164,12 +181,42 @@ public class AllocMgrViewTest extends UITest {
 		// Remove an allocation status in the alloc mgr; when it gets polled the row should disappear
 		AllocationStatusType[] statuses = allocMgrStub.allocations(null);
 		allocMgrStub.stub_setAllocationStatuses(Arrays.copyOf(statuses, statuses.length - 1));
-		IPreferenceAccessor preferences = new ScopedPreferenceAccessor(InstanceScope.INSTANCE, "gov.redhawk.sca.model.provider.refresh"); //$NON-NLS-1$
-		long delay = preferences.getLong("refreshInterval");
-		bot.waitUntil(Conditions.treeHasRows(tree, statuses.length - 1), delay + 1000);
+		bot.waitUntil(Conditions.treeHasRows(tree, statuses.length - 1));
+	}
+
+	@Test
+	public void deallocate() {
+		// Open the allocation manager, find the tree
+		SWTBotTreeItem domMgr = ScaExplorerTestUtils.getDomain(bot, DOMAIN_1);
+		domMgr.contextMenu().menu("Allocation Manager").click();
+		SWTBotView view = ViewUtils.getAllocationManagerView(bot);
+		SWTBotTree tree = view.bot().tree();
+		bot.waitUntil(Conditions.treeHasRows(tree, 3));
 
 		// Use the context menu to deallocate one of the allocations
 		tree.select(0).contextMenu().menu("Deallocate").click();
-		bot.waitUntil(Conditions.treeHasRows(tree, statuses.length - 2));
+		bot.waitUntil(Conditions.treeHasRows(tree, 2));
+	}
+
+	@Test
+	public void propertiesView() {
+		// Open the allocation manager, find the tree
+		SWTBotTreeItem domMgr = ScaExplorerTestUtils.getDomain(bot, DOMAIN_1);
+		domMgr.contextMenu().menu("Allocation Manager").click();
+		SWTBotView view = ViewUtils.getAllocationManagerView(bot);
+		SWTBotTree tree = view.bot().tree();
+		bot.waitUntil(Conditions.treeHasRows(tree, 3));
+
+		// Verify we can open the properties view (via double-click or toolbar button)
+		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).close();
+		view.toolbarButton("Show Details").click();
+		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).close();
+		tree.getTreeItem("allocid_abc").doubleClick();
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties");
+
+		// Check that some props are there
+		bot.waitUntil(Conditions.treeHasRows(propTree, 2));
+		propTree.getTreeItem("double");
+		propTree.getTreeItem("struct");
 	}
 }
