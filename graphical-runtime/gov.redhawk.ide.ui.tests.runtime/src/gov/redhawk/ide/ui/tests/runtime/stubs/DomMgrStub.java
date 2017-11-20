@@ -8,7 +8,7 @@
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html.
  */
-package gov.redhawk.ide.ui.tests.runtime.allocmgr;
+package gov.redhawk.ide.ui.tests.runtime.stubs;
 
 import org.omg.CORBA.Object;
 
@@ -47,6 +47,7 @@ public class DomMgrStub extends LoggingStub implements DomainManagerOperations {
 	private String name;
 	private DeviceManager[] devMgrs;
 	private AllocationManager allocMgr;
+	private ConnectionManager connMgr;
 
 	public DomMgrStub(String name) {
 		this.name = name;
@@ -90,9 +91,13 @@ public class DomMgrStub extends LoggingStub implements DomainManagerOperations {
 		return allocMgr;
 	}
 
+	public void stub_setConnectionMgr(ConnectionManager connMgr) {
+		this.connMgr = connMgr;
+	}
+
 	@Override
 	public ConnectionManager connectionMgr() {
-		return null;
+		return connMgr;
 	}
 
 	@Override
@@ -172,5 +177,4 @@ public class DomMgrStub extends LoggingStub implements DomainManagerOperations {
 	@Override
 	public void unregisterRemoteDomainManager(DomainManager unregisteringDomainManager) throws InvalidObjectReference, UnregisterError {
 	}
-
 }

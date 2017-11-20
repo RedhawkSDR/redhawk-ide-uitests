@@ -8,7 +8,7 @@
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html.
  */
-package gov.redhawk.ide.ui.tests.runtime.allocmgr;
+package gov.redhawk.ide.ui.tests.runtime.stubs;
 
 import CF.DataType;
 import CF.PropertiesHolder;

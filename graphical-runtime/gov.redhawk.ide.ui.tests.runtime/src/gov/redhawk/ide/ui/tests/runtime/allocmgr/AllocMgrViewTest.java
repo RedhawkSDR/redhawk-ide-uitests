@@ -44,6 +44,9 @@ import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.ide.ui.tests.runtime.stubs.DevMgrStub;
+import gov.redhawk.ide.ui.tests.runtime.stubs.DeviceStub;
+import gov.redhawk.ide.ui.tests.runtime.stubs.DomMgrStub;
 import gov.redhawk.model.sca.DomainConnectionState;
 import gov.redhawk.model.sca.ScaDevice;
 import gov.redhawk.model.sca.ScaDeviceManager;
@@ -171,7 +174,7 @@ public class AllocMgrViewTest extends UITest {
 			new String[] { "allocid_ghi", DOMAIN_1, DEV_2, DEV_MGR_2, "source_ghi" } //
 		};
 		bot.waitUntil(Conditions.treeHasRows(tree, table.length));
-		for (int row = 0; row < 3; row++) {
+		for (int row = 0; row < table.length; row++) {
 			for (int column = 0; column < 5; column++) {
 				bot.waitUntil(new LabelResolvesConditions(tree, row, column));
 				Assert.assertEquals("Failed row " + row + " column " + column, table[row][column], tree.cell(row, column));
