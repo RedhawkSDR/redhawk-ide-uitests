@@ -107,6 +107,7 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		final String dTwo = "DeviceStub_2";
 		final String doubleInPort = "dataDouble_in";
 		final String doubleOutPort = "dataDouble_out";
+		final String connectionId = "connection_1";
 
 		// Launch the node to be used for this test
 		launchDomainAndDevMgr(connectionDeviceManager);
@@ -116,14 +117,13 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		editor.setFocus();
 		SWTBotGefEditPart dOneUsesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, dOne, doubleOutPort);
 		SWTBotGefConnectionEditPart dOneConn = DiagramTestUtils.getSourceConnectionsFromPort(editor, dOneUsesEditPart).get(0);
-		String connectionId = getConnectionId(dOneConn);
 
 		// Check that connection properties are visible
 		dOneConn.select();
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
 		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Advanced");
 		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
-		Assert.assertEquals(treeItem.cell(1), connectionId);
+		Assert.assertEquals(connectionId, treeItem.cell(1));
 
 		// Test that connection cannot be deleted.
 		// Have to try and delete with the hot-key since the context menu for "delete" should not exist
