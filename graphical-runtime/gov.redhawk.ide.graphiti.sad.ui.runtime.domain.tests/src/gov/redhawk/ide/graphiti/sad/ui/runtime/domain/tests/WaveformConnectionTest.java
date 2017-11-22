@@ -29,12 +29,11 @@ public class WaveformConnectionTest extends AbstractGraphitiDomainWaveformRuntim
 	}
 
 	/**
-	 * IDE-2073
-	 * Display connection properties when selecting a connection in a runtime diagram
+	 * IDE-2073 Display connection properties when selecting a connection in a runtime diagram
+	 * IDE-2103 Display negotiated connection information
 	 */
 	@Test
 	public void connectionPropertiesView() {
-
 		SWTBotGefEditor editor = gefBot.gefEditor(getWaveFormFullName());
 		editor.setFocus();
 		DiagramTestUtils.waitForComponentState(bot, editor, SIGGEN_1, ComponentState.STOPPED);
@@ -48,5 +47,9 @@ public class WaveformConnectionTest extends AbstractGraphitiDomainWaveformRuntim
 		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Advanced");
 		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
 		Assert.assertEquals(treeItem.cell(1), "connection_1");
+		treeItem = propTable.getTreeItem("Alive");
+		Assert.assertEquals("true", treeItem.cell(1));
+		treeItem = propTable.getTreeItem("Transport Type");
+		Assert.assertEquals("shmipc", treeItem.cell(1));
 	}
 }
