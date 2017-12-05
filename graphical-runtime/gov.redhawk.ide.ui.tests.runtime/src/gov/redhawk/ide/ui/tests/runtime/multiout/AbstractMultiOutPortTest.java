@@ -120,7 +120,6 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 				String expectedConnectionId = getAllocationId(allocationIndex);
 				for (SWTBotTreeItem connectionItem : getUsesPort().getItems()) {
 					if (expectedConnectionId.equals(connectionItem.getText())) {
-
 						return true;
 					}
 				}
