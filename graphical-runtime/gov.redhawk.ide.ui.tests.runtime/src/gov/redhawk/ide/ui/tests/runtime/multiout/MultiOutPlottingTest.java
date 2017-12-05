@@ -22,8 +22,8 @@ public class MultiOutPlottingTest extends AbstractMultiOutPortTest {
 	}
 
 	@Override
-	protected void testActionResults() {
-		waitForConnection(0);
+	protected void testActionResults(int allocationIndex) {
+		waitForConnection(allocationIndex);
 		SWTBotView plotView = bot.viewById("gov.redhawk.ui.port.nxmplot.PlotView2");
 		Assert.assertEquals("dataShort_out", plotView.getReference().getTitle());
 	}

@@ -22,23 +22,23 @@ public class MultiOutPlayPortTest extends AbstractMultiOutPortTest {
 	}
 
 	@Override
-	protected void testActionResults() {
-		waitForConnection(0);
+	protected void testActionResults(int allocationIndex) {
+		waitForConnection(allocationIndex);
 
-		// TODO: CHECKSTYLE:OFF
 		SWTBotView playAudioView = bot.viewById("gov.redhawk.ui.port.playaudio.view");
 		bot.waitUntil(new DefaultCondition() {
-			
+
 			@Override
 			public boolean test() throws Exception {
 				return !playAudioView.bot().textWithLabel("Encoding:").getText().equals("");
 			}
-			
+
 			@Override
 			public String getFailureMessage() {
 				return "View never populated with data";
 			}
 		});
+
 		Assert.assertEquals("Incorrect audio receiver ID displayed: ", "RX_Digitizer_Sim_1 -> dataShort_out", playAudioView.bot().list().selection()[0]);
 		Assert.assertEquals("Incorrect encoding value displayed: ", "PCM_SIGNED", playAudioView.bot().textWithLabel("Encoding:").getText());
 		Assert.assertEquals("Incorrect sample rate displayed: ", "2,500,000", playAudioView.bot().textWithLabel("Sample Rate:").getText());

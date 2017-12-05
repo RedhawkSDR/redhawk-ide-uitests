@@ -18,7 +18,6 @@ import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,8 +36,12 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 	/** Returns a {@link String} for the desired context menu option */
 	protected abstract String getContextMenu();
 
-	/** Check that the expected behavior occurred (a view was opened and populated, etc.) */
-	protected abstract void testActionResults();
+	/**
+	 * Check that the expected behavior occurred (a view was opened and populated, etc.)
+	 * @param allocationIndex - Used to dictate which Tuner ID will be used for the test. Use 0 for testing a single
+	 * tuner, and 1 for testing multiple tuners.
+	 */
+	protected abstract void testActionResults(int allocationIndex);
 
 	@Before
 	public void before() throws Exception {
@@ -57,14 +60,14 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 	public void mulitOutPortSingleTunerTest() {
 		// Allocate the first tuner
 		ScaExplorerTestUtils.allocate(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
-		completeAllocateWizard("101.5");
+		completeAllocateWizard("allocation1", "101.5");
 		waitForTunerAllocation(0);
 
 		// Click on the appropriate context menu
 		getUsesPort().contextMenu(getContextMenu()).click();
 
 		// Verify that the expected behavior occurred
-		testActionResults();
+		testActionResults(0);
 	}
 
 	/**
@@ -72,57 +75,29 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 	 * Test support for a variety of options using a multi-out port with multiple allocated tuners
 	 */
 	@Test
-	public void mulitOutPortSingleMultiTunerTest() {
-		Assert.fail();
-	}
+	public void mulitOutPortMultiTunerTest() {
+		// Allocate the first tuner
+		ScaExplorerTestUtils.allocate(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
+		completeAllocateWizard("firstAllocation", "101.5");
+		waitForTunerAllocation(0);
 
-	// TODO: Things to test
-	/**
-	 * Test Classes
-	 * - Abstract multi-out test class
-	 * -- Handles single allocation tests for
-	 * --- Plotting ('Plot Port Data')
-	 * --- Display SRI
-	 * --- Snapshot
-	 * --- Data List
-	 * --- Create Direct Connection (CTRL multi-select)
-	 * 
-	 * --- Play Port
-	 * 
-	 * -- Methods
-	 * --- Launch the device
-	 * --- Get reference to the port
-	 * --- Allocate a tuner
-	 * --- <ABSTRACT> right click on the port and choose the appropriate action
-	 * --- Wait for connection node to appear
-	 * --- <ABSTRACT> confirm that the expected behavior occurred
-	 * ---- Wait for view to appear
-	 * ---- Check views details
-	 * ---- Confirm data is flowing (if possible)
-	 * --- Allocate a second tuner
-	 * --- <ABSTRACT> right click on the port and choose the appropriate action
-	 * --- Navigate the dialog, will always need to select the second connection ID in the table because in some cases
-	 * the first will be in use
-	 * --- Wait for connection node to appear
-	 * --- <ABSTRACT> confirm that the expected behavior occurred
-	 * ---- Wait for view to appear
-	 * ---- Check views details
-	 * ---- Confirm data is flowing (if possible)
-	 * -- Cleanup
-	 * --- Deallocate all tuners
-	 * --- Release the device and confirm that it is removed from the explorer
-	 * 
-	 * 
-	 * - Multi-out port dialog test class
-	 * -- Make sure that the dialog can't be completed with the Text box empty and enabled
-	 * -- Make sure the dialog displays 'IN USE' connection IDs
-	 * -- Make sure the dialog can't be completed when selecting an 'IN USE' connection ID
-	 * -- Make sure radio buttons enable/disable widgets as appropriate
-	 * -- Make sure selecting an existing ID creates the correct connection node
-	 * -- Make sure entering an ID manually creates the correct connection node
-	 * -- Make sure canceling the dialog does NOT create a connection
-	 * 
-	 */
+		// Allocate the second tuner, important that it is alphabetically later than the first tuner
+		ScaExplorerTestUtils.allocate(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
+		completeAllocateWizard("secondAllocation", "88.5");
+		waitForTunerAllocation(1);
+
+		// Click on the appropriate context menu
+		getUsesPort().contextMenu(getContextMenu()).click();
+
+		// Complete the multi-out connection dialog
+		bot.waitUntil(Conditions.shellIsActive("Multi-out port connection wizard"));
+		SWTBotShell multiOutShell = bot.shell("Multi-out port connection wizard");
+		multiOutShell.bot().tree().select(1);
+		multiOutShell.bot().button("OK").click();
+
+		// Verify that the expected behavior occurred
+		testActionResults(1);
+	}
 
 	protected SWTBotTreeItem getUsesPort() {
 		return ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, DEVICE_PATH, "dataShort_out");
@@ -132,18 +107,24 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 		return ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, DEVICE_PATH, "FrontEnd Tuners");
 	}
 
-	/** 
-	 * Wait for a connection node to appear in the REDHAWK Explorer view 
+	/**
+	 * Wait for a connection node to appear in the REDHAWK Explorer view
 	 * @param allocationIndex - the index of the tuner allocation whose ID we want to match
+	 * @return true if the connection ID matches the desired allocation ID
 	 */
 	protected void waitForConnection(int allocationIndex) {
 		bot.waitUntil(new DefaultCondition() {
 
 			@Override
 			public boolean test() throws Exception {
-				// Returns true when a new connection node is created
-				return getAllocationId(allocationIndex).equals(getUsesPort().getItems()[0].getText());
-//				return (getUsesPort().getItems().length > 0);
+				String expectedConnectionId = getAllocationId(allocationIndex);
+				for (SWTBotTreeItem connectionItem : getUsesPort().getItems()) {
+					if (expectedConnectionId.equals(connectionItem.getText())) {
+
+						return true;
+					}
+				}
+				return false;
 			}
 
 			@Override
@@ -167,9 +148,10 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 		this.allocationId = id;
 	}
 
-	protected void completeAllocateWizard(String centerFreq) {
+	protected void completeAllocateWizard(String allocationId, String centerFreq) {
 		SWTBotShell shell = bot.shell("Allocate Tuner");
 		SWTBot wizardBot = shell.bot();
+		wizardBot.textWithLabel("New Allocation ID").setText(allocationId);
 		wizardBot.textWithLabel("Center Frequency (MHz)").setText(centerFreq);
 		wizardBot.checkBox("Any Value", 0).click();
 		wizardBot.checkBox("Any Value", 1).click();
@@ -178,7 +160,7 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 	}
 
 	/**
-	 * Get the (@link {@link SWTBotTreeItem} at the specified index location
+	 * Get the {@link SWTBotTreeItem} at the specified index location
 	 * @param index
 	 * @return
 	 */

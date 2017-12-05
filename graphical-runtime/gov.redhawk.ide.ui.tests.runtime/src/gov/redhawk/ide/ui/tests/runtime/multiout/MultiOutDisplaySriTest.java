@@ -22,16 +22,16 @@ public class MultiOutDisplaySriTest extends AbstractMultiOutPortTest {
 	}
 
 	@Override
-	protected void testActionResults() {
-		waitForConnection(0);
+	protected void testActionResults(int allocationIndex) {
+		waitForConnection(allocationIndex);
 		SWTBotView sriView = bot.viewById("gov.redhawk.bulkio.ui.sridata.view");
 		SWTBotTree sriTree = sriView.bot().tree();
 
 		Assert.assertEquals("dataShort_out SRI ", sriView.getReference().getTitle());
-		
+
 		// Check that the streamID equals the tuners allocation ID
-		Assert.assertEquals("Incorrect stream id detected", getAllocationId(0), sriTree.getTreeItem("streamID: ").cell(1));
-		
+		Assert.assertEquals("Incorrect stream id detected", getAllocationId(allocationIndex), sriTree.getTreeItem("streamID: ").cell(1));
+
 		// Picked a random prop to for an additional check that the view populates with data
 		Assert.assertEquals("SRI View is not streaming data", "false", sriTree.getTreeItem("blocking: ").cell(1));
 	}

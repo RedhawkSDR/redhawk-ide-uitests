@@ -10,8 +10,7 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.runtime.multiout;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.UUID;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -21,8 +20,31 @@ import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
+import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class MultiOutSnapshotTest extends AbstractMultiOutPortTest {
+
+	@Override
+	@Test
+	public void mulitOutPortMultiTunerTest() {
+		// Allocate the first tuner
+		ScaExplorerTestUtils.allocate(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
+		completeAllocateWizard("firstAllocation", "101.5");
+		waitForTunerAllocation(0);
+
+		// Allocate the second tuner, important that it is alphabetically later than the first tuner
+		ScaExplorerTestUtils.allocate(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
+		completeAllocateWizard("secondAllocation", "88.5");
+		waitForTunerAllocation(1);
+
+		// Click on the appropriate context menu
+		getUsesPort().contextMenu(getContextMenu()).click();
+
+		// Verify that the expected behavior occurred
+		testActionResults(1);
+	}
 
 	@Override
 	protected String getContextMenu() {
@@ -30,7 +52,7 @@ public class MultiOutSnapshotTest extends AbstractMultiOutPortTest {
 	}
 
 	@Override
-	protected void testActionResults() {
+	protected void testActionResults(int allocationIndex) {
 
 		// Create a job change listener to make sure we actually get a snapshot
 		JobListener jobListener = new JobListener();
@@ -46,21 +68,16 @@ public class MultiOutSnapshotTest extends AbstractMultiOutPortTest {
 		bot.waitUntil(Conditions.shellIsActive("Snapshot"));
 		SWTBotShell snapshotShell = bot.shell("Snapshot");
 		SWTBotCombo idCombo = snapshotShell.bot().comboBoxWithLabel("Connection ID:");
-		Assert.assertEquals("Connection ID combo value does not equal tuner allocation ID", getAllocationId(0), idCombo.getText());
+		idCombo.setSelection(getAllocationId(allocationIndex));
+		Assert.assertEquals("Connection ID combo value does not equal tuner allocation ID", getAllocationId(allocationIndex), idCombo.getText());
 
 		// Generate a tmp file path and take the snapshot
-		File file = null;
-		try {
-			file = File.createTempFile("file", "");
-		} catch (IOException e) {
-			Assert.fail("Could not write to tmp directory");
-		}
-		snapshotShell.bot().textWithLabel("File Name:").setText(file.getName());
+		String fileName = System.getProperty("java.io.tmpdir") + "/" + UUID.randomUUID();
+		snapshotShell.bot().textWithLabel("File Name:").setText(fileName);
 		snapshotShell.bot().button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(snapshotShell));
 
 		// Make sure the snapshot job completed
-
 		try {
 			bot.waitUntil(new DefaultCondition() {
 
