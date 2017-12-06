@@ -58,6 +58,10 @@ public class MultiOutPlottingTest extends AbstractMultiOutPortTest {
 		waitForTunerAllocation(1);
 
 		testWithSecondTuner();
+			
+		// Clean up component
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
 	}
 
 	private void testWithSingleTuner() {

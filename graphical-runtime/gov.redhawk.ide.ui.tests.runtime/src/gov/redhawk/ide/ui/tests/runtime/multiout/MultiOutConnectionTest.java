@@ -45,6 +45,10 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 
 		// Verify that the expected behavior occurred
 		testActionResults(0);
+		
+		// Clean up component
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
 	}
 
 	@Override
@@ -74,6 +78,10 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 
 		// Verify that the expected behavior occurred
 		testActionResults(1);
+		
+		// Clean up component
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
 	}
 
 	/**
@@ -148,6 +156,10 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 				return "Connection node never appeared, or had the wrong ID";
 			}
 		}, 12000);
+		
+		// Clean up component
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
 	}
 
 	/**
@@ -170,6 +182,10 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		waitForTunerAllocation(1);
 
 		testWithSecondTuner();
+		
+		// Clean up component
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
 	}
 
 	private void testWithSingleTuner() {
