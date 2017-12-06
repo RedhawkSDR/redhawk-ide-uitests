@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
@@ -70,6 +71,12 @@ public class MultiOutSnapshotTest extends AbstractMultiOutPortTest {
 		SWTBotCombo idCombo = snapshotShell.bot().comboBoxWithLabel("Connection ID:");
 		idCombo.setSelection(getAllocationId(allocationIndex));
 		Assert.assertEquals("Connection ID combo value does not equal tuner allocation ID", getAllocationId(allocationIndex), idCombo.getText());
+		
+		// Make sure confirm overwrite is not selected
+		SWTBotCheckBox overwriteButton = snapshotShell.bot().checkBox("Confirm overwrite");
+		if (overwriteButton.isChecked()) {
+			overwriteButton.click();
+		}
 
 		// Generate a tmp file path and take the snapshot
 		String fileName = System.getProperty("java.io.tmpdir") + "/" + UUID.randomUUID();
