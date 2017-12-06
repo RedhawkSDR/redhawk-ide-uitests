@@ -77,6 +77,80 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 	}
 
 	/**
+	 * IDE-2044 - Test the multi-out connection dialog fields & validation
+	 */
+	@Test
+	public void multiOutConnectDialogTest() {
+		SWTBotTreeItem providesPort = launchComponent();
+
+		// Allocate the first tuner
+		ScaExplorerTestUtils.allocate(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
+		completeAllocateWizard("firstAllocation", "101.5");
+		waitForTunerAllocation(0);
+
+		// Make a connection using the first allocation ID
+		SWTBot explorerViewBot = ScaExplorerTestUtils.showScaExplorerView(bot);
+		explorerViewBot.tree().select(getUsesPort(), providesPort).contextMenu(getContextMenu()).click();
+		waitForConnection(0);
+
+		// Allocate the second tuner, important that it is alphabetically later than the first tuner
+		ScaExplorerTestUtils.allocate(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
+		completeAllocateWizard("secondAllocation", "88.5");
+		waitForTunerAllocation(1);
+
+		// Initiate another connection to the component
+		explorerViewBot.tree().select(getUsesPort(), providesPort).contextMenu(getContextMenu()).click();
+
+		// Wait for the connection dialog to open
+		bot.waitUntil(Conditions.shellIsActive("Multi-out port connection wizard"));
+		SWTBot dialogBot = bot.shell("Multi-out port connection wizard").bot();
+
+		// Test widget enabled state
+		Assert.assertTrue("'Select ID' radio should be selected by default", dialogBot.radio("Select an existing connection ID").isSelected());
+		Assert.assertTrue("Select ID tree should be enabled by default", dialogBot.tree().isEnabled());
+		Assert.assertFalse("Custom ID text field should be disabled by default", dialogBot.text().isEnabled());
+
+		// Make sure the dialog can't finish when selecting an 'IN USE' ID
+		dialogBot.tree().select(getAllocationId(0) + " (IN USE)");
+		Assert.assertFalse("Dialog should not be allowed to finish if an 'IN USE' connection ID is selected", dialogBot.button("OK").isEnabled());
+		dialogBot.tree().select(getAllocationId(1));
+		Assert.assertTrue("OK button did not re-enable", dialogBot.button("OK").isEnabled());
+
+		// Activate the custom ID input section
+		dialogBot.radio("Input connection ID").click();
+		Assert.assertFalse("Select ID tree should be disabled", dialogBot.tree().isEnabled());
+		Assert.assertTrue("Custom ID text field should be enabled", dialogBot.text().isEnabled());
+
+		// Clear the text field and test that OK button disables
+		dialogBot.text().setText("");
+		Assert.assertFalse("Dialog should not be able to finish if the custom ID field is enabled and blank", dialogBot.button("OK").isEnabled());
+
+		// Enter a custom ID and make sure the connection gets created
+		String connectionId = "connection1";
+		dialogBot.text().setText(connectionId);
+		Assert.assertTrue("OK button did not re-enable", dialogBot.button("OK").isEnabled());
+		dialogBot.button("OK").click();
+		bot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				String expectedConnectionId = connectionId;
+				for (SWTBotTreeItem connectionItem : getUsesPort().getItems()) {
+					if (expectedConnectionId.equals(connectionItem.getText())) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Connection node never appeared, or had the wrong ID";
+			}
+		}, 12000);
+	}
+
+	/**
 	 * IDE-2041 - Test using the connect wizard with a multi-out port
 	 */
 	@Test
