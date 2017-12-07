@@ -156,7 +156,7 @@ public class EventViewTest extends UIRuntimeTest {
 	@Test
 	public void domainAddedEvent() throws BadKind, Disconnected {
 		openEventView();
-		Any event = createDomainAddedEvent();
+		Any event = createApplicationAddedEvent();
 		pushConsumer.push(event);
 		assertPropertyDetails();
 	}
@@ -167,7 +167,7 @@ public class EventViewTest extends UIRuntimeTest {
 	@Test
 	public void domainRemovedEvent() throws BadKind, Disconnected {
 		openEventView();
-		Any event = createDomainRemovedEvent();
+		Any event = createEventChannelRemovedEvent();
 		pushConsumer.push(event);
 		assertPropertyDetails();
 	}
@@ -313,8 +313,8 @@ public class EventViewTest extends UIRuntimeTest {
 		// Push multiple events
 		List<Any> events = new ArrayList<>();
 		events.add(createLogEvent());
-		events.add(createDomainAddedEvent());
-		events.add(createDomainRemovedEvent());
+		events.add(createApplicationAddedEvent());
+		events.add(createEventChannelRemovedEvent());
 		for (Any event : events) {
 			pushConsumer.push(event);
 		}
@@ -384,7 +384,7 @@ public class EventViewTest extends UIRuntimeTest {
 		return any;
 	}
 
-	private Any createDomainAddedEvent() throws BadKind {
+	private Any createApplicationAddedEvent() throws BadKind {
 		// Assign event props
 		String producerId = "producerId";
 		String sourceId = "sourceId";
@@ -407,7 +407,7 @@ public class EventViewTest extends UIRuntimeTest {
 		return any;
 	}
 
-	private Any createDomainRemovedEvent() throws BadKind {
+	private Any createEventChannelRemovedEvent() throws BadKind {
 		// Assign event props
 		String producerId = "producerId";
 		String sourceId = "sourceId";
