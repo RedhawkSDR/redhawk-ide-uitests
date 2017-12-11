@@ -33,10 +33,12 @@ import CF.TestableObjectPackage.UnknownTest;
 
 public class DeviceStub extends LoggingStub implements DeviceOperations {
 
+	private String id;
 	private String label;
 	private boolean started = false;
 
-	public DeviceStub(String label) {
+	public DeviceStub(String id, String label) {
+		this.id = id;
 		this.label = label;
 	}
 
@@ -80,7 +82,7 @@ public class DeviceStub extends LoggingStub implements DeviceOperations {
 
 	@Override
 	public String identifier() {
-		return null;
+		return id;
 	}
 
 	@Override
@@ -117,11 +119,11 @@ public class DeviceStub extends LoggingStub implements DeviceOperations {
 
 	@Override
 	public PortInfoType[] getPortSet() {
-		return null;
+		return new PortInfoType[0];
 	}
 
 	@Override
 	public Object getPort(String name) throws UnknownPort {
-		return null;
+		throw new UnknownPort();
 	}
 }

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swtbot.eclipse.finder.matchers.WithPartId;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
@@ -43,6 +44,7 @@ import CF.AllocationManagerPackage.InvalidAllocationId;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.ViewUtils;
+import gov.redhawk.ide.swtbot.condition.ExplorerNodeSelected;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.ui.tests.runtime.stubs.DevMgrStub;
 import gov.redhawk.ide.ui.tests.runtime.stubs.DeviceStub;
@@ -64,7 +66,9 @@ public class AllocMgrViewTest extends UITest {
 	private static final String DEV_MGR_1 = AllocMgrViewTest.class.getSimpleName() + "_devmgr";
 	private static final String DEV_MGR_2 = AllocMgrViewTest.class.getSimpleName() + "_devmgr2";
 	private static final String DEV_1 = AllocMgrViewTest.class.getSimpleName() + "_dev";
+	private static final String DEV_ID_1 = DEV_MGR_1 + ":" + DEV_1;
 	private static final String DEV_2 = AllocMgrViewTest.class.getSimpleName() + "_dev2";
+	private static final String DEV_ID_2 = DEV_MGR_2 + ":" + DEV_2;
 
 	private OrbSession session;
 	private AllocationManagerStub allocMgrStub;
@@ -84,6 +88,8 @@ public class AllocMgrViewTest extends UITest {
 		scaDomMgr.setName(DOMAIN_1);
 		scaDomMgr.setObj(domMgr);
 		scaDomMgr.setState(DomainConnectionState.CONNECTED);
+		scaDomMgr.getEventChannels().clear();
+		scaDomMgr.getWaveforms().clear();
 
 		allocMgrStub = new AllocationManagerStub();
 		AllocationManager allocMgr = new AllocationManagerPOATie(allocMgrStub, poa)._this(orb);
@@ -95,10 +101,13 @@ public class AllocMgrViewTest extends UITest {
 		scaDevMgr.setDataProvidersEnabled(false);
 		scaDevMgr.setCorbaObj(devMgr);
 		scaDevMgr.fetchLabel(null);
+		scaDevMgr.getServices().clear();
+		scaDevMgr.getPorts().clear();
+		domMgrStub.stub_setDeviceManagers(new DeviceManager[] { devMgr });
 		scaDomMgr.getDeviceManagers().add(scaDevMgr);
 
 		ScaDevice<Device> scaDevice = ScaFactory.eINSTANCE.createScaDevice();
-		DeviceStub devStub = new DeviceStub(DEV_1);
+		DeviceStub devStub = new DeviceStub(DEV_ID_1, DEV_1);
 		Device dev = new DevicePOATie(devStub, poa)._this(orb);
 		scaDevice.setDataProvidersEnabled(false);
 		scaDevice.setCorbaObj(dev);
@@ -113,7 +122,7 @@ public class AllocMgrViewTest extends UITest {
 		// Create a second fake device manager and device which are not in the IDE's model
 		DevMgrStub devMgrStub2 = new DevMgrStub(DEV_MGR_2);
 		DeviceManager devMgr2 = new DeviceManagerPOATie(devMgrStub2, poa)._this(orb);
-		DeviceStub deviceStub2 = new DeviceStub(DEV_2);
+		DeviceStub deviceStub2 = new DeviceStub(DEV_ID_2, DEV_2);
 		Device dev2 = new DevicePOATie(deviceStub2, poa)._this(orb);
 
 		// Give the allocation manager some fake entries using both domains' objects
@@ -127,9 +136,7 @@ public class AllocMgrViewTest extends UITest {
 		any2b.insert_double(4.56);
 		PropertiesHelper.insert(any2, new DataType[] { new CF.DataType("a", any2a), new CF.DataType("b", any2b) });
 		CF.DataType[] abcProps = new CF.DataType[] { //
-			new CF.DataType("double", any1),
-			new CF.DataType("struct", any2),
-		};
+			new CF.DataType("double", any1), new CF.DataType("struct", any2), };
 		statuses.add(new AllocationStatusType("allocid_abc", DOMAIN_1, abcProps, dev, devMgr, "source_abc"));
 		statuses.add(new AllocationStatusType("allocid_def", DOMAIN_2, new DataType[0], dev, devMgr, "source_def"));
 		statuses.add(new AllocationStatusType("allocid_ghi", DOMAIN_1, new DataType[0], dev2, devMgr2, "source_ghi"));
@@ -159,13 +166,13 @@ public class AllocMgrViewTest extends UITest {
 		}
 	}
 
+	/**
+	 * IDE-2071, IDE-2108 Test that the allocation manager can be opened, shows the allocations, and updates
+	 * periodically.
+	 */
 	@Test
 	public void allocMgrView() throws InvalidAllocationId {
-		// Open the allocation manager, find the tree
-		SWTBotTreeItem domMgr = ScaExplorerTestUtils.getDomain(bot, DOMAIN_1);
-		domMgr.contextMenu().menu("Allocation Manager").click();
-		SWTBotView view = ViewUtils.getAllocationManagerView(bot);
-		SWTBotTree tree = view.bot().tree();
+		SWTBotTree tree = openAllocMgr().bot().tree();
 
 		// Verify the tree's contents
 		String[][] table = new String[][] { //
@@ -187,13 +194,52 @@ public class AllocMgrViewTest extends UITest {
 		bot.waitUntil(Conditions.treeHasRows(tree, statuses.length - 1));
 	}
 
+	/**
+	 * IDE-2134 Test finding the device for an allocation
+	 */
+	@Test
+	public void findDevice() {
+		SWTBotView view = openAllocMgr();
+		SWTBotTree tree = view.bot().tree();
+		bot.waitUntil(Conditions.treeHasRows(tree, 3));
+
+		// Use the toolbar button to find the device
+		tree.select(0);
+		view.toolbarButton("Finds the device in the explorer view").click();
+		bot.waitUntil(new ExplorerNodeSelected(DEV_1));
+
+		// Use the context menu to find the device
+		ScaExplorerTestUtils.getDomain(bot, DOMAIN_1).select();
+		tree.select(0).contextMenu().menu("Find Device").click();
+		bot.waitUntil(new ExplorerNodeSelected(DEV_1));
+	}
+
+	/**
+	 * IDE-2135 Test finding the device manager for an allocation
+	 */
+	@Test
+	public void findDeviceManager() {
+		SWTBotView view = openAllocMgr();
+		SWTBotTree tree = view.bot().tree();
+		bot.waitUntil(Conditions.treeHasRows(tree, 3));
+
+		// Use the toolbar button to find the device manager
+		tree.select(0);
+		view.toolbarButton("Finds the device manager in the explorer view").click();
+		bot.waitUntil(new ExplorerNodeSelected(DEV_MGR_1));
+
+		// Use the context menu to find the device manager
+		ScaExplorerTestUtils.getDomain(bot, DOMAIN_1).select();
+		tree.select(0).contextMenu().menu("Find Device Manager").click();
+		bot.waitUntil(new ExplorerNodeSelected(DEV_MGR_1));
+	}
+
+	/**
+	 * IDE-2072 Test that an allocation can be de-allocated via the context menu
+	 */
 	@Test
 	public void deallocate() {
-		// Open the allocation manager, find the tree
-		SWTBotTreeItem domMgr = ScaExplorerTestUtils.getDomain(bot, DOMAIN_1);
-		domMgr.contextMenu().menu("Allocation Manager").click();
-		SWTBotView view = ViewUtils.getAllocationManagerView(bot);
-		SWTBotTree tree = view.bot().tree();
+		SWTBotTree tree = openAllocMgr().bot().tree();
 		bot.waitUntil(Conditions.treeHasRows(tree, 3));
 
 		// Use the context menu to deallocate one of the allocations
@@ -201,25 +247,39 @@ public class AllocMgrViewTest extends UITest {
 		bot.waitUntil(Conditions.treeHasRows(tree, 2));
 	}
 
+	/**
+	 * IDE-2107 Ensure the properties view displays details of a selected allocation status
+	 */
 	@Test
 	public void propertiesView() {
-		// Open the allocation manager, find the tree
-		SWTBotTreeItem domMgr = ScaExplorerTestUtils.getDomain(bot, DOMAIN_1);
-		domMgr.contextMenu().menu("Allocation Manager").click();
-		SWTBotView view = ViewUtils.getAllocationManagerView(bot);
+		SWTBotView view = openAllocMgr();
 		SWTBotTree tree = view.bot().tree();
 		bot.waitUntil(Conditions.treeHasRows(tree, 3));
 
-		// Verify we can open the properties view (via double-click or toolbar button)
+		// Verify we can open the properties view via toolbar button
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).close();
 		view.toolbarButton("Show Details").click();
+		bot.waitUntil(Conditions.waitForView(WithPartId.withPartId(ViewUtils.PROPERTIES_VIEW_ID)));
+
+		// Verify we can open the properties view via double-click
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).close();
 		tree.getTreeItem("allocid_abc").doubleClick();
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties");
+		bot.waitUntil(Conditions.waitForView(WithPartId.withPartId(ViewUtils.PROPERTIES_VIEW_ID)));
 
 		// Check that some props are there
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties");
 		bot.waitUntil(Conditions.treeHasRows(propTree, 2));
 		propTree.getTreeItem("double");
 		propTree.getTreeItem("struct");
+	}
+
+	/**
+	 * Open the allocation manager
+	 * @return the allocation manager view
+	 */
+	private SWTBotView openAllocMgr() {
+		SWTBotTreeItem domMgr = ScaExplorerTestUtils.getDomain(bot, DOMAIN_1);
+		domMgr.contextMenu().menu("Allocation Manager").click();
+		return ViewUtils.getAllocationManagerView(bot);
 	}
 }

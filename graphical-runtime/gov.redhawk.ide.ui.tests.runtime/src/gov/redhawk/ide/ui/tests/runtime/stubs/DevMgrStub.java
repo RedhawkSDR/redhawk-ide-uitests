@@ -69,7 +69,7 @@ public class DevMgrStub extends PropertyEmitterStub implements DeviceManagerOper
 
 	@Override
 	public ServiceType[] registeredServices() {
-		return null;
+		return new ServiceType[0];
 	}
 
 	@Override
@@ -99,11 +99,11 @@ public class DevMgrStub extends PropertyEmitterStub implements DeviceManagerOper
 
 	@Override
 	public PortInfoType[] getPortSet() {
-		return null;
+		return new PortInfoType[0];
 	}
 
 	@Override
 	public Object getPort(String name) throws UnknownPort {
-		return null;
+		throw new UnknownPort();
 	}
 }
