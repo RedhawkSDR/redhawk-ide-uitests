@@ -10,7 +10,9 @@
  */
 package gov.redhawk.ide.ui.tests.runtime;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.junit.Assert;
@@ -20,6 +22,8 @@ import org.junit.Test;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
+import gov.redhawk.model.sca.ScaDomainManager;
+import mil.jpeojtrs.sca.util.CorbaUtils;
 
 public class ReleaseTest extends UIRuntimeTest {
 
@@ -93,5 +97,32 @@ public class ReleaseTest extends UIRuntimeTest {
 		consoleView = ConsoleUtils.showConsole(bot, COMPONENT_HOST_1 + " [Chalkboard]");
 		consoleText = consoleView.bot().styledText().getText();
 		Assert.assertTrue("Couldn't find text about process exit", consoleText.contains("exited normally"));
+	}
+
+	/**
+	 * IDE-2021 Release an event channel
+	 */
+	@Test
+	public void releaseEventChannel() throws InterruptedException, java.util.concurrent.TimeoutException, CoreException {
+		final String DOMAIN_NAME = ReleaseTest.class.getSimpleName();
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, DOMAIN_NAME);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN_NAME);
+		SWTBotTreeItem domMgrTreeItem = ScaExplorerTestUtils.getDomain(bot, DOMAIN_NAME);
+
+		// Create an event channel, refresh the model
+		ScaDomainManager[] domMgr = new ScaDomainManager[1];
+		bot.getDisplay().syncExec(() -> {
+			domMgr[0] = (ScaDomainManager) domMgrTreeItem.widget.getData();
+		});
+		CorbaUtils.invoke(() -> {
+			domMgr[0].eventChannelMgr().create("release_me");
+			return null;
+		}, SWTBotPreferences.TIMEOUT);
+		domMgrTreeItem.contextMenu().menu("Refresh").click();
+
+		SWTBotTreeItem eventChanTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { DOMAIN_NAME, "Event Channels" },
+			"release_me");
+		eventChanTreeItem.contextMenu().menu("Release").click();
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { DOMAIN_NAME, "Event Channels" }, "release_me");
 	}
 }
