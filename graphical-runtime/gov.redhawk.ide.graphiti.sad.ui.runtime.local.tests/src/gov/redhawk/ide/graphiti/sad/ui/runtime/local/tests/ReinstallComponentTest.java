@@ -12,6 +12,7 @@ package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
@@ -56,6 +57,7 @@ public class ReinstallComponentTest extends AbstractGraphitiTest {
 		StandardTestActions.generateProject(bot, editor);
 		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
 		StandardTestActions.exportProject(componentName, bot);
+		addSdrDomCleanupPath(new Path("/components").append(componentName));
 		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 		editor.close();
 		
