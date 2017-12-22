@@ -76,10 +76,10 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 		SWTBotView view = openAndConnect();
 		List<String> pathList = Arrays.asList("127.0.0.1", domainName, "ODM_Channel");
 		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), pathList);
-		treeItem.contextMenu().menu("Listen to Event Channel").click();
+		treeItem.contextMenu().menu("Listen to event channel").click();
 
 		// Wait for the event view, then close it
-		bot.viewById("gov.redhawk.ide.ui.eventViewer").close();
+		bot.viewById("gov.redhawk.ui.views.event.eventViewer").close();
 	}
 
 	@After
