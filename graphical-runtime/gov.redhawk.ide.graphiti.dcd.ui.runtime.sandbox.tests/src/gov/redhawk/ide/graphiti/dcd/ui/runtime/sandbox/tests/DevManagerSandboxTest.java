@@ -11,7 +11,10 @@
  */
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
+import java.util.List;
+
 import org.eclipse.emf.common.ui.URIEditorInput;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.IEditorInput;
@@ -28,6 +31,7 @@ import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.ScaDevice;
 import mil.jpeojtrs.sca.dcd.DcdComponentInstantiation;
+import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
 public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 
@@ -144,9 +148,11 @@ public class DevManagerSandboxTest extends AbstractDeviceManagerSandboxTest {
 		Assert.assertNotNull("component supported interface graphic should not be null", deviceShape.getLollipop());
 
 		// GPP only has the two ports
-		Assert.assertTrue(deviceShape.getUsesPortStubs().size() == 2 && deviceShape.getProvidesPortStubs().size() == 0);
+		List<EObject> usesPortStubs = deviceShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = deviceShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue(usesPortStubs.size() == 2 && providesPortStubs.size() == 0);
 
 		// Port is of type propEvent
-		Assert.assertEquals("propEvent", deviceShape.getUsesPortStubs().get(0).getUses().getName());
+		Assert.assertEquals("propEvent", ((UsesPortStub) usesPortStubs.get(0)).getUses().getName());
 	}
 }
