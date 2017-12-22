@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -50,7 +51,6 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 
 		// Launch the domain
 		domainName = "CorbaNameBrowserTest_" + (int) (1000.0 * Math.random());
-		;
 		ScaExplorerTestUtils.launchDomainViaWizard(bot, domainName, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
 
@@ -58,16 +58,28 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 		ScaExplorerTestUtils.launchWaveformFromDomain(bot, domainName, waveformName);
 		String fullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, new String[] { domainName, "Waveforms" }, waveformName);
 
-		// Open the namebrowser and check for the waveform
-		SWTBotView view = ViewUtils.getCorbaNameBrowserView(bot);
-		view.show();
-		view.bot().comboBox().setText("corbaname::127.0.0.1");
-		view.bot().buttonWithTooltip("Connect to the specified host").click();
-		fullName = fullName.replace(".", "\\.");
-
 		// Find the namespaced waveform node & a child component
+		SWTBotView view = openAndConnect();
+		fullName = fullName.replace(".", "\\.");
 		List<String> pathList = Arrays.asList("127.0.0.1", domainName, fullName + "_1", "HardLimit_1");
 		StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), pathList);
+	}
+
+	@Test
+	public void listenToEventChannel() {
+		// Launch the domain
+		domainName = "CorbaNameBrowserTest_" + (int) (1000.0 * Math.random());
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domainName, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
+
+		// Listen to the event channel
+		SWTBotView view = openAndConnect();
+		List<String> pathList = Arrays.asList("127.0.0.1", domainName, "ODM_Channel");
+		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), pathList);
+		treeItem.contextMenu().menu("Listen to Event Channel").click();
+
+		// Wait for the event view, then close it
+		bot.viewById("gov.redhawk.ide.ui.eventViewer").close();
 	}
 
 	@After
@@ -105,10 +117,7 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 				Assert.fail(e.toString());
 			}
 
-			SWTBotView view = ViewUtils.getCorbaNameBrowserView(bot);
-			view.show();
-			view.bot().comboBox().setText("corbaname::127.0.0.1");
-			view.bot().buttonWithTooltip("Connect to the specified host").click();
+			SWTBotView view = openAndConnect();
 			StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), Arrays.asList("127.0.0.1", "myid.mykind"));
 		} finally {
 			if (namingContext != null) {
@@ -120,5 +129,13 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 			}
 			session.dispose();
 		}
+	}
+
+	private SWTBotView openAndConnect() {
+		SWTBotView view = ViewUtils.getCorbaNameBrowserView(bot);
+		view.show();
+		view.bot().comboBox().setText("corbaname::127.0.0.1");
+		view.bot().buttonWithTooltip("Connect to the specified host").click();
+		return view;
 	}
 }
