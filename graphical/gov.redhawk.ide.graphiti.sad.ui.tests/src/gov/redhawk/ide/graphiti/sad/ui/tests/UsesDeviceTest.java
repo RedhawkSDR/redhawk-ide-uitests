@@ -12,6 +12,7 @@ package gov.redhawk.ide.graphiti.sad.ui.tests;
 
 import java.util.List;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
@@ -32,7 +33,9 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FETunerControl;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.UsesDeviceTestUtils;
+import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesDeviceStub;
+import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
 public class UsesDeviceTest extends AbstractGraphitiTest {
 
@@ -77,13 +80,15 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		RHContainerShape rhContainerShape = (RHContainerShape) frontEndTunerGefEditPart.part().getModel();
 
 		// two provides ports, two uses ports
-		Assert.assertTrue(rhContainerShape.getUsesPortStubs().size() == 2 && rhContainerShape.getProvidesPortStubs().size() == 2);
+		List<EObject> usesPortStubs = rhContainerShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = rhContainerShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue(usesPortStubs.size() == 2 && providesPortStubs.size() == 2);
 
 		// Both ports are of type dataDouble
-		Assert.assertEquals(rhContainerShape.getUsesPortStubs().get(0).getName(), "dataDouble_out");
-		Assert.assertEquals(rhContainerShape.getUsesPortStubs().get(1).getName(), "dataDouble2_out");
-		Assert.assertEquals(rhContainerShape.getProvidesPortStubs().get(0).getName(), "dataDouble_in");
-		Assert.assertEquals(rhContainerShape.getProvidesPortStubs().get(1).getName(), "dataDouble2_in");
+		Assert.assertEquals(((UsesPortStub) usesPortStubs.get(0)).getName(), "dataDouble_out");
+		Assert.assertEquals(((UsesPortStub) usesPortStubs.get(1)).getName(), "dataDouble2_out");
+		Assert.assertEquals(((ProvidesPortStub) providesPortStubs.get(0)).getName(), "dataDouble_in");
+		Assert.assertEquals(((ProvidesPortStub) providesPortStubs.get(1)).getName(), "dataDouble2_in");
 
 		// Save to trigger validation. Ensure there are no errors (IDE-1821)
 		KeyboardFactory.getSWTKeyboard().pressShortcut(SWT.CTRL, 's');
@@ -144,10 +149,12 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 
 		// two provides ports, one uses ports
 		RHContainerShape rhContainerShape = (RHContainerShape) frontEndTunerGefEditPart.part().getModel();
-		Assert.assertTrue(rhContainerShape.getProvidesPortStubs().size() == 2 && rhContainerShape.getUsesPortStubs().size() == 1);
-		Assert.assertEquals(rhContainerShape.getProvidesPortStubs().get(0).getName(), "RFInfo_in");
-		Assert.assertEquals(rhContainerShape.getProvidesPortStubs().get(1).getName(), "DigitalTuner_in");
-		Assert.assertEquals(rhContainerShape.getUsesPortStubs().get(0).getName(), "dataShort_out");
+		List<EObject> usesPortStubs = rhContainerShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = rhContainerShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue(providesPortStubs.size() == 2 && usesPortStubs.size() == 1);
+		Assert.assertEquals(((ProvidesPortStub) providesPortStubs.get(0)).getName(), "RFInfo_in");
+		Assert.assertEquals(((ProvidesPortStub) providesPortStubs.get(1)).getName(), "DigitalTuner_in");
+		Assert.assertEquals(((UsesPortStub) usesPortStubs.get(0)).getName(), "dataShort_out");
 
 		// Check to see if xml is correct in the sad.xml
 		final String usesDeviceXML = regexStringFor_sim_rx_digitizer_UseFrontEndTunerDeviceControlTuner(usesDeviceId, tunerControl);
@@ -258,13 +265,15 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		RHContainerShape rhContainerShape = (RHContainerShape) frontEndTunerGefEditPart.part().getModel();
 
 		// two provides ports, two uses ports
-		Assert.assertTrue(rhContainerShape.getUsesPortStubs().size() == 2 && rhContainerShape.getProvidesPortStubs().size() == 2);
+		List<EObject> usesPortStubs = rhContainerShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = rhContainerShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue(usesPortStubs.size() == 2 && providesPortStubs.size() == 2);
 
 		// Verify ports
-		Assert.assertEquals(rhContainerShape.getUsesPortStubs().get(0).getName(), "dataFloat2_out");
-		Assert.assertEquals(rhContainerShape.getUsesPortStubs().get(1).getName(), "newUses");
-		Assert.assertEquals(rhContainerShape.getProvidesPortStubs().get(0).getName(), "dataFloat2_in");
-		Assert.assertEquals(rhContainerShape.getProvidesPortStubs().get(1).getName(), "newProvides");
+		Assert.assertEquals(((UsesPortStub) usesPortStubs.get(0)).getName(), "dataFloat2_out");
+		Assert.assertEquals(((UsesPortStub) usesPortStubs.get(1)).getName(), "newUses");
+		Assert.assertEquals(((ProvidesPortStub) providesPortStubs.get(0)).getName(), "dataFloat2_in");
+		Assert.assertEquals(((ProvidesPortStub) providesPortStubs.get(1)).getName(), "newProvides");
 
 		// Check to see if xml is correct in the sad.xml
 		final String usesDeviceXML = regexStringForGenericUseFrontEndTunerDeviceListenById(usesDeviceId + "x", existingAllocationId + "x", newAllocationId);
@@ -355,13 +364,15 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		RHContainerShape rhContainerShape = (RHContainerShape) useDeviceEditPart.part().getModel();
 
 		// two provides ports, two uses ports
-		Assert.assertTrue(rhContainerShape.getUsesPortStubs().size() == 2 && rhContainerShape.getProvidesPortStubs().size() == 2);
+		List<EObject> usesPortStubs = rhContainerShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = rhContainerShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue(usesPortStubs.size() == 2 && providesPortStubs.size() == 2);
 
 		// Verify ports
-		Assert.assertEquals(rhContainerShape.getUsesPortStubs().get(0).getName(), "dataDouble2_out");
-		Assert.assertEquals(rhContainerShape.getUsesPortStubs().get(1).getName(), "newUses");
-		Assert.assertEquals(rhContainerShape.getProvidesPortStubs().get(0).getName(), "dataDouble2_in");
-		Assert.assertEquals(rhContainerShape.getProvidesPortStubs().get(1).getName(), "newProvides");
+		Assert.assertEquals(((UsesPortStub) usesPortStubs.get(0)).getName(), "dataDouble2_out");
+		Assert.assertEquals(((UsesPortStub) usesPortStubs.get(1)).getName(), "newUses");
+		Assert.assertEquals(((ProvidesPortStub) providesPortStubs.get(0)).getName(), "dataDouble2_in");
+		Assert.assertEquals(((ProvidesPortStub) providesPortStubs.get(1)).getName(), "newProvides");
 	}
 
 	/**

@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.graphiti.mm.pictograms.Connection;
@@ -272,8 +273,10 @@ public abstract class AbstractFindByTest extends AbstractGraphitiTest {
 	}
 
 	protected void validateFindByPortEdits(RHContainerShape findByShape, FindByStub findByObject) {
-		Assert.assertTrue("Number of ports is incorrect", findByShape.getUsesPortStubs().size() == 2 && findByShape.getProvidesPortStubs().size() == 0);
-		Assert.assertEquals("Uses port name is incorrect", NEW_USES_PORT, findByShape.getUsesPortStubs().get(1).getName());
+		List<EObject> usesPortStubs = findByShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = findByShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue("Number of ports is incorrect", usesPortStubs.size() == 2 && providesPortStubs.size() == 0);
+		Assert.assertEquals("Uses port name is incorrect", NEW_USES_PORT, ((UsesPortStub) usesPortStubs.get(1)).getName());
 		Assert.assertEquals("Diagram uses and domain uses don't match", NEW_USES_PORT, findByObject.getUses().get(1).getName());
 
 		// Confirm that connections properly updated
