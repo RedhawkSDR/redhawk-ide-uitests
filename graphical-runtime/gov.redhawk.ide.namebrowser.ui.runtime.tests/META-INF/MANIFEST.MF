@@ -7,6 +7,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.junit,
  gov.redhawk.ide.swtbot,
- gov.redhawk.sca.util
+ gov.redhawk.sca.util,
+ org.eclipse.debug.core;bundle-version="3.10.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

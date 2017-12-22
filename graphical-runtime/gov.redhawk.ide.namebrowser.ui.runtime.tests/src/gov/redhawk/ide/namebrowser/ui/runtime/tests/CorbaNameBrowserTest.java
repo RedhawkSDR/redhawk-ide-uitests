@@ -94,7 +94,7 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 			String tmpName = domainName;
 			domainName = null;
 			ScaExplorerTestUtils.deleteDomainInstance(bot, tmpName);
-			ConsoleUtils.terminateProcess(bot, tmpName);
+			StandardTestActions.cleanUpLaunches();
 		}
 
 		super.after();
