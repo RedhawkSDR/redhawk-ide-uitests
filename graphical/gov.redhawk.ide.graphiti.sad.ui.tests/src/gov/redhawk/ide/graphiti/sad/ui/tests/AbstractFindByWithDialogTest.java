@@ -13,6 +13,7 @@ package gov.redhawk.ide.graphiti.sad.ui.tests;
 import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotList;
@@ -28,6 +29,7 @@ import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import mil.jpeojtrs.sca.partitioning.FindByStub;
+import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
 public abstract class AbstractFindByWithDialogTest extends AbstractFindByTest {
 
@@ -126,8 +128,10 @@ public abstract class AbstractFindByWithDialogTest extends AbstractFindByTest {
 		// Make sure the connection disappears
 		RHContainerShape findByShape = (RHContainerShape) fbEditPart.part().getModel();
 		FindByStub findByObject = (FindByStub) DUtil.getBusinessObject(findByShape);
-		Assert.assertTrue("Number of ports is incorrect", findByShape.getUsesPortStubs().size() == 1 && findByShape.getProvidesPortStubs().size() == 0);
-		Assert.assertEquals("Uses port name is incorrect", USES_PORTS[0], findByShape.getUsesPortStubs().get(0).getName());
+		List<EObject> usesPortStubs = findByShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = findByShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue("Number of ports is incorrect", usesPortStubs.size() == 1 && providesPortStubs.size() == 0);
+		Assert.assertEquals("Uses port name is incorrect", USES_PORTS[0], ((UsesPortStub) usesPortStubs.get(0)).getName());
 		Assert.assertEquals("Diagram uses and domain uses don't match", USES_PORTS[0], findByObject.getUses().get(0).getName());
 
 		findByUsesPart = DiagramTestUtils.getDiagramUsesPort(getEditor(), newFindByName);

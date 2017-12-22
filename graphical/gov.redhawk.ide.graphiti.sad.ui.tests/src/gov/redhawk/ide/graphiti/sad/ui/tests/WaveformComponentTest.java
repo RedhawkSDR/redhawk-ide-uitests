@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.RunnableWithResult;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -49,6 +50,8 @@ import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.StartOrderUtils;
+import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
+import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 import mil.jpeojtrs.sca.sad.HostCollocation;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 import mil.jpeojtrs.sca.sad.SadComponentPlacement;
@@ -404,11 +407,13 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		Assert.assertTrue(acMessage, isAssemblyController == ComponentUtils.isAssemblyController(componentShape));
 
 		// HardLimit only has the two ports
-		Assert.assertTrue(componentShape.getUsesPortStubs().size() == 1 && componentShape.getProvidesPortStubs().size() == 1);
+		List<EObject> usesPortStub = componentShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStub = componentShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue(usesPortStub.size() == 1 && providesPortStub.size() == 1);
 
 		// Both ports are of type dataFloat
-		Assert.assertEquals("dataFloat", componentShape.getUsesPortStubs().get(0).getUses().getInterface().getName());
-		Assert.assertEquals("dataFloat", componentShape.getProvidesPortStubs().get(0).getProvides().getInterface().getName());
+		Assert.assertEquals("dataFloat", ((UsesPortStub) usesPortStub.get(0)).getUses().getInterface().getName());
+		Assert.assertEquals("dataFloat", ((ProvidesPortStub) providesPortStub.get(0)).getProvides().getInterface().getName());
 	}
 
 	/**

@@ -10,6 +10,10 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 
+import java.util.List;
+
+import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
@@ -30,6 +34,8 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.PaletteUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
+import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
+import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
 
 public class ReinstallComponentTest extends AbstractGraphitiTest {
@@ -51,6 +57,7 @@ public class ReinstallComponentTest extends AbstractGraphitiTest {
 		StandardTestActions.generateProject(bot, editor);
 		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
 		StandardTestActions.exportProject(componentName, bot);
+		addSdrDomCleanupPath(new Path("/components").append(componentName));
 		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 		editor.close();
 		
@@ -78,7 +85,9 @@ public class ReinstallComponentTest extends AbstractGraphitiTest {
 		// Confirm that component displays no ports
 		SWTBotGefEditPart gefEditPart = rhEditor.getEditPart(componentName + "_1");
 		ComponentShape componentShape = (ComponentShape) gefEditPart.part().getModel();
-		Assert.assertTrue(componentShape.getUsesPortStubs().size() == 0 && componentShape.getProvidesPortStubs().size() == 0);
+		List<EObject> usesPortStubs = componentShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = componentShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue(usesPortStubs.size() == 0 && providesPortStubs.size() == 0);
 		
 		// Close waveform
 		rhEditor.save();
@@ -99,9 +108,11 @@ public class ReinstallComponentTest extends AbstractGraphitiTest {
 		// Confirm that component now displays new ports
 		gefEditPart = new RHSWTGefBot().rhGefEditor(waveformName).getEditPart(componentName + "_1");
 		componentShape = (ComponentShape) gefEditPart.part().getModel();
-		Assert.assertTrue(componentShape.getUsesPortStubs().size() == 1 && componentShape.getProvidesPortStubs().size() == 1);
-		Assert.assertEquals(componentShape.getUsesPortStubs().get(0).getUses().getName(), "dataFloat_out");
-		Assert.assertEquals(componentShape.getProvidesPortStubs().get(0).getProvides().getName(), "dataFloat_in");
+		usesPortStubs = componentShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		providesPortStubs = componentShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue(usesPortStubs.size() == 1 && providesPortStubs.size() == 1);
+		Assert.assertEquals(((UsesPortStub) usesPortStubs.get(0)).getUses().getName(), "dataFloat_out");
+		Assert.assertEquals(((ProvidesPortStub) providesPortStubs.get(0)).getProvides().getName(), "dataFloat_in");
 	}
 
 	private void addPorts(String componentName) {

@@ -12,6 +12,7 @@ package gov.redhawk.ide.graphiti.dcd.ui.tests;
 
 import java.util.List;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
@@ -80,10 +81,12 @@ public class FindByTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Diagram object and domain object names don't match", findByName, findByObject.getNamingService().getName());
 		Assert.assertNotNull("component supported interface graphic should not be null", findByShape.getLollipop());
 
-		Assert.assertTrue("Number of ports is incorrect", findByShape.getUsesPortStubs().size() == 1 && findByShape.getProvidesPortStubs().size() == 1);
-		Assert.assertEquals("Uses port name is incorrect", uses[0], findByShape.getUsesPortStubs().get(0).getName());
+		List<EObject> usesPortStubs = findByShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = findByShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue("Number of ports is incorrect", usesPortStubs.size() == 1 && providesPortStubs.size() == 1);
+		Assert.assertEquals("Uses port name is incorrect", uses[0], ((UsesPortStub) usesPortStubs.get(0)).getName());
 		Assert.assertEquals("Diagram uses and domain uses don't match", uses[0], findByObject.getUses().get(0).getName());
-		Assert.assertEquals("Provides port name is incorrect", provides[0], findByShape.getProvidesPortStubs().get(0).getName());
+		Assert.assertEquals("Provides port name is incorrect", provides[0], ((ProvidesPortStub) providesPortStubs.get(0)).getName());
 		Assert.assertEquals("Diagram provides and provides uses don't match", provides[0], findByObject.getProvides().get(0).getName());
 	}
 
@@ -231,11 +234,13 @@ public class FindByTest extends AbstractGraphitiTest {
 		Assert.assertNotNull("FindBy Element not found", fbEditPart);
 		RHContainerShape findByShape = (RHContainerShape) fbEditPart.part().getModel();
 		FindByStub findByObject = (FindByStub) DUtil.getBusinessObject(findByShape);
+		List<EObject> usesPortStubs = findByShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = findByShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
 
 		Assert.assertEquals("Inner Text was not updated", newFindByName, findByShape.getInnerText().getValue());
 		Assert.assertEquals("Diagram object and domain object names don't match", newFindByName, findByObject.getNamingService().getName());
-		Assert.assertTrue("Number of ports is incorrect", findByShape.getUsesPortStubs().size() == 2 && findByShape.getProvidesPortStubs().size() == 0);
-		Assert.assertEquals("Uses port name is incorrect", NEW_USES_PORT, findByShape.getUsesPortStubs().get(1).getName());
+		Assert.assertTrue("Number of ports is incorrect", usesPortStubs.size() == 2 && providesPortStubs.size() == 0);
+		Assert.assertEquals("Uses port name is incorrect", NEW_USES_PORT, ((UsesPortStub) usesPortStubs.get(1)).getName());
 		Assert.assertEquals("Diagram uses and domain uses don't match", NEW_USES_PORT, findByObject.getUses().get(1).getName());
 
 		// Confirm that connections properly updated

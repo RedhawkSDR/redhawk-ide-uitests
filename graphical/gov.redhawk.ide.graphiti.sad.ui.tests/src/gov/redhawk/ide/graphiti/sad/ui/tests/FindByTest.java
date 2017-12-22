@@ -10,6 +10,9 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import java.util.List;
+
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.junit.Assert;
@@ -24,6 +27,8 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import mil.jpeojtrs.sca.partitioning.FindByStub;
+import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
+import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 
 public class FindByTest extends AbstractGraphitiTest {
 
@@ -73,10 +78,12 @@ public class FindByTest extends AbstractGraphitiTest {
 		Assert.assertEquals("Diagram object and domain object names don't match", findByName, findByObject.getNamingService().getName());
 		Assert.assertNotNull("component supported interface graphic should not be null", findByShape.getLollipop());
 
-		Assert.assertTrue("Number of ports is incorrect", findByShape.getUsesPortStubs().size() == 1 && findByShape.getProvidesPortStubs().size() == 1);
-		Assert.assertEquals("Uses port name is incorrect", uses[0], findByShape.getUsesPortStubs().get(0).getName());
+		List<EObject> usesPortStubs = findByShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = findByShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue("Number of ports is incorrect", usesPortStubs.size() == 1 && providesPortStubs.size() == 1);
+		Assert.assertEquals("Uses port name is incorrect", uses[0], ((UsesPortStub) usesPortStubs.get(0)).getName());
 		Assert.assertEquals("Diagram uses and domain uses don't match", uses[0], findByObject.getUses().get(0).getName());
-		Assert.assertEquals("Provides port name is incorrect", provides[0], findByShape.getProvidesPortStubs().get(0).getName());
+		Assert.assertEquals("Provides port name is incorrect", provides[0], ((ProvidesPortStub) providesPortStubs.get(0)).getName());
 		Assert.assertEquals("Diagram provides and provides uses don't match", provides[0], findByObject.getProvides().get(0).getName());
 	}
 

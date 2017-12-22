@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
@@ -36,6 +37,7 @@ import mil.jpeojtrs.sca.dcd.DcdComponentPlacement;
 import mil.jpeojtrs.sca.dcd.DcdPackage;
 import mil.jpeojtrs.sca.dcd.DeviceConfiguration;
 import mil.jpeojtrs.sca.partitioning.ComponentInstantiation;
+import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public class NodeComponentTest extends AbstractGraphitiTest {
@@ -221,10 +223,12 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 		Assert.assertNotNull("component supported interface graphic should not be null", deviceShape.getLollipop());
 
 		// GPP only has the two ports
-		Assert.assertTrue(deviceShape.getUsesPortStubs().size() == 2 && deviceShape.getProvidesPortStubs().size() == 0);
+		List<EObject> usesPortStubs = deviceShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = deviceShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue(usesPortStubs.size() == 2 && providesPortStubs.size() == 0);
 
 		// Port is of type propEvent
-		Assert.assertEquals("propEvent", deviceShape.getUsesPortStubs().get(0).getUses().getName());
+		Assert.assertEquals("propEvent", ((UsesPortStub) usesPortStubs.get(0)).getUses().getName());
 	}
 
 	/**
@@ -248,6 +252,8 @@ public class NodeComponentTest extends AbstractGraphitiTest {
 		Assert.assertNotNull("component supported interface graphic should not be null", serviceShape.getLollipop());
 
 		// SERVICE_STUB should not have a port
-		Assert.assertTrue(serviceShape.getUsesPortStubs().size() == 0 && serviceShape.getProvidesPortStubs().size() == 0);
+		List<EObject> usesPortStubs = serviceShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = serviceShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue(usesPortStubs.size() == 0 && providesPortStubs.size() == 0);
 	}
 }

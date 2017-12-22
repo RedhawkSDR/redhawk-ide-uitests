@@ -13,6 +13,7 @@ package gov.redhawk.ide.graphiti.sad.ui.runtime.local.tests;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -37,6 +38,8 @@ import gov.redhawk.ide.swtbot.diagram.StartOrderUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils.DiagramType;
 import gov.redhawk.sca.ui.ScaFileStoreEditorInput;
+import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
+import mil.jpeojtrs.sca.partitioning.UsesPortStub;
 import mil.jpeojtrs.sca.sad.SadComponentInstantiation;
 
 public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRuntimeTest {
@@ -295,10 +298,12 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 		Assert.assertNull("start order shape/text should be Null", StartOrderUtils.getStartOrderText(componentShape));
 
 		// HardLimit only has the two ports
-		Assert.assertTrue(componentShape.getUsesPortStubs().size() == 1 && componentShape.getProvidesPortStubs().size() == 1);
+		List<EObject> usesPortStubs = componentShape.getUsesPortsContainerShape().getLink().getBusinessObjects();
+		List<EObject> providesPortStubs = componentShape.getProvidesPortsContainerShape().getLink().getBusinessObjects();
+		Assert.assertTrue(usesPortStubs.size() == 1 && providesPortStubs.size() == 1);
 
 		// Both ports are of type dataDouble
-		Assert.assertEquals(componentShape.getUsesPortStubs().get(0).getUses().getInterface().getName(), "dataFloat");
-		Assert.assertEquals(componentShape.getProvidesPortStubs().get(0).getProvides().getInterface().getName(), "dataFloat");
+		Assert.assertEquals(((UsesPortStub) usesPortStubs.get(0)).getUses().getInterface().getName(), "dataFloat");
+		Assert.assertEquals(((ProvidesPortStub) providesPortStubs.get(0)).getProvides().getInterface().getName(), "dataFloat");
 	}
 }
