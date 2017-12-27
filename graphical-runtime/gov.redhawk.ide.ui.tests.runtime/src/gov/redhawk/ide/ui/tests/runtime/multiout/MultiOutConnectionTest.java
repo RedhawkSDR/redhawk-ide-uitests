@@ -125,7 +125,7 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		Assert.assertTrue("OK button did not re-enable", dialogBot.button("OK").isEnabled());
 
 		// Activate the custom ID input section
-		dialogBot.radio("Input connection ID").click();
+		dialogBot.radio("Specify connection ID").click();
 		Assert.assertFalse("Select ID tree should be disabled", dialogBot.tree().isEnabled());
 		Assert.assertTrue("Custom ID text field should be enabled", dialogBot.text().isEnabled());
 
@@ -217,7 +217,7 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		// Gather widgets
 		SWTBotCombo idCombo = shellBot.comboBox();
 		SWTBotText idText = shellBot.text();
-		SWTBotRadio inputRadio = shellBot.radio("Input connection ID");
+		SWTBotRadio inputRadio = shellBot.radio("Specify connection ID");
 		SWTBotButton finishButton = shellBot.button("Finish");
 
 		// Check that the combo defaults to the second ID, as the first is now in use
