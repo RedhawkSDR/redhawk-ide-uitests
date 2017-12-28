@@ -10,13 +10,17 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
-import gov.redhawk.ide.swtbot.ViewUtils;
-import gov.redhawk.ide.swtbot.WaveformUtils;
-import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
+import java.util.Arrays;
 
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
+
+import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 
 public class GDiagramFilterTest extends AbstractGraphitiTest {
 	private String waveformName;
@@ -31,14 +35,19 @@ public class GDiagramFilterTest extends AbstractGraphitiTest {
 
 		// Create a new empty waveform
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
-
-		// Check if GDiagram is visible
 		SWTBotView projectExplorerView = gefBot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
 		projectExplorerView.setFocus();
-		gefBot.tree().expandNode(waveformName);
-		boolean xmlExists = ViewUtils.checkIfTreeItemExistsEntry(gefBot.tree(), waveformName, waveformName + ".sad.xml");
-		Assert.assertTrue("XML is not visible", xmlExists);
-		boolean resourceExists = ViewUtils.checkIfTreeItemExistsEntry(gefBot.tree(), waveformName, waveformName + ".sad_GDiagram");
-		Assert.assertFalse("GDiagram is not filtered", resourceExists);
+
+		// XML file should be present
+		StandardTestActions.waitForTreeItemToAppear(bot, projectExplorerView.bot().tree(), Arrays.asList(waveformName, waveformName + ".sad.xml"));
+
+		// GDiagram file should be filtered
+		SWTBotTreeItem projectNode = projectExplorerView.bot().tree().getTreeItem(waveformName);
+		try {
+			projectNode.getNode(waveformName + ".sad_GDiagram");
+			Assert.fail("GDiagram file is not filtered");
+		} catch (WidgetNotFoundException e) {
+			// PASS - expected behavior
+		}
 	}
 }
