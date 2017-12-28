@@ -13,15 +13,19 @@
     <supportsinterface repid="IDL:CF/TestableObject:1.0" supportsname="TestableObject"/>
     <ports>
       <provides repid="IDL:BULKIO/dataDouble:1.0" providesname="dataDouble_in">
+        <description>Input port 1 description</description>
         <porttype type="data"/>
       </provides>
       <provides repid="IDL:BULKIO/dataFloat:1.0" providesname="dataFloat_in">
+        <description>Input port 2 description</description>
         <porttype type="data"/>
       </provides>
       <uses repid="IDL:BULKIO/dataFloat:1.0" usesname="dataFloat_out">
+        <description>Output port 1 description</description>
         <porttype type="data"/>
       </uses>
       <uses repid="IDL:BULKIO/dataDouble:1.0" usesname="dataDouble_out">
+        <description>Output port 2 description</description>
         <porttype type="data"/>
       </uses>
     </ports>

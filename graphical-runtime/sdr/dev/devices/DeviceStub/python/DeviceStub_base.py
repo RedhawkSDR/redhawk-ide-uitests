@@ -10,7 +10,6 @@ from ossie.utils import uuid
 from ossie.device import Device
 from ossie.threadedcomponent import *
 from ossie.properties import simple_property
-from ossie.properties import simpleseq_property
 
 import Queue, copy, time, threading
 from ossie.resource import usesport, providesport
@@ -61,19 +60,27 @@ class DeviceStub_base(CF__POA.Device, Device, ThreadedComponent):
 
         port_dataDouble_in = providesport(name="dataDouble_in",
                                           repid="IDL:BULKIO/dataDouble:1.0",
-                                          type_="data")
+                                          type_="data",
+                                          description="""Input port 1 description"""
+                                          )
 
         port_dataFloat_in = providesport(name="dataFloat_in",
                                          repid="IDL:BULKIO/dataFloat:1.0",
-                                         type_="data")
+                                         type_="data",
+                                         description="""Input port 2 description"""
+                                         )
 
         port_dataFloat_out = usesport(name="dataFloat_out",
                                       repid="IDL:BULKIO/dataFloat:1.0",
-                                      type_="data")
+                                      type_="data",
+                                      description="""Output port 1 description"""
+                                      )
 
         port_dataDouble_out = usesport(name="dataDouble_out",
                                        repid="IDL:BULKIO/dataDouble:1.0",
-                                       type_="data")
+                                       type_="data",
+                                       description="""Output port 2 description"""
+                                       )
 
         ######################################################################
         # PROPERTIES
@@ -87,7 +94,8 @@ class DeviceStub_base(CF__POA.Device, Device, ThreadedComponent):
                                       action="eq",
                                       kinds=("allocation","configure"),
                                       description="""This specifies the device kind""")
-        
+
+
         device_model = simple_property(id_="DCE:0f99b2e4-9903-4631-9846-ff349d18ecfb",
                                        name="device_model",
                                        type_="string",
@@ -95,6 +103,7 @@ class DeviceStub_base(CF__POA.Device, Device, ThreadedComponent):
                                        action="eq",
                                        kinds=("allocation","configure"),
                                        description=""" This specifies the specific device""")
-        
+
+
 
 

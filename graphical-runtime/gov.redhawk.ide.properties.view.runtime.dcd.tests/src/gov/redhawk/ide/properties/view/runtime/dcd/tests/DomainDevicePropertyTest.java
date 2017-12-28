@@ -64,7 +64,6 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 	}
 
 	private void launch(String deviceMgr, String deviceInstance) {
-		domain = domain + (int) (1000.0 * Math.random());
 		deviceParentPath = new String[] { domain, "Device Managers", deviceMgr };
 		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, deviceMgr);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);

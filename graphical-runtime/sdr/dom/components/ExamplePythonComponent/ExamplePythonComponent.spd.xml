@@ -10,7 +10,7 @@
     http://www.eclipse.org/legal/epl-v10.html.
 -->
 <!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
-<softpkg id="DCE:88ca7e55-f10f-4461-93d0-36a26c5925dd" name="ExamplePythonComponent" type="sca_compliant">
+<softpkg id="DCE:88ca7e55-f10f-4461-93d0-36a26c5925dd" name="ExamplePythonComponent" type="2.0.8">
   <title></title>
   <author>
     <name>null</name>
