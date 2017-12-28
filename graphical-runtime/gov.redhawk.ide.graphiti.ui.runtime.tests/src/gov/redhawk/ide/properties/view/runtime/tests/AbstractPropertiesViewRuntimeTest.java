@@ -71,9 +71,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	/**
 	 * Method should take necessary steps to:
 	 * - launch the test object,
-	 * - select editor,
-	 * - set property tab name,
-	 * - do initial object selection
+	 * - select the object within the explorer view / diagram of the editor
 	 */
 	protected abstract void prepareObject();
 
@@ -118,7 +116,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 	public void checkPropValuesAtLaunch() {
 		prepareObject();
 
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME).tree();
 		populatePropertyMap(propTree.getAllItems());
 
 		List<ScaAbstractProperty< ? >> modelProps = getModelObjectProperties();
@@ -157,7 +155,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 
 		prepareObject();
 
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME).tree();
 		populatePropertyMap(propTree.getAllItems());
 		List<ScaAbstractProperty< ? >> modelProps = getModelObjectProperties();
 
@@ -200,7 +198,7 @@ public abstract class AbstractPropertiesViewRuntimeTest extends UIRuntimeTest {
 
 		prepareObject();
 
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME).tree();
 		populatePropertyMap(propTree.getAllItems());
 		List<ScaAbstractProperty< ? >> modelProps = getModelObjectProperties();
 

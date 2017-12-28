@@ -38,7 +38,7 @@ public class AdvancedRuntimeProperties extends UIRuntimeTest {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, SIG_GEN, SIG_GEN_IMPL);
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, SIG_GEN_1).select();
 
-		SWTBotTree tree = ViewUtils.selectPropertiesTab(bot, "Advanced");
+		SWTBotTree tree = ViewUtils.selectPropertiesTab(bot, "Advanced").tree();
 		String profileName = null;
 		for (SWTBotTreeItem treeItem : tree.getAllItems()) {
 			if ("Profile".equals(treeItem.cell(0))) {

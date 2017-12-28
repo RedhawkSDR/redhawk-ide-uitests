@@ -116,7 +116,7 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 		prepareObject();
 
 		// Just using this to expand everything, we will populate later in the test
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME).tree();
 		populatePropertyMap(propTree.getAllItems());
 		propertyMap.clear();
 
@@ -163,7 +163,7 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 		prepareObject();
 
 		// TODO: Just using this to expand everything, we will populate later in the test
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME).tree();
 		populatePropertyMap(propTree.getAllItems());
 		propertyMap.clear();
 
@@ -175,7 +175,7 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 		selectObject();
 
 		// Update property map and Check property view to see if all values are accurate
-		propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME).tree();
 		populatePropertyMap(propTree.getAllItems());
 		checkProps(xmlPropertyMap);
 	}

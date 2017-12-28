@@ -47,7 +47,7 @@ public class PropertyErrorTest extends UIRuntimeTest {
 		ConsoleUtils.disableAutoShowConsole();
 		ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, COMP_1).select();
 
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties").tree();
 		SWTBotTreeItem treeItem = propTree.getTreeItem(PROP_ENABLE);
 		StandardTestActions.selectComboListFromCell(bot, treeItem, 1, "true");
 

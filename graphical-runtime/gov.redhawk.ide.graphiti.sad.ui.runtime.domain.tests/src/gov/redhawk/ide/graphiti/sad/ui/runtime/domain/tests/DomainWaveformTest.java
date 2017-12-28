@@ -47,7 +47,7 @@ public class DomainWaveformTest extends UIRuntimeTest {
 
 		waveformItem.select();
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties").tree();
 		SWTBotTreeItem treeItem = propTable.getTreeItem("lower_limit");
 		Assert.assertEquals(treeItem.cell(1), "-1.0");
 		treeItem = propTable.getTreeItem("upper_limit");

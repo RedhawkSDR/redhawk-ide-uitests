@@ -104,7 +104,7 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 
 		setEditor();
 		selectObject();
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME).tree();
 		Assert.assertNotNull("Property window does not populate", propTree);
 		SWTBotTreeItem[] items = propTree.getAllItems();
 		Assert.assertTrue("No property values are displayed", items.length > 0);
@@ -120,7 +120,7 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 		prepareObject();
 		setEditor();
 		selectObject();
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME).tree();
 
 		SWTBotTreeItem treeItem = propTree.getTreeItem(simpleSeqDouble);
 		treeItem.select();

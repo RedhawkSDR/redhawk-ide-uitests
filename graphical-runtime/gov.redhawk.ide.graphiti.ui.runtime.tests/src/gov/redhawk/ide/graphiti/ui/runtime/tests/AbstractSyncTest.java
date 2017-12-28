@@ -158,7 +158,7 @@ public abstract class AbstractSyncTest extends UIRuntimeTest {
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, PARENT_PATH, resourceA().getShortName(1)).select().click();
 
 		// Verify value; change it to double that value
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties").tree();
 		SWTBotTreeItem magItemExplorer = propTree.getTreeItem(resourceA_doubleProperty());
 		Assert.assertEquals(magItemExplorer.cell(1), Double.toString(resourceA_doubleProperty_startingValue()));
 		magItemExplorer.select().click(1);
@@ -171,7 +171,7 @@ public abstract class AbstractSyncTest extends UIRuntimeTest {
 		componentPart.select();
 
 		// Wait for the property to update (currently domain objects opened with the chalkboard editor have a delay)
-		propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME).tree();
 		final SWTBotTreeItem magItemDiagram = propTree.getTreeItem(resourceA_doubleProperty());
 		bot.waitUntil(new WaitForCellValue(magItemDiagram, 1, newValue), 15000);
 	}
@@ -197,7 +197,7 @@ public abstract class AbstractSyncTest extends UIRuntimeTest {
 		componentPart.select();
 
 		// Verify value; change it to double that value
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME).tree();
 		SWTBotTreeItem magItemDiagram = propTree.getTreeItem(resourceA_doubleProperty());
 		Assert.assertEquals(magItemDiagram.cell(1), Double.toString(resourceA_doubleProperty_startingValue()));
 		magItemDiagram.select().click(1);
@@ -208,7 +208,7 @@ public abstract class AbstractSyncTest extends UIRuntimeTest {
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, PARENT_PATH, resourceA().getShortName(1)).select().click();
 
 		// Wait for the property to update (currently domain objects opened with the chalkboard editor have a delay)
-		propTree = ViewUtils.selectPropertiesTab(bot, "Properties");
+		propTree = ViewUtils.selectPropertiesTab(bot, "Properties").tree();
 		final SWTBotTreeItem magItemExplorer = propTree.getTreeItem(resourceA_doubleProperty());
 		bot.waitUntil(new WaitForCellValue(magItemExplorer, 1, newValue), 15000);
 	}
