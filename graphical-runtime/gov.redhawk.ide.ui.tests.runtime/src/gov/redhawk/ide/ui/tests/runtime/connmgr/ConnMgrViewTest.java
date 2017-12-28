@@ -180,7 +180,7 @@ public class ConnMgrViewTest extends UITest {
 		view.toolbarButton("Show Details").click();
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).close();
 		tree.getTreeItem("connection_abc").doubleClick();
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Advanced");
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Advanced").tree();
 
 		// Check the advanced props
 		bot.waitUntil(Conditions.treeHasRows(propTree, 12));

@@ -47,7 +47,7 @@ public class MetricsTest extends UITest {
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, WAVEFORM_PARENT_PATH, WAVEFORM);
 		ScaExplorerTestUtils.startResourceInExplorer(bot, WAVEFORM_PARENT_PATH, WAVEFORM);
 
-		SWTBotTree tree = ViewUtils.selectPropertiesTab(bot, "Metrics");
+		SWTBotTree tree = ViewUtils.selectPropertiesTab(bot, "Metrics").tree();
 		bot.waitUntil(Conditions.treeHasRows(tree, 3));
 		Assert.assertEquals("application utilization", tree.cell(0, 0));
 		Assert.assertEquals("SigGen_1", tree.cell(1, 0));

@@ -38,7 +38,7 @@ public class NodePropertiesTest extends AbstractGraphitiTest {
 
 		// Validate existing properties
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties").tree();
 		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
 		Assert.assertTrue(treeItem.cell(1).matches("DCE.*"));
 		treeItem = propTable.getTreeItem("Name");

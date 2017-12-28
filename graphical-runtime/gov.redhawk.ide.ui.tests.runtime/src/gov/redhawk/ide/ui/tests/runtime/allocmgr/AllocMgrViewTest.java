@@ -267,7 +267,7 @@ public class AllocMgrViewTest extends UITest {
 		bot.waitUntil(Conditions.waitForView(WithPartId.withPartId(ViewUtils.PROPERTIES_VIEW_ID)));
 
 		// Check that some props are there
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties").tree();
 		bot.waitUntil(Conditions.treeHasRows(propTree, 2));
 		propTree.getTreeItem("double");
 		propTree.getTreeItem("struct");

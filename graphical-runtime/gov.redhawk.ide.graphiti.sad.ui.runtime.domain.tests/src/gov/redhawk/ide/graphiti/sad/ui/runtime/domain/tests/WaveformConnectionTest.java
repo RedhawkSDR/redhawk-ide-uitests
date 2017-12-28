@@ -44,7 +44,7 @@ public class WaveformConnectionTest extends AbstractGraphitiDomainWaveformRuntim
 		usesAnchor.sourceConnections().get(0).select();
 
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Advanced");
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Advanced").tree();
 		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
 		Assert.assertEquals(treeItem.cell(1), "connection_1");
 		treeItem = propTable.getTreeItem("Alive");

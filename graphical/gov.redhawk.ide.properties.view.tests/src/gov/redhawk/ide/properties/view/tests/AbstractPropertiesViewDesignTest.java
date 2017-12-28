@@ -193,7 +193,7 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 	public void propertyFiltering() {
 		Set<String> requiredIDs = setupPropertyFiltering();
 
-		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+		SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME).tree();
 		for (SWTBotTreeItem treeItem : propTree.getAllItems()) {
 			String id = treeItem.cell(0);
 			if (!requiredIDs.remove(id)) {

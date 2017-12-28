@@ -77,7 +77,7 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		// IDE-1347 - Check that properties are visible in the properties view when the diagram is selected
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
 		editor.click(0, 0);
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties").tree();
 		SWTBotTreeItem treeItem = propTable.getTreeItem("DOMAIN_NAME");
 		Assert.assertEquals(treeItem.cell(1), getDomainName());
 
@@ -121,7 +121,7 @@ public class NodeExplorerTest extends AbstractGraphitiDomainNodeRuntimeTest {
 		// Check that connection properties are visible
 		dOneConn.select();
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Advanced");
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Advanced").tree();
 		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
 		Assert.assertEquals(connectionId, treeItem.cell(1));
 

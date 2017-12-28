@@ -186,7 +186,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 		String connectionId = connInterface.getId();
 		connEditPart.select();
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
-		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties");
+		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties").tree();
 		SWTBotTreeItem treeItem = propTable.getTreeItem("Id");
 		Assert.assertEquals(connectionId, treeItem.cell(1));
 		final String newConnId = "newConnectionId";
