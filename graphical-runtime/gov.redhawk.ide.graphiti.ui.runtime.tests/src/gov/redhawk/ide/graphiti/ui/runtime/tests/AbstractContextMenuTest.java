@@ -18,6 +18,7 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
@@ -161,10 +162,11 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 
 		// Test data list context menu
 		DiagramTestUtils.displayDataListViewOnComponentPort(editor, componentName, portName);
-		ViewUtils.waitUntilDataListViewDisplays(bot);
+		final SWTBotView dataListView = ViewUtils.waitUntilDataListViewDisplays(bot);
+		SWTBotButton startButton = dataListView.bot().buttonWithTooltip("Start Acquire");
+		startButton.click();
 		ViewUtils.startAquireOnDataListView(bot);
 		ViewUtils.waitUntilDataListViewPopulates(bot);
-		SWTBotView dataListView = ViewUtils.getDataListView(bot);
 		dataListView.close();
 
 		// Test monitor ports context menu
@@ -193,8 +195,7 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 
 		// Test snapshot context menu
 		DiagramTestUtils.displaySnapshotDialogOnComponentPort(editor, componentName, portName);
-		ViewUtils.waitUntilSnapshotDialogDisplays(bot);
-		SWTBotShell snapshotDialog = ViewUtils.getSnapshotDialog(bot);
+		SWTBotShell snapshotDialog = bot.shell("Snapshot");
 		Assert.assertNotNull(snapshotDialog);
 		snapshotDialog.close();
 	}
