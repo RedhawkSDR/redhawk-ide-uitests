@@ -20,7 +20,7 @@ import java.util.Set;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 
-import gov.redhawk.ide.graphiti.ui.runtime.tests.AbstractPropertiesViewRuntimeTest;
+import gov.redhawk.ide.properties.view.runtime.tests.AbstractPropertiesViewRuntimeTest;
 import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
