@@ -117,17 +117,8 @@ public class DesignComponentPropertyTest extends AbstractPropertiesViewDesignTes
 		editor.close();
 
 		ProjectExplorerUtils.openProjectInEditor(bot, WAVEFORM_NAME, WAVEFORM_NAME + ".sad.xml");
-
-		// Need this because 'editor' expects to be a Graphiti Diagram
-		synchronized (bot) {
-			try {
-				bot.wait(500);
-			} catch (InterruptedException e) {
-				// PASS
-			}
-		}
-		SWTBotEditor tmpEditor = bot.activeEditor();
-		tmpEditor.bot().cTabItem("Diagram").activate();
+		SWTBotEditor editor2 = bot.editorByTitle(WAVEFORM_NAME);
+		editor2.bot().cTabItem("Diagram").activate();
 
 		editor = gefBot.gefEditor(WAVEFORM_NAME);
 		selectObject();

@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap.Entry;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.keyboard.Keyboard;
 import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
@@ -202,6 +203,25 @@ public abstract class AbstractPropertiesViewDesignTest extends UITest {
 
 		if (requiredIDs.size() > 0) {
 			Assert.fail("The properties view didn't contain the following properties: " + requiredIDs.toString());
+		}
+	}
+
+	/**
+	 * IDE-1326 Advanced tab should not be shown in properties view for things opened from the target SDR
+	 */
+	@Test
+	public void checkInnerTabs() {
+		prepareObject();
+
+		// Properties inner tab
+		ViewUtils.selectPropertiesTab(bot, PROP_TAB_NAME);
+
+		// No Advanced inner tab (this is design-time)
+		try {
+			ViewUtils.selectPropertiesTab(gefBot, "Advanced");
+			Assert.fail("Advanced properties tab should not display for design-time diagrams");
+		} catch (WidgetNotFoundException e) {
+			// PASS
 		}
 	}
 
