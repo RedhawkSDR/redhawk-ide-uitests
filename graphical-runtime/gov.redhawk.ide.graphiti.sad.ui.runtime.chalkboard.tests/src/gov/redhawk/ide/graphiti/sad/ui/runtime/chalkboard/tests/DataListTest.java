@@ -60,7 +60,7 @@ public class DataListTest extends UIRuntimeTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.waitForComponentState(gefBot, editor, SIGGEN_1, ComponentState.STOPPED);
 
-		final SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties");
+		final SWTBotTree propTree = ViewUtils.selectPropertiesTab(bot, "Properties").tree();
 		editor.getEditPart(SIGGEN_1).click().select();
 		SWTBotTreeItem freqTreeItem = propTree.getTreeItem("frequency");
 		StandardTestActions.writeToCell(gefBot, freqTreeItem, 1, newFreq);
