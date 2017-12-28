@@ -11,4 +11,5 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui,
  gov.redhawk.sca.model,
  org.eclipse.ui.views.properties.tabbed
 Export-Package: gov.redhawk.ide.graphiti.ui.runtime.tests,
- gov.redhawk.ide.graphiti.ui.runtime.tests.util
+ gov.redhawk.ide.graphiti.ui.runtime.tests.util,
+ gov.redhawk.ide.properties.view.runtime.tests
