@@ -58,7 +58,6 @@ public class DomainDevicePropertyTest extends AbstractPropertiesViewRuntimeTest 
 
 	@Override
 	protected void prepareObject() {
-		domain = domain + (int) (1000.0 * Math.random());
 		deviceParentPath = new String[] { domain, "Device Managers", DEVICE_MANAGER };
 		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);

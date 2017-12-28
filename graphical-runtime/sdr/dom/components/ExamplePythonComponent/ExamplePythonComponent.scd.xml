@@ -27,6 +27,7 @@
       </provides>
       <uses repid="IDL:BULKIO/dataFloat:1.0" usesname="dataFloat">
         <description>Example description of a uses/output Port</description>
+        <porttype type="data"/>
       </uses>
     </ports>
   </componentfeatures>
