@@ -30,7 +30,7 @@ public class LocalComponentPortPropertyTest extends AbstractPortPropertiesTest {
 
 	@After
 	public void afterTest() {
-		ScaExplorerTestUtils.shutdown(bot, new String[] { "Sandbox" }, "Device Manager");
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox" }, "Chalkboard");
 	}
 
 	@Override
