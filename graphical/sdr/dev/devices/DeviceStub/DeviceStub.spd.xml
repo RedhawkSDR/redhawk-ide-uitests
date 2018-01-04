@@ -10,7 +10,7 @@
     http://www.eclipse.org/legal/epl-v10.html.
 -->
 <!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
-<softpkg id="DCE:2c53a05e-1467-4aac-8955-e69a9a9f52be" name="DeviceStub" type="sca_compliant">
+<softpkg id="DCE:2c53a05e-1467-4aac-8955-e69a9a9f52be" name="DeviceStub" type="2.0.8">
   <title></title>
   <author>
     <name>null</name>
