@@ -22,6 +22,7 @@ import gov.redhawk.ide.swtbot.ViewUtils;
 /**
  * IDE-1050 Properties view for selected port in diagram
  * IDE-1172 Display description of port
+ * IDE-1520 Add IDL tree to port details for explorer view
  * IDE-2150 IDL tree missing for DCD diagrams
  */
 public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
@@ -58,7 +59,7 @@ public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
 		String descriptionText = propViewBot.text(1).getText();
 		Assert.assertEquals(portDesc.getDescription(), descriptionText);
 
-		// IDL tree (see IDE-1520, IDE-2150)
+		// IDL tree
 		String idlType = propViewBot.label(1).getText();
 		Assert.assertEquals(portDesc.getType(), idlType);
 		String className = propViewBot.tree().getAllItems()[0].getText();
@@ -78,7 +79,7 @@ public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
 		String descriptionText = propViewBot.text(1).getText();
 		Assert.assertEquals(portDesc.getDescription(), descriptionText);
 
-		// IDL tree (see IDE-1520, IDE-2150)
+		// IDL tree
 		String idlType = propViewBot.label(1).getText();
 		Assert.assertEquals(portDesc.getType(), idlType);
 		String className = propViewBot.tree().getAllItems()[0].getText();

@@ -50,6 +50,12 @@ public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
 
 		String descriptionText = propViewBot.text(1).getText();
 		Assert.assertEquals(portDesc.getDescription(), descriptionText);
+
+		// IDL tree
+		String idlType = propViewBot.label(1).getText();
+		Assert.assertEquals(portDesc.getType(), idlType);
+		String className = propViewBot.tree().getAllItems()[0].getText();
+		Assert.assertEquals(portDesc.getType().split("/")[1].split(":")[0], className);
 	}
 
 	@Test
@@ -64,5 +70,11 @@ public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
 
 		String descriptionText = propViewBot.text(1).getText();
 		Assert.assertEquals(portDesc.getDescription(), descriptionText);
+
+		// IDL tree
+		String idlType = propViewBot.label(1).getText();
+		Assert.assertEquals(portDesc.getType(), idlType);
+		String className = propViewBot.tree().getAllItems()[0].getText();
+		Assert.assertEquals(portDesc.getType().split("/")[1].split(":")[0], className);
 	}
 }
