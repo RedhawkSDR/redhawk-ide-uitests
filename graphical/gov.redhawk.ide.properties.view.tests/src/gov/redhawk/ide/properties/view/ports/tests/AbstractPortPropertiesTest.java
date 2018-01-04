@@ -8,14 +8,12 @@
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html.
  */
-package gov.redhawk.ide.properties.view.runtime.tests;
+package gov.redhawk.ide.properties.view.ports.tests;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 
@@ -26,22 +24,17 @@ import gov.redhawk.ide.swtbot.ViewUtils;
  */
 public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
 
-	@BeforeClass
-	public static void disableAutoShowConsole() {
-		ConsoleUtils.disableAutoShowConsole();
-	}
-
 	/**
 	 * Method should take necessary steps to:
-	 * - launch the test object,
-	 * - select the provides port within the explorer view / diagram of the editor
+	 * - create a diagram, add the test object
+	 * - select the provides port of the test object
 	 */
 	protected abstract PortDescription prepareProvidesPort();
 
 	/**
 	 * Method should take necessary steps to:
-	 * - launch the test object,
-	 * - select the uses port within the explorer view / diagram of the editor
+	 * - create a diagram, add the test object
+	 * - select the uses port of the test object
 	 */
 	protected abstract PortDescription prepareUsesPort();
 
@@ -57,12 +50,6 @@ public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
 
 		String descriptionText = propViewBot.text(1).getText();
 		Assert.assertEquals(portDesc.getDescription(), descriptionText);
-
-		// IDL tree (see IDE-1520, IDE-2150)
-		String idlType = propViewBot.label(1).getText();
-		Assert.assertEquals(portDesc.getType(), idlType);
-		String className = propViewBot.tree().getAllItems()[0].getText();
-		Assert.assertEquals(portDesc.getType().split("/")[1].split(":")[0], className);
 	}
 
 	@Test
@@ -77,11 +64,5 @@ public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
 
 		String descriptionText = propViewBot.text(1).getText();
 		Assert.assertEquals(portDesc.getDescription(), descriptionText);
-
-		// IDL tree (see IDE-1520, IDE-2150)
-		String idlType = propViewBot.label(1).getText();
-		Assert.assertEquals(portDesc.getType(), idlType);
-		String className = propViewBot.tree().getAllItems()[0].getText();
-		Assert.assertEquals(portDesc.getType().split("/")[1].split(":")[0], className);
 	}
 }
