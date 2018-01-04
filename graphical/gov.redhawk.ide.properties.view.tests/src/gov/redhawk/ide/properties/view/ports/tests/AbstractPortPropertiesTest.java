@@ -20,7 +20,6 @@ import gov.redhawk.ide.swtbot.ViewUtils;
 /**
  * IDE-1050 Properties view for selected port in diagram
  * IDE-1172 Display description of port
- * IDE-2150 IDL tree missing for DCD diagrams
  */
 public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
 
