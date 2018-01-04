@@ -13,7 +13,6 @@ package gov.redhawk.ide.properties.view.runtime.dcd.ports.tests;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 
-import gov.redhawk.ide.properties.view.runtime.dcd.tests.DomainDevicePropertyTest;
 import gov.redhawk.ide.properties.view.runtime.tests.AbstractPortPropertiesTest;
 import gov.redhawk.ide.properties.view.runtime.tests.PortDescription;
 import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
@@ -29,7 +28,7 @@ public class DomainDevicePortPropertyTest extends AbstractPortPropertiesTest {
 	protected static final PortDescription PROVIDES_DESC = new PortDescription("IDL:BULKIO/dataDouble:1.0", "Input port 1 description");
 	protected static final PortDescription USES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0", "Output port 1 description");
 
-	private String domain = DomainDevicePropertyTest.class.getSimpleName() + "_" + (int) (1000.0 * Math.random());
+	private String domain = getClass().getSimpleName() + "_" + (int) (1000.0 * Math.random());
 
 	@After
 	public void afterTest() {
