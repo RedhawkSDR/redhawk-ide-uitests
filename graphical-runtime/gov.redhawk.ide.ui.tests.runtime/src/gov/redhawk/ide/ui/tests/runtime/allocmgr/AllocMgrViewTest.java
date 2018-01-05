@@ -149,6 +149,9 @@ public class AllocMgrViewTest extends UITest {
 	public void teardownDomain() {
 		StandardTestActions.resetRefreshInterval();
 
+		// Close the view
+		ViewUtils.getAllocationManagerView(bot).close();
+
 		// Remove the fake domain from the model
 		ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(null);
 		ScaModelCommand.execute(registry, () -> {
