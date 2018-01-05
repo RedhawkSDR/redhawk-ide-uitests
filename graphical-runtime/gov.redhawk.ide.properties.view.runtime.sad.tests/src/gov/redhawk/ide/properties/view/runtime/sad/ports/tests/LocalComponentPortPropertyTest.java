@@ -23,9 +23,9 @@ public class LocalComponentPortPropertyTest extends AbstractPortPropertiesTest {
 	protected static final String HARD_LIMIT_1 = "HardLimit_1";
 	protected static final String PROVIDES_PORT = "dataFloat_in";
 	protected static final String USES_PORT = "dataFloat_out";
-	protected static final PortDescription PROVIDES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0",
+	private static final PortDescription PROVIDES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0",
 		"Float input port for data before hard limit is applied. ");
-	protected static final PortDescription USES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0",
+	private static final PortDescription USES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0",
 		"Float output port for data after hard limit is applied. ");
 
 	@After

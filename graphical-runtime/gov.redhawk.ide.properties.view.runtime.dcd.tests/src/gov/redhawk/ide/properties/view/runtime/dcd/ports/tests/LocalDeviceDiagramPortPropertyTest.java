@@ -16,7 +16,6 @@ import org.junit.Before;
 
 import gov.redhawk.ide.properties.view.runtime.tests.PortDescription;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
-import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils.ComponentState;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 
 public class LocalDeviceDiagramPortPropertyTest extends LocalDevicePortPropertyTest {
@@ -31,21 +30,19 @@ public class LocalDeviceDiagramPortPropertyTest extends LocalDevicePortPropertyT
 
 	@Override
 	protected PortDescription prepareProvidesPort() {
+		PortDescription portDesc = super.prepareProvidesPort();
 		RHBotGefEditor editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
-		DiagramTestUtils.waitForComponentState(bot, editor, DEVICE_STUB_1, ComponentState.STOPPED);
 		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramProvidesPort(editor, DEVICE_STUB_1, PROVIDES_PORT);
 		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
-		return PROVIDES_DESC;
+		return portDesc;
 	}
 
 	@Override
 	protected PortDescription prepareUsesPort() {
+		PortDescription portDesc = super.prepareUsesPort();
 		RHBotGefEditor editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
-		DiagramTestUtils.addFromPaletteToDiagram(editor, DEVICE_STUB, 0, 0);
-		DiagramTestUtils.waitForComponentState(bot, editor, DEVICE_STUB_1, ComponentState.STOPPED);
 		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramUsesPort(editor, DEVICE_STUB_1, USES_PORT);
 		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
-		return USES_DESC;
+		return portDesc;
 	}
 }

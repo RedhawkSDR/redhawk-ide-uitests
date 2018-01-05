@@ -26,8 +26,8 @@ public class DomainComponentPortPropertyTest extends AbstractPortPropertiesTest 
 	protected static final String EXAMPLE_PY_COMP_1 = "ExamplePythonComponent_1";
 	protected static final String PROVIDES_PORT = "dataDouble";
 	protected static final String USES_PORT = "dataFloat";
-	protected static final PortDescription PROVIDES_DESC = new PortDescription("IDL:BULKIO/dataDouble:1.0", "Example description of a provides/input Port");
-	protected static final PortDescription USES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0", "Example description of a uses/output Port");
+	private static final PortDescription PROVIDES_DESC = new PortDescription("IDL:BULKIO/dataDouble:1.0", "Example description of a provides/input Port");
+	private static final PortDescription USES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0", "Example description of a uses/output Port");
 
 	private String domain = getClass().getSimpleName() + "_" + (int) (1000.0 * Math.random());
 	private String waveformInstanceName;

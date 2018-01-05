@@ -23,8 +23,8 @@ public class LocalDevicePortPropertyTest extends AbstractPortPropertiesTest {
 	protected static final String DEVICE_STUB_1 = "DeviceStub_1";
 	protected static final String PROVIDES_PORT = "dataDouble_in";
 	protected static final String USES_PORT = "dataFloat_out";
-	protected static final PortDescription PROVIDES_DESC = new PortDescription("IDL:BULKIO/dataDouble:1.0", "Input port 1 description");
-	protected static final PortDescription USES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0", "Output port 1 description");
+	private static final PortDescription PROVIDES_DESC = new PortDescription("IDL:BULKIO/dataDouble:1.0", "Input port 1 description");
+	private static final PortDescription USES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0", "Output port 1 description");
 
 	@After
 	public void afterTest() {
