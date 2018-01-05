@@ -26,6 +26,11 @@ public class LocalDevicePortPropertyTest extends AbstractPortPropertiesTest {
 	private static final PortDescription PROVIDES_DESC = new PortDescription("IDL:BULKIO/dataDouble:1.0", "Input port 1 description");
 	private static final PortDescription USES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0", "Output port 1 description");
 
+	private static final String USRP_UHD = "rh.USRP_UHD";
+	protected static final String USRP_UHD_1 = "rh.USRP_UHD_1";
+	protected static final String USRP_PROVIDES_PORT = "dataFloatTX_in";
+	protected static final String USRP_USES_PORT = "dataShort_out";
+
 	@After
 	public void afterTest() {
 		ScaExplorerTestUtils.shutdown(bot, new String[] { "Sandbox" }, "Device Manager");
@@ -49,4 +54,19 @@ public class LocalDevicePortPropertyTest extends AbstractPortPropertiesTest {
 		return USES_DESC;
 	}
 
+	@Override
+	protected void prepareProvidesPortAdvanced() {
+		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, USRP_UHD, "cpp");
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Device Manager", USRP_UHD_1 },
+			USRP_PROVIDES_PORT);
+		treeItem.select();
+	}
+
+	@Override
+	protected void prepareUsesPortAdvanced() {
+		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, USRP_UHD, "cpp");
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Device Manager", USRP_UHD_1 },
+			USRP_USES_PORT);
+		treeItem.select();
+	}
 }

@@ -11,6 +11,10 @@
 package gov.redhawk.ide.properties.view.runtime.tests;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,6 +49,20 @@ public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
 	 * - select the uses port within the explorer view / diagram of the editor
 	 */
 	protected abstract PortDescription prepareUsesPort();
+
+	/**
+	 * Method should take necessary steps to:
+	 * - launch the test object,
+	 * - select the provides port within the explorer view / diagram of the editor
+	 */
+	protected abstract void prepareProvidesPortAdvanced();
+
+	/**
+	 * Method should take necessary steps to:
+	 * - launch the test object,
+	 * - select the uses port within the explorer view / diagram of the editor
+	 */
+	protected abstract void prepareUsesPortAdvanced();
 
 	@Test
 	public void providesPortDetails() {
@@ -84,5 +102,40 @@ public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
 		Assert.assertEquals(portDesc.getType(), idlType);
 		String className = propViewBot.tree().getAllItems()[0].getText();
 		Assert.assertEquals(portDesc.getType().split("/")[1].split(":")[0], className);
+	}
+
+	@Test
+	public void providesPortAdvanced() {
+		prepareProvidesPortAdvanced();
+		advanced();
+	}
+
+	@Test
+	public void usesPortAdvanced() {
+		prepareUsesPortAdvanced();
+		advanced();
+	}
+
+	private void advanced() {
+		SWTBot propViewBot = ViewUtils.selectPropertiesTab(bot, "Advanced");
+		SWTBotTree tree = propViewBot.tree();
+
+		SWTBotTreeItem supportedTransports = null;
+		for (SWTBotTreeItem treeItem : tree.getAllItems()) {
+			if ("Supported Transports".equals(treeItem.cell(0))) {
+				supportedTransports = treeItem;
+				break;
+			}
+		}
+		Assert.assertNotNull(supportedTransports);
+		Assert.assertEquals("shmipc", supportedTransports.cell(1));
+		supportedTransports.click(1);
+		new SWTBot(tree.widget).button("...").click();
+
+		SWTBotShell shell = bot.shell("Transport Details");
+		Assert.assertEquals("shmipc", shell.bot().comboBoxWithLabel("Transport:").getText());
+		Assert.assertEquals("hostname", shell.bot().tree().cell(0, 0));
+		shell.bot().button("Close").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 	}
 }

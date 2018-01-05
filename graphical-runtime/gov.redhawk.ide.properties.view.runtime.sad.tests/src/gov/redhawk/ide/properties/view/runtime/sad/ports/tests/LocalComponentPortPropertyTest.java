@@ -51,4 +51,19 @@ public class LocalComponentPortPropertyTest extends AbstractPortPropertiesTest {
 		return USES_DESC;
 	}
 
+	@Override
+	protected void prepareProvidesPortAdvanced() {
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "cpp");
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", HARD_LIMIT_1 },
+			PROVIDES_PORT);
+		treeItem.select();
+	}
+
+	@Override
+	protected void prepareUsesPortAdvanced() {
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "cpp");
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", HARD_LIMIT_1 },
+			USES_PORT);
+		treeItem.select();
+	}
 }

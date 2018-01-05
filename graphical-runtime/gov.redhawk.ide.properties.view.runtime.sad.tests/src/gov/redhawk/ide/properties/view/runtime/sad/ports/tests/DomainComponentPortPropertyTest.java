@@ -29,6 +29,11 @@ public class DomainComponentPortPropertyTest extends AbstractPortPropertiesTest 
 	private static final PortDescription PROVIDES_DESC = new PortDescription("IDL:BULKIO/dataDouble:1.0", "Example description of a provides/input Port");
 	private static final PortDescription USES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0", "Example description of a uses/output Port");
 
+	protected static final String WAVEFORM6 = "ExampleWaveform06";
+	protected static final String HARD_LIMIT_1 = "HardLimit_1";
+	protected static final String HARD_LIMIT_PROVIDES_PORT = "dataFloat_in";
+	protected static final String HARD_LIMIT_USES_PORT = "dataFloat_out";
+
 	private String domain = getClass().getSimpleName() + "_" + (int) (1000.0 * Math.random());
 	private String waveformInstanceName;
 
@@ -59,6 +64,26 @@ public class DomainComponentPortPropertyTest extends AbstractPortPropertiesTest 
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, USES_PORT);
 		treeItem.select();
 		return USES_DESC;
+	}
+
+	@Override
+	protected void prepareProvidesPortAdvanced() {
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
+		waveformInstanceName = ScaExplorerTestUtils.launchWaveformFromDomain(bot, domain, WAVEFORM6);
+		String[] parentPath = new String[] { domain, "Waveforms", WAVEFORM6, HARD_LIMIT_1 };
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, HARD_LIMIT_PROVIDES_PORT);
+		treeItem.select();
+	}
+
+	@Override
+	protected void prepareUsesPortAdvanced() {
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
+		waveformInstanceName = ScaExplorerTestUtils.launchWaveformFromDomain(bot, domain, WAVEFORM6);
+		String[] parentPath = new String[] { domain, "Waveforms", WAVEFORM6, HARD_LIMIT_1 };
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, HARD_LIMIT_USES_PORT);
+		treeItem.select();
 	}
 
 	protected String getDomain() {

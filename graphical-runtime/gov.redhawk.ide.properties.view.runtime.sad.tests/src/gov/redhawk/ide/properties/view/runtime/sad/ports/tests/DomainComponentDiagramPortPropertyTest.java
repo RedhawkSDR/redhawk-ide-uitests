@@ -49,4 +49,22 @@ public class DomainComponentDiagramPortPropertyTest extends DomainComponentPortP
 		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
 		return portDesc;
 	}
+
+	@Override
+	protected void prepareProvidesPortAdvanced() {
+		super.prepareProvidesPortAdvanced();
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[] { getDomain(), "Waveforms" }, WAVEFORM6, DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
+		SWTBotGefEditor editor = gefBot.gefEditor(getWaveformInstanceName());
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1, HARD_LIMIT_PROVIDES_PORT);
+		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
+	}
+
+	@Override
+	protected void prepareUsesPortAdvanced() {
+		super.prepareUsesPortAdvanced();
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[] { getDomain(), "Waveforms" }, WAVEFORM6, DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
+		SWTBotGefEditor editor = gefBot.gefEditor(getWaveformInstanceName());
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1, HARD_LIMIT_USES_PORT);
+		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
+	}
 }

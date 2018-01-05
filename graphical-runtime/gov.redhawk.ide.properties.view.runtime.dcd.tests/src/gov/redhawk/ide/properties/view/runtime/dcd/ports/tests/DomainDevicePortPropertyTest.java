@@ -28,6 +28,11 @@ public class DomainDevicePortPropertyTest extends AbstractPortPropertiesTest {
 	private static final PortDescription PROVIDES_DESC = new PortDescription("IDL:BULKIO/dataDouble:1.0", "Input port 1 description");
 	private static final PortDescription USES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0", "Output port 1 description");
 
+	protected static final String DEV_MGR_USRP = "usrpnode";
+	protected static final String USRP_1 = "USRP_UHD_1";
+	protected static final String USRP_PROVIDES_PORT = "dataShortTX_in";
+	protected static final String USRP_USES_PORT = "dataShort_out";
+
 	private String domain = getClass().getSimpleName() + "_" + (int) (1000.0 * Math.random());
 
 	@After
@@ -55,6 +60,24 @@ public class DomainDevicePortPropertyTest extends AbstractPortPropertiesTest {
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, USES_PORT);
 		treeItem.select();
 		return USES_DESC;
+	}
+
+	@Override
+	protected void prepareProvidesPortAdvanced() {
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEV_MGR_USRP);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
+		String[] parentPath = new String[] { domain, "Device Managers", DEV_MGR_USRP, USRP_1 };
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, USRP_PROVIDES_PORT);
+		treeItem.select();
+	}
+
+	@Override
+	protected void prepareUsesPortAdvanced() {
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEV_MGR_USRP);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
+		String[] parentPath = new String[] { domain, "Device Managers", DEV_MGR_USRP, USRP_1 };
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, USRP_USES_PORT);
+		treeItem.select();
 	}
 
 	protected String getDomain() {

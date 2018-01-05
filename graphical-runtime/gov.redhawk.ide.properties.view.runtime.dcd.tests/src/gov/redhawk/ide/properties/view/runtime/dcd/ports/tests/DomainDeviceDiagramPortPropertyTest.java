@@ -54,4 +54,24 @@ public class DomainDeviceDiagramPortPropertyTest extends DomainDevicePortPropert
 		return portDesc;
 	}
 
+	@Override
+	protected void prepareProvidesPortAdvanced() {
+		super.prepareProvidesPortAdvanced();
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[] { getDomain(), "Device Managers" }, DEV_MGR_USRP,
+			DiagramType.GRAPHITI_NODE_EXPLORER);
+		SWTBotGefEditor editor = gefBot.gefEditor(DEV_MGR_USRP);
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramProvidesPort(editor, USRP_1, USRP_PROVIDES_PORT);
+		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
+	}
+
+	@Override
+	protected void prepareUsesPortAdvanced() {
+		super.prepareUsesPortAdvanced();
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[] { getDomain(), "Device Managers" }, DEV_MGR_USRP,
+			DiagramType.GRAPHITI_NODE_EXPLORER);
+		SWTBotGefEditor editor = gefBot.gefEditor(DEV_MGR_USRP);
+		DiagramTestUtils.waitForComponentState(gefBot, editor, USRP_1, ComponentState.STOPPED);
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramUsesPort(editor, USRP_1, USRP_USES_PORT);
+		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
+	}
 }

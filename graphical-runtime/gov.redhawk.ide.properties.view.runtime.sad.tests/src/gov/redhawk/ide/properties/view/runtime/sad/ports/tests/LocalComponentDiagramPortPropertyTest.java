@@ -45,4 +45,20 @@ public class LocalComponentDiagramPortPropertyTest extends LocalComponentPortPro
 		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
 		return portDesc;
 	}
+
+	@Override
+	protected void prepareProvidesPortAdvanced() {
+		super.prepareProvidesPortAdvanced();
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1, PROVIDES_PORT);
+		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
+	}
+
+	@Override
+	protected void prepareUsesPortAdvanced() {
+		super.prepareUsesPortAdvanced();
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1, USES_PORT);
+		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
+	}
 }
