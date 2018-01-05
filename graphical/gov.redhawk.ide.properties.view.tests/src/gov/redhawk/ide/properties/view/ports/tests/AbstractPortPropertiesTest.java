@@ -14,7 +14,7 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 
 /**
@@ -22,7 +22,7 @@ import gov.redhawk.ide.swtbot.ViewUtils;
  * IDE-1172 Display description of port
  * IDE-2150 IDL tree missing for DCD diagrams
  */
-public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
+public abstract class AbstractPortPropertiesTest extends UITest {
 
 	/**
 	 * Method should take necessary steps to:
