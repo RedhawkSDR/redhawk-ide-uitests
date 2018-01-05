@@ -109,6 +109,9 @@ public class ConnMgrViewTest extends UITest {
 	public void teardownDomain() {
 		StandardTestActions.resetRefreshInterval();
 
+		// Close the view
+		ViewUtils.getConnectionManagerView(bot).close();
+
 		// Remove the fake domain from the model
 		ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(null);
 		ScaModelCommand.execute(registry, () -> {
