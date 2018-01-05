@@ -17,7 +17,7 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 
-public class DcdPortDiagramPropertiesTest extends AbstractPortPropertiesTest {
+public class DcdDiagramPortPropertiesTest extends AbstractPortPropertiesTest {
 
 	private static final String DEVICE_STUB = "DeviceStub";
 	private static final String DEVICE_STUB_1 = "DeviceStub_1";
