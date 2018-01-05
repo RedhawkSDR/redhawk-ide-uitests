@@ -14,14 +14,14 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.UITest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 
 /**
  * IDE-1050 Properties view for selected port in diagram
  * IDE-1172 Display description of port
  */
-public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
+public abstract class AbstractPortPropertiesTest extends UITest {
 
 	/**
 	 * Method should take necessary steps to:
