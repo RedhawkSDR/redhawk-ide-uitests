@@ -41,30 +41,19 @@ public abstract class AbstractPortPropertiesTest extends UITest {
 	@Test
 	public void providesPortDetails() {
 		PortDescription portDesc = prepareProvidesPort();
-
-		SWTBot propViewBot = ViewUtils.selectPropertiesTab(bot, "Port Details");
-		String summaryText = propViewBot.text().getText();
-		Assert.assertTrue(summaryText.contains("Direction: in <provides>"));
-		Assert.assertTrue(summaryText.contains(portDesc.getType()));
-		Assert.assertTrue(summaryText.contains("Type: data"));
-
-		String descriptionText = propViewBot.text(1).getText();
-		Assert.assertEquals(portDesc.getDescription(), descriptionText);
-
-		// IDL tree
-		String idlType = propViewBot.label(1).getText();
-		Assert.assertEquals(portDesc.getType(), idlType);
-		String className = propViewBot.tree().getAllItems()[0].getText();
-		Assert.assertEquals(portDesc.getType().split("/")[1].split(":")[0], className);
+		details(portDesc, "in <provides>");
 	}
 
 	@Test
 	public void usesPortDetails() {
 		PortDescription portDesc = prepareUsesPort();
+		details(portDesc, "out <uses>");
+	}
 
+	private void details(PortDescription portDesc, String inout) {
 		SWTBot propViewBot = ViewUtils.selectPropertiesTab(bot, "Port Details");
 		String summaryText = propViewBot.text().getText();
-		Assert.assertTrue(summaryText.contains("Direction: out <uses>"));
+		Assert.assertTrue(summaryText.contains("Direction: " + inout));
 		Assert.assertTrue(summaryText.contains(portDesc.getType()));
 		Assert.assertTrue(summaryText.contains("Type: data"));
 
