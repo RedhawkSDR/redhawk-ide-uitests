@@ -48,7 +48,7 @@ public class DevManagerSandboxLogConfigTest extends AbstractLogConfigTest {
 	@After
 	public void after() throws CoreException {
 		ScaExplorerTestUtils.terminate(bot, SANDBOX_PATH, DEVICE_MANAGER);
-		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(bot, SANDBOX_PATH, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(bot);
 		ConsoleUtils.removeTerminatedLaunches(bot);
 		super.after();
 	}

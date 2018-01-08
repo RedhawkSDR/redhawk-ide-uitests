@@ -55,7 +55,7 @@ public class DevManagerSandboxContextMenuTest extends AbstractLocalContextMenuTe
 	@After
 	public void after() throws CoreException {
 		ScaExplorerTestUtils.terminate(bot, SANDBOX_PATH, DEVICE_MANAGER);
-		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(bot, SANDBOX_PATH, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(bot);
 		ConsoleUtils.removeTerminatedLaunches(bot);
 		bot.closeAllEditors();
 		super.after();

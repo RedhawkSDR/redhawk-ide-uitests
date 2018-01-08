@@ -53,7 +53,7 @@ public abstract class AbstractDeviceManagerSandboxTest extends UIRuntimeTest {
 	@After
 	public void afterTest() {
 		ScaExplorerTestUtils.terminate(bot, SANDBOX_PATH, DEVICE_MANAGER);
-		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(bot, SANDBOX_PATH, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(bot);
 		ConsoleUtils.removeTerminatedLaunches(bot);
 		bot.closeAllEditors();
 	}
