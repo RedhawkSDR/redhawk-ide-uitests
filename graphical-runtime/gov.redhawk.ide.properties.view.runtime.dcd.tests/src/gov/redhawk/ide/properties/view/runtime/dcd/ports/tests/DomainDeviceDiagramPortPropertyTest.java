@@ -70,7 +70,6 @@ public class DomainDeviceDiagramPortPropertyTest extends DomainDevicePortPropert
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[] { getDomain(), "Device Managers" }, DEV_MGR_USRP,
 			DiagramType.GRAPHITI_NODE_EXPLORER);
 		SWTBotGefEditor editor = gefBot.gefEditor(DEV_MGR_USRP);
-		DiagramTestUtils.waitForComponentState(gefBot, editor, USRP_1, ComponentState.STOPPED);
 		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramUsesPort(editor, USRP_1, USRP_USES_PORT);
 		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
 	}
