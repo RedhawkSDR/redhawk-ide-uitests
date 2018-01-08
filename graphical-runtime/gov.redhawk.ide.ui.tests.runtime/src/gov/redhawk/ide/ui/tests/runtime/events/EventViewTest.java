@@ -64,6 +64,7 @@ import StandardEvent.StateChangeCategoryType;
 import StandardEvent.StateChangeEventType;
 import StandardEvent.StateChangeEventTypeHelper;
 import StandardEvent.StateChangeType;
+import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
@@ -118,6 +119,8 @@ public class EventViewTest extends UIRuntimeTest {
 		// Create the test event channel
 		testChannel = domMgr.eventChannelMgr().createForRegistrations(CHANNEL_NAME);
 		pushConsumer = testChannel.for_suppliers().obtain_push_consumer();
+
+		ConsoleUtils.disableAutoShowConsole();
 	}
 
 	@AfterClass
@@ -138,16 +141,17 @@ public class EventViewTest extends UIRuntimeTest {
 		super.before();
 		orb = OrbSession.createSession().getOrb();
 		eventFields = new HashSet<>();
+		openEventView();
 	};
 
 	@Override
 	public void after() throws CoreException {
+		bot.viewByTitle(CHANNEL_NAME).close();
 		super.after();
 	}
 
 	@Test
 	public void logEvent() throws BadKind, Disconnected {
-		openEventView();
 		Any event = createLogEvent();
 		pushConsumer.push(event);
 		assertPropertyDetails();
@@ -155,7 +159,6 @@ public class EventViewTest extends UIRuntimeTest {
 
 	@Test
 	public void domainAddedEvent() throws BadKind, Disconnected {
-		openEventView();
 		Any event = createApplicationAddedEvent();
 		pushConsumer.push(event);
 		assertPropertyDetails();
@@ -166,7 +169,6 @@ public class EventViewTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void domainRemovedEvent() throws BadKind, Disconnected {
-		openEventView();
 		Any event = createEventChannelRemovedEvent();
 		pushConsumer.push(event);
 		assertPropertyDetails();
@@ -174,7 +176,6 @@ public class EventViewTest extends UIRuntimeTest {
 
 	@Test
 	public void stateChangeEvent() throws BadKind, Disconnected {
-		openEventView();
 		Any event = createStateChangeEvent();
 		pushConsumer.push(event);
 		assertPropertyDetails();
@@ -182,7 +183,6 @@ public class EventViewTest extends UIRuntimeTest {
 
 	@Test
 	public void resourceStateChangeEvent() throws BadKind, Disconnected {
-		openEventView();
 		Any event = createResourceStateChangeEvent();
 		pushConsumer.push(event);
 		assertPropertyDetails();
@@ -193,7 +193,6 @@ public class EventViewTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void propertyChangeEvent_2_0() throws BadKind, Disconnected {
-		openEventView();
 		Any event = createPropertyChangeEvent_2_0();
 		pushConsumer.push(event);
 		assertPropertyDetails();
@@ -205,7 +204,6 @@ public class EventViewTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void propertyChangeEvent() throws BadKind, Disconnected {
-		openEventView();
 		Any event = createPropertyChangeEvent();
 		pushConsumer.push(event);
 		assertPropertyDetails();
@@ -214,7 +212,6 @@ public class EventViewTest extends UIRuntimeTest {
 
 	@Test
 	public void propertySetChangeEvent() throws BadKind, Disconnected {
-		openEventView();
 		Any event = createPropertySetChangeEvent();
 		pushConsumer.push(event);
 		assertPropertyDetails();
@@ -222,7 +219,6 @@ public class EventViewTest extends UIRuntimeTest {
 
 	@Test
 	public void abnormalTerminationEvent() throws BadKind, Disconnected {
-		openEventView();
 		Any event = createAbnormalTerminationEvent();
 		pushConsumer.push(event);
 		assertPropertyDetails();
@@ -230,7 +226,6 @@ public class EventViewTest extends UIRuntimeTest {
 
 	@Test
 	public void messagePortEvent() throws BadKind, Disconnected {
-		openEventView();
 		Any event = createMessagePortEvent();
 		pushConsumer.push(event);
 		assertPropertyDetails();
@@ -308,8 +303,6 @@ public class EventViewTest extends UIRuntimeTest {
 	 */
 	@Test
 	public void eventViewTest() throws BadKind, Disconnected {
-		openEventView();
-
 		// Push multiple events
 		List<Any> events = new ArrayList<>();
 		events.add(createLogEvent());
