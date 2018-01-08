@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
@@ -65,7 +66,8 @@ public class DeleteProjectTest extends AbstractGraphitiTest {
 		// Delete project from the project explorer
 		SWTBotView projectExplorerView = ViewUtils.getProjectView(bot);
 		projectExplorerView.setFocus();
-		SWTBotTreeItem projectItem = StandardTestActions.waitForTreeItemToAppear(bot, bot.tree(), Arrays.asList(waveformName));
+		SWTBot explorerBot = projectExplorerView.bot();
+		SWTBotTreeItem projectItem = StandardTestActions.waitForTreeItemToAppear(explorerBot, explorerBot.tree(), Arrays.asList(waveformName));
 		projectItem.contextMenu("Delete").click();
 
 		gefBot.shell("Delete Resources").setFocus();
