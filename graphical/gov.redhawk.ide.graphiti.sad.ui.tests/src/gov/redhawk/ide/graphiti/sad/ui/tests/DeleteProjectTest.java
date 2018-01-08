@@ -13,6 +13,7 @@ package gov.redhawk.ide.graphiti.sad.ui.tests;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.filesystem.EFS;
@@ -23,11 +24,15 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.MenuUtils;
+import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
@@ -59,9 +64,11 @@ public class DeleteProjectTest extends AbstractGraphitiTest {
 		MenuUtils.save(editor);
 
 		// Delete project from the project explorer
-		SWTBotView projectExplorerView = gefBot.viewById("org.eclipse.ui.navigator.ProjectExplorer");
+		SWTBotView projectExplorerView = ViewUtils.getProjectView(bot);
 		projectExplorerView.setFocus();
-		gefBot.tree().select(waveformName).contextMenu("Delete").click();
+		SWTBot explorerBot = projectExplorerView.bot();
+		SWTBotTreeItem projectItem = StandardTestActions.waitForTreeItemToAppear(explorerBot, explorerBot.tree(), Arrays.asList(waveformName));
+		projectItem.contextMenu("Delete").click();
 
 		gefBot.shell("Delete Resources").setFocus();
 		gefBot.checkBox(0).click();
