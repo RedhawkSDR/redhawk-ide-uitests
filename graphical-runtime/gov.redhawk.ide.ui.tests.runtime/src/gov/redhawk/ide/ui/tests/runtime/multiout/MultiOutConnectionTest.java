@@ -10,8 +10,8 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.runtime.multiout;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
@@ -25,6 +25,15 @@ import org.junit.Test;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
+
+	@Override
+	public void after() throws CoreException {
+		// Cleanup the DataConverter we launched
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox" }, "Chalkboard");
+		ScaExplorerTestUtils.waitUntilScaExplorerWaveformEmpty(bot, new String[] { "Sandbox" }, "Chalkboard");
+
+		super.after();
+	}
 
 	/**
 	 * For this test, we will be content to confirm that the connection ID matches the tuner allocation ID
@@ -45,10 +54,6 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 
 		// Verify that the expected behavior occurred
 		testActionResults(0);
-		
-		// Clean up component
-		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
 	}
 
 	@Override
@@ -71,17 +76,12 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		explorerViewBot.tree().select(getUsesPort(), providesPort).contextMenu(getContextMenu()).click();
 
 		// Complete the multi-out connection dialog
-		bot.waitUntil(Conditions.shellIsActive("Multi-out port connection wizard"));
 		SWTBotShell multiOutShell = bot.shell("Multi-out port connection wizard");
 		multiOutShell.bot().tree().select(1);
 		multiOutShell.bot().button("OK").click();
 
 		// Verify that the expected behavior occurred
 		testActionResults(1);
-		
-		// Clean up component
-		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
 	}
 
 	/**
@@ -110,7 +110,6 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		explorerViewBot.tree().select(getUsesPort(), providesPort).contextMenu(getContextMenu()).click();
 
 		// Wait for the connection dialog to open
-		bot.waitUntil(Conditions.shellIsActive("Multi-out port connection wizard"));
 		SWTBot dialogBot = bot.shell("Multi-out port connection wizard").bot();
 
 		// Test widget enabled state
@@ -156,10 +155,6 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 				return "Connection node never appeared, or had the wrong ID";
 			}
 		}, 12000);
-		
-		// Clean up component
-		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
 	}
 
 	/**
@@ -182,10 +177,6 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		waitForTunerAllocation(1);
 
 		testWithSecondTuner();
-		
-		// Clean up component
-		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
 	}
 
 	private void testWithSingleTuner() {
@@ -297,7 +288,6 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		// Right click on uses port and click connect to bring up the ConnectWizard
 		getUsesPort().contextMenu("Connect").click();
 		// get the shell
-		bot.waitUntil(Conditions.shellIsActive("Connect"));
 		SWTBotShell connectShell = bot.shell("Connect");
 		SWTBot shellBot = connectShell.bot();
 		// select the correct node in both tables
@@ -326,4 +316,8 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		waitForConnection(allocationIndex);
 	}
 
+	@Override
+	protected void closeView() {
+		// PASS - Nothing to do
+	}
 }

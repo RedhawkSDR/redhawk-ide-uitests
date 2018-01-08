@@ -14,6 +14,8 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.junit.Assert;
 
+import gov.redhawk.ide.swtbot.ViewUtils;
+
 public class MultiOutDisplaySriTest extends AbstractMultiOutPortTest {
 
 	@Override
@@ -24,7 +26,7 @@ public class MultiOutDisplaySriTest extends AbstractMultiOutPortTest {
 	@Override
 	protected void testActionResults(int allocationIndex) {
 		waitForConnection(allocationIndex);
-		SWTBotView sriView = bot.viewById("gov.redhawk.bulkio.ui.sridata.view");
+		SWTBotView sriView = ViewUtils.getSRIView(bot);
 		SWTBotTree sriTree = sriView.bot().tree();
 
 		Assert.assertEquals("dataShort_out SRI ", sriView.getReference().getTitle());
@@ -36,4 +38,8 @@ public class MultiOutDisplaySriTest extends AbstractMultiOutPortTest {
 		Assert.assertEquals("SRI View is not streaming data", "false", sriTree.getTreeItem("blocking: ").cell(1));
 	}
 
+	@Override
+	protected void closeView() {
+		ViewUtils.getSRIView(bot).close();
+	}
 }

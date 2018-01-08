@@ -12,16 +12,19 @@ package gov.redhawk.ide.ui.tests.runtime.multiout;
 
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class MultiOutPlottingTest extends AbstractMultiOutPortTest {
+
+	private static final String DATA_CONVERTER = "rh.DataConverter";
+	private static final String DATA_CONVERTER_1 = "DataConverter_1";
 
 	@Override
 	protected String getContextMenu() {
@@ -31,7 +34,7 @@ public class MultiOutPlottingTest extends AbstractMultiOutPortTest {
 	@Override
 	protected void testActionResults(int allocationIndex) {
 		waitForConnection(allocationIndex);
-		SWTBotView plotView = bot.viewById("gov.redhawk.ui.port.nxmplot.PlotView2");
+		SWTBotView plotView = ViewUtils.getPlotView(bot);
 		Assert.assertEquals("dataShort_out", plotView.getReference().getTitle());
 	}
 
@@ -45,9 +48,8 @@ public class MultiOutPlottingTest extends AbstractMultiOutPortTest {
 		testWithSingleTuner();
 
 		// Launch a component and connect to it so that the first connection ID is 'IN USE'
-		final String componentName = "rh.DataConverter";
-		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, componentName, "cpp");
-		SWTBotTreeItem providesPort = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", "DataConverter_1" },
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, DATA_CONVERTER, "cpp");
+		SWTBotTreeItem providesPort = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", DATA_CONVERTER_1 },
 			"dataShort");
 		SWTBot explorerViewBot = ScaExplorerTestUtils.showScaExplorerView(bot);
 		explorerViewBot.tree().select(getUsesPort(), providesPort).contextMenu("Connect").click();
@@ -58,10 +60,10 @@ public class MultiOutPlottingTest extends AbstractMultiOutPortTest {
 		waitForTunerAllocation(1);
 
 		testWithSecondTuner();
-			
+
 		// Clean up component
-		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, "DataConverter_1");
+		ScaExplorerTestUtils.releaseFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, DATA_CONVERTER_1);
+		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, DATA_CONVERTER_1);
 	}
 
 	private void testWithSingleTuner() {
@@ -82,7 +84,7 @@ public class MultiOutPlottingTest extends AbstractMultiOutPortTest {
 		// Finish wizard and confirm that a connection with the correct ID was created, and that the view has opened
 		plotBot.button("Finish").click();
 		waitForConnection(0);
-		SWTBotView plotView = bot.viewById("gov.redhawk.ui.port.nxmplot.PlotView2");
+		SWTBotView plotView = ViewUtils.getPlotView(bot);
 		Assert.assertEquals("dataShort_out", plotView.getReference().getTitle());
 
 		// Close the view in preparation for the next part of the test
@@ -118,7 +120,7 @@ public class MultiOutPlottingTest extends AbstractMultiOutPortTest {
 		// Finish and confirm that a connection with the correct ID was created, and that the view has opened
 		plotBot.button("Finish").click();
 		waitForConnection(1);
-		SWTBotView plotView = bot.viewById("gov.redhawk.ui.port.nxmplot.PlotView2");
+		SWTBotView plotView = ViewUtils.getPlotView(bot);
 		Assert.assertEquals("dataShort_out", plotView.getReference().getTitle());
 
 		// Close the view
@@ -130,7 +132,11 @@ public class MultiOutPlottingTest extends AbstractMultiOutPortTest {
 		getUsesPort().contextMenu("Plot Port ...").click();
 
 		// Get the shell's bot
-		bot.waitUntil(Conditions.shellIsActive("Plot Port"));
 		return bot.shell("Plot Port").bot();
+	}
+
+	@Override
+	protected void closeView() {
+		// PASS - Plots close when resources are released
 	}
 }

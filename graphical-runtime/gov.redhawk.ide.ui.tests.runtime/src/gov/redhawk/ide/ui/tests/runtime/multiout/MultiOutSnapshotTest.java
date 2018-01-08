@@ -23,6 +23,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class MultiOutSnapshotTest extends AbstractMultiOutPortTest {
@@ -54,19 +55,16 @@ public class MultiOutSnapshotTest extends AbstractMultiOutPortTest {
 
 	@Override
 	protected void testActionResults(int allocationIndex) {
-
 		// Create a job change listener to make sure we actually get a snapshot
 		JobListener jobListener = new JobListener();
 		Job.getJobManager().addJobChangeListener(jobListener);
 
 		// Handle "Start Resource" dialog
-		bot.waitUntil(Conditions.shellIsActive("Start Resource"));
 		SWTBotShell startShell = bot.shell("Start Resource");
 		startShell.bot().button("No").click();
 		bot.waitUntil(Conditions.shellCloses(startShell));
 
 		// Check that the combo field is set to the allocation ID
-		bot.waitUntil(Conditions.shellIsActive("Snapshot"));
 		SWTBotShell snapshotShell = bot.shell("Snapshot");
 		SWTBotCombo idCombo = snapshotShell.bot().comboBoxWithLabel("Connection ID:");
 		idCombo.setSelection(getAllocationId(allocationIndex));
@@ -114,4 +112,8 @@ public class MultiOutSnapshotTest extends AbstractMultiOutPortTest {
 		}
 	}
 
+	@Override
+	protected void closeView() {
+		ViewUtils.getProgressView(bot).close();
+	}
 }

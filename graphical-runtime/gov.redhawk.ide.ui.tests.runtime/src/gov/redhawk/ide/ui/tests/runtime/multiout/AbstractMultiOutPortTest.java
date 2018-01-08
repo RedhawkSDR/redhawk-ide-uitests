@@ -43,6 +43,11 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 	 */
 	protected abstract void testActionResults(int allocationIndex);
 
+	/**
+	 * Used during cleanup to close the view that was opened for testing.
+	 */
+	protected abstract void closeView();
+
 	@Before
 	public void before() throws Exception {
 		super.before();
@@ -90,7 +95,6 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 		getUsesPort().contextMenu(getContextMenu()).click();
 
 		// Complete the multi-out connection dialog
-		bot.waitUntil(Conditions.shellIsActive("Multi-out port connection wizard"));
 		SWTBotShell multiOutShell = bot.shell("Multi-out port connection wizard");
 		multiOutShell.bot().tree().select(1);
 		multiOutShell.bot().button("OK").click();
@@ -183,42 +187,15 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 		return feiContainer.getItems()[index];
 	}
 
-	private void waitForTunerDeallocation() {
-		SWTBotTreeItem feiContainer = getFeiTunerContainer();
-		bot.waitUntil(new DefaultCondition() {
-			@Override
-			public boolean test() throws Exception {
-				feiContainer.collapse();
-				bot.sleep(200);
-				feiContainer.expand();
-				return "Unallocated RX_DIGITIZER: 2 available".equals(feiContainer.getItems()[0].getText());
-			}
-
-			@Override
-			public String getFailureMessage() {
-				return "Tuner was not deallocated";
-			}
-		}, 15000);
-	}
-
 	@After
 	public void after() throws CoreException {
-		// Deallocate all allocated tuners
-		SWTBotTreeItem feiContainer = getFeiTunerContainer();
-		SWTBotTreeItem[] items = feiContainer.getItems();
-		// TODO: this may break for deallocating multiple tuners...
-		for (int i = 0; i < items.length; i++) {
-			if (items[i].getText().startsWith("RX_DIGITIZER")) {
-				items[i].contextMenu("Deallocate").click();
-			}
-		}
-		waitForTunerDeallocation();
+		// Close view
+		closeView();
 
 		// Release the device
-		ScaExplorerTestUtils.releaseFromScaExplorer(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
+		ScaExplorerTestUtils.shutdown(bot, new String[] { "Sandbox" }, "Device Manager");
+		ScaExplorerTestUtils.waitUntilSandboxDeviceManagerEmpty(bot);
 
 		super.after();
 	}
-
 }

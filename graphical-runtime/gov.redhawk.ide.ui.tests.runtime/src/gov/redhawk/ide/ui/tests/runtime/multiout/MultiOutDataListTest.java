@@ -10,7 +10,6 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.runtime.multiout;
 
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
@@ -18,6 +17,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class MultiOutDataListTest extends AbstractMultiOutPortTest {
@@ -49,8 +49,7 @@ public class MultiOutDataListTest extends AbstractMultiOutPortTest {
 
 	@Override
 	protected void testActionResults(int allocationIndex) {
-		SWTBotView dataListView = bot.viewById("gov.redhawk.datalist.ui.views.DataListView");
-		SWTBot dataListBot = dataListView.bot();
+		SWTBot dataListBot = ViewUtils.getDataListView(bot).bot();
 
 		// Simply check that the table populates with values. If it does, then a connection was made with the correct
 		// connection ID
@@ -59,14 +58,12 @@ public class MultiOutDataListTest extends AbstractMultiOutPortTest {
 		// HACK to tell if we are testing with multiple tuners or not...
 		if (allocationIndex == 1) {
 			// Complete the multi-out connection dialog
-			bot.waitUntil(Conditions.shellIsActive("Multi-out port connection wizard"));
 			SWTBotShell multiOutShell = bot.shell("Multi-out port connection wizard");
 			multiOutShell.bot().tree().select(1);
 			multiOutShell.bot().button("OK").click();
 		}
 
 		// Ignore the fact that the device isn't started, it is still pushing data
-		bot.waitUntil(Conditions.shellIsActive("Started?"));
 		SWTBotShell startedShell = bot.shell("Started?");
 		startedShell.bot().button("Yes").click();
 		bot.waitUntil(Conditions.shellCloses(startedShell));
@@ -85,5 +82,10 @@ public class MultiOutDataListTest extends AbstractMultiOutPortTest {
 				return "No data was generated, connection ID may not be correct";
 			}
 		});
+	}
+
+	@Override
+	protected void closeView() {
+		ViewUtils.getDataListView(bot).close();
 	}
 }

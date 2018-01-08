@@ -13,6 +13,8 @@ package gov.redhawk.ide.ui.tests.runtime.multiout;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.junit.Assert;
 
+import gov.redhawk.ide.swtbot.ViewUtils;
+
 public class MultiOutPlayPortTest extends AbstractMultiOutPortTest {
 
 	@Override
@@ -23,8 +25,12 @@ public class MultiOutPlayPortTest extends AbstractMultiOutPortTest {
 	@Override
 	protected void testActionResults(int allocationIndex) {
 		waitForConnection(allocationIndex);
-		SWTBotView playAudioView = bot.viewById("gov.redhawk.ui.port.playaudio.view");
+		SWTBotView playAudioView = ViewUtils.getAudioView(bot);
 		Assert.assertEquals("Incorrect audio receiver ID displayed: ", "RX_Digitizer_Sim_1 -> dataShort_out", playAudioView.bot().list().selection()[0]);
 	}
 
+	@Override
+	protected void closeView() {
+		ViewUtils.getAudioView(bot).close();
+	}
 }
