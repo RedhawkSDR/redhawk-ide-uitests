@@ -260,22 +260,23 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 			DiagramTestUtils.drawConnectionBetweenPorts(editor, uses, provides);
 
 			SWTBotShell shell = bot.shell("Connect");
-			Assert.assertFalse(bot.button("Finish").isEnabled());
+			SWTBot shellBot = shell.bot();
+			Assert.assertFalse(shellBot.button("Finish").isEnabled());
 
 			SWTBotList sourceGroup = null;
 			SWTBotList targetGroup = null;
 			if (getEditorType() == EditorType.SAD) {
-				sourceGroup = bot.listInGroup(compA.getShortName(1) + " (Source)");
-				targetGroup = bot.listInGroup(compB.getShortName(1) + " (Target)");
+				sourceGroup = shellBot.listInGroup(compA.getShortName(1) + " (Source)");
+				targetGroup = shellBot.listInGroup(compB.getShortName(1) + " (Target)");
 			} else {
-				sourceGroup = bot.listInGroup(projectName + ":" + compA.getShortName(1) + " (Source)");
-				targetGroup = bot.listInGroup(projectName + ":" + compB.getShortName(1) + " (Target)");
+				sourceGroup = shellBot.listInGroup(projectName + ":" + compA.getShortName(1) + " (Source)");
+				targetGroup = shellBot.listInGroup(projectName + ":" + compB.getShortName(1) + " (Target)");
 			}
 
 			sourceGroup.select(compA.getOutPort(i));
 			targetGroup.select(compB.getInPort(i));
 
-			bot.button("Finish").click();
+			shellBot.button("Finish").click();
 			bot.waitUntil(Conditions.shellCloses(shell));
 		}
 		assertConnections(compA, 1, false, compB, 1, false, 2);
