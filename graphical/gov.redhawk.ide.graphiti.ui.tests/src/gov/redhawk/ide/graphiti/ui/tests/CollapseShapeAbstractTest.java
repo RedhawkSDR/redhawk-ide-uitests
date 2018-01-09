@@ -445,7 +445,7 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 	}
 
 	private void setPortCollapsePreference(boolean shouldCollapse) {
-		bot.menu("Window").menu("Preferences").click();
+		bot.menu().menu("Window", "Preferences").click();
 		bot.waitUntil(Conditions.shellIsActive("Preferences"), 10000);
 		SWTBot prefBot = bot.shell("Preferences").bot();
 		SWTBotTreeItem redhawkNode = prefBot.tree().expandNode("REDHAWK");
