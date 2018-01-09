@@ -10,7 +10,9 @@
  */
 package gov.redhawk.ide.graphiti.ui.tests;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.gef.EditPart;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
@@ -18,6 +20,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotList;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Assert;
@@ -25,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.core.graphiti.ui.preferences.DiagramPreferenceConstants;
-import gov.redhawk.ide.graphiti.ui.GraphitiUIPlugin;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils;
@@ -68,10 +70,16 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 
 	protected abstract EditorType getEditorType();
 
+	/**
+	 * Ensures that the preference for collapsing a new shape in a diagram is always set back to false before and after
+	 * each test.
+	 */
 	@Before
 	@After
 	public void resetPortDisplayPreferences() {
-		GraphitiUIPlugin.getDefault().getPreferenceStore().setValue(DiagramPreferenceConstants.HIDE_DETAILS, false);
+		IPreferenceStore prefStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, "gov.redhawk.core.graphiti.ui");
+		Assert.assertTrue(prefStore.contains(DiagramPreferenceConstants.HIDE_DETAILS));
+		prefStore.setValue(DiagramPreferenceConstants.HIDE_DETAILS, false);
 	}
 
 	/**
