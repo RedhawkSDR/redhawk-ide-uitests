@@ -10,7 +10,9 @@
  */
 package gov.redhawk.ide.graphiti.ui.tests;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.gef.EditPart;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
@@ -18,6 +20,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotList;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Assert;
@@ -25,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.core.graphiti.ui.preferences.DiagramPreferenceConstants;
-import gov.redhawk.ide.graphiti.ui.GraphitiUIPlugin;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils;
@@ -68,10 +70,16 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 
 	protected abstract EditorType getEditorType();
 
+	/**
+	 * Ensures that the preference for collapsing a new shape in a diagram is always set back to false before and after
+	 * each test.
+	 */
 	@Before
 	@After
 	public void resetPortDisplayPreferences() {
-		GraphitiUIPlugin.getDefault().getPreferenceStore().setValue(DiagramPreferenceConstants.HIDE_DETAILS, false);
+		IPreferenceStore prefStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, "gov.redhawk.core.graphiti.ui");
+		Assert.assertTrue(prefStore.contains(DiagramPreferenceConstants.HIDE_DETAILS));
+		prefStore.setValue(DiagramPreferenceConstants.HIDE_DETAILS, false);
 	}
 
 	/**
@@ -260,22 +268,23 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 			DiagramTestUtils.drawConnectionBetweenPorts(editor, uses, provides);
 
 			SWTBotShell shell = bot.shell("Connect");
-			Assert.assertFalse(bot.button("Finish").isEnabled());
+			SWTBot shellBot = shell.bot();
+			Assert.assertFalse(shellBot.button("Finish").isEnabled());
 
 			SWTBotList sourceGroup = null;
 			SWTBotList targetGroup = null;
 			if (getEditorType() == EditorType.SAD) {
-				sourceGroup = bot.listInGroup(compA.getShortName(1) + " (Source)");
-				targetGroup = bot.listInGroup(compB.getShortName(1) + " (Target)");
+				sourceGroup = shellBot.listInGroup(compA.getShortName(1) + " (Source)");
+				targetGroup = shellBot.listInGroup(compB.getShortName(1) + " (Target)");
 			} else {
-				sourceGroup = bot.listInGroup(projectName + ":" + compA.getShortName(1) + " (Source)");
-				targetGroup = bot.listInGroup(projectName + ":" + compB.getShortName(1) + " (Target)");
+				sourceGroup = shellBot.listInGroup(projectName + ":" + compA.getShortName(1) + " (Source)");
+				targetGroup = shellBot.listInGroup(projectName + ":" + compB.getShortName(1) + " (Target)");
 			}
 
 			sourceGroup.select(compA.getOutPort(i));
 			targetGroup.select(compB.getInPort(i));
 
-			bot.button("Finish").click();
+			shellBot.button("Finish").click();
 			bot.waitUntil(Conditions.shellCloses(shell));
 		}
 		assertConnections(compA, 1, false, compB, 1, false, 2);
@@ -444,7 +453,7 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 	}
 
 	private void setPortCollapsePreference(boolean shouldCollapse) {
-		bot.menu("Window").menu("Preferences").click();
+		bot.menu().menu("Window", "Preferences").click();
 		bot.waitUntil(Conditions.shellIsActive("Preferences"), 10000);
 		SWTBot prefBot = bot.shell("Preferences").bot();
 		SWTBotTreeItem redhawkNode = prefBot.tree().expandNode("REDHAWK");
