@@ -16,8 +16,10 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
@@ -70,7 +72,6 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		String[] providesPorts = new String[] { "dataDouble_in", "dataDouble2_in" };
 		String[] usesPorts = new String[] { "dataDouble_out", "dataDouble2_out" };
 		UsesDeviceTestUtils.completeUsesFEDeviceWizard(gefBot, existingAllocationId, newAllocationId, providesPorts, usesPorts);
-
 		editor.setFocus();
 
 		// Confirm created component truly is a usesdevice FrontEnd tuner
@@ -140,7 +141,6 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor, 0, 0);
 		FETunerControl tunerControl = new FETunerControl(tunerType, newAllocationId, centerFrequency, bandwidth, sampleRate, deviceControl, rfFlowID, groupID);
 		UsesDeviceTestUtils.completeUsesFEDeviceWizard(bot, "sim_RX_DIGITIZER (/devices/sim_RX_DIGITIZER/)", tunerControl, null, null);
-
 		editor.setFocus();
 
 		// Confirm created component truly is a usesdevice FrontEnd Tuner
@@ -198,7 +198,6 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		String[] providesPorts = new String[] { "dataFloat_in", "dataFloat2_in" };
 		String[] usesPorts = new String[] { "dataFloat_out", "dataFloat2_out" };
 		UsesDeviceTestUtils.completeUsesFEDeviceWizard(gefBot, existingAllocationId, newAllocationId, providesPorts, usesPorts);
-
 		editor.setFocus();
 
 		// Get a handle on ports
@@ -227,35 +226,38 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		// Open USE_FRONTEND_TUNER_DEVICE edit wizard and change name, remove existing port, and add a new one
 		editor.getEditPart(SadTestUtils.USE_FRONTEND_TUNER_DEVICE).select();
 		editor.clickContextMenu("Edit Use FrontEnd Tuner Device");
+		SWTBotShell shell = bot.shell("Allocate Tuner");
+		SWTBot shellBot = shell.bot();
 
 		// Change Name
-		gefBot.textWithLabel("Uses Device ID").setText(usesDeviceId + "x");
+		shellBot.textWithLabel("Uses Device ID").setText(usesDeviceId + "x");
 
 		// set model
-		gefBot.textWithLabel("Device Model (optional)").setText("someModel");
-		gefBot.button("&Next >").click();
+		shellBot.textWithLabel("Device Model (optional)").setText("someModel");
+		shellBot.button("&Next >").click();
 
 		// change existing tuner allocation ID
-		gefBot.textWithLabel("Existing Tuner Allocation ID").setText(existingAllocationId + "x");
-		gefBot.button("&Next >").click();
+		shellBot.textWithLabel("Existing Tuner Allocation ID").setText(existingAllocationId + "x");
+		shellBot.button("&Next >").click();
 
 		// Delete existing provides port
-		gefBot.list(0).select(0); // dataDouble_in
-		gefBot.button(1).click();
+		shellBot.list(0).select(0); // dataDouble_in
+		shellBot.button(1).click();
 
 		// Add new provides port
-		gefBot.textInGroup("Port(s) to use for connections", 0).setText("newProvides");
-		gefBot.button(0).click();
+		shellBot.textInGroup("Port(s) to use for connections", 0).setText("newProvides");
+		shellBot.button(0).click();
 
 		// Delete existing provides port
-		gefBot.list(1).select(0); // dataDouble_out
-		gefBot.button(3).click();
+		shellBot.list(1).select(0); // dataDouble_out
+		shellBot.button(3).click();
 
 		// Add new uses port
-		gefBot.textInGroup("Port(s) to use for connections", 1).setText("newUses");
-		gefBot.button(2).click();
+		shellBot.textInGroup("Port(s) to use for connections", 1).setText("newUses");
+		shellBot.button(2).click();
 
-		gefBot.button("Finish").click();
+		shellBot.button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 
 		// Confirm that changes were made
 		// Confirm created component truly is Generic FrontEnd Tuner
@@ -319,7 +321,6 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		String[] providesPorts = new String[] { "dataDouble_in", "dataDouble2_in" };
 		String[] usesPorts = new String[] { "dataDouble_out", "dataDouble2_out" };
 		UsesDeviceTestUtils.completeUsesFEDeviceWizard(gefBot, existingAllocationId, newAllocationId, providesPorts, usesPorts);
-
 		editor.setFocus();
 
 		// Remove FRONTENT::TUNER from sad.xml
@@ -334,28 +335,31 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		// Open edit wizard and change name, remove existing port, and add a new one
 		editor.getEditPart(SadTestUtils.USE_DEVICE).select();
 		editor.clickContextMenu("Edit Use Device");
+		SWTBotShell shell = bot.shell("Allocate Device");
+		SWTBot shellBot = shell.bot();
 
 		// Change Name
-		gefBot.textWithLabel("Uses Device Id").setText(usesDeviceId + "x");
-		gefBot.button("&Next >").click();
+		shellBot.textWithLabel("Uses Device Id").setText(usesDeviceId + "x");
+		shellBot.button("&Next >").click();
 
 		// Delete existing provides port
-		gefBot.list(0).select(0); // dataDouble_in
-		gefBot.button(1).click();
+		shellBot.list(0).select(0); // dataDouble_in
+		shellBot.button(1).click();
 
 		// Add new provides port
-		gefBot.textInGroup("Port(s) to use for connections", 0).setText("newProvides");
-		gefBot.button(0).click();
+		shellBot.textInGroup("Port(s) to use for connections", 0).setText("newProvides");
+		shellBot.button(0).click();
 
 		// Delete existing provides port
-		gefBot.list(1).select(0); // dataDouble_out
-		gefBot.button(3).click();
+		shellBot.list(1).select(0); // dataDouble_out
+		shellBot.button(3).click();
 
 		// Add new uses port
-		gefBot.textInGroup("Port(s) to use for connections", 1).setText("newUses");
-		gefBot.button(2).click();
+		shellBot.textInGroup("Port(s) to use for connections", 1).setText("newUses");
+		shellBot.button(2).click();
 
-		gefBot.button("Finish").click();
+		shellBot.button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 
 		// Confirm that changes were made
 		SWTBotGefEditPart useDeviceEditPart = editor.getEditPart(SadTestUtils.USE_DEVICE);
@@ -393,40 +397,42 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 
 		SWTBotShell allocateTunerShell = bot.shell("Allocate Tuner");
 		allocateTunerShell.setFocus();
+		SWTBot shellBot = allocateTunerShell.bot();
 
 		// Select Target Device page - click next, Generic FrontEnd Device already selected
-		bot.button("&Next >").click();
+		shellBot.button("&Next >").click();
 
 		// Allocate Tuner page
-		SWTBotText botText = bot.textWithLabel("Uses Device ID");
+		SWTBotText botText = shellBot.textWithLabel("Uses Device ID");
 		botText.setText("");
-		bot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), false));
+		shellBot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), false));
 		botText.setText("abc");
-		bot.button("&Next >").click();
+		shellBot.button("&Next >").click();
 
 		// Tuner Allocation page - Can't progress initially; only a UUID in the new allocation ID box
-		Assert.assertFalse("Next should be disabled", bot.button("&Next >").isEnabled());
-		bot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), false));
-		String id = bot.textWithLabel("New Allocation ID").getText();
+		Assert.assertFalse("Next should be disabled", shellBot.button("&Next >").isEnabled());
+		shellBot.waitUntil(new WaitForWidgetEnablement(shellBot.button("&Next >"), false));
+		String id = shellBot.textWithLabel("New Allocation ID").getText();
 		Assert.assertTrue("Allocation ID doesn't appear to be a UUID", id.matches("[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}"));
 
 		// Test validation for listening
-		SWTBotCombo comboField = bot.comboBox(0); // Allocation
+		SWTBotCombo comboField = shellBot.comboBox(0); // Allocation
 		comboField.setFocus();
 		comboField.setSelection("Listen to Existing Tuner by ID");
-		bot.sleep(VALIDATION_DELAY);
+		shellBot.sleep(VALIDATION_DELAY);
 		Assert.assertFalse("Next should be disabled", bot.button("&Next >").isEnabled());
 		SWTBotText existingTunerAllocationIdText = bot.textWithLabel("Existing Tuner Allocation ID");
 		existingTunerAllocationIdText.setText("abc");
-		bot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), true));
+		shellBot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), true));
 		comboField.setFocus();
 		comboField.setSelection("Control New Tuner");
-		bot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), false));
+		shellBot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), false));
 		comboField.setFocus();
 		comboField.setSelection("Listen to Existing Tuner by ID");
-		bot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), true));
+		shellBot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), true));
 
-		bot.button("Cancel").click();
+		shellBot.button("Cancel").click();
+		bot.waitUntil(Conditions.shellCloses(allocateTunerShell));
 	}
 
 	/**
