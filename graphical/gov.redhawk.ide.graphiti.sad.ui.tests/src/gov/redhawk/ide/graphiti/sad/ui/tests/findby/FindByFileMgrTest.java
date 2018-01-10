@@ -8,7 +8,7 @@
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at 
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package gov.redhawk.ide.graphiti.sad.ui.tests;
+package gov.redhawk.ide.graphiti.sad.ui.tests.findby;
 
 import java.io.IOException;
 
@@ -17,11 +17,11 @@ import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.diagram.FindByUtils;
 
-public class FindByDomainMgrTest extends AbstractFindByTest {
-	private static final String FIND_BY_TYPE = FindByUtils.FIND_BY_DOMAIN_MANAGER;
-	private static final String FIND_BY_NAME = FindByUtils.FIND_BY_DOMAIN_MANAGER;
+public class FindByFileMgrTest extends AbstractFindByTest {
+	private static final String FIND_BY_TYPE = FindByUtils.FIND_BY_FILE_MANAGER;
+	private static final String FIND_BY_NAME = FindByUtils.FIND_BY_FILE_MANAGER;
 
-	@Ignore("This test is not applicable to FindByDomainMgr")
+	@Ignore("This test is not applicable to FindByFileMgr")
 	@Test
 	@Override
 	public void editFindBy() throws IOException {
