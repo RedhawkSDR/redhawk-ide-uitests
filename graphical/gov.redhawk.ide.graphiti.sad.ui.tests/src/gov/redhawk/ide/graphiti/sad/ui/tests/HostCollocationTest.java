@@ -22,6 +22,7 @@ import org.eclipse.graphiti.tb.ImageDecorator;
 import org.eclipse.graphiti.tb.TextDecorator;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
+import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
@@ -562,10 +563,11 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		editor.clickContextMenu("Edit Host Collocation");
 
 		// Add the uses device to the collocation
-		SWTBotShell shell = bot.shell("Edit Host Collocation");
-		shell.bot().table(0).select("Uses Device " + FE_USES_1);
-		shell.bot().button("Add ->").click();
-		shell.bot().button("Finish").click();
+		SWTBotShell shell = bot.shell("Host Collocation");
+		SWTBot shellBot = shell.bot();
+		shellBot.table(0).select("Uses Device " + FE_USES_1);
+		shellBot.button("Add ->").click();
+		shellBot.button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 
 		// Delete the uses device
@@ -578,14 +580,15 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		editor.clickContextMenu("Edit Host Collocation");
 
 		// Remove the uses device from the collocation
-		shell = bot.shell("Edit Host Collocation");
-		shell.bot().table(1).select("Uses Device " + FE_USES_1);
-		shell.bot().button("<- Remove").click();
+		shell = bot.shell("Host Collocation");
+		shellBot = shell.bot();
+		shellBot.table(1).select("Uses Device " + FE_USES_1);
+		shellBot.button("<- Remove").click();
 
 		// The uses device should disappear
-		Assert.assertEquals(0, shell.bot().table(0).rowCount());
-		Assert.assertEquals(0, shell.bot().table(0).rowCount());
-		shell.bot().button("Finish").click();
+		Assert.assertEquals(0, shellBot.table(0).rowCount());
+		Assert.assertEquals(0, shellBot.table(0).rowCount());
+		shellBot.button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 
 		// Edit the HC
@@ -594,10 +597,11 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		editor.clickContextMenu("Edit Host Collocation");
 
 		// Ensure there's an error, we can't finish
-		shell = bot.shell("Edit Host Collocation");
-		shell.bot().text(" There are no uses devices in the SAD file");
-		Assert.assertFalse(shell.bot().button("Finish").isEnabled());
-		shell.bot().button("Cancel").click();
+		shell = bot.shell("Host Collocation");
+		shellBot = shell.bot();
+		shellBot.text(" There are no uses devices in the SAD file");
+		Assert.assertFalse(shellBot.button("Finish").isEnabled());
+		shellBot.button("Cancel").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 
 		originalShell.activate();
@@ -617,7 +621,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		editor.clickContextMenu("Edit Host Collocation");
 
 		// Don't do anything - ensure the editor isn't dirty
-		SWTBotShell shell = bot.shell("Edit Host Collocation");
+		SWTBotShell shell = bot.shell("Host Collocation");
 		shell.bot().button("Cancel").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 		Assert.assertFalse(editor.isDirty());
@@ -631,41 +635,42 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		swtBotGefEditPart = editor.getEditPart("collocation_1");
 		swtBotGefEditPart.select();
 		editor.clickContextMenu("Edit Host Collocation");
-		shell = bot.shell("Edit Host Collocation");
+		shell = bot.shell("Host Collocation");
+		SWTBot shellBot = shell.bot();
 
 		// Test the add/remove buttons
-		SWTBotButton addButton = shell.bot().button("Add ->");
-		SWTBotButton removeButton = shell.bot().button("<- Remove");
+		SWTBotButton addButton = shellBot.button("Add ->");
+		SWTBotButton removeButton = shellBot.button("<- Remove");
 
 		Assert.assertFalse(addButton.isEnabled());
 		Assert.assertFalse(removeButton.isEnabled());
-		Assert.assertEquals(1, shell.bot().table(0).rowCount());
-		Assert.assertEquals(0, shell.bot().table(1).rowCount());
+		Assert.assertEquals(1, shellBot.table(0).rowCount());
+		Assert.assertEquals(0, shellBot.table(1).rowCount());
 
-		shell.bot().table(0).select("Uses Device " + usesDeviceId);
+		shellBot.table(0).select("Uses Device " + usesDeviceId);
 		Assert.assertTrue(addButton.isEnabled());
 		Assert.assertFalse(removeButton.isEnabled());
 
 		addButton.click();
 		Assert.assertFalse(addButton.isEnabled());
 		Assert.assertFalse(removeButton.isEnabled());
-		Assert.assertEquals(0, shell.bot().table(0).rowCount());
-		Assert.assertEquals(1, shell.bot().table(1).rowCount());
+		Assert.assertEquals(0, shellBot.table(0).rowCount());
+		Assert.assertEquals(1, shellBot.table(1).rowCount());
 
-		shell.bot().table(1).select("Uses Device " + usesDeviceId);
+		shellBot.table(1).select("Uses Device " + usesDeviceId);
 		Assert.assertFalse(addButton.isEnabled());
 		Assert.assertTrue(removeButton.isEnabled());
 
 		removeButton.click();
 		Assert.assertFalse(addButton.isEnabled());
 		Assert.assertFalse(removeButton.isEnabled());
-		Assert.assertEquals(1, shell.bot().table(0).rowCount());
-		Assert.assertEquals(0, shell.bot().table(1).rowCount());
+		Assert.assertEquals(1, shellBot.table(0).rowCount());
+		Assert.assertEquals(0, shellBot.table(1).rowCount());
 
 		// Add a single uses device
-		shell.bot().table(0).select("Uses Device " + usesDeviceId);
+		shellBot.table(0).select("Uses Device " + usesDeviceId);
 		addButton.click();
-		shell.bot().button("Finish").click();
+		shellBot.button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 
 		// Verify decorators
@@ -691,17 +696,18 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		swtBotGefEditPart = editor.getEditPart("collocation_1");
 		swtBotGefEditPart.select();
 		editor.clickContextMenu("Edit Host Collocation");
-		shell = bot.shell("Edit Host Collocation");
+		shell = bot.shell("Host Collocation");
+		shellBot = shell.bot();
 
-		Assert.assertFalse(shell.bot().button("Add ->").isEnabled());
-		Assert.assertFalse(shell.bot().button("<- Remove").isEnabled());
-		Assert.assertEquals(0, shell.bot().table(0).rowCount());
-		Assert.assertEquals(1, shell.bot().table(1).rowCount());
+		Assert.assertFalse(shellBot.button("Add ->").isEnabled());
+		Assert.assertFalse(shellBot.button("<- Remove").isEnabled());
+		Assert.assertEquals(0, shellBot.table(0).rowCount());
+		Assert.assertEquals(1, shellBot.table(1).rowCount());
 
 		// Remove the uses device
-		shell.bot().table(1).select("Uses Device " + usesDeviceId);
-		shell.bot().button("<- Remove").click();
-		shell.bot().button("Finish").click();
+		shellBot.table(1).select("Uses Device " + usesDeviceId);
+		shellBot.button("<- Remove").click();
+		shellBot.button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 
 		// Verify decorators
