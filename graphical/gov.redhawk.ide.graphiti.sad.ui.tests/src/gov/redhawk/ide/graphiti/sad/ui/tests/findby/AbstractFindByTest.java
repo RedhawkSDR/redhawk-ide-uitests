@@ -46,6 +46,12 @@ import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 
 public abstract class AbstractFindByTest extends AbstractGraphitiTest {
 
+	protected static final String GROUP_TEXT = "Port(s) to use for connections";
+	protected static final String ADD_PROVIDES_TOOLTIP = "Add provides port";
+	protected static final String ADD_USES_TOOLTIP = "Add uses port";
+	protected static final String REMOVE_PROVIDES_TOOLTIP = "Remove provides port";
+	protected static final String REMOVE_USES_TOOLTIP = "Remove uses port";
+
 	protected static final String SIG_GEN = "rh.SigGen";
 	protected static final String SIG_GEN_1 = "SigGen_1";
 	protected static final String HARD_LIMIT = "rh.HardLimit";
@@ -257,17 +263,17 @@ public abstract class AbstractFindByTest extends AbstractGraphitiTest {
 
 		// IDE-1374 test
 		Assert.assertFalse("Delete button should not be enabled without a selection",
-			gefBot.buttonInGroup("Delete", "Port(s) to use for connections", 0).isEnabled());
+			gefBot.buttonWithTooltipInGroup(REMOVE_PROVIDES_TOOLTIP, GROUP_TEXT).isEnabled());
 		Assert.assertFalse("Delete button should not be enabled without a selection",
-			gefBot.buttonInGroup("Delete", "Port(s) to use for connections", 1).isEnabled());
+			gefBot.buttonWithTooltipInGroup(REMOVE_USES_TOOLTIP, GROUP_TEXT).isEnabled());
 
 		// Delete existing provides port
-		gefBot.listInGroup("Port(s) to use for connections", 0).select(PROVIDES_PORTS[0]);
-		gefBot.button("Delete", 0).click();
+		gefBot.tableInGroup(GROUP_TEXT, 0).select(PROVIDES_PORTS[0]);
+		gefBot.buttonWithTooltip(REMOVE_PROVIDES_TOOLTIP).click();
 
 		// Add new uses port
-		gefBot.textInGroup("Port(s) to use for connections", 1).setText(NEW_USES_PORT);
-		gefBot.button("Add Uses Port").click();
+		gefBot.textInGroup(GROUP_TEXT, 1).setText(NEW_USES_PORT);
+		gefBot.buttonWithTooltip(ADD_USES_TOOLTIP).click();
 
 		gefBot.button("Finish").click();
 	}

@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotList;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,26 +50,26 @@ public abstract class AbstractFindByWithDialogTest extends AbstractFindByTest {
 		getEditor().getEditPart(getFindByName()).select();
 		getEditor().clickContextMenu("Edit " + getFindByType());
 
-		SWTBotList providesList = gefBot.listInGroup("Port(s) to use for connections", 0);
-		SWTBotList usesList = gefBot.listInGroup("Port(s) to use for connections", 1);
+		SWTBotTable providesTable = gefBot.tableInGroup(GROUP_TEXT, 0);
+		SWTBotTable usesTable = gefBot.tableInGroup(GROUP_TEXT, 1);
 
-		Assert.assertEquals("Incorrect number of provides ports found", PROVIDES_PORTS.length, providesList.getItems().length);
-		Assert.assertEquals("Incorrect number of uses ports found", USES_PORTS.length, usesList.getItems().length);
+		Assert.assertEquals("Incorrect number of provides ports found", PROVIDES_PORTS.length, providesTable.rowCount());
+		Assert.assertEquals("Incorrect number of uses ports found", USES_PORTS.length, usesTable.rowCount());
 
-		SWTBotText providesText = gefBot.textInGroup("Port(s) to use for connections", 0);
+		SWTBotText providesText = gefBot.textInGroup(GROUP_TEXT, 0);
 		for (String s : PROVIDES_PORTS) {
 			providesText.setText(s);
-			bot.button("Add Provides Port").click();
+			bot.buttonWithTooltip(ADD_PROVIDES_TOOLTIP).click();
 		}
 
-		SWTBotText usesText = gefBot.textInGroup("Port(s) to use for connections", 1);
+		SWTBotText usesText = gefBot.textInGroup(GROUP_TEXT, 1);
 		for (String s : USES_PORTS) {
 			usesText.setText(s);
-			bot.button("Add Uses Port").click();
+			bot.buttonWithTooltip(ADD_USES_TOOLTIP).click();
 		}
 
-		Assert.assertEquals("Redundant provides ports should not have been added", PROVIDES_PORTS.length, providesList.getItems().length);
-		Assert.assertEquals("Redundant uses ports should not have been added", USES_PORTS.length, usesList.getItems().length);
+		Assert.assertEquals("Redundant provides ports should not have been added", PROVIDES_PORTS.length, providesTable.rowCount());
+		Assert.assertEquals("Redundant uses ports should not have been added", USES_PORTS.length, usesTable.rowCount());
 
 		gefBot.button("Finish").click();
 
@@ -121,8 +121,8 @@ public abstract class AbstractFindByWithDialogTest extends AbstractFindByTest {
 		// Delete the provides port
 		editor.getEditPart(newFindByName).select();
 		editor.clickContextMenu("Edit " + getFindByType());
-		gefBot.listInGroup("Port(s) to use for connections", 0).select(PROVIDES_PORTS[0]);
-		gefBot.button("Delete", 0).click();
+		gefBot.tableInGroup(GROUP_TEXT, 0).select(PROVIDES_PORTS[0]);
+		gefBot.buttonWithTooltip(REMOVE_PROVIDES_TOOLTIP).click();
 		gefBot.button("Finish").click();
 
 		// Make sure the connection disappears
