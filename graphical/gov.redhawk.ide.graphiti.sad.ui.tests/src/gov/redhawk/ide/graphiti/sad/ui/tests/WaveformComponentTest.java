@@ -40,7 +40,7 @@ import org.osgi.framework.FrameworkUtil;
 import gov.redhawk.core.graphiti.sad.ui.ext.ComponentShape;
 import gov.redhawk.ide.graphiti.sad.ui.diagram.patterns.HostCollocationPattern;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
-import gov.redhawk.ide.sdr.ComponentsSubContainer;
+import gov.redhawk.ide.sdr.ComponentsContainer;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
@@ -330,6 +330,9 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		}
 	}
 
+	/**
+	 * This really only gets the top-level (non-namespaced) components.
+	 */
 	private static List<String> getTargetSdrComponents(final SWTWorkbenchBot bot) {
 		LinkedList<String> list = new LinkedList<String>();
 
@@ -348,7 +351,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 
 				@Override
 				public void run() {
-					if (item.widget.getData() instanceof ComponentsSubContainer) {
+					if (item.widget.getData() instanceof ComponentsContainer) {
 						isSoftPkg = false;
 					} else {
 						isSoftPkg = true;
