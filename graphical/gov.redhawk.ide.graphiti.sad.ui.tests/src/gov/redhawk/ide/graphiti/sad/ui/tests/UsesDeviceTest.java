@@ -241,7 +241,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		shellBot.button("&Next >").click();
 
 		// Delete existing provides port
-		shellBot.list(0).select(0); // dataDouble_in
+		shellBot.table(0).select(0); // dataDouble_in
 		shellBot.button(1).click();
 
 		// Add new provides port
@@ -249,7 +249,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		shellBot.button(0).click();
 
 		// Delete existing provides port
-		shellBot.list(1).select(0); // dataDouble_out
+		shellBot.table(1).select(0); // dataDouble_out
 		shellBot.button(3).click();
 
 		// Add new uses port
@@ -343,7 +343,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		shellBot.button("&Next >").click();
 
 		// Delete existing provides port
-		shellBot.list(0).select(0); // dataDouble_in
+		shellBot.table(0).select(0); // dataDouble_in
 		shellBot.button(1).click();
 
 		// Add new provides port
@@ -351,7 +351,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		shellBot.button(0).click();
 
 		// Delete existing provides port
-		shellBot.list(1).select(0); // dataDouble_out
+		shellBot.table(1).select(0); // dataDouble_out
 		shellBot.button(3).click();
 
 		// Add new uses port
