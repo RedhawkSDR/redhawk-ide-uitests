@@ -18,16 +18,13 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.PartInitException;
+import org.hamcrest.core.StringContains;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -62,28 +59,9 @@ public class TargetSDRTest extends AbstractGraphitiTest {
 		final String componentName = containerName + ".space.comp";
 		SWTBotTreeItem containerTreeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, containerPath, containerName);
 		containerTreeItem.contextMenu("Delete").click();
-		bot.waitUntil(Conditions.shellIsActive("Delete"));
+
 		final SWTBotShell shell = bot.shell("Delete");
-
-		Display.getDefault().syncExec(new Runnable() {
-
-			@Override
-			public void run() {
-				for (Control control : shell.widget.getChildren()) {
-					if (control instanceof Label) {
-						if (((Label) control).getText() == null) {
-							continue;
-						}
-						String regexSafeText = ((Label) control).getText().replace("\n", " ");
-						if (regexSafeText.matches(".*" + componentName)) {
-							return;
-						}
-					}
-				}
-				shell.bot().button("No").click();
-				Assert.fail("Delete dialog with text displaying component name did not appear");
-			}
-		});
+		Assert.assertThat(shell.bot().label(1).getText(), StringContains.containsString(componentName));
 		shell.bot().button("No").click();
 	}
 
