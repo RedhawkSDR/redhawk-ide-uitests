@@ -39,7 +39,7 @@ public class BrowsePropertiesTest extends AbstractPropertyTabTest {
 		SWTBot dialogBot = bot.shell("Browse Properties").bot();
 
 		dialogBot.text().setText("frequency");
-		List<String> path = Arrays.asList("Target SDR", "Components", "rh.SigGen", "frequency");
+		List<String> path = Arrays.asList("Target SDR", "Components", "rh", "SigGen", "frequency");
 		StandardTestActions.waitForTreeItemToAppear(dialogBot, dialogBot.tree(), path).select();
 		dialogBot.button("Finish").click();
 
@@ -53,7 +53,7 @@ public class BrowsePropertiesTest extends AbstractPropertyTabTest {
 		bot.button("Browse...").click();
 		SWTBot dialogBot = bot.shell("Browse Properties").bot();
 
-		List<String> path = Arrays.asList("Target SDR", "Components", "rh.SigGen", "frequency");
+		List<String> path = Arrays.asList("Target SDR", "Components", "rh", "SigGen", "frequency");
 		for (int i = 1; i < path.size(); i++) {
 			SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(dialogBot, dialogBot.tree(), path.subList(0, i));
 			treeItem.select();
