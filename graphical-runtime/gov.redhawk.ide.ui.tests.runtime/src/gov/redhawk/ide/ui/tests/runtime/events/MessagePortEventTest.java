@@ -10,16 +10,26 @@
  *******************************************************************************/
 package gov.redhawk.ide.ui.tests.runtime.events;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.After;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class MessagePortEventTest extends UIRuntimeTest {
+
+	private static final String PORT_NAME = "message_out";
+
+	@After
+	public void after() throws CoreException {
+		bot.viewByTitle(PORT_NAME).close();
+		super.after();
+	}
 
 	/**
 	 * IDE-1007 - Test listening to messages being sent from a components port
@@ -28,21 +38,20 @@ public class MessagePortEventTest extends UIRuntimeTest {
 	public void listenToMsgPort() {
 		final String componentName = "MessagePortTestComp";
 		final String implId = "python";
-		final String portName = "message_out";
 
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, componentName, implId);
 		SWTBotTreeItem component = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, componentName + "_1");
 		SWTBotTreeItem usesPort = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", componentName + "_1" },
-			portName);
+			PORT_NAME);
 
 		component.contextMenu("Start").click();
 		ScaExplorerTestUtils.waitUntilResourceStartedInExplorer(bot, new String[] { "Sandbox", "Chalkboard" }, componentName + "_1");
 		usesPort.contextMenu("Listen to Message Events").click();
 
-		SWTBotView eventView = bot.viewByTitle(portName);
+		SWTBotView eventView = bot.viewByTitle(PORT_NAME);
 		SWTBotTree tree = eventView.bot().tree();
 
-		// Wait to make sure a couple of messages come in
-		bot.waitWhile(Conditions.treeHasRows(tree, 2));
+		// Wait to make sure a messages comes in
+		bot.waitWhile(Conditions.treeHasRows(tree, 0));
 	}
 }
