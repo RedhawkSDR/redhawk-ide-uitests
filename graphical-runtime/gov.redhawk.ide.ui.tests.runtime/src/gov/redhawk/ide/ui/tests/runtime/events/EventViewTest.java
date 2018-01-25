@@ -24,7 +24,6 @@ import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.jacorb.JacorbUtil;
@@ -330,26 +329,17 @@ public class EventViewTest extends UIRuntimeTest {
 		}
 
 		eventView.bot().tree().select(0);
-		for (SWTBotToolbarButton button : eventView.getToolbarButtons()) {
-			if ("Show Details".equals(button.getToolTipText())) {
-				button.click();
-				break;
-			}
-		}
+		eventView.toolbarPushButton("Show Details").click();
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
 	}
 
 	private void assertDisconnectButton() throws Disconnected, BadKind {
 		SWTBotView eventView = ViewUtils.getEventView(bot);
 		int numOfEvents = eventView.bot().tree().getAllItems().length;
-		for (SWTBotToolbarButton button : eventView.getToolbarButtons()) {
-			if ("Disconnect".equals(button.getToolTipText())) {
-				button.click();
-				break;
-			}
-		}
-		pushConsumer.push(createStateChangeEvent());
+		eventView.toolbarPushButton("Disconnect").click();
 
+		pushConsumer.push(createStateChangeEvent());
+		bot.sleep(2000);
 		Assert.assertEquals("Event Viewer did not disconnect from event channel", numOfEvents, eventView.bot().tree().getAllItems().length);
 	}
 
