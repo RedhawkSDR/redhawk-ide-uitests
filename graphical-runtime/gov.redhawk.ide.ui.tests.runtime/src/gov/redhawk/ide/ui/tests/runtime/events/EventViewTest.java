@@ -240,30 +240,15 @@ public class EventViewTest extends UIRuntimeTest {
 	}
 
 	private void assertPropertyDetails() {
-		SWTBotView eventView = ViewUtils.getEventView(bot);
-		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
-
 		// Get the event
-		SWTBotTree tree = eventView.bot().tree();
+		SWTBotTree tree = ViewUtils.getEventView(bot).bot().tree();
 		bot.waitWhile(Conditions.treeHasRows(tree, 0));
 		final SWTBotTreeItem eventItem = tree.getAllItems()[0];
 		String type = eventItem.cell(1);
+		eventItem.doubleClick();
 
 		// Check that expected properties show in the PropertiesView
-		bot.waitUntil(new DefaultCondition() {
-
-			@Override
-			public boolean test() throws Exception {
-				eventItem.select();
-				return eventItem.isSelected();
-			}
-
-			@Override
-			public String getFailureMessage() {
-				return "Event item selection failed";
-			}
-		});
-
+		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
 		SWTBotTreeItem[] propTreeItems = propView.bot().tree().getAllItems();
 		if ("MessageEvent".equals(type)) {
 			type = CF.PropertiesHelper.id();
