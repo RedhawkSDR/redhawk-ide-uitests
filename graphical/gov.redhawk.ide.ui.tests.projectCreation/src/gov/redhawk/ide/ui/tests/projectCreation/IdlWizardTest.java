@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
@@ -38,16 +39,15 @@ public class IdlWizardTest extends UITest {
 	public void before() throws Exception {
 		super.before();
 
-		bot.menu("File").menu("New").menu("Project...").click();
+		bot.menu().menu("File", "New", "Project...").click();
 		SWTBotShell wizardShell = bot.shell("New Project");
-		Assert.assertTrue(wizardShell.isActive());
 		SWTBot wizardBot = wizardShell.bot();
 		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(wizardBot, wizardBot.tree(), Arrays.asList("REDHAWK", "REDHAWK IDL Project"));
 		treeItem.select();
 		wizardBot.button("Next >").click();
-
-		wizardShell.bot().textWithLabel("Project name:").typeText(PROJ_NAME);
-		wizardShell.bot().button("Finish").click();
+		wizardBot.textWithLabel("Project name:").typeText(PROJ_NAME);
+		wizardBot.button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(wizardShell));
 		ProjectExplorerUtils.waitUntilNodeAppears(bot, PROJ_NAME);
 	}
 

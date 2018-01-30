@@ -349,10 +349,11 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 	private SWTBotTreeItem addElement(String elementName, int treeIndex) {
 		editorBot.cTabItem("Devices / Services").activate();
 		editorBot.button("Add...").click();
-		bot.waitUntil(Conditions.shellIsActive("Add Devices / Services Wizard"));
+
 		SWTBotShell shell = bot.shell("Add Devices / Services Wizard");
 		shell.bot().tree(treeIndex).getTreeItem(elementName).click();
 		shell.bot().button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 
 		SWTBotTree tree = editorBot.tree(0);
 		return tree.getTreeItem(elementName + "_1");

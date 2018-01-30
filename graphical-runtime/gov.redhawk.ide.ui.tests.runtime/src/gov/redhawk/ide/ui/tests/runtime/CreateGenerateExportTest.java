@@ -336,7 +336,6 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 
 	private void checkExistsInScaAndRemove(String[] scaPath, String projectName) {
 		SWTBotTreeItem scaNode = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, projectName);
-		scaNode.select();
 		scaNode.contextMenu("Delete").click();
 		SWTBotShell shell = bot.shell("Delete");
 		shell.bot().button("Yes").click();

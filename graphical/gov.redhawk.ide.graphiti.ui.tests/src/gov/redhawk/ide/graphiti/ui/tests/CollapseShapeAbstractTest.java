@@ -454,14 +454,16 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 
 	private void setPortCollapsePreference(boolean shouldCollapse) {
 		bot.menu().menu("Window", "Preferences").click();
-		bot.waitUntil(Conditions.shellIsActive("Preferences"), 10000);
-		SWTBot prefBot = bot.shell("Preferences").bot();
-		SWTBotTreeItem redhawkNode = prefBot.tree().expandNode("REDHAWK");
+
+		SWTBotShell shell = bot.shell("Preferences");
+		SWTBotTreeItem redhawkNode = shell.bot().tree().expandNode("REDHAWK");
 		redhawkNode.select("Graphiti Diagram Preferences");
-		SWTBotCheckBox prefCheckBox = prefBot.checkBox(0);
+		SWTBotCheckBox prefCheckBox = shell.bot().checkBox(0);
 		if ((shouldCollapse && !prefCheckBox.isChecked()) || (!shouldCollapse && prefCheckBox.isChecked())) {
 			prefCheckBox.click();
 		}
-		prefBot.button("Apply and Close").click();
+
+		shell.bot().button("Apply and Close").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 	}
 }
