@@ -77,7 +77,7 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 
 		// Complete the multi-out connection dialog
 		SWTBotShell multiOutShell = bot.shell("Multi-out port connection wizard");
-		multiOutShell.bot().tree().select(1);
+		multiOutShell.bot().list().select(1);
 		multiOutShell.bot().button("OK").click();
 
 		// Verify that the expected behavior occurred
@@ -114,18 +114,18 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 
 		// Test widget enabled state
 		Assert.assertTrue("'Select ID' radio should be selected by default", dialogBot.radio("Select an existing connection ID").isSelected());
-		Assert.assertTrue("Select ID tree should be enabled by default", dialogBot.tree().isEnabled());
+		Assert.assertTrue("Select ID tree should be enabled by default", dialogBot.list().isEnabled());
 		Assert.assertFalse("Custom ID text field should be disabled by default", dialogBot.text().isEnabled());
 
 		// Make sure the dialog can't finish when selecting an 'IN USE' ID
-		dialogBot.tree().select(getAllocationId(0) + " (IN USE)");
+		dialogBot.list().select(getAllocationId(0) + " (IN USE)");
 		Assert.assertFalse("Dialog should not be allowed to finish if an 'IN USE' connection ID is selected", dialogBot.button("OK").isEnabled());
-		dialogBot.tree().select(getAllocationId(1));
+		dialogBot.list().select(getAllocationId(1));
 		Assert.assertTrue("OK button did not re-enable", dialogBot.button("OK").isEnabled());
 
 		// Activate the custom ID input section
 		dialogBot.radio("Specify connection ID").click();
-		Assert.assertFalse("Select ID tree should be disabled", dialogBot.tree().isEnabled());
+		Assert.assertFalse("Select ID tree should be disabled", dialogBot.list().isEnabled());
 		Assert.assertTrue("Custom ID text field should be enabled", dialogBot.text().isEnabled());
 
 		// Clear the text field and test that OK button disables

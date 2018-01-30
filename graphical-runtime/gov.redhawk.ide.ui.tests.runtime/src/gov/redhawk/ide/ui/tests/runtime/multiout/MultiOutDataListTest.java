@@ -59,7 +59,7 @@ public class MultiOutDataListTest extends AbstractMultiOutPortTest {
 		if (allocationIndex == 1) {
 			// Complete the multi-out connection dialog
 			SWTBotShell multiOutShell = bot.shell("Multi-out port connection wizard");
-			multiOutShell.bot().tree().select(1);
+			multiOutShell.bot().list().select(1);
 			multiOutShell.bot().button("OK").click();
 		}
 
