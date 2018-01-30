@@ -103,7 +103,7 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 		final SWTBotEditor editor = bot.editorByTitle(PROJECT_NAME);
 		editor.bot().cTabItem("Overview").activate();
 
-		SWTFormsBot formsBot = new SWTFormsBot();
+		SWTFormsBot formsBot = new SWTFormsBot(editor.bot().getFinder());
 		SWTBotImageHyperlink link = formsBot.imageHyperlink(linkText);
 		link.click();
 		if (isDebug) {

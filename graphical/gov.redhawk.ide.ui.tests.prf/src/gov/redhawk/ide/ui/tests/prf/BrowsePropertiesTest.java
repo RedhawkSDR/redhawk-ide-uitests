@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,24 +29,27 @@ public class BrowsePropertiesTest extends AbstractPropertyTabTest {
 
 	@Test
 	public void addFromTargetSdr() {
-		bot.button("Browse...").click();
-		SWTBot dialogBot = bot.shell("Browse Properties").bot();
+		editorBot.button("Browse...").click();
 
+		SWTBotShell dialogShell = bot.shell("Browse Properties");
+		SWTBot dialogBot = dialogShell.bot();
 		dialogBot.text().setText("frequency");
 		List<String> path = Arrays.asList("Target SDR", "Components", "rh.SigGen", "frequency");
 		StandardTestActions.waitForTreeItemToAppear(dialogBot, dialogBot.tree(), path).select();
 		dialogBot.button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(dialogShell));
 
 		assertFormValid();
-		editor.bot().tree().getTreeItem("frequency").select();
-		Assert.assertEquals("double (64-bit)", bot.comboBoxWithLabel("Type*:").getText());
+		editorBot.tree().getTreeItem("frequency").select();
+		Assert.assertEquals("double (64-bit)", editorBot.comboBoxWithLabel("Type*:").getText());
 	}
 
 	@Test
 	public void validation() {
-		bot.button("Browse...").click();
-		SWTBot dialogBot = bot.shell("Browse Properties").bot();
+		editorBot.button("Browse...").click();
 
+		SWTBotShell dialogShell = bot.shell("Browse Properties");
+		SWTBot dialogBot = dialogShell.bot();
 		List<String> path = Arrays.asList("Target SDR", "Components", "rh.SigGen", "frequency");
 		for (int i = 1; i < path.size(); i++) {
 			SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(dialogBot, dialogBot.tree(), path.subList(0, i));
@@ -57,8 +62,10 @@ public class BrowsePropertiesTest extends AbstractPropertyTabTest {
 		Assert.assertTrue("Finish button should be enabled.", dialogBot.button("Finish").isEnabled());
 
 		dialogBot.button("Cancel").click();
+		bot.waitUntil(Conditions.shellCloses(dialogShell));
+
 		assertFormValid();
-		Assert.assertFalse("Properties should be empty.", editor.bot().tree().hasItems());
+		Assert.assertFalse("Properties should be empty.", editorBot.tree().hasItems());
 	}
 
 }

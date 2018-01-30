@@ -263,7 +263,7 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		DiagramTestUtils.maximizeActiveWindow(gefBot);
 		SWTBotTreeItem treeItem = addElement(elementName, treeIndex);
 		treeItem.select();
-		final SWTBotTree propTree = bot.treeInGroup("Properties");
+		final SWTBotTree propTree = editorBot.treeInGroup("Properties");
 		Assert.assertNotNull(propTree);
 		final SWTBotTreeItem propTreeItem = propTree.getTreeItem(propertyKey);
 		propTreeItem.select();
@@ -301,10 +301,11 @@ public class DeviceTabTest extends AbstractGraphitiTest {
 		// Confirm element is present in the devices table
 		editorBot.cTabItem("Devices").activate();
 		editorBot.button("Add...").click();
-		bot.waitUntil(Conditions.shellIsActive("Add Devices Wizard"));
+
 		SWTBotShell shell = bot.shell("Add Devices Wizard");
 		shell.bot().tree(treeIndex).getTreeItem(elementName).click();
 		shell.bot().button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 
 		SWTBotTree tree = editorBot.tree(0);
 		return tree.getTreeItem(elementName + "_1");
