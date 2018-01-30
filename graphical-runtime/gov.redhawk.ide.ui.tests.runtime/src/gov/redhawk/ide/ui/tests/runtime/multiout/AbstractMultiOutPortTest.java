@@ -26,6 +26,8 @@ import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
+
+	protected static final String WIZARD_TITLE = "Multi-out Port Connection Wizard";
 	protected static final String RX_DIGITIZER_SIM = "RX_Digitizer_Sim";
 	protected static final String RX_DIGITIZER_SIM_1 = RX_DIGITIZER_SIM + "_1";
 	protected static final String[] DEVICE_PARENT_PATH = { "Sandbox", "Device Manager" };
@@ -95,9 +97,10 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 		getUsesPort().contextMenu(getContextMenu()).click();
 
 		// Complete the multi-out connection dialog
-		SWTBotShell multiOutShell = bot.shell("Multi-out port connection wizard");
+		SWTBotShell multiOutShell = bot.shell(WIZARD_TITLE);
 		multiOutShell.bot().list().select(1);
 		multiOutShell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(multiOutShell));
 
 		// Verify that the expected behavior occurred
 		testActionResults(1);

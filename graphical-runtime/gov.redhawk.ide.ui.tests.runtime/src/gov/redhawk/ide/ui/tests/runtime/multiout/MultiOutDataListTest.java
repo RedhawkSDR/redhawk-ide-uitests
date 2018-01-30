@@ -58,9 +58,10 @@ public class MultiOutDataListTest extends AbstractMultiOutPortTest {
 		// HACK to tell if we are testing with multiple tuners or not...
 		if (allocationIndex == 1) {
 			// Complete the multi-out connection dialog
-			SWTBotShell multiOutShell = bot.shell("Multi-out port connection wizard");
+			SWTBotShell multiOutShell = bot.shell(WIZARD_TITLE);
 			multiOutShell.bot().list().select(1);
 			multiOutShell.bot().button("OK").click();
+			bot.waitUntil(Conditions.shellCloses(multiOutShell));
 		}
 
 		// Ignore the fact that the device isn't started, it is still pushing data

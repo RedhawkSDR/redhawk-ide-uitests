@@ -12,6 +12,7 @@ package gov.redhawk.ide.ui.tests.runtime.multiout;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
@@ -76,9 +77,10 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		explorerViewBot.tree().select(getUsesPort(), providesPort).contextMenu(getContextMenu()).click();
 
 		// Complete the multi-out connection dialog
-		SWTBotShell multiOutShell = bot.shell("Multi-out port connection wizard");
+		SWTBotShell multiOutShell = bot.shell(WIZARD_TITLE);
 		multiOutShell.bot().list().select(1);
 		multiOutShell.bot().button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(multiOutShell));
 
 		// Verify that the expected behavior occurred
 		testActionResults(1);
@@ -110,7 +112,8 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		explorerViewBot.tree().select(getUsesPort(), providesPort).contextMenu(getContextMenu()).click();
 
 		// Wait for the connection dialog to open
-		SWTBot dialogBot = bot.shell("Multi-out port connection wizard").bot();
+		SWTBotShell multiOutShell = bot.shell(WIZARD_TITLE);
+		SWTBot dialogBot = multiOutShell.bot();
 
 		// Test widget enabled state
 		Assert.assertTrue("'Select ID' radio should be selected by default", dialogBot.radio("Select an existing connection ID").isSelected());
@@ -137,6 +140,8 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		dialogBot.text().setText(connectionId);
 		Assert.assertTrue("OK button did not re-enable", dialogBot.button("OK").isEnabled());
 		dialogBot.button("OK").click();
+		bot.waitUntil(Conditions.shellCloses(multiOutShell));
+
 		bot.waitUntil(new DefaultCondition() {
 
 			@Override
