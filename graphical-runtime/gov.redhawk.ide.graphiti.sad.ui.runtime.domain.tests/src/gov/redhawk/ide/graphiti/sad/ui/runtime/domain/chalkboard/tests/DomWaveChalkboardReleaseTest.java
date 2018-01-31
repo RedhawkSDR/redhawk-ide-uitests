@@ -77,6 +77,7 @@ public class DomWaveChalkboardReleaseTest extends UIRuntimeTest {
 
 	private void showLocalReferences(boolean show) {
 		SWTBotView view = bot.viewById(ScaExplorerTestUtils.SCA_EXPLORER_VIEW_ID);
+		view.setFocus();
 		view.viewMenu().menu("Customize View...").click();
 
 		SWTBotShell shell = bot.shell("Available Customizations");

@@ -11,15 +11,16 @@
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
 import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.util.List;
 
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.swt.SWT;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefConnectionEditPart;
 import org.eclipse.swtbot.eclipse.gef.finder.widgets.SWTBotGefEditPart;
+import org.eclipse.swtbot.swt.finder.keyboard.Keyboard;
+import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -116,15 +117,12 @@ public class SaveChalkboardTest extends AbstractGraphitiChalkboardTest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, SIGGEN);
 
-		Robot robot = new Robot();
-		robot.keyPress(KeyEvent.VK_CONTROL);
-		robot.keyPress(KeyEvent.VK_S);
-		robot.keyRelease(KeyEvent.VK_S);
-		robot.keyRelease(KeyEvent.VK_CONTROL);
-
+		Keyboard keyboard = KeyboardFactory.getSWTKeyboard();
+		keyboard.pressShortcut(SWT.CTRL, 's');
 		SWTBotShell saveShell = bot.shell("Save Chalkboard");
 		Assert.assertNotNull("Save As dialog not found", saveShell);
 		saveShell.setFocus();
 		saveShell.bot().button("Cancel").click();
+		bot.waitUntil(Conditions.shellCloses(saveShell));
 	}
 }
