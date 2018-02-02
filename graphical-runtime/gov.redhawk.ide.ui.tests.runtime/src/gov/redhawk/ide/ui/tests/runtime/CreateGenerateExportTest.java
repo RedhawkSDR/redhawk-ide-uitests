@@ -323,6 +323,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		SWTBotShell shell = bot.shell("Delete");
 		shell.bot().button("Yes").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
+		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, scaPath, projectName);
 	}
 
