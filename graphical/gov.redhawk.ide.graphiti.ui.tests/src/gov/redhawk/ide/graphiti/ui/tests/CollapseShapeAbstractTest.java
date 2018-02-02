@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.redhawk.core.graphiti.ui.preferences.DiagramPreferenceConstants;
+import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.PortUtils;
@@ -453,6 +454,7 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 	}
 
 	private void setPortCollapsePreference(boolean shouldCollapse) {
+		StandardTestActions.forceMainShellActive();
 		bot.menu().menu("Window", "Preferences").click();
 
 		SWTBotShell shell = bot.shell("Preferences");
@@ -462,7 +464,6 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 		if ((shouldCollapse && !prefCheckBox.isChecked()) || (!shouldCollapse && prefCheckBox.isChecked())) {
 			prefCheckBox.click();
 		}
-
 		shell.bot().button("Apply and Close").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 	}

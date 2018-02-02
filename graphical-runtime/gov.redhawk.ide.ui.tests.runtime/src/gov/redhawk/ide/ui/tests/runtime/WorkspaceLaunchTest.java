@@ -43,7 +43,7 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
  */
 public class WorkspaceLaunchTest extends UIRuntimeTest {
 
-	private static final String PROJECT_NAME = "cppComponent";
+	private static final String PROJECT_NAME = WorkspaceLaunchTest.class.getSimpleName();
 	private static final String PROJECT_NAME_1 = PROJECT_NAME + "_1";
 
 	private Boolean oldAutomatedMode;
