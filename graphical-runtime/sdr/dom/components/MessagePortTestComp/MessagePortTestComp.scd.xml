@@ -17,6 +17,7 @@
     <supportsinterface repid="IDL:CF/LogConfiguration:1.0" supportsname="LogConfiguration"/>
     <ports>
       <uses repid="IDL:ExtendedEvent/MessageEvent:1.0" usesname="message_out"/>
+      <uses repid="IDL:omg.org/CosEventChannelAdmin/EventChannel:1.0" usesname="eventChannel_out"/>
     </ports>
   </componentfeatures>
   <interfaces>
