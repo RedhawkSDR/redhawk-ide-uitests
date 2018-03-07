@@ -123,13 +123,13 @@ public class WaveformComponentsTabTest extends AbstractWaveformTabTest {
 			final SadComponentInstantiation ci = sad.getComponentInstantiation(componentId);
 
 			// Sanity check to make sure that the box is unchecked and no logging config element exists
-			Assert.assertFalse(editorBot.checkBoxWithLabel("Logging Configuration:").isChecked());
+			Assert.assertFalse(editorBot.checkBoxWithLabel("Enabled:").isChecked());
 			Assert.assertFalse(editorBot.comboBoxWithLabel("Log Level:").isEnabled());
 			Assert.assertFalse(editorBot.textWithLabel("Logging URI:").isEnabled());
 			Assert.assertNull(ci.getLoggingConfig());
 
 			// Enable logging config and check that the model element is created
-			editorBot.checkBoxWithLabel("Logging Configuration:").click();
+			editorBot.checkBoxWithLabel("Enabled:").click();
 			Assert.assertNotNull(ci.getLoggingConfig());
 
 			// Set a log level and make sure it gets updated
@@ -139,7 +139,7 @@ public class WaveformComponentsTabTest extends AbstractWaveformTabTest {
 			Assert.assertNull(ci.getLoggingConfig().getLevel());
 
 			// Set a uri and make sure it gets updated
-			final String testUri = "sca://scauri";
+			final String testUri = "sca:/some/file";
 			editorBot.textWithLabel("Logging URI:").selectAll().setText(testUri);
 			editorBot.waitUntil(new DefaultCondition() {
 
@@ -171,7 +171,7 @@ public class WaveformComponentsTabTest extends AbstractWaveformTabTest {
 			});
 
 			// Disable logging config and check that the model element is removed
-			editorBot.checkBoxWithLabel("Logging Configuration:").click();
+			editorBot.checkBoxWithLabel("Enabled:").click();
 			Assert.assertNull(ci.getLoggingConfig());
 		}
 	}
