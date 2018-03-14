@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
+import org.junit.Assert;
 
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import mil.jpeojtrs.sca.dcd.DcdPackage;
@@ -31,32 +32,28 @@ import mil.jpeojtrs.sca.util.ScaResourceFactoryUtil;
 public class XmlTestUtils {
 	
 	private XmlTestUtils() {
-		
 	}
-
-	// TODO: Need to expand this utility to also handle XML for SPD's, PRF's, SCD's, etc.
-	public enum EditorType {
-		SAD,
-		DCD
-	};
 
 	/**
 	 * Caller needs to cast the return object to the appropriate profile object (SoftwareAssembly, DeviceConfiguration, etc)
 	 */
-	public static Object getModelFromEditorXml(SWTBotEditor editor, String testName, EditorType editorType) throws IOException {
+	public static <T> T getModelFromEditorXml(SWTBotEditor editor, String testName, Class<T> modelType) throws IOException {
 		ResourceSet resourceSet = ScaResourceFactoryUtil.createResourceSet();
-		if (editorType == EditorType.SAD) {
+		if (modelType == SoftwareAssembly.class) {
 			DiagramTestUtils.openTabInEditor(editor, testName + ".sad.xml");
 			String editorText = editor.toTextEditor().getText();
 			Resource resource = resourceSet.createResource(URI.createURI("mem://temp.sad.xml"), SadPackage.eCONTENT_TYPE);
 			resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
-			return SoftwareAssembly.Util.getSoftwareAssembly(resource);
-		} else {
+			return modelType.cast(SoftwareAssembly.Util.getSoftwareAssembly(resource));
+		} else if (modelType == DeviceConfiguration.class) {
 			DiagramTestUtils.openTabInEditor(editor, "DeviceManager.dcd.xml");
 			String editorText = editor.toTextEditor().getText();
 			Resource resource = resourceSet.createResource(URI.createURI("mem://DeviceManager.dcd.xml"), DcdPackage.eCONTENT_TYPE);
 			resource.load(new ByteArrayInputStream(editorText.getBytes()), null);
-			return DeviceConfiguration.Util.getDeviceConfiguration(resource);
+			return modelType.cast(DeviceConfiguration.Util.getDeviceConfiguration(resource));
+		} else {
+			Assert.fail();
+			return null;
 		}
 	}
 

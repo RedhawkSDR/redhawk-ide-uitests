@@ -64,7 +64,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 	 */
 	protected abstract RHBotGefEditor createEditor(String name);
 
-	protected abstract XmlTestUtils.EditorType getEditorType();
+	protected abstract Class< ? > getEditorType();
 
 	private SoftwareAssembly sad;
 	private DeviceConfiguration dcd;
@@ -80,16 +80,16 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 
 		RHBotGefEditor editor = createEditor(TEST_NAME);
 
-		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
-			sad = (SoftwareAssembly) XmlTestUtils.getModelFromEditorXml(editor, TEST_NAME, getEditorType());
-		} else {
-			dcd = (DeviceConfiguration) XmlTestUtils.getModelFromEditorXml(editor, TEST_NAME, getEditorType());
+		if (getEditorType() == SoftwareAssembly.class) {
+			sad = XmlTestUtils.getModelFromEditorXml(editor, TEST_NAME, SoftwareAssembly.class);
+		} else if (getEditorType() == DeviceConfiguration.class) {
+			dcd = XmlTestUtils.getModelFromEditorXml(editor, TEST_NAME, DeviceConfiguration.class);
 		}
 
 		// Add two components
 		ComponentFile compFileA = createComponentFile(compA);
 		ComponentFile compFileB = createComponentFile(compB);
-		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
+		if (getEditorType() == SoftwareAssembly.class) {
 			if (sad.getComponentFiles() == null) {
 				sad.setComponentFiles(PartitioningFactory.eINSTANCE.createComponentFiles());
 			}
@@ -100,7 +100,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 			placements.add(createSadPlacement(compFileA, compA.getShortName(1), 0));
 			placements.add(createSadPlacement(compFileB, compB.getShortName(1), 1));
 			XmlTestUtils.writeModelToXmlEditor(editor, TEST_NAME + ".sad.xml", sad);
-		} else {
+		} else if (getEditorType() == DeviceConfiguration.class) {
 			if (dcd.getComponentFiles() == null) {
 				dcd.setComponentFiles(PartitioningFactory.eINSTANCE.createComponentFiles());
 			}
@@ -125,7 +125,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 		Assert.assertEquals(compB.getFullName(), shapeB.getOuterText().getValue());
 		Assert.assertEquals(compB.getShortName(1), shapeB.getInnerText().getValue());
 		Assert.assertTrue(shapeB.getProvidesPortsContainerShape().getChildren().size() > 1);
-		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
+		if (getEditorType() == SoftwareAssembly.class) {
 			ComponentShape componentShapeA = (ComponentShape) shapeA;
 			Assert.assertEquals("0", componentShapeA.getStartOrderText().getValue());
 			ComponentShape componentShapeB = (ComponentShape) shapeB;
@@ -146,13 +146,13 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 		DiagramTestUtils.addFromPaletteToDiagram(editor, compA.getFullName(), 0, 0);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, compB.getFullName(), 300, 0);
 
-		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
-			sad = (SoftwareAssembly) XmlTestUtils.getModelFromEditorXml(editor, TEST_NAME, getEditorType());
-		} else {
-			dcd = (DeviceConfiguration) XmlTestUtils.getModelFromEditorXml(editor, TEST_NAME, getEditorType());
+		if (getEditorType() == SoftwareAssembly.class) {
+			sad = (SoftwareAssembly) XmlTestUtils.getModelFromEditorXml(editor, TEST_NAME, SoftwareAssembly.class);
+		} else if (getEditorType() == DeviceConfiguration.class) {
+			dcd = (DeviceConfiguration) XmlTestUtils.getModelFromEditorXml(editor, TEST_NAME, DeviceConfiguration.class);
 		}
 
-		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
+		if (getEditorType() == SoftwareAssembly.class) {
 			if (sad.getConnections() == null) {
 				sad.setConnections(SadFactory.eINSTANCE.createSadConnections());
 			}
@@ -161,7 +161,7 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 				compB.getInPort(0), compB.getShortName(1));
 			connections.add(connection);
 			XmlTestUtils.writeModelToXmlEditor(editor, TEST_NAME + ".sad.xml", sad);
-		} else {
+		} else if (getEditorType() == DeviceConfiguration.class) {
 			if (dcd.getConnections() == null) {
 				dcd.setConnections(DcdFactory.eINSTANCE.createDcdConnections());
 			}
@@ -184,10 +184,12 @@ public abstract class AbstractXmlToDiagramAddTest extends UITest {
 	}
 
 	private ComponentFile createComponentFile(ComponentDescription description) {
-		if (getEditorType() == XmlTestUtils.EditorType.SAD) {
+		if (getEditorType() == SoftwareAssembly.class) {
 			return SadFactory.eINSTANCE.createComponentFile(description.getShortName(), getPath(description));
-		} else {
+		} else if (getEditorType() == DeviceConfiguration.class) {
 			return DcdFactory.eINSTANCE.createComponentFile(description.getShortName(), getPath(description));
+		} else {
+			return null;
 		}
 	}
 

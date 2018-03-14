@@ -11,11 +11,11 @@
 package gov.redhawk.ide.graphiti.dcd.ui.tests.xml;
 
 import gov.redhawk.ide.graphiti.ui.tests.ComponentDescription;
-import gov.redhawk.ide.graphiti.ui.tests.util.XmlTestUtils;
 import gov.redhawk.ide.graphiti.ui.tests.xml.AbstractXmlToDiagramAddTest;
 import gov.redhawk.ide.swtbot.NodeUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
+import mil.jpeojtrs.sca.dcd.DeviceConfiguration;
 
 /**
  * Test class that deals with adding elements to the sad.xml and making sure they appear correctly in the diagram
@@ -47,7 +47,7 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 	}
 
 	@Override
-	protected XmlTestUtils.EditorType getEditorType() {
-		return XmlTestUtils.EditorType.DCD;
+	protected Class< ? > getEditorType() {
+		return DeviceConfiguration.class;
 	}
 }
