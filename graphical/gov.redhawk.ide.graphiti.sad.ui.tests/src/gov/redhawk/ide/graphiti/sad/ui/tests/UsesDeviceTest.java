@@ -10,7 +10,10 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.SWT;
@@ -28,6 +31,7 @@ import org.junit.Test;
 
 import gov.redhawk.core.graphiti.ui.ext.RHContainerShape;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
+import gov.redhawk.ide.graphiti.ui.tests.util.XmlTestUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForWidgetEnablement;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
@@ -38,6 +42,10 @@ import gov.redhawk.ide.swtbot.diagram.UsesDeviceTestUtils;
 import mil.jpeojtrs.sca.partitioning.ProvidesPortStub;
 import mil.jpeojtrs.sca.partitioning.UsesDeviceStub;
 import mil.jpeojtrs.sca.partitioning.UsesPortStub;
+import mil.jpeojtrs.sca.prf.SimpleRef;
+import mil.jpeojtrs.sca.prf.StructRef;
+import mil.jpeojtrs.sca.sad.SoftwareAssembly;
+import mil.jpeojtrs.sca.spd.UsesDevice;
 
 public class UsesDeviceTest extends AbstractGraphitiTest {
 
@@ -117,9 +125,10 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 	/**
 	 * IDE-124
 	 * Add a usesdevice for a FrontEnd tuner in control mode. Use sim_RX_DIGITIZER device in SDRROOT as template.
+	 * @throws IOException
 	 */
 	@Test
-	public void usesDevice_frontEndTuner_controlMode_simRxDigitizer() {
+	public void usesDevice_frontEndTuner_controlMode_simRxDigitizer() throws IOException {
 		waveformName = "IDE-124-CreateAndDeleteUse_im_rx_digitizer_FrontEndTunerDeviceTest";
 
 		// Create an empty waveform project
@@ -132,7 +141,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		String tunerType = "RX_DIGITIZER";
 		String newAllocationId = "678910";
 		String centerFrequency = "5";
-		String bandwidth = "1";
+		String bandwidth = "0.000001";
 		String sampleRate = "1";
 		boolean deviceControl = true;
 		String groupID = "group1";
@@ -156,12 +165,53 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		Assert.assertEquals(((ProvidesPortStub) providesPortStubs.get(1)).getName(), "DigitalTuner_in");
 		Assert.assertEquals(((UsesPortStub) usesPortStubs.get(0)).getName(), "dataShort_out");
 
-		// Check to see if xml is correct in the sad.xml
-		final String usesDeviceXML = regexStringFor_sim_rx_digitizer_UseFrontEndTunerDeviceControlTuner(usesDeviceId, tunerControl);
-		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
-		String editorText = editor.toTextEditor().getText();
-		Assert.assertTrue("The sad.xml should include UsesDevice", editorText.matches(usesDeviceXML));
+		// Check to see if the XML is correct in the sad.xml
+		SoftwareAssembly sad = XmlTestUtils.getModelFromEditorXml(editor, waveformName, SoftwareAssembly.class);
+		Assert.assertNotNull(sad.getUsesDeviceDependencies());
+		UsesDevice ud = sad.getUsesDeviceDependencies().getUsesdevice().get(0);
+		Assert.assertEquals(usesDeviceId, ud.getId());
+		Assert.assertEquals("DCE:cdc5ee18-7ceb-4ae6-bf4c-31f983179b4d", ud.getPropertyRef().get(0).getRefId());
+		Assert.assertEquals("FRONTEND::TUNER", ud.getPropertyRef().get(0).getValue());
+		Assert.assertEquals("DCE:0f99b2e4-9903-4631-9846-ff349d18ecfb", ud.getPropertyRef().get(1).getRefId());
+		Assert.assertEquals("RX_DIGITIZER simulator", ud.getPropertyRef().get(1).getValue());
+		StructRef structRef = ud.getStructRef().get(0);
+		Assert.assertEquals("FRONTEND::tuner_allocation", structRef.getRefID());
+		structRef.getSimpleRef();
+		Map<String, String> idToValue = new HashMap<>();
+		idToValue.put("FRONTEND::tuner_allocation::tuner_type", tunerType);
+		idToValue.put("FRONTEND::tuner_allocation::allocation_id", newAllocationId);
+		idToValue.put("FRONTEND::tuner_allocation::center_frequency", "5000000.0");
+		idToValue.put("FRONTEND::tuner_allocation::bandwidth", "1.0");
+		idToValue.put("FRONTEND::tuner_allocation::bandwidth_tolerance", "20.0");
+		idToValue.put("FRONTEND::tuner_allocation::sample_rate", "1000000.0");
+		idToValue.put("FRONTEND::tuner_allocation::sample_rate_tolerance", "20.0");
+		idToValue.put("FRONTEND::tuner_allocation::device_control", "true");
+		idToValue.put("FRONTEND::tuner_allocation::group_id", groupID);
+		idToValue.put("FRONTEND::tuner_allocation::rf_flow_id", rfFlowID);
+		for (SimpleRef simpleRef : structRef.getSimpleRef()) {
+			Assert.assertTrue(idToValue.containsKey(simpleRef.getRefID()));
+			Assert.assertEquals(idToValue.remove(simpleRef.getRefID()), simpleRef.getValue());
+		}
+		Assert.assertEquals(0, idToValue.size());
 		DiagramTestUtils.openTabInEditor(editor, "Diagram");
+
+		// Open the editor back up and make sure the values look okay
+		editor.getEditPart(SadTestUtils.USE_FRONTEND_TUNER_DEVICE).select();
+		editor.clickContextMenu("Edit Use FrontEnd Tuner Device");
+		SWTBotShell shell = bot.shell("Allocate Tuner");
+		SWTBot shellBot = shell.bot();
+		shellBot.button("&Next >").click();
+		Assert.assertEquals(newAllocationId, bot.textWithLabel("New Allocation ID").getText());
+		Assert.assertEquals(tunerType, bot.comboBoxWithLabel("Tuner Type").getText());
+		Assert.assertEquals(centerFrequency, bot.textWithLabel("Center Frequency (MHz)").getText());
+		Assert.assertEquals(bandwidth, bot.textWithLabel("Bandwidth (MHz)").getText());
+		Assert.assertEquals(sampleRate, bot.textWithLabel("Sample Rate (Msps)").getText());
+		Assert.assertEquals("20", bot.textWithLabel("Bandwidth Tolerance (%)").getText());
+		Assert.assertEquals("20", bot.textWithLabel("Sample Rate Tolerance (%)").getText());
+		Assert.assertEquals(rfFlowID, bot.textWithLabel("RF Flow ID").getText());
+		Assert.assertEquals(groupID, bot.textWithLabel("Group ID").getText());
+		shellBot.button("Cancel").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
 
 		// delete
 		DiagramTestUtils.deleteFromDiagram(editor, editor.getEditPart(SadTestUtils.USE_FRONTEND_TUNER_DEVICE));
@@ -204,7 +254,8 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		SWTBotGefEditPart sigGenUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
 		SWTBotGefEditPart dataConverterProvidesPart1 = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataShort");
 		SWTBotGefEditPart dataConverterProvidesPart2 = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataFloat");
-		SWTBotGefEditPart usesDeviceProvidesDoublePart = DiagramTestUtils.getDiagramProvidesPort(editor, SadTestUtils.USE_FRONTEND_TUNER_DEVICE, "dataFloat_in");
+		SWTBotGefEditPart usesDeviceProvidesDoublePart = DiagramTestUtils.getDiagramProvidesPort(editor, SadTestUtils.USE_FRONTEND_TUNER_DEVICE,
+			"dataFloat_in");
 		SWTBotGefEditPart usesDeviceProvidesDouble2Part = DiagramTestUtils.getDiagramProvidesPort(editor, SadTestUtils.USE_FRONTEND_TUNER_DEVICE,
 			"dataFloat2_in");
 		SWTBotGefEditPart usesDeviceUsesDoublePart = DiagramTestUtils.getDiagramUsesPort(editor, SadTestUtils.USE_FRONTEND_TUNER_DEVICE, "dataFloat_out");
@@ -453,7 +504,6 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		Assert.assertEquals("outer text should match shape type", SadTestUtils.USE_FRONTEND_TUNER_DEVICE, rhContainerShape.getOuterText().getValue());
 		Assert.assertEquals("inner text should match usesdevice id", usesDeviceStub.getUsesDevice().getId(), rhContainerShape.getInnerText().getValue());
 		Assert.assertNotNull("component supported interface graphic should not be null", rhContainerShape.getLollipop());
-
 	}
 
 	/**
@@ -469,31 +519,6 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		String simpleRef2 = "<simpleref refid=\"FRONTEND::listener_allocation::listener_allocation_id\" value=\"" + allocationId + "\"/>";
 
 		return "(?s).*" + usesDevice + ".*" + propertyRef + ".*" + structRef + ".*" + simpleRef1 + ".*" + simpleRef2 + ".*";
-	}
-
-	/**
-	 * Checks sad.xml for generic uses device code listen by id
-	 * @param componentShape
-	 * @return
-	 */
-	private String regexStringFor_sim_rx_digitizer_UseFrontEndTunerDeviceControlTuner(final String usesDeviceId, final FETunerControl tunerControl) {
-		String usesDevice = "<usesdevice id=\"" + usesDeviceId + "\">";
-		String propertyRef = "<propertyref refid=\"DCE:cdc5ee18-7ceb-4ae6-bf4c-31f983179b4d\" value=\"FRONTEND::TUNER\"/>";
-		String deviceModel = "<propertyref refid=\"DCE:0f99b2e4-9903-4631-9846-ff349d18ecfb\" value=\"RX_DIGITIZER simulator\"/>";
-		String structRef = "<structref refid=\"FRONTEND::tuner_allocation\">";
-		String simpleRef1 = "<simpleref refid=\"FRONTEND::tuner_allocation::tuner_type\" value=\"" + tunerControl.getTunerType() + "\"/>";
-		String simpleRef2 = "<simpleref refid=\"FRONTEND::tuner_allocation::allocation_id\" value=\"" + tunerControl.getNewAllocationID() + "\"/>";
-		String simpleRef3 = "<simpleref refid=\"FRONTEND::tuner_allocation::center_frequency\" value=\"" + tunerControl.getCenterFrequency() + "000000.0\"/>";
-		String simpleRef4 = "<simpleref refid=\"FRONTEND::tuner_allocation::bandwidth\" value=\"" + tunerControl.getBandwidth() + "000000.0\"/>";
-		String simpleRef5 = "<simpleref refid=\"FRONTEND::tuner_allocation::bandwidth_tolerance\" value=\"20.0\"/>";
-		String simpleRef6 = "<simpleref refid=\"FRONTEND::tuner_allocation::sample_rate\" value=\"" + tunerControl.getSampleRate() + "000000.0\"/>";
-		String simpleRef7 = "<simpleref refid=\"FRONTEND::tuner_allocation::sample_rate_tolerance\" value=\"20.0\"/>";
-		String simpleRef8 = "<simpleref refid=\"FRONTEND::tuner_allocation::device_control\" value=\"" + tunerControl.getDeviceControl() + "\"/>";
-		String simpleRef9 = "<simpleref refid=\"FRONTEND::tuner_allocation::group_id\" value=\"" + tunerControl.getGroupID() + "\"/>";
-		String simpleRef10 = "<simpleref refid=\"FRONTEND::tuner_allocation::rf_flow_id\" value=\"" + tunerControl.getRFFlowID() + "\"/>";
-
-		return "(?s).*" + usesDevice + ".*" + propertyRef + ".*" + deviceModel + ".*" + structRef + ".*" + simpleRef1 + ".*" + simpleRef2 + ".*" + simpleRef3
-			+ ".*" + simpleRef4 + ".*" + simpleRef5 + ".*" + simpleRef6 + ".*" + simpleRef7 + ".*" + simpleRef8 + ".*" + simpleRef9 + ".*" + simpleRef10 + ".*";
 	}
 
 }
