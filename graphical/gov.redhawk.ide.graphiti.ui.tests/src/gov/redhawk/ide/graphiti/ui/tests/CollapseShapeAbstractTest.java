@@ -459,8 +459,8 @@ public abstract class CollapseShapeAbstractTest extends AbstractGraphitiTest {
 
 		SWTBotShell shell = bot.shell("Preferences");
 		SWTBotTreeItem redhawkNode = shell.bot().tree().expandNode("REDHAWK");
-		redhawkNode.select("Graphiti Diagram Preferences");
-		SWTBotCheckBox prefCheckBox = shell.bot().checkBox(0);
+		redhawkNode.select("Diagrams");
+		SWTBotCheckBox prefCheckBox = shell.bot().checkBox("Hide Shape Details");
 		if ((shouldCollapse && !prefCheckBox.isChecked()) || (!shouldCollapse && prefCheckBox.isChecked())) {
 			prefCheckBox.click();
 		}

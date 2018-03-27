@@ -10,6 +10,8 @@
  *******************************************************************************/
 package gov.redhawk.ide.graphiti.sad.ui.tests;
 
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -26,6 +28,7 @@ import org.junit.Test;
 
 import gov.redhawk.core.graphiti.ui.internal.preferences.GraphitiPreferencesNLS;
 import gov.redhawk.core.graphiti.ui.preferences.DiagramPreferenceConstants;
+import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 
 public class PortStatsPrefPageTest extends AbstractGraphitiTest {
@@ -42,7 +45,7 @@ public class PortStatsPrefPageTest extends AbstractGraphitiTest {
 		bot.menu("Window").menu("Preferences").click();
 		SWTBotShell prefShell = bot.shell("Preferences");
 		SWTBot prefBot = prefShell.bot();
-		prefBot.tree().getTreeItem("REDHAWK").expand().getNode("Port Statistics").select();
+		StandardTestActions.waitForTreeItemToAppear(prefBot, prefBot.tree(), Arrays.asList("REDHAWK", "Diagrams", "Port Statistics")).select();
 
 		SWTBotButton applyButton = prefBot.button("Apply");
 		SWTBotButton defaultButton = prefBot.button("Restore Defaults");
