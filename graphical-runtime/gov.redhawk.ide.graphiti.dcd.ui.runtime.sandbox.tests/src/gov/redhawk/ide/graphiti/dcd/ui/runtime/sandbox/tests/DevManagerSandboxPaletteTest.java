@@ -23,7 +23,8 @@ import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.DeviceUtils;
 import gov.redhawk.ide.swtbot.ServiceUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
+import gov.redhawk.ide.swtbot.condition.JobConditions;
+import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.PaletteUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -102,7 +103,8 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 		Assert.assertFalse(String.format("'%s' resource already present in the palette", projectName), PaletteUtils.toolIsPresent(editor, projectName));
 
 		StandardTestActions.exportProject(projectName, bot);
-		bot.waitUntil(new WaitForLaunchTermination(), 15000);
+		bot.waitUntil(JobConditions.exportToSdr(), 15000);
+		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 
 		bot.waitUntil(new DefaultCondition() {
 
@@ -115,7 +117,7 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 			public String getFailureMessage() {
 				return String.format("Palette did not refresh to display '%s' resource", projectName);
 			}
-		}, 10000);
+		});
 	}
 
 }

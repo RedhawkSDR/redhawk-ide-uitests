@@ -36,10 +36,10 @@ import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.condition.JobConditions;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
 import gov.redhawk.ide.swtbot.condition.WaitForCppIndexer;
-import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
 import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -83,7 +83,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		StandardTestActions.exportProject(PREFIX_DOTS + "cpp." + componentBaseName, bot);
 		StandardTestActions.exportProject(PREFIX_DOTS + "java." + componentBaseName, bot);
 		StandardTestActions.exportProject(PREFIX_DOTS + "python." + componentBaseName, bot);
-		bot.waitUntil(new WaitForLaunchTermination(), 30000);
+		bot.waitUntil(JobConditions.exportToSdr(), 30000);
 		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Components", "runtime", "test", "cpp" }, componentBaseName);
@@ -126,7 +126,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		StandardTestActions.exportProject(PREFIX_DOTS + "cpp." + deviceBaseName, bot);
 		StandardTestActions.exportProject(PREFIX_DOTS + "java." + deviceBaseName, bot);
 		StandardTestActions.exportProject(PREFIX_DOTS + "python." + deviceBaseName, bot);
-		bot.waitUntil(new WaitForLaunchTermination(), 30000);
+		bot.waitUntil(JobConditions.exportToSdr(), 30000);
 		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Devices", "runtime", "test", "cpp" }, deviceBaseName);
@@ -163,7 +163,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		StandardTestActions.exportProject(PREFIX_DOTS + "cpp." + serviceBaseName, bot);
 		StandardTestActions.exportProject(PREFIX_DOTS + "java." + serviceBaseName, bot);
 		StandardTestActions.exportProject(PREFIX_DOTS + "python." + serviceBaseName, bot);
-		bot.waitUntil(new WaitForLaunchTermination(), 30000);
+		bot.waitUntil(JobConditions.exportToSdr(), 30000);
 		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Services", "runtime", "test", "cpp" }, serviceBaseName);
@@ -290,7 +290,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		generateProjectAndBuild(PREFIX_DOTS + sharedLibraryBaseName, sharedLibraryBaseName + ".cpp", true);
 
 		StandardTestActions.exportProject(PREFIX_DOTS + sharedLibraryBaseName, bot);
-		bot.waitUntil(new WaitForLaunchTermination(), 30000);
+		bot.waitUntil(JobConditions.exportToSdr(), 30000);
 		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Shared Libraries", "runtime", "test" }, sharedLibraryBaseName);

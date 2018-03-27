@@ -23,9 +23,9 @@ import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.condition.JobConditions;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
-import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
@@ -56,7 +56,8 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 		// Export to SDR
 		SWTBotTreeItem projectNode = ProjectExplorerUtils.waitUntilNodeAppears(bot, SHARED_LIB_PROJ_NAME);
 		projectNode.contextMenu("Export to SDR").click();
-		bot.waitUntil(new WaitForLaunchTermination(), WaitForBuild.TIMEOUT);
+		bot.waitUntil(JobConditions.exportToSdr(), 15000);
+		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 
 		// Confirm export worked
 		findTreeItemAndDelete(new String[] { "Target SDR", "Shared Libraries" }, SHARED_LIB_PROJ_NAME);
@@ -90,7 +91,7 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 
 		SWTBotTreeItem sharedLibPrExpNode = ProjectExplorerUtils.selectNode(bot, SHARED_LIB_PROJ_NAME);
 		sharedLibPrExpNode.dragAndDrop(sharedLibContainer);
-		bot.waitUntil(new WaitForLaunchTermination(), WaitForBuild.TIMEOUT);
+		bot.waitUntil(JobConditions.exportToSdr(), 15000);
 		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 		findTreeItemAndDelete(new String[] { "Target SDR", "Shared Libraries" }, SHARED_LIB_PROJ_NAME);
 
