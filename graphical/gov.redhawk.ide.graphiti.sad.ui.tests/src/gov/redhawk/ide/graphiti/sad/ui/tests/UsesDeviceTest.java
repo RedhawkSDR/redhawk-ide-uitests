@@ -149,7 +149,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 
 		DiagramTestUtils.addUseFrontEndTunerDeviceToDiagram(gefBot, editor, 0, 0);
 		FETunerControl tunerControl = new FETunerControl(tunerType, newAllocationId, centerFrequency, bandwidth, sampleRate, deviceControl, rfFlowID, groupID);
-		UsesDeviceTestUtils.completeUsesFEDeviceWizard(bot, "sim_RX_DIGITIZER (/devices/sim_RX_DIGITIZER/)", tunerControl, null, null);
+		UsesDeviceTestUtils.completeUsesFEDeviceWizard(bot, "sim_RX_DIGITIZER", tunerControl, null, null);
 		editor.setFocus();
 
 		// Confirm created component truly is a usesdevice FrontEnd Tuner
