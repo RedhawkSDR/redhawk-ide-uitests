@@ -65,7 +65,7 @@ public class MultiOutDataListTest extends AbstractMultiOutPortTest {
 		}
 
 		// Ignore the fact that the device isn't started, it is still pushing data
-		SWTBotShell startedShell = bot.shell("Started?");
+		SWTBotShell startedShell = bot.shell("Resource Not Started");
 		startedShell.bot().button("Yes").click();
 		bot.waitUntil(Conditions.shellCloses(startedShell));
 
