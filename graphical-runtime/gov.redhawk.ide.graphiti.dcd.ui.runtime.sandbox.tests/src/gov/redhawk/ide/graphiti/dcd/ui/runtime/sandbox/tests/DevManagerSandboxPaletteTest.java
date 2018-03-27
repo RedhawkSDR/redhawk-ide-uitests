@@ -11,6 +11,7 @@
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.Assert;
@@ -23,7 +24,8 @@ import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.DeviceUtils;
 import gov.redhawk.ide.swtbot.ServiceUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
-import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
+import gov.redhawk.ide.swtbot.condition.JobConditions;
+import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.PaletteUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -80,6 +82,7 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 	@Test
 	public void paletteRefreshTestDevice() {
 		final String DEVICE_NAME = "refreshTestDevice";
+		addSdrDevCleanupPath(new Path("/devices/refreshTestDevice"));
 		DeviceUtils.createDeviceProject(bot, DEVICE_NAME, "Python");
 		refreshTest(DEVICE_NAME);
 	}
@@ -90,6 +93,7 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 	@Test
 	public void paletteRefreshTestService() {
 		final String SERVICE_NAME = "refreshTestService";
+		addSdrDevCleanupPath(new Path("/services/refreshTestService"));
 		ServiceUtils.createServiceProject(bot, SERVICE_NAME, "IDL:BULKIO/dataDouble:1.0", "Python");
 		refreshTest(SERVICE_NAME);
 	}
@@ -102,7 +106,8 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 		Assert.assertFalse(String.format("'%s' resource already present in the palette", projectName), PaletteUtils.toolIsPresent(editor, projectName));
 
 		StandardTestActions.exportProject(projectName, bot);
-		bot.waitUntil(new WaitForLaunchTermination(), 15000);
+		bot.waitUntil(JobConditions.exportToSdr(), 15000);
+		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 
 		bot.waitUntil(new DefaultCondition() {
 
@@ -115,7 +120,7 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 			public String getFailureMessage() {
 				return String.format("Palette did not refresh to display '%s' resource", projectName);
 			}
-		}, 10000);
+		});
 	}
 
 }
