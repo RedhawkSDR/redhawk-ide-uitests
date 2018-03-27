@@ -11,6 +11,7 @@
 package gov.redhawk.ide.graphiti.dcd.ui.runtime.sandbox.tests;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.Assert;
@@ -81,6 +82,7 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 	@Test
 	public void paletteRefreshTestDevice() {
 		final String DEVICE_NAME = "refreshTestDevice";
+		addSdrDevCleanupPath(new Path("/devices/refreshTestDevice"));
 		DeviceUtils.createDeviceProject(bot, DEVICE_NAME, "Python");
 		refreshTest(DEVICE_NAME);
 	}
@@ -91,6 +93,7 @@ public class DevManagerSandboxPaletteTest extends AbstractPaletteTest {
 	@Test
 	public void paletteRefreshTestService() {
 		final String SERVICE_NAME = "refreshTestService";
+		addSdrDevCleanupPath(new Path("/services/refreshTestService"));
 		ServiceUtils.createServiceProject(bot, SERVICE_NAME, "IDL:BULKIO/dataDouble:1.0", "Python");
 		refreshTest(SERVICE_NAME);
 	}
