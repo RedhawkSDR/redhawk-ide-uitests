@@ -201,15 +201,15 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		SWTBotShell shell = bot.shell("Allocate Tuner");
 		SWTBot shellBot = shell.bot();
 		shellBot.button("&Next >").click();
-		Assert.assertEquals(newAllocationId, bot.textWithLabel("New Allocation ID").getText());
-		Assert.assertEquals(tunerType, bot.comboBoxWithLabel("Tuner Type").getText());
-		Assert.assertEquals(centerFrequency, bot.textWithLabel("Center Frequency (MHz)").getText());
-		Assert.assertEquals(bandwidth, bot.textWithLabel("Bandwidth (MHz)").getText());
-		Assert.assertEquals(sampleRate, bot.textWithLabel("Sample Rate (Msps)").getText());
-		Assert.assertEquals("20", bot.textWithLabel("Bandwidth Tolerance (%)").getText());
-		Assert.assertEquals("20", bot.textWithLabel("Sample Rate Tolerance (%)").getText());
-		Assert.assertEquals(rfFlowID, bot.textWithLabel("RF Flow ID").getText());
-		Assert.assertEquals(groupID, bot.textWithLabel("Group ID").getText());
+		Assert.assertEquals(newAllocationId, shellBot.textWithLabel("New Allocation ID").getText());
+		Assert.assertEquals(tunerType, shellBot.comboBoxWithLabel("Tuner Type").getText());
+		Assert.assertEquals(centerFrequency, shellBot.textWithLabel("Center Frequency (MHz)").getText());
+		Assert.assertEquals(bandwidth, shellBot.textWithLabel("Bandwidth (MHz)").getText());
+		Assert.assertEquals(sampleRate, shellBot.textWithLabel("Sample Rate (Msps)").getText());
+		Assert.assertEquals("20", shellBot.textWithLabel("Bandwidth Tolerance (%)").getText());
+		Assert.assertEquals("20", shellBot.textWithLabel("Sample Rate Tolerance (%)").getText());
+		Assert.assertEquals(rfFlowID, shellBot.textWithLabel("RF Flow ID").getText());
+		Assert.assertEquals(groupID, shellBot.textWithLabel("Group ID").getText());
 		shellBot.button("Cancel").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 
@@ -456,7 +456,7 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		// Allocate Tuner page
 		SWTBotText botText = shellBot.textWithLabel("Uses Device ID");
 		botText.setText("");
-		shellBot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), false));
+		shellBot.waitUntil(new WaitForWidgetEnablement(shellBot.button("&Next >"), false));
 		botText.setText("abc");
 		shellBot.button("&Next >").click();
 
@@ -471,16 +471,16 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		comboField.setFocus();
 		comboField.setSelection("Listen to Existing Tuner by ID");
 		shellBot.sleep(VALIDATION_DELAY);
-		Assert.assertFalse("Next should be disabled", bot.button("&Next >").isEnabled());
-		SWTBotText existingTunerAllocationIdText = bot.textWithLabel("Existing Tuner Allocation ID");
+		Assert.assertFalse("Next should be disabled", shellBot.button("&Next >").isEnabled());
+		SWTBotText existingTunerAllocationIdText = shellBot.textWithLabel("Existing Tuner Allocation ID");
 		existingTunerAllocationIdText.setText("abc");
-		shellBot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), true));
+		shellBot.waitUntil(new WaitForWidgetEnablement(shellBot.button("&Next >"), true));
 		comboField.setFocus();
 		comboField.setSelection("Control New Tuner");
-		shellBot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), false));
+		shellBot.waitUntil(new WaitForWidgetEnablement(shellBot.button("&Next >"), false));
 		comboField.setFocus();
 		comboField.setSelection("Listen to Existing Tuner by ID");
-		shellBot.waitUntil(new WaitForWidgetEnablement(bot.button("&Next >"), true));
+		shellBot.waitUntil(new WaitForWidgetEnablement(shellBot.button("&Next >"), true));
 
 		shellBot.button("Cancel").click();
 		bot.waitUntil(Conditions.shellCloses(allocateTunerShell));
