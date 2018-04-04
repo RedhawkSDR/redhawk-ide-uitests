@@ -28,6 +28,7 @@ public class FEICodegenInfo implements ICodegenInfo {
 	private boolean multiOut = true;
 	private boolean ingestsGPS = false;
 	private boolean outputsGPS = false;
+	private boolean scanner = false;
 
 	public TunerType getType() {
 		return tunerType;
@@ -109,4 +110,11 @@ public class FEICodegenInfo implements ICodegenInfo {
 		this.outputsGPS = outputsGPS;
 	}
 
+	public boolean isScanner() {
+		return scanner;
+	}
+
+	public void setScanner(boolean scanner) {
+		this.scanner = scanner;
+	}
 }

@@ -14,13 +14,15 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.ui.tests.projectCreation.util.FEICodegenInfo;
-import gov.redhawk.ide.ui.tests.projectCreation.util.ICodegenInfo;
 import gov.redhawk.ide.ui.tests.projectCreation.util.FEICodegenInfo.TunerType;
+import gov.redhawk.ide.ui.tests.projectCreation.util.ICodegenInfo;
 
 public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 
@@ -42,7 +44,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 
 		SWTBotEditor editor = bot.editorByTitle("FEIReceiver1");
 		SWTBot editorBot = editor.bot();
-		editorBot.cTabItem("Ports").activate();
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PORTS_TAB);
 		Assert.assertEquals(4, editorBot.tree().rowCount());
 		assertContainsPort(editorBot, true, "RFInfo_in", "IDL:FRONTEND/RFInfo:1.0");
 		assertContainsPort(editorBot, true, "RFInfo_in_2", "IDL:FRONTEND/RFInfo:1.0");
@@ -61,7 +63,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 
 		SWTBotEditor editor = bot.editorByTitle("FEIReceiver2");
 		SWTBot editorBot = editor.bot();
-		editorBot.cTabItem("Ports").activate();
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PORTS_TAB);
 		Assert.assertEquals(4, editorBot.tree().rowCount());
 		assertContainsPort(editorBot, true, "GPS_in", "IDL:FRONTEND/GPS:1.0");
 		assertContainsPort(editorBot, true, "RFInfo_in", "IDL:FRONTEND/RFInfo:1.0");
@@ -83,7 +85,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 
 		SWTBotEditor editor = bot.editorByTitle("FEIReceiver3");
 		SWTBot editorBot = editor.bot();
-		editorBot.cTabItem("Ports").activate();
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PORTS_TAB);
 		Assert.assertEquals(4, editorBot.tree().rowCount());
 		assertContainsPort(editorBot, false, "GPS_out", "IDL:FRONTEND/GPS:1.0");
 		assertContainsPort(editorBot, true, "DigitalTuner_in", "IDL:FRONTEND/DigitalTuner:1.0");
@@ -101,7 +103,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 
 		SWTBotEditor editor = bot.editorByTitle("FEITransmitter1");
 		SWTBot editorBot = editor.bot();
-		editorBot.cTabItem("Ports").activate();
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PORTS_TAB);
 		Assert.assertEquals(5, editorBot.tree().rowCount());
 		assertContainsPort(editorBot, true, "DigitalTuner_in", "IDL:FRONTEND/DigitalTuner:1.0");
 		assertContainsPort(editorBot, false, "RFInfoTX_out", "IDL:FRONTEND/RFInfo:1.0");
@@ -118,7 +120,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 
 		SWTBotEditor editor = bot.editorByTitle("FEITransmitter2");
 		SWTBot editorBot = editor.bot();
-		editorBot.cTabItem("Ports").activate();
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PORTS_TAB);
 		Assert.assertEquals(3, editorBot.tree().rowCount());
 		assertContainsPort(editorBot, true, "DigitalTuner_in", "IDL:FRONTEND/DigitalTuner:1.0");
 		assertContainsPort(editorBot, false, "RFInfoTX_out", "IDL:FRONTEND/RFInfo:1.0");
@@ -135,13 +137,38 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 
 		SWTBotEditor editor = bot.editorByTitle("FEI_RxAndTx");
 		SWTBot editorBot = editor.bot();
-		editorBot.cTabItem("Ports").activate();
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PORTS_TAB);
 		Assert.assertEquals(5, editorBot.tree().rowCount());
 		assertContainsPort(editorBot, true, "RFInfo_in", "IDL:FRONTEND/RFInfo:1.0");
 		assertContainsPort(editorBot, true, "DigitalTuner_in", "IDL:FRONTEND/DigitalTuner:1.0");
 		assertContainsPort(editorBot, false, "dataDouble_out", "IDL:BULKIO/dataDouble:1.0");
 		assertContainsPort(editorBot, false, "RFInfoTX_out", "IDL:FRONTEND/RFInfo:1.0");
 		assertContainsPort(editorBot, true, "dataDoubleTX_in", "IDL:BULKIO/dataDouble:1.0");
+	}
+
+	@Test
+	public void scanner() {
+		FEICodegenInfo feiInfo = new FEICodegenInfo();
+		feiInfo.setType(TunerType.RECEIVE);
+		feiInfo.setInputDigital(false);
+		feiInfo.setAnalogInputPorts(1);
+		feiInfo.setOutputDigital(true);
+		feiInfo.setOutputPortType("dataDouble");
+		feiInfo.setMultiOut(true);
+		feiInfo.setScanner(true);
+		testProjectCreation("FEIScanner1", "C++", "C++ Code Generator", feiInfo);
+
+		SWTBotEditor editor = bot.editorByTitle("FEIScanner1");
+		SWTBot editorBot = editor.bot();
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PROPERTIES_TAB);
+		assertProperties(editorBot, "device_kind", "device_model", "frontend_tuner_status", "frontend_listener_allocation", "frontend_tuner_allocation",
+			"connectionTable", "frontend_scanner_allocation");
+
+		DiagramTestUtils.openTabInEditor(editor, DiagramTestUtils.PORTS_TAB);
+		Assert.assertEquals(3, editorBot.tree().rowCount());
+		assertContainsPort(editorBot, true, "RFInfo_in", "IDL:FRONTEND/RFInfo:1.0");
+		assertContainsPort(editorBot, true, "DigitalTuner_in", "IDL:FRONTEND/DigitalScanningTuner:1.0");
+		assertContainsPort(editorBot, false, "dataDouble_out", "IDL:BULKIO/dataDouble:1.0");
 	}
 
 	@Override
@@ -184,6 +211,10 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 		default:
 			Assert.fail();
 			break;
+		}
+		checkBox = bot.checkBox("This device provides a programmable scanning capability");
+		if (codegenInfo.isScanner() != checkBox.isChecked()) {
+			checkBox.click();
 		}
 		getWizardBot().button("Next >").click();
 
@@ -284,6 +315,13 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 			}
 		}
 		Assert.fail("dataChar isn't marked deprecated");
+	}
+
+	private void assertProperties(SWTBot editorBot, String... propertyNames) {
+		SWTBotTree tree = editorBot.tree();
+		for (String propertyName : propertyNames) {
+			tree.getTreeItem(propertyName);
+		}
 	}
 
 	private void assertContainsPort(SWTBot bot, boolean provides, String portName, String portInterface) {
