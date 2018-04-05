@@ -18,6 +18,7 @@ import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UITest;
 
 public abstract class HotKeysAbstractTest extends UITest {
@@ -38,6 +39,8 @@ public abstract class HotKeysAbstractTest extends UITest {
 	public void pressDeleteInSpdXml() throws CoreException {
 		importProjectAndOpen();
 		Assert.assertFalse(editor.isDirty());
+
+		StandardTestActions.forceMainShellActive();
 		KeyboardFactory.getSWTKeyboard().pressShortcut(Keystrokes.DELETE);
 		bot.waitUntil(new DefaultCondition() {
 			@Override
