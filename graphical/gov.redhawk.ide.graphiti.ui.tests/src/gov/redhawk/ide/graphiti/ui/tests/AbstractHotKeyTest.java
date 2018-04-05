@@ -15,6 +15,7 @@ import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.junit.Test;
 
+import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.diagram.AbstractGraphitiTest;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
@@ -47,6 +48,7 @@ public abstract class AbstractHotKeyTest extends AbstractGraphitiTest {
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, component.getShortName(1));
 
 		// Select component and delete with hotkey
+		StandardTestActions.forceMainShellActive();
 		editor.select(component.getShortName(1));
 		KeyboardFactory.getSWTKeyboard().pressShortcut(Keystrokes.DELETE);
 
@@ -72,6 +74,7 @@ public abstract class AbstractHotKeyTest extends AbstractGraphitiTest {
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, component.getShortName(2));
 
 		// Select components and delete with hotkey
+		StandardTestActions.forceMainShellActive();
 		editor.select(editor.getEditPart(component.getShortName(1)), editor.getEditPart(component.getShortName(2)));
 		KeyboardFactory.getSWTKeyboard().pressShortcut(Keystrokes.DELETE);
 
@@ -96,6 +99,7 @@ public abstract class AbstractHotKeyTest extends AbstractGraphitiTest {
 		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, component.getShortName(1));
 
 		// Undo
+		StandardTestActions.forceMainShellActive();
 		KeyboardFactory.getSWTKeyboard().pressShortcut(SWT.CTRL, 'z');
 		DiagramTestUtils.waitUntilComponentDisappearsInDiagram(bot, editor, component.getShortName(1));
 
