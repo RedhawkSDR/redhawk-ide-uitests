@@ -12,6 +12,7 @@ package gov.redhawk.ide.ui.tests.runtime;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
@@ -26,6 +27,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.debug.LocalLaunch;
+import gov.redhawk.ide.debug.ScaDebugPlugin;
 import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
@@ -61,24 +64,26 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 
 	/**
 	 * IDE-1965 Launch a shared address space component in run mode, but without generating it; check error message
+	 * @throws DebugException
 	 */
 	@Test
-	public void badWorkspaceRunLaunchTest() {
+	public void badWorkspaceRunLaunchTest() throws DebugException {
 		badWorkspaceLaunchTest("Launch resource in the sandbox");
 	}
 
 	/**
 	 * IDE-1965 Launch a shared address space component in debug mode, but without generating it; check error message
+	 * @throws DebugException
 	 */
 	@Test
-	public void badWorkspaceDebugLaunchTest() {
+	public void badWorkspaceDebugLaunchTest() throws DebugException {
 		badWorkspaceLaunchTest("Debug resource in the sandbox");
 		SWTBotShell shell = bot.shell("Confirm Perspective Switch");
 		shell.bot().button("No").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 	}
 
-	private void badWorkspaceLaunchTest(String linkText) {
+	private void badWorkspaceLaunchTest(String linkText) throws DebugException {
 		createProject(PROJECT_NAME, false);
 
 		// Disable hiding errors
@@ -102,20 +107,14 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 		bot.waitUntil(Conditions.shellCloses(problemDialog));
 
 		// Terminate ComponentHost
-		ConsoleUtils.removeTerminatedLaunches(bot);
-		bot.waitUntil(new DefaultCondition() {
-
-			@Override
-			public boolean test() throws Exception {
-				ConsoleUtils.terminateProcess(WorkspaceLaunchTest.this.bot, "ComponentHost");
-				return true;
-			}
-
-			@Override
-			public String getFailureMessage() {
-				return "Failed to terminate ComponentHost";
-			}
-		});
+		LocalLaunch localLaunch = ScaDebugPlugin.getInstance().getLocalSca().getSandboxWaveform().getComponentHost();
+		if (localLaunch != null && localLaunch.getLaunch() != null) {
+			localLaunch.getLaunch().terminate();
+		}
+		localLaunch = ScaDebugPlugin.getInstance().getLocalSca().getSandboxWaveform().getComponentHostDebug();
+		if (localLaunch != null && localLaunch.getLaunch() != null) {
+			localLaunch.getLaunch().terminate();
+		}
 	}
 
 	/**
