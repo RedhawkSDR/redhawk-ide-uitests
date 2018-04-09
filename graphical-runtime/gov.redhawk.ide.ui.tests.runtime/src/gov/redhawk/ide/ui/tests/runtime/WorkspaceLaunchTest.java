@@ -31,6 +31,7 @@ import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
+import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
 import gov.redhawk.ide.swtbot.condition.WaitForCppIndexer;
@@ -160,8 +161,8 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 		createProject(PROJECT_NAME, true);
 
 		// Launch via the Overview tab
-		ProjectExplorerUtils.openProjectInEditor(bot, PROJECT_NAME, PROJECT_NAME + ".spd.xml");
 		final SWTBotEditor editor = bot.editorByTitle(PROJECT_NAME);
+		editor.show();
 		editor.bot().cTabItem("Overview").activate();
 
 		SWTFormsBot formsBot = new SWTFormsBot(editor.bot().getFinder());
@@ -252,8 +253,10 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 		bot.editorByTitle(projectName + ".cpp");
 
 		// Wait for the build to finish and any error markers to go away, then close editors
+		ViewUtils.getConsoleView(bot).show();
 		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
 		bot.waitUntil(new WaitForCppIndexer(), WaitForCppIndexer.TIMEOUT);
+		ViewUtils.getProblemsView(bot).show();
 		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), WaitForSeverityMarkers.TIMEOUT);
 	}
 
