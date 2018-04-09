@@ -26,15 +26,10 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 import gov.redhawk.ide.swtbot.diagram.RHBotGefEditor;
 import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 
-public class SadPropertiesTabMiscTest extends UITest {
+public class SadPropertiesTabSimpleSequenceTest extends UITest {
 
-	private static final String SIG_GEN = "rh.SigGen";
-	protected static final String SIG_GEN_1 = "SigGen_1";
-	private static final String DATA_CONVERTER = "rh.DataConverter";
-
-	private static final String SIG_GEN_DOUBLE = "frequency";
-
-	private static final int COLUMN_VALUE = 3;
+	private static final String ALLPROPS = "AllPropertyTypesComponent";
+	private static final String ALLPROPS_2 = "AllPropertyTypesComponent_2";
 
 	private SWTBot editorBot;
 
@@ -42,27 +37,25 @@ public class SadPropertiesTabMiscTest extends UITest {
 	public void before() throws Exception {
 		super.before();
 
-		WaveformUtils.createNewWaveform(bot, "SadAbstractPropertiesTabTest", SIG_GEN);
-		RHBotGefEditor editor = new RHSWTGefBot().rhGefEditor("SadAbstractPropertiesTabTest");
-		DiagramTestUtils.addFromPaletteToDiagram(editor, DATA_CONVERTER, 150, 0);
+		WaveformUtils.createNewWaveform(bot, "SadPropertiesTabStructSeqTest", ALLPROPS);
+		RHBotGefEditor editor = new RHSWTGefBot().rhGefEditor("SadPropertiesTabStructSeqTest");
+		DiagramTestUtils.addFromPaletteToDiagram(editor, ALLPROPS, 150, 0);
+		DiagramTestUtils.waitUntilComponentDisplaysInDiagram(bot, editor, ALLPROPS_2);
 
 		editorBot = editor.bot();
 		editorBot.cTabItem("Properties").activate();
 	}
 
+
 	/**
-	 * IDE-1075
-	 * Ensure the editor doesn't collapse everything between edits
+	 * IDE-2170 Tests settings the external property ID
 	 */
 	@Test
-	public void noCollapseBetweenEdits() {
-		// Write a value in a cell
-		List<String> path = Arrays.asList(SIG_GEN_1, SIG_GEN_DOUBLE);
+	public void setExternal() {
+		List<String> path = Arrays.asList(ALLPROPS_2, "simpleSeqString");
 		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(editorBot, editorBot.tree(), path);
-		StandardTestActions.writeToCell(editorBot, treeItem, COLUMN_VALUE, "1.23");
-		Assert.assertEquals("1.23", treeItem.cell(COLUMN_VALUE));
-		
-		// Ensure things didn't collapse
-		Assert.assertTrue(editorBot.tree().getTreeItem(SIG_GEN_1).isExpanded());
+		treeItem.click(SadAbstractPropertiesTabTest.COLUMN_NAME);
+		StandardTestActions.writeToCell(editorBot, treeItem, SadAbstractPropertiesTabTest.COLUMN_EXT_ID, "ext");
+		Assert.assertEquals("External property ID is incorrect", "ext", treeItem.cell(SadAbstractPropertiesTabTest.COLUMN_EXT_ID));
 	}
 }
