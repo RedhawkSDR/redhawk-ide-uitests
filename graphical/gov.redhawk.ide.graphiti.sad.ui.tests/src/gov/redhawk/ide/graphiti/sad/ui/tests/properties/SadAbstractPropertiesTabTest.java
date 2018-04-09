@@ -6,7 +6,7 @@
  *
  * All rights reserved.  This program and the accompanying materials are made available under
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-v10.html.
  */
 package gov.redhawk.ide.graphiti.sad.ui.tests.properties;
 
@@ -27,7 +27,8 @@ import gov.redhawk.ide.swtbot.diagram.RHSWTGefBot;
 public abstract class SadAbstractPropertiesTabTest extends UITest {
 
 	protected static final int COLUMN_NAME = 0;
-	private static final int COLUMN_VALUE = 3;
+	protected static final int COLUMN_EXT_ID = 1;
+	protected static final int COLUMN_VALUE = 3;
 
 	private SWTBot editorBot;
 
@@ -47,6 +48,10 @@ public abstract class SadAbstractPropertiesTabTest extends UITest {
 		editorBot.cTabItem("Properties").activate();
 	}
 
+	/**
+	 * Add the test components from the palette. Diagram is open when this code is invoked.
+	 * @param editor
+	 */
 	protected abstract void addComponents(RHBotGefEditor editor);
 
 	/**
@@ -183,5 +188,19 @@ public abstract class SadAbstractPropertiesTabTest extends UITest {
 		StandardTestActions.selectXViewerListFromCell(bot, propertyItem, COLUMN_VALUE, selectText);
 		String msg = String.format("Property '%s' set to wrong value", propertyItem.cell(COLUMN_NAME));
 		Assert.assertEquals(msg, selectText, propertyItem.cell(COLUMN_VALUE));
+	}
+
+	protected abstract List<String> getExternalPath();
+
+	/**
+	 * Tests settings the external property ID
+	 */
+	@Test
+	public void setExternal() {
+		List<String> path = getExternalPath();
+		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(editorBot, editorBot.tree(), path);
+		treeItem.click(COLUMN_NAME);
+		StandardTestActions.writeToCell(editorBot, treeItem, COLUMN_EXT_ID, "ext");
+		Assert.assertEquals("External property ID is incorrect", "ext", treeItem.cell(COLUMN_EXT_ID));
 	}
 }
