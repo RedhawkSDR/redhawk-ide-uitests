@@ -15,9 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.matchers.WithPartId;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
@@ -143,6 +145,20 @@ public class AllocMgrViewTest extends UITest {
 		allocMgrStub.stub_setAllocationStatuses(statuses.toArray(new AllocationStatusType[statuses.size()]));
 
 		StandardTestActions.setRefreshInterval(1000);
+
+		bot.waitUntil(new DefaultCondition() {
+
+			@Override
+			public boolean test() throws Exception {
+				ScaExplorerTestUtils.getDomain((SWTWorkbenchBot) bot, DOMAIN_1);
+				return true;
+			}
+
+			@Override
+			public String getFailureMessage() {
+				return "Domain didn't appear in explorer view";
+			}
+		});
 	}
 
 	@After
