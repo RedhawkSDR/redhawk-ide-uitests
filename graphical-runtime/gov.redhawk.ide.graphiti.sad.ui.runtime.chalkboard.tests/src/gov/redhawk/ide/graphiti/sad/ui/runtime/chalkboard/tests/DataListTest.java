@@ -6,7 +6,7 @@
  *
  * All rights reserved.  This program and the accompanying materials are made available under
  * the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-v10.html.
  */
 package gov.redhawk.ide.graphiti.sad.ui.runtime.chalkboard.tests;
 
@@ -15,6 +15,7 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.keyboard.Keyboard;
 import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -48,14 +49,14 @@ public class DataListTest extends UIRuntimeTest {
 	}
 
 	/**
-	 * IDE-1322 - DataList does not display complex data streams correctly
+	 * IDE-1322 - Data list does not display complex data streams correctly
+	 * IDE-2186 - Data list displays values in range [-990, -100] or [100, 990] incorrectly
 	 */
 	@Test
 	public void dataListComplexAcquireTest() {
 		String newFreq = "25";
 		String newShape = "sawtooth";
 
-		// TODO: CHECKSTYLE:OFF
 		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 		DiagramTestUtils.addFromPaletteToDiagram(editor, SIGGEN, 0, 0);
 		DiagramTestUtils.waitForComponentState(gefBot, editor, SIGGEN_1, ComponentState.STOPPED);
@@ -93,17 +94,10 @@ public class DataListTest extends UIRuntimeTest {
 		dataListBot.comboBoxWithLabel("Number of Dimensions:").setSelection(1);
 		dataListBot.buttonWithTooltip("Start Acquire").click();
 
-		synchronized (bot) {
-			try {
-				bot.wait(2000);
-			} catch (Exception e) {
-				// PASS
-			}
-		}
-
 		SWTBotTable table = dataListBot.table(0);
+		bot.waitWhile(Conditions.tableHasRows(table, 0));
 
-		String expectedResults[][] = { { "-00", "-99" }, { "-98", "-97" }, { "-96", "-95" }, { "-94", "-93" }, { "-92", "-91" } };
+		String[][] expectedResults = { { "-100", "-99" }, { "-98", "-97" }, { "-96", "-95" }, { "-94", "-93" }, { "-92", "-91" } };
 		for (int i = 0; i < expectedResults.length; i++) {
 			for (int j = 0; j < expectedResults[i].length; j++) {
 				// 'j' is incremented for the table to avoid the id field
