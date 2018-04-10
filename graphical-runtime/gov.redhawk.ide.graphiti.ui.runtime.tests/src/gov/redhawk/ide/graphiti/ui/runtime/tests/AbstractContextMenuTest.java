@@ -59,6 +59,7 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 	@Test
 	public void standardResourceRuntimeContextMenu() {
 		RHBotGefEditor editor = launchDiagram();
+		editor.setFocus();
 		String componentName = testComponent.getShortName(1);
 
 		// Start
@@ -131,7 +132,7 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 	@Test
 	public void standardPortRuntimeContextMenu() {
 		RHBotGefEditor editor = launchDiagram();
-		bot.sleep(1000);
+		editor.setFocus();
 		String componentName = testComponent.getShortName(1);
 		String portName = testComponent.getOutPort(0);
 
@@ -205,6 +206,7 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 	@Test
 	public void noUndoForStartStopAndTransitions() {
 		RHBotGefEditor editor = launchDiagram();
+		editor.setFocus();
 		String componentName = testComponent.getShortName(1);
 
 		Assert.assertFalse("Undo menu is enabled", MenuUtils.isUndoDisabled(bot));
@@ -233,6 +235,7 @@ public abstract class AbstractContextMenuTest extends UIRuntimeTest {
 	@Test
 	public void absentContextMenuOptions() {
 		RHBotGefEditor editor = launchDiagram();
+		editor.setFocus();
 
 		SWTBotGefEditPart editPart = editor.getEditPart(testComponent.getShortName(1));
 		editPart.select();
