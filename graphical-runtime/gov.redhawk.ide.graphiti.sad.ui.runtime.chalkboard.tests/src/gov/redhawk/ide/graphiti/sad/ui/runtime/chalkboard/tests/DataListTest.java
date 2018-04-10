@@ -108,6 +108,7 @@ public class DataListTest extends UIRuntimeTest {
 
 	@After
 	public void afterTest() {
+		ViewUtils.getDataListView(gefBot).close();
 		ScaExplorerTestUtils.releaseFromScaExplorer(gefBot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
 		ScaExplorerTestUtils.waitUntilScaExplorerWaveformEmpty(gefBot, CHALKBOARD_PARENT_PATH, CHALKBOARD);
 	}
