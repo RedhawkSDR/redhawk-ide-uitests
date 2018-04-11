@@ -64,7 +64,7 @@ public class ExternalPropertiesTest extends AbstractGraphitiTest {
 		editorBot.cTabItem("Properties").activate();
 		List<String> path = Arrays.asList(HARD_LIMIT_1, hardLimitProp);
 		SWTBotTreeItem propertyItem = StandardTestActions.waitForTreeItemToAppear(editorBot, editorBot.tree(), path);
-		StandardTestActions.writeToComboCell(editorBot, propertyItem, 1, hardLimitExternalId);
+		StandardTestActions.writeToCell(editorBot, propertyItem, 1, hardLimitExternalId);
 
 		// Check model for external property
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
