@@ -83,7 +83,7 @@ public class DomWaveNamespaceTest extends AbstractGraphitiDomainWaveformRuntimeT
 		Assert.assertTrue(wizardBot.button("Next >").isEnabled());
 
 		// Finish will launch the waveform, again triggering a modal progress context, then closing the dialog
-		bot.button("Finish").click();
+		wizardBot.button("Finish").click();
 		wizardBot.waitUntil(new WaitForModalContext(), 30000);
 		bot.waitUntil(Conditions.shellCloses(wizardShell));
 
