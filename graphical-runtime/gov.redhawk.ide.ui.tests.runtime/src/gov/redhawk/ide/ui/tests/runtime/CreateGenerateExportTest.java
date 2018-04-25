@@ -178,6 +178,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	 * Check that a name-spaced waveform project can be created and exported.
 	 * It should install to the correct location (we install it), and also be represented in the REDHAWK Explorer.
 	 * <p/>
+	 * IDE-1698 Diagram XML should be exported with the SAD XML
 	 * IDE-1744 Verify code generation
 	 * @throws CoreException
 	 */
@@ -214,7 +215,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		String[] scaPath = { "Target SDR", "Waveforms", "runtime", "test" };
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, scaPath, waveformBaseName);
 
-		// Check that the directory and XML file exist in the appropriate location in the SDRROOT
+		// Check that the directory and files exist in the appropriate location in the SDRROOT
 		IFileStore waveformDir = EFS.getFileSystem(ScaFileSystemConstants.SCHEME_TARGET_SDR_DOM).getStore(new Path("/waveforms"));
 		for (String segment : PREFIX_DOTS.split("\\.")) {
 			waveformDir = waveformDir.getChild(segment);
@@ -224,6 +225,8 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		Assert.assertTrue("Directory for waveform doesn't exist in SDRROOT", dirInfo.exists());
 		IFileInfo fileInfo = waveformDir.getChild(waveformBaseName + ".sad.xml").fetchInfo();
 		Assert.assertTrue("SAD XML for waveform doesn't exist in SDRROOT", fileInfo.exists());
+		fileInfo = waveformDir.getChild(waveformBaseName + ".sad_GDiagram").fetchInfo();
+		Assert.assertTrue("Diagram XML for waveform doesn't exist in SDRROOT", fileInfo.exists());
 
 		checkExistsInScaAndRemove(scaPath, waveformBaseName);
 	}
@@ -233,6 +236,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 	 * Check that a name-spaced service project can be created and exported.
 	 * It should install to the correct location (we install it), and also be represented in the REDHAWK Explorer.
 	 * <p/>
+	 * IDE-1698 Diagram XML should be exported with the DCD XML
 	 * IDE-1744 Verify code generation
 	 * @throws CoreException
 	 */
@@ -283,6 +287,8 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		Assert.assertTrue("Directory for node doesn't exist in SDRROOT", dirInfo.exists());
 		IFileInfo fileInfo = nodeDir.getChild("DeviceManager.dcd.xml").fetchInfo();
 		Assert.assertTrue("DCD XML for node doesn't exist in SDRROOT", fileInfo.exists());
+		fileInfo = nodeDir.getChild("DeviceManager.dcd_GDiagram").fetchInfo();
+		Assert.assertTrue("Diagram XML for node doesn't exist in SDRROOT", fileInfo.exists());
 
 		checkExistsInScaAndRemove(scaPath, nodeBaseName);
 	}
