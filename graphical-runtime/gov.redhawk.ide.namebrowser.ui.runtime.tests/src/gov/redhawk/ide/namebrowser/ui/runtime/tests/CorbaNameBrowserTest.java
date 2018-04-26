@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.eclipse.ui.IWorkbenchPart2;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -76,10 +77,15 @@ public class CorbaNameBrowserTest extends UIRuntimeTest {
 		SWTBotView view = openAndConnect();
 		List<String> pathList = Arrays.asList("127.0.0.1", domainName, "ODM_Channel");
 		SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(bot, view.bot().tree(), pathList);
-		treeItem.contextMenu().menu("Listen to event channel").click();
+		treeItem.contextMenu().menu("Listen to Event Channel").click();
 
 		// Wait for the event view, then close it
-		bot.viewById("gov.redhawk.ui.views.event.eventViewer").close();
+		SWTBotView eventView = ViewUtils.getEventView(bot);
+		try {
+			Assert.assertEquals("ODM_Channel", ((IWorkbenchPart2) eventView.getViewReference().getPart(false)).getPartName());
+		} finally {
+			eventView.close();
+		}
 	}
 
 	@After

@@ -235,7 +235,7 @@ public class EventViewTest extends UIRuntimeTest {
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { EventViewTest.class.getSimpleName(), "Event Channels" }, CHANNEL_NAME);
 		SWTBotTreeItem eventTreeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot,
 			new String[] { EventViewTest.class.getSimpleName(), "Event Channels" }, CHANNEL_NAME);
-		eventTreeItem.contextMenu("Listen to event channel").click();
+		eventTreeItem.contextMenu("Listen to Event Channel").click();
 		bot.viewByTitle(CHANNEL_NAME);
 	}
 
