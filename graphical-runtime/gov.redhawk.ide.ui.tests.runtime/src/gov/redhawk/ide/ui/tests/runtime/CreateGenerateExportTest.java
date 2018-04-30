@@ -10,6 +10,9 @@
  */
 package gov.redhawk.ide.ui.tests.runtime;
 
+import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.withText;
+import static org.eclipse.swtbot.swt.finder.waits.Conditions.waitForShell;
+
 import java.util.Arrays;
 
 import org.eclipse.core.filesystem.EFS;
@@ -38,7 +41,9 @@ import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
+import gov.redhawk.ide.swtbot.condition.ConditionSequence;
 import gov.redhawk.ide.swtbot.condition.JobConditions;
+import gov.redhawk.ide.swtbot.condition.NotCondition;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
 import gov.redhawk.ide.swtbot.condition.WaitForCppIndexer;
@@ -207,8 +212,7 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		editor.save();
 
 		// Generate code
-		editor.bot().toolbarButton(0).click();
-		StandardTestActions.waitForTreeItemToAppear(bot, ViewUtils.getProjectView(bot).bot().tree(), Arrays.asList(waveformBaseName, PREFIX_DOTS + waveformBaseName + ".spec"));
+		generateProject(editor, waveformBaseName, PREFIX_DOTS + waveformBaseName + ".spec", PREFIX_DOTS + waveformBaseName + ".ini");
 
 		// Export
 		StandardTestActions.exportProject(waveformBaseName, bot);
@@ -265,10 +269,8 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		});
 		editor.save();
 
-
 		// Generate code
-		editor.bot().toolbarButton(0).click();
-		StandardTestActions.waitForTreeItemToAppear(bot, ViewUtils.getProjectView(bot).bot().tree(), Arrays.asList(nodeBaseName, PREFIX_DOTS + nodeBaseName + ".spec"));
+		generateProject(editor, nodeBaseName, PREFIX_DOTS + nodeBaseName + ".spec", PREFIX_DOTS + nodeBaseName + ".ini");
 
 		// Export
 		StandardTestActions.exportProject(nodeBaseName, bot);
@@ -317,6 +319,36 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
 
 		checkExistsInScaAndRemove(new String[] { "Target SDR", "Shared Libraries", "runtime", "test" }, sharedLibraryBaseName);
+	}
+
+	/**
+	 * For waveforms/nodes. Performs code generation, verifies file output.
+	 * @param editor
+	 * @param filesToExpect
+	 */
+	private void generateProject(SWTBotEditor editor, String projectName, String... filesToExpect) {
+		editor.bot().toolbarButton(0).click();
+
+		ConditionSequence seq = new ConditionSequence();
+		seq.addOptionalCondition(waitForShell(withText("File Changed")), () -> {
+			SWTBotShell fileChangedShell = bot.shell("File Changed");
+			fileChangedShell.bot().button("Yes").click();
+			bot.waitUntil(Conditions.shellCloses(fileChangedShell));
+		});
+		seq.addCondition(waitForShell(withText("Regenerate Files")), 10000, () -> {
+			SWTBotShell fileShell = bot.shell("Regenerate Files");
+			fileShell.bot().button("OK").click();
+			bot.waitUntil(Conditions.shellCloses(fileShell));
+		});
+		seq.addOptionalCondition(new NotCondition(JobConditions.generateCode()), () -> {
+			bot.waitUntil(JobConditions.generateCode(), 10000);
+		});
+		seq.run(bot);
+
+		SWTBotTree tree = ViewUtils.getProjectView(bot).bot().tree();
+		for (String fileToExpect : filesToExpect) {
+			StandardTestActions.waitForTreeItemToAppear(bot, tree, Arrays.asList(projectName, fileToExpect));
+		}
 	}
 
 	private void generateProjectAndBuild(String projectName, String editorTabName, boolean isCpp) {
