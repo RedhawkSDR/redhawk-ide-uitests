@@ -311,10 +311,7 @@ public class ChalkboardSyncTest extends AbstractGraphitiChalkboardTest {
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, CHALKBOARD_PATH, SIGGEN_1);
 		bot.viewById(ViewUtils.PROPERTIES_VIEW_ID).show();
 
-		// Click in diagram outside of component first
-		// Workaround for issue where diagram component does not populate
-		// properties view if selected right after creation
-		editor.rootEditPart().click();
+		editor.show();
 		editor.click(SIGGEN_1);
 		SWTBotTree propTable = ViewUtils.selectPropertiesTab(bot, "Properties").tree();
 		SWTBotTreeItem magItem = propTable.getTreeItem("magnitude");
