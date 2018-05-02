@@ -24,3 +24,4 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui.tests;bundle-version="1.0.0",
  gov.redhawk.ide.sdr
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: REDHAWK
+Automatic-Module-Name: gov.redhawk.ide.graphiti.sad.ui.tests

@@ -12,3 +12,4 @@ Require-Bundle: org.eclipse.ui,
  mil.jpeojtrs.sca.prf,
  mil.jpeojtrs.sca.spd
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Automatic-Module-Name: gov.redhawk.ide.codegen.runtime.tests

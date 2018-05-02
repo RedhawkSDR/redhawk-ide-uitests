@@ -13,3 +13,4 @@ Require-Bundle: gov.redhawk.ide.ui.xml.editors.tests,
  org.eclipse.ui.forms,
  gov.redhawk.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Automatic-Module-Name: gov.redhawk.ide.ui.tests.prf
