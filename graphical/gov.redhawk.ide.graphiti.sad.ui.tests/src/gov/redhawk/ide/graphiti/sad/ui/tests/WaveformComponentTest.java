@@ -38,7 +38,6 @@ import org.junit.Test;
 import org.osgi.framework.FrameworkUtil;
 
 import gov.redhawk.core.graphiti.sad.ui.ext.ComponentShape;
-import gov.redhawk.ide.graphiti.sad.ui.diagram.patterns.HostCollocationPattern;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.sdr.ComponentsContainer;
 import gov.redhawk.ide.swtbot.MenuUtils;
@@ -148,7 +147,7 @@ public class WaveformComponentTest extends AbstractGraphitiTest {
 		Assert.assertNotNull(HOST_CO_NAME + " edit part not found", hostCoEditPart);
 		ContainerShape hostCollocationContainerShape = (ContainerShape) hostCoEditPart.part().getModel();
 		String shapeType = Graphiti.getPeService().getPropertyValue(hostCollocationContainerShape, DUtil.SHAPE_TYPE);
-		Assert.assertTrue("Host Collocation property is missing or wrong", shapeType.equals(HostCollocationPattern.HOST_COLLOCATION_OUTER_CONTAINER_SHAPE));
+		Assert.assertTrue("Host Collocation property is missing or wrong", shapeType.equals(HostCollocationTest.HOST_COLLOCATION_OUTER_CONTAINER_SHAPE));
 
 		// Check model object values
 		Object bo = DUtil.getBusinessObject(hostCollocationContainerShape);

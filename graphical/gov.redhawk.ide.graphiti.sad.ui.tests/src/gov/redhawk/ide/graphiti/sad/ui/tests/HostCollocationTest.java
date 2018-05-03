@@ -29,8 +29,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.graphiti.sad.ui.diagram.patterns.HostCollocationPattern;
-import gov.redhawk.ide.graphiti.ui.diagram.providers.ImageProvider;
+import gov.redhawk.core.graphiti.ui.diagram.providers.ImageProvider;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
 import gov.redhawk.ide.swtbot.MenuUtils;
 import gov.redhawk.ide.swtbot.WaveformUtils;
@@ -53,6 +52,10 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 
 	static final String UNEXPECTED_NUM_COMPONENTS = "Incorrect number of components in Host Collocation";
 	static final String UNEXPECTED_SHAPE_LOCATION = "Shape location unexpected";
+	/**
+	 * See {@link gov.redhawk.core.graphiti.sad.ui.diagram.patterns.HostCollocationExplorerPattern.HOST_COLLOCATION_OUTER_CONTAINER_SHAPE}
+	 */
+	static final String HOST_COLLOCATION_OUTER_CONTAINER_SHAPE = "hostCollocationOuterContainerShape";
 
 	/**
 	 * IDE-746
@@ -78,7 +81,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		Assert.assertNotNull(hostCoEditPart);
 		ContainerShape containerShape = (ContainerShape) hostCoEditPart.part().getModel();
 		String shapeType = Graphiti.getPeService().getPropertyValue(containerShape, DUtil.SHAPE_TYPE);
-		Assert.assertEquals("Host Collocation property is missing or wrong", HostCollocationPattern.HOST_COLLOCATION_OUTER_CONTAINER_SHAPE, shapeType);
+		Assert.assertEquals("Host Collocation property is missing or wrong", HOST_COLLOCATION_OUTER_CONTAINER_SHAPE, shapeType);
 
 		// Check model object values
 		Object bo = DUtil.getBusinessObject(containerShape);
@@ -193,7 +196,7 @@ public class HostCollocationTest extends AbstractGraphitiTest {
 		Assert.assertNotNull(hostCoEditPart);
 		ContainerShape hostCollocationContainerShape = (ContainerShape) hostCoEditPart.part().getModel();
 		String shapeType = Graphiti.getPeService().getPropertyValue(hostCollocationContainerShape, DUtil.SHAPE_TYPE);
-		Assert.assertTrue("Host Collocation property is missing or wrong", shapeType.equals(HostCollocationPattern.HOST_COLLOCATION_OUTER_CONTAINER_SHAPE));
+		Assert.assertTrue("Host Collocation property is missing or wrong", shapeType.equals(HOST_COLLOCATION_OUTER_CONTAINER_SHAPE));
 
 		// Check model object values
 		Object bo = DUtil.getBusinessObject(hostCollocationContainerShape);
