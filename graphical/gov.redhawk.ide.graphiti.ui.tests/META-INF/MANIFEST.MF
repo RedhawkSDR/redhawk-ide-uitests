@@ -16,3 +16,4 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui,
  mil.jpeojtrs.sca.partitioning,
  gov.redhawk.ide.graphiti.sad.ui,
  gov.redhawk.core.graphiti.sad.ui
+Automatic-Module-Name: gov.redhawk.ide.graphiti.ui.tests

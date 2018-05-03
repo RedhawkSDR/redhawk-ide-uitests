@@ -16,3 +16,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: REDHAWK
 Export-Package: gov.redhawk.ide.properties.view.tests
+Automatic-Module-Name: gov.redhawk.ide.properties.view.tests

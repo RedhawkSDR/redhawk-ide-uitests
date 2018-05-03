@@ -8,3 +8,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit,
  gov.redhawk.ide.swtbot,
  org.jacorb;bundle-version="3.3.0"
+Automatic-Module-Name: gov.redhawk.ide.frontend.runtime.tests

@@ -13,3 +13,4 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui,
 Export-Package: gov.redhawk.ide.graphiti.ui.runtime.tests,
  gov.redhawk.ide.graphiti.ui.runtime.tests.util,
  gov.redhawk.ide.properties.view.runtime.tests
+Automatic-Module-Name: gov.redhawk.ide.graphiti.ui.runtime.tests

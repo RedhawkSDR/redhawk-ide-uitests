@@ -15,3 +15,4 @@ Require-Bundle: gov.redhawk.ide.graphiti.ui.tests;bundle-version="1.0.0",
  org.eclipse.emf.transaction
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: REDHAWK
+Automatic-Module-Name: gov.redhawk.ide.graphiti.dcd.ui.tests
