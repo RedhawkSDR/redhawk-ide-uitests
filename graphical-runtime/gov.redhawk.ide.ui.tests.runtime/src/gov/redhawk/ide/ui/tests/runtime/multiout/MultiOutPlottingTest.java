@@ -75,7 +75,10 @@ public class MultiOutPlottingTest extends AbstractMultiOutPortTest {
 
 		// Validate that emptying the connection ID results in an error
 		idCombo.setText("");
-		Assert.assertEquals("Error message did not appear", " Must enter valid connection ID", plotBot.text(5).getText());
+		Assert.assertEquals(
+			"Error message did not appear", " WARNING: Specifying a connection ID that is not in the\n"
+				+ "connection table for a multi-out port is not recommended.\n" + "This may result in your port not supplying data.",
+			plotBot.text(5).getText());
 
 		// Select the provided connection ID and confirm error message clears
 		idCombo.setSelection(getAllocationId(0));
