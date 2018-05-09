@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import gov.redhawk.ide.swtbot.StandardTestActions;
+import gov.redhawk.ide.swtbot.condition.WaitForTreeDeferredContent;
 
 /**
  * Tests for using the "Browse..." button on the "Properties" page of the SPD/PRF editors.
@@ -33,6 +34,8 @@ public class BrowsePropertiesTest extends AbstractPropertyTabTest {
 
 		SWTBotShell dialogShell = bot.shell("Browse Properties");
 		SWTBot dialogBot = dialogShell.bot();
+		dialogBot.waitUntil(new WaitForTreeDeferredContent(dialogBot.tree()));
+
 		dialogBot.text().setText("frequency");
 		List<String> path = Arrays.asList("Target SDR", "Components", "rh.SigGen", "frequency");
 		StandardTestActions.waitForTreeItemToAppear(dialogBot, dialogBot.tree(), path).select();
@@ -50,6 +53,8 @@ public class BrowsePropertiesTest extends AbstractPropertyTabTest {
 
 		SWTBotShell dialogShell = bot.shell("Browse Properties");
 		SWTBot dialogBot = dialogShell.bot();
+		dialogBot.waitUntil(new WaitForTreeDeferredContent(dialogBot.tree()));
+
 		List<String> path = Arrays.asList("Target SDR", "Components", "rh.SigGen", "frequency");
 		for (int i = 1; i < path.size(); i++) {
 			SWTBotTreeItem treeItem = StandardTestActions.waitForTreeItemToAppear(dialogBot, dialogBot.tree(), path.subList(0, i));
