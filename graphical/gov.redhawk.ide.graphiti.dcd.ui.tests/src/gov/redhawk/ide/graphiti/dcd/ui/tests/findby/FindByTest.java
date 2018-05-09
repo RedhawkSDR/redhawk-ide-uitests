@@ -121,9 +121,10 @@ public class FindByTest extends AbstractGraphitiTest {
 
 		for (String s : findByList) {
 			// Drill down to graphiti component shape
-			SWTBotGefEditPart gefEditPart = editor.getEditPart(FindByUtils.getFindByDefaultName(s));
+			String defaultName = FindByUtils.getFindByDefaultName(s);
+			SWTBotGefEditPart gefEditPart = editor.getEditPart(defaultName);
 			DiagramTestUtils.deleteFromDiagram(editor, gefEditPart);
-			Assert.assertNull(editor.getEditPart(s));
+			Assert.assertNull(editor.getEditPart(defaultName));
 		}
 	}
 
