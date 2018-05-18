@@ -59,7 +59,7 @@ public abstract class AbstractConnectionPropertiesTest extends UIRuntimeTest {
 		propViewBot.tree().getTreeItem("Transport Info").click(0);
 		propViewBot.button("...").click();
 		SWTBotShell shell = bot.shell("Transport Details");
-		String transport = shell.bot().comboBoxWithLabel("Transport:").getText();
+		String transport = shell.bot().textWithLabel("Transport:").getText();
 		Assert.assertEquals(connType.getText(), transport);
 		shell.bot().button("Close").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
