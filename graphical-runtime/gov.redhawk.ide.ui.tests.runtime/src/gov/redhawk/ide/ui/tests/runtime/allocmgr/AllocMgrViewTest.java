@@ -19,6 +19,7 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.matchers.WithPartId;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -166,7 +167,11 @@ public class AllocMgrViewTest extends UITest {
 		StandardTestActions.resetRefreshInterval();
 
 		// Close the view
-		ViewUtils.getAllocationManagerView(bot).close();
+		try {
+			ViewUtils.getAllocationManagerView(bot).close();
+		} catch (WidgetNotFoundException e) {
+			// PASS - Likely the test failed and the view never opened
+		}
 
 		// Remove the fake domain from the model
 		ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(null);

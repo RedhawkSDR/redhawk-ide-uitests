@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -126,7 +127,11 @@ public class ConnMgrViewTest extends UITest {
 		StandardTestActions.resetRefreshInterval();
 
 		// Close the view
-		ViewUtils.getConnectionManagerView(bot).close();
+		try {
+			ViewUtils.getConnectionManagerView(bot).close();
+		} catch (WidgetNotFoundException e) {
+			// PASS - Likely the test failed and the view never opened
+		}
 
 		// Remove the fake domain from the model
 		ScaDomainManagerRegistry registry = ScaPlugin.getDefault().getDomainManagerRegistry(null);
