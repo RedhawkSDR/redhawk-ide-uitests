@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softwareassembly PUBLIC "-//JTRS//DTD SCA V2.2.2 SAD//EN" "softwareassembly.dtd">
+<softwareassembly id="DCE:7890e0f9-33c4-42ec-8693-6094bf7e3ec3" name="NegotiatorSimConnection">
+  <componentfiles>
+    <componentfile id="Negotiator_411b6d9e-9e08-406d-8395-55e5cb9783b1" type="SPD">
+      <localfile name="/components/Negotiator/Negotiator.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="Negotiator_411b6d9e-9e08-406d-8395-55e5cb9783b1"/>
+      <componentinstantiation id="Negotiator_1" startorder="0">
+        <usagename>Negotiator_1</usagename>
+        <findcomponent>
+          <namingservice name="Negotiator_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="Negotiator_411b6d9e-9e08-406d-8395-55e5cb9783b1"/>
+      <componentinstantiation id="Negotiator_2" startorder="1">
+        <usagename>Negotiator_2</usagename>
+        <findcomponent>
+          <namingservice name="Negotiator_2"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <assemblycontroller>
+    <componentinstantiationref refid="Negotiator_1"/>
+  </assemblycontroller>
+  <connections>
+    <connectinterface id="connection_1">
+      <usesport>
+        <usesidentifier>negotiable_out</usesidentifier>
+        <componentinstantiationref refid="Negotiator_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>negotiable_in</providesidentifier>
+        <componentinstantiationref refid="Negotiator_2"/>
+      </providesport>
+    </connectinterface>
+  </connections>
+</softwareassembly>
