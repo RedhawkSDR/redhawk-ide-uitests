@@ -31,12 +31,20 @@ public class DomainComponentDiagramConnectionPropertyTest extends DomainComponen
 	}
 
 	@Override
-	protected TransportType prepareConnection() {
+	protected void prepareConnection() {
 		super.prepareConnection();
 		SWTBotGefEditor editor = gefBot.gefEditor(getWaveformInstanceName());
-		SWTBotGefEditPart portEditPart = DiagramTestUtils.getDiagramUsesPort(editor, RESOURCE, USES_PORT);
+		SWTBotGefEditPart portEditPart = DiagramTestUtils.getDiagramUsesPort(editor, RESOURCE1, USES_PORT1);
 		List<SWTBotGefConnectionEditPart> connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, portEditPart);
 		connections.get(0).select();
-		return TransportType.SHMIPC;
+	}
+
+	@Override
+	protected void prepareNegotiatorComponentConnection() {
+		super.prepareNegotiatorComponentConnection();
+		SWTBotGefEditor editor = gefBot.gefEditor(getWaveformInstanceName());
+		SWTBotGefEditPart portEditPart = DiagramTestUtils.getDiagramUsesPort(editor, RESOURCE2, USES_PORT2);
+		List<SWTBotGefConnectionEditPart> connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, portEditPart);
+		connections.get(0).select();
 	}
 }

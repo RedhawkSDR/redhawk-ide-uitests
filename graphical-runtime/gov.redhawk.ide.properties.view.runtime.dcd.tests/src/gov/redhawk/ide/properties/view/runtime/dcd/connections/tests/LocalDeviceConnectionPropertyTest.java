@@ -14,6 +14,9 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 
 import gov.redhawk.ide.properties.view.runtime.tests.AbstractConnectionPropertiesTest;
+import gov.redhawk.ide.properties.view.runtime.tests.TransportTypeAndProps;
+import gov.redhawk.ide.properties.view.runtime.tests.TransportTypeAndProps.TransportProperty;
+import gov.redhawk.ide.properties.view.runtime.tests.TransportTypeAndProps.TransportType;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.condition.TreeItemHasRows;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
@@ -33,7 +36,7 @@ public class LocalDeviceConnectionPropertyTest extends AbstractConnectionPropert
 	}
 
 	@Override
-	protected TransportType prepareConnection() {
+	protected void prepareConnection() {
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, USRP, USRP_IMPL);
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, USRP, USRP_IMPL);
 
@@ -49,7 +52,10 @@ public class LocalDeviceConnectionPropertyTest extends AbstractConnectionPropert
 		ViewUtils.getExplorerView(bot).bot().tree().select(treeItem1, treeItem2).contextMenu().menu("Connect").click();
 		bot.waitUntil(new TreeItemHasRows(treeItem1));
 		treeItem1.getItems()[0].select();
-		return TransportType.SHMIPC;
 	}
 
+	@Override
+	protected TransportTypeAndProps getConnectionDetails() {
+		return new TransportTypeAndProps(TransportType.SHMIPC, new TransportProperty("hostname", null));
+	}
 }

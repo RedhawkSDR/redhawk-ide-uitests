@@ -31,12 +31,20 @@ public class LocalComponentDiagramConnectionPropertyTest extends LocalComponentC
 	}
 
 	@Override
-	protected TransportType prepareConnection() {
+	protected void prepareConnection() {
 		super.prepareConnection();
 		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 		SWTBotGefEditPart portEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1, SIG_GEN_USES);
 		List<SWTBotGefConnectionEditPart> connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, portEditPart);
 		connections.get(0).select();
-		return TransportType.CORBA;
+	}
+
+	@Override
+	protected void prepareNegotiatorComponentConnection() {
+		super.prepareNegotiatorComponentConnection();
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+		SWTBotGefEditPart portEditPart = DiagramTestUtils.getDiagramUsesPort(editor, NEGOTIATOR_1, NEGOTIATOR_USES);
+		List<SWTBotGefConnectionEditPart> connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, portEditPart);
+		connections.get(0).select();
 	}
 }

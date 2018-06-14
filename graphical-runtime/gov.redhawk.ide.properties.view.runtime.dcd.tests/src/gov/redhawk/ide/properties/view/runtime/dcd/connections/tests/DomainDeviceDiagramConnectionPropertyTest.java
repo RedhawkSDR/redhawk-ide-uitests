@@ -33,7 +33,7 @@ public class DomainDeviceDiagramConnectionPropertyTest extends DomainDeviceConne
 	}
 
 	@Override
-	protected TransportType prepareConnection() {
+	protected void prepareConnection() {
 		super.prepareConnection();
 		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[] { getDomain(), "Device Managers" }, DEVICE_MANAGER,
 			DiagramType.GRAPHITI_NODE_EXPLORER);
@@ -41,6 +41,5 @@ public class DomainDeviceDiagramConnectionPropertyTest extends DomainDeviceConne
 		SWTBotGefEditPart portEditPart = DiagramTestUtils.getDiagramUsesPort(editor, RESOURCE, USES_PORT);
 		List<SWTBotGefConnectionEditPart> connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, portEditPart);
 		connections.get(0).select();
-		return TransportType.SHMIPC;
 	}
 }

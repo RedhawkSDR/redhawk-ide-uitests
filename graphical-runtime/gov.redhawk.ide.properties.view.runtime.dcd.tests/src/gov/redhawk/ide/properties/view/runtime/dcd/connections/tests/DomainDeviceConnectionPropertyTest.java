@@ -14,6 +14,8 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 
 import gov.redhawk.ide.properties.view.runtime.tests.AbstractConnectionPropertiesTest;
+import gov.redhawk.ide.properties.view.runtime.tests.TransportTypeAndProps;
+import gov.redhawk.ide.properties.view.runtime.tests.TransportTypeAndProps.TransportType;
 import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
@@ -35,13 +37,17 @@ public class DomainDeviceConnectionPropertyTest extends AbstractConnectionProper
 	}
 
 	@Override
-	protected TransportType prepareConnection() {
+	protected void prepareConnection() {
 		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEVICE_MANAGER);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot,
 			new String[] { domain, "Device Managers", DEVICE_MANAGER, RESOURCE, USES_PORT }, CONNECTION);
 		treeItem.select();
-		return TransportType.SHMIPC;
+	}
+
+	@Override
+	protected TransportTypeAndProps getConnectionDetails() {
+		return new TransportTypeAndProps(TransportType.SHMIPC);
 	}
 
 	protected String getDomain() {

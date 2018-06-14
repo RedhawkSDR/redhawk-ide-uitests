@@ -31,13 +31,12 @@ public class LocalDeviceDiagramConnectionPropertyTest extends LocalDeviceConnect
 	}
 
 	@Override
-	protected TransportType prepareConnection() {
+	protected void prepareConnection() {
 		super.prepareConnection();
 		RHBotGefEditor editor = DiagramTestUtils.openNodeChalkboardDiagram(gefBot);
 		SWTBotGefEditPart portEditPart = DiagramTestUtils.getDiagramUsesPort(editor, USRP_1, USES_PORT);
 		List<SWTBotGefConnectionEditPart> connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, portEditPart);
 		connections.get(0).select();
-		return TransportType.SHMIPC;
 	}
 
 }

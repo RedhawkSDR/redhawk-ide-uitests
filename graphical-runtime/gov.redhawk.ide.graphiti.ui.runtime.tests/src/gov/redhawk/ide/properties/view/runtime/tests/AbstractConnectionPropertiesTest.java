@@ -13,56 +13,65 @@ package gov.redhawk.ide.properties.view.runtime.tests;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Assert;
 import org.junit.Test;
 
+import gov.redhawk.ide.properties.view.runtime.tests.TransportTypeAndProps.TransportProperty;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 
 public abstract class AbstractConnectionPropertiesTest extends UIRuntimeTest {
 
-	protected enum TransportType {
-		SHMIPC("shmipc"),
-		CORBA("CORBA");
-
-		private String text;
-
-		TransportType(String text) {
-			this.text = text;
-		}
-
-		public String getText() {
-			return text;
-		}
-	};
+	/**
+	 * This method should launch anything necessary and select the connection.
+	 */
+	protected abstract void prepareConnection();
 
 	/**
-	 * This method should launch anything necessary and select the connection
 	 * @return What type of transport is expected for the given connection
 	 */
-	protected abstract TransportType prepareConnection();
+	protected abstract TransportTypeAndProps getConnectionDetails();
 
+	/**
+	 * Tests the advanced properties of a connection.
+	 */
 	@Test
 	public void connectionAdvanced() {
-		TransportType connType = prepareConnection();
-		SWTBot propViewBot = ViewUtils.selectPropertiesTab(bot, "Advanced");
+		prepareConnection();
+		TransportTypeAndProps transportDetails = getConnectionDetails();
 
+		common(transportDetails);
+	}
+
+	protected void common(TransportTypeAndProps transportDetails) {
 		// Check values of the various advanced properties
+		SWTBot propViewBot = ViewUtils.selectPropertiesTab(bot, "Advanced");
 		String alive = propViewBot.tree().getTreeItem("Alive").cell(1);
 		Assert.assertEquals("true", alive);
 		String id = propViewBot.tree().getTreeItem("Id").cell(1);
 		Assert.assertTrue(id != null && !id.isEmpty());
 		String transportType = propViewBot.tree().getTreeItem("Transport Type").cell(1);
-		Assert.assertEquals(connType.getText(), transportType);
+		Assert.assertEquals(transportDetails.getTransportType().getText(), transportType);
 
 		// Check viewing the transport info
 		propViewBot.tree().getTreeItem("Transport Info").click(0);
 		propViewBot.button("...").click();
 		SWTBotShell shell = bot.shell("Transport Details");
-		String transport = shell.bot().textWithLabel("Transport:").getText();
-		Assert.assertEquals(connType.getText(), transport);
-		shell.bot().button("Close").click();
-		bot.waitUntil(Conditions.shellCloses(shell));
+		try {
+			String transport = shell.bot().textWithLabel("Transport:").getText();
+			Assert.assertEquals(transportDetails.getTransportType().getText(), transport);
+			Assert.assertEquals(transportDetails.getProperties().size(), shell.bot().tree().rowCount());
+			for (TransportProperty prop : transportDetails.getProperties()) {
+				SWTBotTreeItem treeItem = shell.bot().tree().getTreeItem(prop.getPropName());
+				if (prop.getPropValue() != null) {
+					Assert.assertEquals(prop.getPropValue(), treeItem.cell(1));
+				}
+			}
+		} finally {
+			shell.bot().button("Close").click();
+			bot.waitUntil(Conditions.shellCloses(shell));
+		}
 	}
 
 }
