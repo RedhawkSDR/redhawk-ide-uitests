@@ -32,7 +32,7 @@ public class LocalComponentDiagramPortPropertyTest extends LocalComponentPortPro
 	protected PortDescription prepareProvidesPort() {
 		PortDescription portDesc = super.prepareProvidesPort();
 		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
-		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1, PROVIDES_PORT);
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1, HARD_LIMIT_PROVIDES);
 		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
 		return portDesc;
 	}
@@ -41,7 +41,7 @@ public class LocalComponentDiagramPortPropertyTest extends LocalComponentPortPro
 	protected PortDescription prepareUsesPort() {
 		PortDescription portDesc = super.prepareUsesPort();
 		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
-		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1, USES_PORT);
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1, HARD_LIMIT_USES);
 		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
 		return portDesc;
 	}
@@ -50,7 +50,7 @@ public class LocalComponentDiagramPortPropertyTest extends LocalComponentPortPro
 	protected void prepareProvidesPortAdvanced() {
 		super.prepareProvidesPortAdvanced();
 		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
-		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1, PROVIDES_PORT);
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramProvidesPort(editor, HARD_LIMIT_1, HARD_LIMIT_PROVIDES);
 		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
 	}
 
@@ -58,7 +58,23 @@ public class LocalComponentDiagramPortPropertyTest extends LocalComponentPortPro
 	protected void prepareUsesPortAdvanced() {
 		super.prepareUsesPortAdvanced();
 		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
-		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1, USES_PORT);
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1, HARD_LIMIT_USES);
+		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
+	}
+
+	@Override
+	protected void prepareNegotiatorComponentProvides() {
+		super.prepareNegotiatorComponentProvides();
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramProvidesPort(editor, NEGOTIATOR_1, NEGOTIATOR_PROVIDES);
+		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
+	}
+
+	@Override
+	protected void prepareNegotiatorComponentUses() {
+		super.prepareNegotiatorComponentUses();
+		RHBotGefEditor editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramUsesPort(editor, NEGOTIATOR_1, NEGOTIATOR_USES);
 		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
 	}
 }

@@ -18,7 +18,9 @@ public class TransportTypeAndProps {
 	public enum TransportType {
 		SHMIPC("shmipc"),
 		CORBA("CORBA"),
-		NEGOTIATOR_SIM("transport_1");
+		TR1("transport_1"),
+		TR2("transport_2"),
+		TR3("transport_3");
 
 		private String text;
 

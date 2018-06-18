@@ -13,13 +13,12 @@ package gov.redhawk.ide.properties.view.runtime.sad.ports.tests;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 
-import gov.redhawk.ide.properties.view.runtime.tests.AbstractPortPropertiesTest;
 import gov.redhawk.ide.properties.view.runtime.tests.PortDescription;
 import gov.redhawk.ide.sdr.nodebooter.NodeBooterLauncherUtil;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
-public class DomainComponentPortPropertyTest extends AbstractPortPropertiesTest {
+public class DomainComponentPortPropertyTest extends AbstractComponentPortPropertiesTest {
 
 	protected static final String DEVICE_MANAGER = "DevMgr_localhost";
 	protected static final String WAVEFORM = "ExampleWaveform01";
@@ -33,6 +32,11 @@ public class DomainComponentPortPropertyTest extends AbstractPortPropertiesTest 
 	protected static final String HARD_LIMIT_1 = "HardLimit_1";
 	protected static final String HARD_LIMIT_PROVIDES_PORT = "dataFloat_in";
 	protected static final String HARD_LIMIT_USES_PORT = "dataFloat_out";
+
+	protected static final String WAVEFORM_NEGOTIATORS = "NegotiatorSimConnection";
+	protected static final String NEGOTIATOR_1 = "Negotiator_1";
+	protected static final String NEGOTIATOR_PROVIDES_PORT = "negotiable_in";
+	protected static final String NEGOTIATOR_USES_PORT = "negotiable_out";
 
 	private String domain = getClass().getSimpleName() + "_" + (int) (1000.0 * Math.random());
 	private String waveformInstanceName;
@@ -83,6 +87,26 @@ public class DomainComponentPortPropertyTest extends AbstractPortPropertiesTest 
 		waveformInstanceName = ScaExplorerTestUtils.launchWaveformFromDomain(bot, domain, WAVEFORM6);
 		String[] parentPath = new String[] { domain, "Waveforms", WAVEFORM6, HARD_LIMIT_1 };
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, HARD_LIMIT_USES_PORT);
+		treeItem.select();
+	}
+
+	@Override
+	protected void prepareNegotiatorComponentProvides() {
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
+		waveformInstanceName = ScaExplorerTestUtils.launchWaveformFromDomain(bot, domain, WAVEFORM_NEGOTIATORS);
+		String[] parentPath = new String[] { domain, "Waveforms", WAVEFORM_NEGOTIATORS, NEGOTIATOR_1 };
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, NEGOTIATOR_PROVIDES_PORT);
+		treeItem.select();
+	}
+
+	@Override
+	protected void prepareNegotiatorComponentUses() {
+		ScaExplorerTestUtils.launchDomainViaWizard(bot, domain, DEVICE_MANAGER);
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
+		waveformInstanceName = ScaExplorerTestUtils.launchWaveformFromDomain(bot, domain, WAVEFORM_NEGOTIATORS);
+		String[] parentPath = new String[] { domain, "Waveforms", WAVEFORM_NEGOTIATORS, NEGOTIATOR_1 };
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parentPath, NEGOTIATOR_USES_PORT);
 		treeItem.select();
 	}
 

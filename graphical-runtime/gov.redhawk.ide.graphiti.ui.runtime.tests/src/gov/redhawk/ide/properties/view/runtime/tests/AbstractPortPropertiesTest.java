@@ -19,6 +19,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import gov.redhawk.ide.properties.view.runtime.tests.TransportTypeAndProps.TransportProperty;
+import gov.redhawk.ide.properties.view.runtime.tests.TransportTypeAndProps.TransportType;
 import gov.redhawk.ide.swtbot.ConsoleUtils;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
@@ -96,35 +98,44 @@ public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
 	@Test
 	public void providesPortAdvanced() {
 		prepareProvidesPortAdvanced();
-		advanced();
+		advanced(new TransportTypeAndProps(TransportType.SHMIPC, new TransportProperty("hostname", null)));
 	}
 
 	@Test
 	public void usesPortAdvanced() {
 		prepareUsesPortAdvanced();
-		advanced();
+		advanced(new TransportTypeAndProps(TransportType.SHMIPC, new TransportProperty("hostname", null)));
 	}
 
-	private void advanced() {
+	protected void advanced(TransportTypeAndProps... transports) {
 		SWTBot propViewBot = ViewUtils.selectPropertiesTab(bot, "Advanced");
 		SWTBotTree tree = propViewBot.tree();
 
-		SWTBotTreeItem supportedTransports = null;
-		for (SWTBotTreeItem treeItem : tree.getAllItems()) {
-			if ("Supported Transports".equals(treeItem.cell(0))) {
-				supportedTransports = treeItem;
-				break;
-			}
+		SWTBotTreeItem supportedTransports = tree.getTreeItem("Supported Transports");
+		String transportsString = supportedTransports.cell(1);
+		for (TransportTypeAndProps transport : transports) {
+			Assert.assertTrue("Looking for " + transport.getTransportType().getText(), transportsString.contains(transport.getTransportType().getText()));
 		}
-		Assert.assertNotNull(supportedTransports);
-		Assert.assertEquals("shmipc", supportedTransports.cell(1));
+
 		supportedTransports.click(1);
 		new SWTBot(tree.widget).button("...").click();
-
 		SWTBotShell shell = bot.shell("Transport Details");
-		Assert.assertEquals("shmipc", shell.bot().comboBoxWithLabel("Transport:").getText());
-		Assert.assertEquals("hostname", shell.bot().tree().cell(0, 0));
-		shell.bot().button("Close").click();
-		bot.waitUntil(Conditions.shellCloses(shell));
+
+		try {
+			Assert.assertEquals(transports.length, shell.bot().comboBoxWithLabel("Transport:").itemCount());
+			for (TransportTypeAndProps transport : transports) {
+				shell.bot().comboBoxWithLabel("Transport:").setSelection(transport.getTransportType().getText());
+				Assert.assertEquals("Incorrect number of props for transport " + transport.getTransportType().getText(), transport.getProperties().size(), shell.bot().tree().rowCount());
+				for (TransportProperty prop : transport.getProperties()) {
+					SWTBotTreeItem treeItem = shell.bot().tree().getTreeItem(prop.getPropName());
+					if (prop.getPropValue() != null) {
+						Assert.assertEquals(prop.getPropValue(), treeItem.cell(1));
+					}
+				}
+			}
+		} finally {
+			shell.bot().button("Close").click();
+			bot.waitUntil(Conditions.shellCloses(shell));
+		}
 	}
 }

@@ -31,7 +31,7 @@ public abstract class AbstractComponentConnectionPropertiesTest extends Abstract
 	@Test
 	public void connectionAdvancedSimulated() {
 		prepareNegotiatorComponentConnection();
-		common(new TransportTypeAndProps(TransportType.NEGOTIATOR_SIM, new TransportProperty("first", "1"), new TransportProperty("second", "two")));
+		common(new TransportTypeAndProps(TransportType.TR1, new TransportProperty("first", "1"), new TransportProperty("second", "two")));
 	}
 
 }

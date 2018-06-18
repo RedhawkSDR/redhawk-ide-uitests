@@ -67,4 +67,24 @@ public class DomainComponentDiagramPortPropertyTest extends DomainComponentPortP
 		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramUsesPort(editor, HARD_LIMIT_1, HARD_LIMIT_USES_PORT);
 		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
 	}
+
+	@Override
+	protected void prepareNegotiatorComponentProvides() {
+		super.prepareNegotiatorComponentProvides();
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[] { getDomain(), "Waveforms" }, WAVEFORM_NEGOTIATORS,
+			DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
+		SWTBotGefEditor editor = gefBot.gefEditor(getWaveformInstanceName());
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramProvidesPort(editor, NEGOTIATOR_1, NEGOTIATOR_PROVIDES_PORT);
+		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
+	}
+
+	@Override
+	protected void prepareNegotiatorComponentUses() {
+		super.prepareNegotiatorComponentUses();
+		ScaExplorerTestUtils.openDiagramFromScaExplorer(gefBot, new String[] { getDomain(), "Waveforms" }, WAVEFORM_NEGOTIATORS,
+			DiagramType.GRAPHITI_WAVEFORM_EXPLORER);
+		SWTBotGefEditor editor = gefBot.gefEditor(getWaveformInstanceName());
+		SWTBotGefEditPart editPart = DiagramTestUtils.getDiagramUsesPort(editor, NEGOTIATOR_1, NEGOTIATOR_USES_PORT);
+		DiagramTestUtils.getDiagramPortAnchor(editPart).select();
+	}
 }

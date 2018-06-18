@@ -13,20 +13,25 @@ package gov.redhawk.ide.properties.view.runtime.sad.ports.tests;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
 
-import gov.redhawk.ide.properties.view.runtime.tests.AbstractPortPropertiesTest;
 import gov.redhawk.ide.properties.view.runtime.tests.PortDescription;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
-public class LocalComponentPortPropertyTest extends AbstractPortPropertiesTest {
+public class LocalComponentPortPropertyTest extends AbstractComponentPortPropertiesTest {
 
 	protected static final String HARD_LIMIT = "rh.HardLimit";
 	protected static final String HARD_LIMIT_1 = "HardLimit_1";
-	protected static final String PROVIDES_PORT = "dataFloat_in";
-	protected static final String USES_PORT = "dataFloat_out";
-	private static final PortDescription PROVIDES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0",
+	protected static final String HARD_LIMIT_PROVIDES = "dataFloat_in";
+	protected static final String HARD_LIMIT_USES = "dataFloat_out";
+	private static final PortDescription HARD_LIMIT_PROVIDES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0",
 		"Float input port for data before hard limit is applied. ");
-	private static final PortDescription USES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0",
+	private static final PortDescription HARD_LIMIT_USES_DESC = new PortDescription("IDL:BULKIO/dataFloat:1.0",
 		"Float output port for data after hard limit is applied. ");
+
+	private static final String NEGOTIATOR = "Negotiator";
+	private static final String NEGOTIATOR_IMPL = "python";
+	protected static final String NEGOTIATOR_1 = "Negotiator_1";
+	protected static final String NEGOTIATOR_PROVIDES = "negotiable_in";
+	protected static final String NEGOTIATOR_USES = "negotiable_out";
 
 	@After
 	public void afterTest() {
@@ -37,25 +42,25 @@ public class LocalComponentPortPropertyTest extends AbstractPortPropertiesTest {
 	protected PortDescription prepareProvidesPort() {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", HARD_LIMIT_1 },
-			PROVIDES_PORT);
+			HARD_LIMIT_PROVIDES);
 		treeItem.select();
-		return PROVIDES_DESC;
+		return HARD_LIMIT_PROVIDES_DESC;
 	}
 
 	@Override
 	protected PortDescription prepareUsesPort() {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "python");
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", HARD_LIMIT_1 },
-			USES_PORT);
+			HARD_LIMIT_USES);
 		treeItem.select();
-		return USES_DESC;
+		return HARD_LIMIT_USES_DESC;
 	}
 
 	@Override
 	protected void prepareProvidesPortAdvanced() {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "cpp");
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", HARD_LIMIT_1 },
-			PROVIDES_PORT);
+			HARD_LIMIT_PROVIDES);
 		treeItem.select();
 	}
 
@@ -63,7 +68,23 @@ public class LocalComponentPortPropertyTest extends AbstractPortPropertiesTest {
 	protected void prepareUsesPortAdvanced() {
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, HARD_LIMIT, "cpp");
 		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", HARD_LIMIT_1 },
-			USES_PORT);
+			HARD_LIMIT_USES);
+		treeItem.select();
+	}
+
+	@Override
+	protected void prepareNegotiatorComponentProvides() {
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, NEGOTIATOR, NEGOTIATOR_IMPL);
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", NEGOTIATOR_1 },
+			NEGOTIATOR_PROVIDES);
+		treeItem.select();
+	}
+
+	@Override
+	protected void prepareNegotiatorComponentUses() {
+		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, NEGOTIATOR, NEGOTIATOR_IMPL);
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", NEGOTIATOR_1 },
+			NEGOTIATOR_USES);
 		treeItem.select();
 	}
 }
