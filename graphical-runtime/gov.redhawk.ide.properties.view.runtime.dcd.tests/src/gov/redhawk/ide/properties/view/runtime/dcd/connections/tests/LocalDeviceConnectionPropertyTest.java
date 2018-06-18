@@ -15,7 +15,6 @@ import org.junit.After;
 
 import gov.redhawk.ide.properties.view.runtime.tests.AbstractConnectionPropertiesTest;
 import gov.redhawk.ide.properties.view.runtime.tests.TransportTypeAndProps;
-import gov.redhawk.ide.properties.view.runtime.tests.TransportTypeAndProps.TransportProperty;
 import gov.redhawk.ide.properties.view.runtime.tests.TransportTypeAndProps.TransportType;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.condition.TreeItemHasRows;
@@ -56,6 +55,6 @@ public class LocalDeviceConnectionPropertyTest extends AbstractConnectionPropert
 
 	@Override
 	protected TransportTypeAndProps getConnectionDetails() {
-		return new TransportTypeAndProps(TransportType.SHMIPC, new TransportProperty("hostname", null));
+		return new TransportTypeAndProps(TransportType.SHMIPC);
 	}
 }
