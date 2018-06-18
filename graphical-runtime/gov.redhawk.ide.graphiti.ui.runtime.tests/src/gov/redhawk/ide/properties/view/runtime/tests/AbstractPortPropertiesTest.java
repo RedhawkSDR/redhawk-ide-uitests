@@ -123,13 +123,19 @@ public abstract class AbstractPortPropertiesTest extends UIRuntimeTest {
 
 		try {
 			Assert.assertEquals(transports.length, shell.bot().comboBoxWithLabel("Transport:").itemCount());
-			for (TransportTypeAndProps transport : transports) {
-				shell.bot().comboBoxWithLabel("Transport:").setSelection(transport.getTransportType().getText());
-				Assert.assertEquals("Incorrect number of props for transport " + transport.getTransportType().getText(), transport.getProperties().size(), shell.bot().tree().rowCount());
-				for (TransportProperty prop : transport.getProperties()) {
-					SWTBotTreeItem treeItem = shell.bot().tree().getTreeItem(prop.getPropName());
-					if (prop.getPropValue() != null) {
-						Assert.assertEquals(prop.getPropValue(), treeItem.cell(1));
+
+			// For multiple transports, repeat looking at  them to test a bug where the props disappeared
+			int repeats = (transports.length == 1) ? 1 : 2;
+			for (int i = 0; i < repeats; i++) {
+				for (TransportTypeAndProps transport : transports) {
+					shell.bot().comboBoxWithLabel("Transport:").setSelection(transport.getTransportType().getText());
+					Assert.assertEquals("Incorrect number of props for transport " + transport.getTransportType().getText(), transport.getProperties().size(),
+						shell.bot().tree().rowCount());
+					for (TransportProperty prop : transport.getProperties()) {
+						SWTBotTreeItem treeItem = shell.bot().tree().getTreeItem(prop.getPropName());
+						if (prop.getPropValue() != null) {
+							Assert.assertEquals(prop.getPropValue(), treeItem.cell(1));
+						}
 					}
 				}
 			}
