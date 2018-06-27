@@ -37,17 +37,16 @@ public class LocalDeviceConnectionPropertyTest extends AbstractConnectionPropert
 	@Override
 	protected void prepareConnection() {
 		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, USRP, USRP_IMPL);
-		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, USRP, USRP_IMPL);
-
-		// For some reason, we need to find both, then get them again or we get NPEs with SWTBot
 		String[] parent1 = new String[] { "Sandbox", "Device Manager", USRP_1 };
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parent1, USES_PORT);
+
+		ScaExplorerTestUtils.launchDeviceFromTargetSDR(bot, USRP, USRP_IMPL);
 		String[] parent2 = new String[] { "Sandbox", "Device Manager", USRP_2 };
 		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, parent2, PROVIDES_PORT);
-		SWTBotTreeItem treeItem1 = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, parent1, USES_PORT);
-		SWTBotTreeItem treeItem2 = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, parent2, PROVIDES_PORT);
 
 		// Connect the ports, select the resultant connection
+		SWTBotTreeItem treeItem1 = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, parent1, USES_PORT);
+		SWTBotTreeItem treeItem2 = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, parent2, PROVIDES_PORT);
 		ViewUtils.getExplorerView(bot).bot().tree().select(treeItem1, treeItem2).contextMenu().menu("Connect").click();
 		bot.waitUntil(new TreeItemHasRows(treeItem1));
 		treeItem1.getItems()[0].select();
