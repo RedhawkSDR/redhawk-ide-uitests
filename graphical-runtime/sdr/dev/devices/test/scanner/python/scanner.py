@@ -13,6 +13,8 @@ class scanner_i(scanner_base):
     """<DESCRIPTION GOES HERE>"""
     def constructor(self):
         self.addChannels(1, "RX_SCANNER_DIGITIZER");
+        self.last_scan_strategy = {}
+        self.last_scan_start_time = {}
 
     def process(self):
         return NOOP
@@ -151,36 +153,49 @@ class scanner_i(scanner_base):
         return self.frontend_tuner_status[idx].sample_rate
 
 
+
     def getScanStatus(self, allocation_id):
         idx = self.getTunerMapping(allocation_id)
         if idx < 0: raise FRONTEND.FrontendException("Invalid allocation id")
-        # set hardware to new value. Raise an exception if it's not possible
-        _scan_strategy=FRONTEND.ScanningTuner.ScanStrategy(
-            FRONTEND.ScanningTuner.MANUAL_SCAN, 
-            FRONTEND.ScanningTuner.ScanModeDefinition(center_frequency=1.0), 
-            FRONTEND.ScanningTuner.TIME_BASED, 
-            0.0)
-        _scan_status=FRONTEND.ScanningTuner.ScanStatus(_scan_strategy,
-                                           start_time=bulkio.timestamp.now(),
-                                           center_tune_frequencies=[],
-                                           started=False)
+        if not self.last_scan_strategy.has_key(allocation_id) or not self.last_scan_start_time.has_key(allocation_id):
+            # set hardware to new value. Raise an exception if it's not possible
+            _scan_strategy=FRONTEND.ScanningTuner.ScanStrategy(
+                FRONTEND.ScanningTuner.MANUAL_SCAN, 
+                FRONTEND.ScanningTuner.ScanModeDefinition(center_frequency=1.0), 
+                FRONTEND.ScanningTuner.TIME_BASED, 
+                0.0)
+            _scan_status=FRONTEND.ScanningTuner.ScanStatus(_scan_strategy,
+                                               start_time=bulkio.timestamp.now(),
+                                               center_tune_frequencies=[],
+                                               started=False)
+        else:
+            # set hardware to new value. Raise an exception if it's not possible
+            strat = self.last_scan_strategy[allocation_id]
+            start_time = self.last_scan_start_time[allocation_id]
+            _scan_status=FRONTEND.ScanningTuner.ScanStatus(strat,
+                                               start_time=start_time,
+                                               center_tune_frequencies=[],
+                                               started=False)
+            
         return _scan_status
 
     def setScanStartTime(self, allocation_id, start_time):
         logging.info("setScanStartTime for ID %s to UTC %s", allocation_id, str(start_time))
-        self.lastScanStartTimeSec = start_time.twsec
         idx = self.getTunerMapping(allocation_id)
         if idx < 0: raise FRONTEND.FrontendException("Invalid allocation id")
+        self.last_scan_start_time[allocation_id] = start_time
         if allocation_id != self.getControlAllocationId(idx):
             raise FRONTEND.FrontendException(("ID "+str(allocation_id)+" does not have authorization to modify the tuner"))
+        self.lastScanStartTimeSec = start_time.twsec
 
     def setScanStrategy(self, allocation_id, scan_strategy):
         logging.info("setScanStrategy for ID %s to %s", allocation_id, str(scan_strategy))
-        self.lastScanStrategy = "%s = %s" % (allocation_id, str(scan_strategy))
         idx = self.getTunerMapping(allocation_id)
         if idx < 0: raise FRONTEND.FrontendException("Invalid allocation id")
+        self.last_scan_strategy[allocation_id] = scan_strategy
         if allocation_id != self.getControlAllocationId(idx):
             raise FRONTEND.FrontendException(("ID "+str(allocation_id)+" does not have authorization to modify the tuner"))
+        self.lastScanStrategy = "%s = %s" % (allocation_id, str(scan_strategy))
 
     '''
     *************************************************************

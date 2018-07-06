@@ -14,6 +14,7 @@ import static org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable.syncExec;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
@@ -27,6 +28,15 @@ import CF.DataType;
 import CF.DevicePackage.InsufficientCapacity;
 import CF.DevicePackage.InvalidCapacity;
 import CF.DevicePackage.InvalidState;
+import CF.PortSupplierPackage.UnknownPort;
+import FRONTEND.BadParameterException;
+import FRONTEND.DigitalScanningTuner;
+import FRONTEND.DigitalScanningTunerHelper;
+import FRONTEND.FrontendException;
+import FRONTEND.NotSupportedException;
+import FRONTEND.ScanningTunerPackage.OutputControlMode;
+import FRONTEND.ScanningTunerPackage.ScanMode;
+import FRONTEND.ScanningTunerPackage.ScanStatus;
 import gov.redhawk.frontend.util.TunerProperties.ScannerAllocationProperties;
 import gov.redhawk.frontend.util.TunerProperties.ScannerAllocationProperty;
 import gov.redhawk.frontend.util.TunerProperties.TunerAllocationProperties;
@@ -38,6 +48,8 @@ import gov.redhawk.ide.swtbot.condition.WaitForLaunchTermination;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 import gov.redhawk.model.sca.RefreshDepth;
 import gov.redhawk.model.sca.ScaDevice;
+import gov.redhawk.model.sca.ScaPort;
+import gov.redhawk.model.sca.ScaProvidesPort;
 import gov.redhawk.model.sca.ScaSimpleProperty;
 import mil.jpeojtrs.sca.prf.Simple;
 import mil.jpeojtrs.sca.prf.Struct;
@@ -90,9 +102,10 @@ public class ScannerTest extends UIRuntimeTest {
 	 * @throws InvalidState
 	 * @throws InvalidCapacity
 	 * @throws InterruptedException
+	 * @throws UnknownPort 
 	 */
 	@Test
-	public void manualScan() throws InvalidCapacity, InvalidState, InsufficientCapacity, InterruptedException {
+	public void manualScan() throws InvalidCapacity, InvalidState, InsufficientCapacity, InterruptedException, UnknownPort {
 		SWTBotTreeItem tuner = doAllocation();
 		tuner.contextMenu().menu("Scan").click();
 
@@ -113,7 +126,29 @@ public class ScannerTest extends UIRuntimeTest {
 		assertScan(delay,
 			ALLOCATION_ID + " = FRONTEND.ScanningTuner.ScanStrategy(scan_mode=" + mode
 				+ ", scan_definition=FRONTEND.ScanningTuner.ScanModeDefinition(center_frequency = 2000000.0), control_mode=" + controlMode
-				+ ", control_value=1.0)");
+				+ ", control_value=1.0)",
+			ScanMode._MANUAL_SCAN, OutputControlMode._TIME_BASED, 1.0);
+
+		tuner.contextMenu().menu("Scan").click();
+
+		controlMode = "SAMPLE_BASED";
+		controlValue = "3";
+		delay = 4;
+		centerFreq = "5";
+		completeInitialScanWizardPage(mode, controlMode, controlValue, delay);
+
+		shell = bot.shell("Tuner Scan");
+		wizardBot = shell.bot();
+		wizardBot.textWithLabel("Center Frequency (MHz)").setText(centerFreq);
+
+		wizardBot.button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+
+		assertScan(delay,
+			ALLOCATION_ID + " = FRONTEND.ScanningTuner.ScanStrategy(scan_mode=" + mode
+				+ ", scan_definition=FRONTEND.ScanningTuner.ScanModeDefinition(center_frequency = 5000000.0), control_mode=" + controlMode
+				+ ", control_value=3.0)",
+		ScanMode._MANUAL_SCAN, OutputControlMode._SAMPLE_BASED, 3.0);
 	}
 
 	/**
@@ -122,9 +157,10 @@ public class ScannerTest extends UIRuntimeTest {
 	 * @throws InvalidState
 	 * @throws InvalidCapacity
 	 * @throws InterruptedException
+	 * @throws UnknownPort 
 	 */
 	@Test
-	public void discreteScan() throws InvalidCapacity, InvalidState, InsufficientCapacity, InterruptedException {
+	public void discreteScan() throws InvalidCapacity, InvalidState, InsufficientCapacity, InterruptedException, UnknownPort {
 		SWTBotTreeItem tuner = doAllocation();
 		tuner.contextMenu().menu("Scan").click();
 
@@ -149,7 +185,32 @@ public class ScannerTest extends UIRuntimeTest {
 		assertScan(delay,
 			ALLOCATION_ID + " = FRONTEND.ScanningTuner.ScanStrategy(scan_mode=" + mode
 				+ ", scan_definition=FRONTEND.ScanningTuner.ScanModeDefinition(discrete_freq_list = [5000000.0, 6000000.0]), control_mode=" + controlMode
-				+ ", control_value=3.0)");
+				+ ", control_value=3.0)",
+			ScanMode._DISCRETE_SCAN, OutputControlMode._SAMPLE_BASED, 3.0);
+
+		tuner.contextMenu().menu("Scan").click();
+		controlMode = "TIME_BASED";
+		controlValue = "1";
+		delay = 10;
+		completeInitialScanWizardPage(mode, controlMode, controlValue, delay);
+
+		shell = bot.shell("Tuner Scan");
+		wizardBot = shell.bot();
+		wizardBot.button(0).click();
+		wizardBot.waitUntilWidgetAppears(Conditions.tableHasRows(wizardBot.table(), 1));
+		wizardBot.button(0).click();
+		wizardBot.waitUntilWidgetAppears(Conditions.tableHasRows(wizardBot.table(), 2));
+		StandardTestActions.writeToCell(wizardBot, wizardBot.table(), 0, 0, "4", false);
+		StandardTestActions.writeToCell(wizardBot, wizardBot.table(), 1, 0, "5", false);
+
+		wizardBot.button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+
+		assertScan(delay,
+			ALLOCATION_ID + " = FRONTEND.ScanningTuner.ScanStrategy(scan_mode=" + mode
+				+ ", scan_definition=FRONTEND.ScanningTuner.ScanModeDefinition(discrete_freq_list = [4000000.0, 5000000.0]), control_mode=" + controlMode
+				+ ", control_value=1.0)",
+			ScanMode._DISCRETE_SCAN, OutputControlMode._TIME_BASED, 1.0);
 	}
 
 	/**
@@ -158,9 +219,10 @@ public class ScannerTest extends UIRuntimeTest {
 	 * @throws InsufficientCapacity
 	 * @throws InvalidState
 	 * @throws InvalidCapacity
+	 * @throws UnknownPort 
 	 */
 	@Test
-	public void spanScan() throws InvalidCapacity, InvalidState, InsufficientCapacity, InterruptedException {
+	public void spanScan() throws InvalidCapacity, InvalidState, InsufficientCapacity, InterruptedException, UnknownPort {
 		SWTBotTreeItem tuner = doAllocation();
 		tuner.contextMenu().menu("Scan").click();
 
@@ -191,7 +253,38 @@ public class ScannerTest extends UIRuntimeTest {
 		assertScan(delay,
 			ALLOCATION_ID + " = FRONTEND.ScanningTuner.ScanStrategy(scan_mode=" + mode
 				+ ", scan_definition=FRONTEND.ScanningTuner.ScanModeDefinition(freq_scan_list = [" + span1 + ", " + span2 + "]), control_mode=" + controlMode
-				+ ", control_value=7.0)");
+				+ ", control_value=7.0)",
+			ScanMode._SPAN_SCAN, OutputControlMode._TIME_BASED, 7.0);
+
+		tuner.contextMenu().menu("Scan").click();
+		controlMode = "SAMPLE_BASED";
+		controlValue = "5";
+		delay = 4;
+		completeInitialScanWizardPage(mode, controlMode, controlValue, delay);
+
+		shell = bot.shell("Tuner Scan");
+		wizardBot = shell.bot();
+		wizardBot.button(0).click();
+		wizardBot.waitUntilWidgetAppears(Conditions.tableHasRows(wizardBot.table(), 1));
+		wizardBot.button(0).click();
+		wizardBot.waitUntilWidgetAppears(Conditions.tableHasRows(wizardBot.table(), 2));
+		StandardTestActions.writeToCell(wizardBot, wizardBot.table(), 0, 0, "5", false);
+		StandardTestActions.writeToCell(wizardBot, wizardBot.table(), 0, 1, "6", false);
+		StandardTestActions.writeToCell(wizardBot, wizardBot.table(), 0, 2, "7", false);
+		StandardTestActions.writeToCell(wizardBot, wizardBot.table(), 1, 0, "8", false);
+		StandardTestActions.writeToCell(wizardBot, wizardBot.table(), 1, 1, "9", false);
+		StandardTestActions.writeToCell(wizardBot, wizardBot.table(), 1, 2, "10", false);
+
+		wizardBot.button("Finish").click();
+		bot.waitUntil(Conditions.shellCloses(shell));
+
+		span1 = "FRONTEND.ScanningTuner.ScanSpanRange(begin_frequency=5000000.0, end_frequency=6000000.0, step=7000000.0)";
+		span2 = "FRONTEND.ScanningTuner.ScanSpanRange(begin_frequency=8000000.0, end_frequency=9000000.0, step=10000000.0)";
+		assertScan(delay,
+			ALLOCATION_ID + " = FRONTEND.ScanningTuner.ScanStrategy(scan_mode=" + mode
+				+ ", scan_definition=FRONTEND.ScanningTuner.ScanModeDefinition(freq_scan_list = [" + span1 + ", " + span2 + "]), control_mode=" + controlMode
+				+ ", control_value=5.0)",
+			ScanMode._SPAN_SCAN, OutputControlMode._SAMPLE_BASED, 5.0);
 	}
 
 	private void completeAllocateWizard() {
@@ -256,7 +349,7 @@ public class ScannerTest extends UIRuntimeTest {
 		return AbstractTunerTest.waitForTunerAllocation(bot, feiContainer, "RX_SCANNER_DIGITIZER");
 	}
 
-	private void assertScan(int delay, String scanStrategy) throws InvalidCapacity, InvalidState, InsufficientCapacity, InterruptedException {
+	private void assertScan(int delay, String scanStrategy, int scanMode, int controlMode, double controlValue) throws InvalidCapacity, InvalidState, InsufficientCapacity, InterruptedException, UnknownPort {
 		final SWTBotTreeItem deviceTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { SANDBOX, DEV_MGR }, DEV_1);
 		ScaDevice< ? > scaDevice = syncExec(deviceTreeItem.display, () -> {
 			return (ScaDevice< ? >) deviceTreeItem.widget.getData();
@@ -268,5 +361,32 @@ public class ScannerTest extends UIRuntimeTest {
 
 		Assert.assertEquals(System.currentTimeMillis() / 1000 + delay, lastScanStartTimeSec, 5.0);
 		Assert.assertEquals(scanStrategy, lastScanStrategy);
+	
+		EList<ScaPort< ? , ? >> ports = scaDevice.getPorts();
+		DigitalScanningTuner tuner = null;
+		for (ScaPort< ? , ? > p : ports) {
+			if (p instanceof ScaProvidesPort) {
+				ScaProvidesPort pp = (ScaProvidesPort) p;
+				if (pp._is_a(DigitalScanningTunerHelper.id())) {
+					tuner = DigitalScanningTunerHelper.narrow(pp.getObj());
+					break;
+				}
+			}
+		}
+
+		if (tuner != null) {
+			try {
+				ScanStatus status = tuner.getScanStatus(ALLOCATION_ID);
+				Assert.assertEquals(System.currentTimeMillis() / 1000 + delay, status.start_time.twsec, 5.0);
+				Assert.assertEquals(scanMode, status.strategy.scan_mode.value());
+				Assert.assertEquals(controlMode, status.strategy.control_mode.value());
+				Assert.assertEquals(controlValue, status.strategy.control_value, 0.1);
+				return;
+			} catch (FrontendException e) {
+			} catch (BadParameterException e) {
+			} catch (NotSupportedException e) {
+			}
+		}
+		Assert.assertTrue(false);
 	}
 }
