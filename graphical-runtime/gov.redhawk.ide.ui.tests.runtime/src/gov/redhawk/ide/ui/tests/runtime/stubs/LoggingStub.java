@@ -43,7 +43,21 @@ public abstract class LoggingStub extends PropertyEmitterStub implements Logging
 	}
 
 	@Override
+	public int getLogLevel(String logger_id) throws CF.UnknownIdentifier {
+		return 0;
+	}
+
+	@Override
 	public void setLogLevel(String loggerId, int newLevel) throws UnknownIdentifier {
+	}
+
+	@Override
+	public String[] getNamedLoggers() {
+		return new String[0];
+	}
+
+	@Override
+	public void resetLog() {
 	}
 
 	@Override
