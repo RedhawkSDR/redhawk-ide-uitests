@@ -22,7 +22,7 @@ import CF.PortSetPackage.PortInfoType;
 import CF.PortSupplierPackage.UnknownPort;
 import mil.jpeojtrs.sca.util.DceUuidUtil;
 
-public class DevMgrStub extends PropertyEmitterStub implements DeviceManagerOperations {
+public class DevMgrStub extends LoggingStub implements DeviceManagerOperations {
 
 	private String id;
 	private String label;
