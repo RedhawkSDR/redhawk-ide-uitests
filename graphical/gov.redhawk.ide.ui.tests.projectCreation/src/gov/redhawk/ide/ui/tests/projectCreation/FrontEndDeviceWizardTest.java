@@ -77,7 +77,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 		feiInfo.setInputDigital(true);
 		feiInfo.setInputPortType("dataFloat");
 		feiInfo.setOutputDigital(true);
-		feiInfo.setOutputPortType("dataShort");
+		//feiInfo.setOutputPortType("dataShort"); This is the default
 		feiInfo.setMultiOut(false);
 		testProjectCreation("FEIReceiver3", "C++", "C++ Code Generator", feiInfo);
 
@@ -114,6 +114,7 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 	public void transmitter2() {
 		FEICodegenInfo feiInfo = new FEICodegenInfo();
 		feiInfo.setType(TunerType.TRANSMIT);
+		feiInfo.setInputPortType("dataDouble");
 		testProjectCreation("FEITransmitter2", "Python", "Python Code Generator", feiInfo);
 
 		SWTBotEditor editor = bot.editorByTitle("FEITransmitter2");
@@ -130,7 +131,9 @@ public class FrontEndDeviceWizardTest extends ComponentWizardTest {
 		FEICodegenInfo feiInfo = new FEICodegenInfo();
 		feiInfo.setType(TunerType.BOTH);
 		feiInfo.setInputDigital(false);
+		feiInfo.setInputPortType("dataDouble");
 		feiInfo.setOutputDigital(true);
+		feiInfo.setOutputPortType("dataDouble");
 		testProjectCreation("FEI_RxAndTx", "C++", "C++ Code Generator", feiInfo);
 
 		SWTBotEditor editor = bot.editorByTitle("FEI_RxAndTx");
