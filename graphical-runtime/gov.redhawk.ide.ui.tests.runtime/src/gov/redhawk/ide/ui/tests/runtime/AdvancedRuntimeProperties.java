@@ -17,7 +17,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gov.redhawk.ide.sdr.ui.SdrUiPlugin;
+import gov.redhawk.ide.sdr.preferences.IdeSdrPreferences;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
@@ -46,7 +46,7 @@ public class AdvancedRuntimeProperties extends UIRuntimeTest {
 				break;
 			}
 		}
-		Assert.assertEquals(SdrUiPlugin.getDefault().getTargetSdrDomPath().append(SIG_GEN_PATH).toString(), profileName);
+		Assert.assertEquals(IdeSdrPreferences.getTargetSdrDomPath().append(SIG_GEN_PATH).toString(), profileName);
 	}
 
 	@After
