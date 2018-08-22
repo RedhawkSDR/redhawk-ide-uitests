@@ -11,7 +11,6 @@
 package gov.redhawk.ide.properties.view.runtime.sad.tests;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -65,14 +64,11 @@ public class DomainComponentPropertyTest extends AbstractPropertiesViewRuntimeTe
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domain);
 
 		ScaExplorerTestUtils.launchWaveformFromDomain(bot, domain, waveform);
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, domainWaveformParentPath, waveform);
-		waveformFullName = ScaExplorerTestUtils.getFullNameFromScaExplorer(bot, domainWaveformParentPath, waveform);
-
-		ArrayList<String> componentParentPath = new ArrayList<>(Arrays.asList(domainWaveformParentPath));
-		componentParentPath.add(waveformFullName);
-		
-		SWTBotTreeItem treeItem = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, componentParentPath.toArray(new String[] {}), componentInstance);
+		String[] componentParentPath = new String[] { domain, "Waveforms", waveform };
+		SWTBotTreeItem treeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, componentParentPath, componentInstance);
 		treeItem.select();
+
+		waveformFullName = ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, domainWaveformParentPath, waveform).getText();
 	}
 
 	@Override
