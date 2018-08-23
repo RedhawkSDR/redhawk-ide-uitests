@@ -27,7 +27,7 @@ import org.junit.Test;
 import gov.redhawk.core.graphiti.sad.ui.ext.ComponentShape;
 import gov.redhawk.ide.debug.impl.LocalScaWaveformImpl;
 import gov.redhawk.ide.graphiti.ui.diagram.util.DUtil;
-import gov.redhawk.ide.sdr.ui.SdrUiPlugin;
+import gov.redhawk.ide.sdr.preferences.IdeSdrPreferences;
 import gov.redhawk.ide.swtbot.ErrorLogUtils;
 import gov.redhawk.ide.swtbot.diagram.ComponentUtils;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -69,7 +69,7 @@ public class LocalWaveformRuntimeTest extends AbstractGraphitiLocalWaveformRunti
 			((ScaFileStoreEditorInput) editorInput).getScaObject().getClass());
 
 		// IDE-1668
-		final String WAVEFORM_SDR_PATH = SdrUiPlugin.getDefault().getTargetSdrDomPath().append("waveforms").append(LOCAL_WAVEFORM).append(
+		final String WAVEFORM_SDR_PATH = IdeSdrPreferences.getTargetSdrDomPath().append("waveforms").append(LOCAL_WAVEFORM).append(
 			LOCAL_WAVEFORM + ".sad.xml").toOSString();
 		Assert.assertEquals("Incorrect title", getWaveFormFullName(), editorPart.getTitle());
 		Assert.assertEquals("Incorrect tooltip", WAVEFORM_SDR_PATH, editorPart.getTitleToolTip());
