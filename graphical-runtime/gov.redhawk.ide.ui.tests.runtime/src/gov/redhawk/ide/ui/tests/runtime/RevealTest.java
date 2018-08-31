@@ -74,7 +74,7 @@ public class RevealTest extends UITest {
 		explorerTree.collapseNode("Sandbox");
 		devMgr = localSca.getSandboxDeviceManager();
 
-		AnalogDevice stubDevice = new AnalogDevice();
+		AnalogDevice stubDevice = new AnalogDevice(session);
 		ref = ExecutableDeviceHelper.narrow(session.getPOA().servant_to_reference(new ExecutableDevicePOATie(stubDevice)));
 		devMgr.registerDevice(ref);
 

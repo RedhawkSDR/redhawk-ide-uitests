@@ -10,7 +10,10 @@
  */
 package gov.redhawk.ide.ui.tests.runtime.stubs;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
+import org.omg.PortableServer.POAPackage.ServantNotActive;
+import org.omg.PortableServer.POAPackage.WrongPolicy;
 import org.ossie.component.Device;
 
 import CF.DataType;
@@ -26,8 +29,17 @@ import CF.ExecutableDevicePackage.InvalidProcess;
 import CF.LoadableDevicePackage.InvalidLoadKind;
 import CF.LoadableDevicePackage.LoadFail;
 import CF.LoadableDevicePackage.LoadType;
+import gov.redhawk.sca.util.OrbSession;
 
 public class AnalogDevice extends Device implements ExecutableDeviceOperations {
+
+	public AnalogDevice(OrbSession session) throws ServantNotActive, WrongPolicy, CoreException {
+		super();
+		String uriSoftwareProfile = URI.createPlatformPluginURI("gov.redhawk.ide.ui.tests.runtime/resources/analogDevice/analogDevice.spd.xml",
+			true).toString();
+		this.label = "analogDevice";
+		setup(this.label, this.label, uriSoftwareProfile, session.getOrb(), session.getPOA());
+	}
 
 	@Override
 	public void load(FileSystem fs, String fileName, LoadType loadKind) throws InvalidState, InvalidLoadKind, InvalidFileName, LoadFail {
@@ -55,22 +67,6 @@ public class AnalogDevice extends Device implements ExecutableDeviceOperations {
 	public int executeLinked(String name, DataType[] options, DataType[] parameters, String[] deps)
 		throws InvalidState, InvalidFunction, InvalidParameters, InvalidOptions, InvalidFileName, ExecuteFail {
 		return 0;
-	}
-
-	@Override
-	public String softwareProfile() {
-		URI uri = URI.createPlatformPluginURI("gov.redhawk.ide.ui.tests.runtime/resources/analogDevice/analogDevice.spd.xml", true);
-		return uri.toString();
-	}
-
-	@Override
-	public String identifier() {
-		return "analogDevice";
-	}
-
-	@Override
-	public String label() {
-		return "analogDevice";
 	}
 
 }
