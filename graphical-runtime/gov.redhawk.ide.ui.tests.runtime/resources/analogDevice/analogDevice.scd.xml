@@ -21,19 +21,7 @@
     <supportsinterface repid="IDL:CF/PortSupplier:1.0" supportsname="PortSupplier"/>
     <supportsinterface repid="IDL:CF/PropertySet:1.0" supportsname="PropertySet"/>
     <supportsinterface repid="IDL:CF/TestableObject:1.0" supportsname="TestableObject"/>
-    <!-- 
-    <ports>
-      <provides repid="IDL:FRONTEND/RFInfo:1.0" providesname="RFInfo_in">
-        <porttype type="data"/>
-      </provides>
-      <provides repid="IDL:FRONTEND/AnalogTuner:1.0" providesname="AnalogTuner_in">
-        <porttype type="control"/>
-      </provides>
-      <uses repid="IDL:FRONTEND/RFInfo:1.0" usesname="RFInfo_out">
-        <porttype type="data"/>
-      </uses>
-    </ports>
-     -->
+    <ports/>
   </componentfeatures>
   <interfaces>
     <interface name="Device" repid="IDL:CF/Device:1.0">
@@ -49,10 +37,5 @@
     <interface name="PortSupplier" repid="IDL:CF/PortSupplier:1.0"/>
     <interface name="PropertySet" repid="IDL:CF/PropertySet:1.0"/>
     <interface name="TestableObject" repid="IDL:CF/TestableObject:1.0"/>
-    <interface name="RFInfo" repid="IDL:FRONTEND/RFInfo:1.0"/>
-    <interface name="FrontendTuner" repid="IDL:FRONTEND/FrontendTuner:1.0"/>
-    <interface name="AnalogTuner" repid="IDL:FRONTEND/AnalogTuner:1.0">
-      <inheritsinterface repid="IDL:FRONTEND/FrontendTuner:1.0"/>
-    </interface>
   </interfaces>
 </softwarecomponent>
