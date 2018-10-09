@@ -28,6 +28,12 @@ import gov.redhawk.ide.swtbot.condition.WaitForTreeDeferredContent;
  */
 public class BrowsePropertiesTest extends AbstractPropertyTabTest {
 
+	/**
+	 * After typing in the filter text box, FilteredTree schedules a refresh job with this delay.
+	 * @see org.eclipse.ui.dialogs.FilteredTree#getRefreshJobDelay()
+	 */
+	private static final long FILTERED_TREE_REFRESH_DELAY = 200;
+
 	@Test
 	public void addFromTargetSdr() {
 		editorBot.button("Browse...").click();
@@ -37,6 +43,7 @@ public class BrowsePropertiesTest extends AbstractPropertyTabTest {
 		dialogBot.waitUntil(new WaitForTreeDeferredContent(dialogBot.tree()));
 
 		dialogBot.text().setText("frequency");
+		bot.sleep(FILTERED_TREE_REFRESH_DELAY);
 		List<String> path = Arrays.asList("Target SDR", "Components", "rh.SigGen", "frequency");
 		StandardTestActions.waitForTreeItemToAppear(dialogBot, dialogBot.tree(), path).select();
 		dialogBot.button("Finish").click();
