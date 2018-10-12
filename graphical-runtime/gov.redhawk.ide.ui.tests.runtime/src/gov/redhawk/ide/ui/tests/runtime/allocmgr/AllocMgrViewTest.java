@@ -15,12 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.matchers.WithPartId;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
@@ -121,6 +119,7 @@ public class AllocMgrViewTest extends UITest {
 		ScaModelCommand.execute(registry, () -> {
 			registry.getDomains().add(scaDomMgr);
 		});
+		bot.sleep(200); // delay time before notification gets to the UI thread
 
 		// Create a second fake device manager and device which are not in the IDE's model
 		DevMgrStub devMgrStub2 = new DevMgrStub(DEV_MGR_2);
@@ -147,19 +146,7 @@ public class AllocMgrViewTest extends UITest {
 
 		StandardTestActions.setRefreshInterval(1000);
 
-		bot.waitUntil(new DefaultCondition() {
-
-			@Override
-			public boolean test() throws Exception {
-				ScaExplorerTestUtils.getDomain((SWTWorkbenchBot) bot, DOMAIN_1);
-				return true;
-			}
-
-			@Override
-			public String getFailureMessage() {
-				return "Domain didn't appear in explorer view";
-			}
-		});
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN_1);
 	}
 
 	@After
@@ -181,6 +168,7 @@ public class AllocMgrViewTest extends UITest {
 				registry.getDomains().remove(domMgr);
 			}
 		});
+		bot.sleep(200); // delay time before notification gets to the UI thread
 
 		// Dispose CORBA objects
 		allocMgrStub = null;

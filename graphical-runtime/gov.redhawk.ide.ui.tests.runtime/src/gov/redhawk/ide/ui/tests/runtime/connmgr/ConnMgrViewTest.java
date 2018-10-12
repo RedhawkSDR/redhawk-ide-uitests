@@ -15,11 +15,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.After;
@@ -83,6 +81,7 @@ public class ConnMgrViewTest extends UITest {
 		ScaModelCommand.execute(registry, () -> {
 			registry.getDomains().add(scaDomMgr);
 		});
+		bot.sleep(200); // delay time before notification gets to the UI thread
 
 		// Give the connection manager some fake entries
 		List<ConnectionStatusType> statuses = new ArrayList<>();
@@ -107,19 +106,7 @@ public class ConnMgrViewTest extends UITest {
 
 		StandardTestActions.setRefreshInterval(1000);
 
-		bot.waitUntil(new DefaultCondition() {
-
-			@Override
-			public boolean test() throws Exception {
-				ScaExplorerTestUtils.getDomain((SWTWorkbenchBot) bot, DOMAIN);
-				return true;
-			}
-
-			@Override
-			public String getFailureMessage() {
-				return "Domain didn't appear in explorer view";
-			}
-		});
+		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, DOMAIN);
 	}
 
 	@After
@@ -141,6 +128,7 @@ public class ConnMgrViewTest extends UITest {
 				registry.getDomains().remove(domMgr);
 			}
 		});
+		bot.sleep(200); // delay time before notification gets to the UI thread
 
 		// Dispose CORBA objects
 		connMgrStub = null;
