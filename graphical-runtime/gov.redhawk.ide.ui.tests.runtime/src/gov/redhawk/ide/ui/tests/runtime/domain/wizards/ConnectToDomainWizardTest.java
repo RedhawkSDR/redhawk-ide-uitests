@@ -39,7 +39,7 @@ import gov.redhawk.ide.swtbot.condition.WaitForWidgetEnablement;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 /**
- * Tests for the connec to domain wizard (i.e. the new button in the explorer view).
+ * Tests for the connect to domain wizard (i.e. the new button in the explorer view).
  */
 public class ConnectToDomainWizardTest extends UIRuntimeTest {
 
@@ -128,11 +128,10 @@ public class ConnectToDomainWizardTest extends UIRuntimeTest {
 		StandardTestActions.viewToolbarWithToolTip(explorerView, "New Domain Connection").click();
 		SWTBotShell shell = bot.shell("New Domain Manager");
 
-		shell.bot().textWithLabel("Display Name:").setText(DOMAIN_NAME_1);
+		shell.bot().textWithLabel("Domain Name:").setText(DOMAIN_NAME_1);
 		Assert.assertFalse("Finish should not be enabled.", shell.bot().button("Finish").isEnabled());
 
 		shell.bot().textWithLabel("Display Name:").setText(DOMAIN_NAME_2);
-		shell.bot().textWithLabel("Domain Name:").setText(DOMAIN_NAME_1);
 		shell.bot().button("Finish").click();
 		bot.waitUntil(Conditions.shellCloses(shell));
 
@@ -175,8 +174,8 @@ public class ConnectToDomainWizardTest extends UIRuntimeTest {
 		// We start out disabled (no display name / domain name yet)
 		Assert.assertFalse(finish.isEnabled());
 
-		// Set display name -> sets domain name. Everything should be ok.
-		displayName.setText("abc");
+		// Set domain name -> sets display name. Everything should be ok.
+		domainName.setText("abc");
 		shell.bot().waitUntil(Conditions.widgetIsEnabled(finish));
 
 		// Clear the domain name
@@ -186,6 +185,14 @@ public class ConnectToDomainWizardTest extends UIRuntimeTest {
 
 		// Set the domain name back to what it was
 		domainName.setText(oldText);
+		shell.bot().waitUntil(Conditions.widgetIsEnabled(finish));
+
+		// Clear the display name
+		displayName.setText("");
+		shell.bot().waitUntil(new WaitForWidgetEnablement(finish, false));
+
+		// Set the display name again
+		displayName.setText("def");
 		shell.bot().waitUntil(Conditions.widgetIsEnabled(finish));
 
 		// Set an invalid naming service reference
@@ -247,12 +254,15 @@ public class ConnectToDomainWizardTest extends UIRuntimeTest {
 		explorerView.toolbarPushButton("New Domain Connection").click();
 		SWTBotShell shell = bot.shell("New Domain Manager");
 
-		shell.bot().textWithLabel("Display Name:").setText(displayName);
-		Assert.assertEquals(displayName, shell.bot().textWithLabel("Domain Name:").getText());
+		// Set the domain name. Should set the display name to the same thing
+		shell.bot().textWithLabel("Domain Name:").setText(domainName);
+		Assert.assertEquals(domainName, shell.bot().textWithLabel("Display Name:").getText());
 		Assert.assertTrue(shell.bot().button("Finish").isEnabled());
 
+		// If domain name and display name are different, also set the display name
+		// The domain name should not change
 		if (!domainName.equals(displayName)) {
-			shell.bot().textWithLabel("Domain Name:").setText(domainName);
+			shell.bot().textWithLabel("Display Name:").setText(displayName);
 			Assert.assertEquals(domainName, shell.bot().textWithLabel("Domain Name:").getText());
 		}
 
