@@ -133,7 +133,13 @@ public class LaunchDomainWizardTest extends UIRuntimeTest {
 	private void launchViaNewDomainWizard(String domainName, String[] deviceManagers) {
 		ScaExplorerTestUtils.launchDomainViaWizard(bot, domainName, deviceManagers);
 		ScaExplorerTestUtils.waitUntilScaExplorerDomainConnects(bot, domainName);
-		ConsoleUtils.assertConsoleTitleExists(bot, "Domain Manager " + domainName + " .*"); // IDE-1372
+
+		// IDE-1372 The domain name should be shown in the console title
+		ConsoleUtils.assertConsoleTitleExists(bot, "Domain Manager " + domainName + " .*");
+
+		// IDE-2273 Ensure there's no warning about using --nopersist
+		Assert.assertFalse("Domain manager should not be launched with --nopersist", ConsoleUtils.checkConsoleContents(bot, "Domain Manager " + domainName, "nopersist"));
+
 		for (String deviceManager : deviceManagers) {
 			ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { domainName, "Device Managers" }, deviceManager);
 			ConsoleUtils.assertConsoleTitleExists(bot, "Device Manager " + deviceManager + " .*");
