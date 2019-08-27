@@ -129,7 +129,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 	@Test
 	public void monitorPortStyleTest() {
 		final String[] comps = { "SigGen", "DataConverter" };
-		final String[] dataConGreenPorts = { "dataChar", "dataOctet", "dataShort", "dataUshort", "dataDouble" };
+		final String[] dataConGreenPorts = { "dataChar_in", "dataOctet_in", "dataShort_in", "dataUshort_in", "dataDouble_in" };
 
 		editor = DiagramTestUtils.openChalkboardDiagram(gefBot);
 
@@ -140,7 +140,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 		}
 
 		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIGGEN_1, "dataFloat_out");
-		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, "DataConverter_1", "dataFloat");
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, "DataConverter_1", "dataFloat_in");
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
 
 		// Check stats every second so UI updates are responsive
@@ -152,7 +152,7 @@ public class ChalkboardTest extends AbstractGraphitiChalkboardTest {
 
 		// The following port should be red, the data will have backed up as the DataConverter component has not started
 		// It takes about 20 seconds before the port goes red.
-		final SWTBotGefEditPart providesPort = DiagramTestUtils.getDiagramProvidesPort(editor, "DataConverter_1", "dataFloat");
+		final SWTBotGefEditPart providesPort = DiagramTestUtils.getDiagramProvidesPort(editor, "DataConverter_1", "dataFloat_in");
 		bot.waitUntil(new WaitForColor(PortState.MONITOR_DATA_BAD.getColor()) {
 			@Override
 			protected RGBA getColor() {
