@@ -41,7 +41,7 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 	 */
 	@Override
 	@Test
-	public void mulitOutPortSingleTunerTest() {
+	public void multiOutPortSingleTunerTest() {
 		SWTBotTreeItem providesPort = launchComponent();
 
 		// Allocate the first tuner
@@ -59,7 +59,7 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 
 	@Override
 	@Test
-	public void mulitOutPortMultiTunerTest() {
+	public void multiOutPortMultiTunerTest() {
 		SWTBotTreeItem providesPort = launchComponent();
 
 		// Allocate the first tuner

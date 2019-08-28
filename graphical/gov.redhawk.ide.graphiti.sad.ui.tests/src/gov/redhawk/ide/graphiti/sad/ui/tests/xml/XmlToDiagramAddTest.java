@@ -286,7 +286,7 @@ public class XmlToDiagramAddTest extends AbstractXmlToDiagramAddTest {
 
 	@Override
 	protected ComponentDescription getComponentBDescription() {
-		ComponentDescription description = new ComponentDescription("rh.DataConverter", new String[] { "dataFloat" }, new String[0]);
+		ComponentDescription description = new ComponentDescription("rh.DataConverter", new String[] { "dataFloat_in" }, new String[0]);
 		description.setKey("path", "components");
 		return description;
 	}

@@ -24,7 +24,7 @@ public class CollapseShapeTest extends CollapseShapeAbstractTest {
 
 	@Override
 	protected ComponentDescription getComponentBDescription() {
-		return new ComponentDescription("rh.DataConverter", new String[] { "dataFloat", "dataShort" }, new String[0]);
+		return new ComponentDescription("rh.DataConverter", new String[] { "dataFloat_in", "dataShort_in" }, new String[0]);
 	}
 
 	@Override

@@ -114,7 +114,7 @@
         <componentinstantiationref refid="SigGen_1"/>
       </usesport>
       <providesport>
-        <providesidentifier>dataFloat</providesidentifier>
+        <providesidentifier>dataFloat_in</providesidentifier>
         <componentinstantiationref refid="DataConverter_1"/>
       </providesport>
     </connectinterface>
@@ -124,7 +124,7 @@
         <componentinstantiationref refid="SigGen_2"/>
       </usesport>
       <providesport>
-        <providesidentifier>dataShort</providesidentifier>
+        <providesidentifier>dataShort_in</providesidentifier>
         <componentinstantiationref refid="DataConverter_1"/>
       </providesport>
     </connectinterface>
@@ -134,7 +134,7 @@
         <componentinstantiationref refid="SigGen_3"/>
       </usesport>
       <providesport>
-        <providesidentifier>dataFloat</providesidentifier>
+        <providesidentifier>dataFloat_in</providesidentifier>
         <componentinstantiationref refid="DataConverter_2"/>
       </providesport>
     </connectinterface>
@@ -144,7 +144,7 @@
         <componentinstantiationref refid="SigGen_4"/>
       </usesport>
       <providesport>
-        <providesidentifier>dataShort</providesidentifier>
+        <providesidentifier>dataShort_in</providesidentifier>
         <componentinstantiationref refid="DataConverter_2"/>
       </providesport>
     </connectinterface>
@@ -174,7 +174,7 @@
         <componentinstantiationref refid="HardLimit_1"/>
       </usesport>
       <providesport>
-        <providesidentifier>dataFloat</providesidentifier>
+        <providesidentifier>dataFloat_in</providesidentifier>
         <componentinstantiationref refid="DataConverter_4"/>
       </providesport>
     </connectinterface>
@@ -184,7 +184,7 @@
         <componentinstantiationref refid="HardLimit_2"/>
       </usesport>
       <providesport>
-        <providesidentifier>dataFloat</providesidentifier>
+        <providesidentifier>dataFloat_in</providesidentifier>
         <componentinstantiationref refid="DataConverter_3"/>
       </providesport>
     </connectinterface>

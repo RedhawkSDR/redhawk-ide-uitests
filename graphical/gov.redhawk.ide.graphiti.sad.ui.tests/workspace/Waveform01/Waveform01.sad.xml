@@ -39,7 +39,7 @@
         <componentinstantiationref refid="SigGen_1"/>
       </usesport>
       <providesport>
-        <providesidentifier>dataFloat</providesidentifier>
+        <providesidentifier>dataFloat_in</providesidentifier>
         <componentinstantiationref refid="DataConverter_1"/>
       </providesport>
     </connectinterface>

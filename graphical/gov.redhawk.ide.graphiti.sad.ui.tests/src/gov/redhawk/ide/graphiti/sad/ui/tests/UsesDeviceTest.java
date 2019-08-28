@@ -391,8 +391,8 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 
 		// Get a handle on ports
 		SWTBotGefEditPart sigGenUsesPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
-		SWTBotGefEditPart dataConverterProvidesPart1 = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataShort");
-		SWTBotGefEditPart dataConverterProvidesPart2 = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataFloat");
+		SWTBotGefEditPart dataConverterProvidesPart1 = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataShort_in");
+		SWTBotGefEditPart dataConverterProvidesPart2 = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataFloat_in");
 		SWTBotGefEditPart usesDeviceProvidesDoublePart = DiagramTestUtils.getDiagramProvidesPort(editor, SadTestUtils.USE_FRONTEND_TUNER_DEVICE,
 			"dataFloat_in");
 		SWTBotGefEditPart usesDeviceProvidesDouble2Part = DiagramTestUtils.getDiagramProvidesPort(editor, SadTestUtils.USE_FRONTEND_TUNER_DEVICE,
@@ -479,8 +479,8 @@ public class UsesDeviceTest extends AbstractGraphitiTest {
 		List<SWTBotGefConnectionEditPart> connections = DiagramTestUtils.getSourceConnectionsFromPort(editor, sigGenUsesPart);
 		Assert.assertTrue("SigGen should only have a single connection", connections.size() == 1);
 
-		dataConverterProvidesPart1 = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataShort");
-		dataConverterProvidesPart2 = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataFloat");
+		dataConverterProvidesPart1 = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataShort_in");
+		dataConverterProvidesPart2 = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataFloat_in");
 		connections = DiagramTestUtils.getTargetConnectionsFromPort(editor, dataConverterProvidesPart1);
 		Assert.assertTrue("DataConverter should only have a single connection", connections.size() == 0);
 		connections = DiagramTestUtils.getTargetConnectionsFromPort(editor, dataConverterProvidesPart2);

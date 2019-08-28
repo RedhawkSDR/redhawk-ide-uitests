@@ -21,8 +21,7 @@
 </listAttribute>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="DISPLAY" value=":1"/>
-<mapEntry key="OSSIEHOME" value="${project_loc:/gov.redhawk.ide.ui.tests.projectCreation}/../ossie"/>
-<mapEntry key="SDRROOT" value="${project_loc:/gov.redhawk.ide.ui.tests.projectCreation}/../sdr"/>
+<mapEntry key="SDRROOT" value="${project_loc:/gov.redhawk.ide.ui.tests.projectCreation}/../../sdr"/>
 </mapAttribute>
 <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=gov.redhawk.ide.ui.tests.projectCreation"/>
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>

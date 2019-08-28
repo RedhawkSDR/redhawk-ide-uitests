@@ -113,7 +113,7 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 
 		// Edit content of sad.xml
 		final String connectionProvidesBefore = "<providesidentifier>dataFloat_in</providesidentifier>";
-		final String connectionProvidesAfter = "<providesidentifier>dataFloat</providesidentifier>";
+		final String connectionProvidesAfter = "<providesidentifier>dataFloat_in</providesidentifier>";
 		final String connectionCiBefore = "<componentinstantiationref refid=\"HardLimit_1\"/>";
 		final String connectionCiAfter = "<componentinstantiationref refid=\"DataConverter_1\"/>";
 		DiagramTestUtils.openTabInEditor(editor, waveformName + ".sad.xml");
@@ -134,7 +134,7 @@ public class XmlToDiagramEditTest extends AbstractGraphitiTest {
 		UsesPortStub usesPort = (UsesPortStub) DUtil.getBusinessObject(connection.getStart());
 		Assert.assertEquals("Connection uses port not correct", usesPort, DUtil.getBusinessObject((ContainerShape) sigGenUsesEditPart.part().getModel()));
 
-		final SWTBotGefEditPart dataConverterProvidesPort = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataFloat");
+		final SWTBotGefEditPart dataConverterProvidesPort = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataFloat_in");
 		ProvidesPortStub providesPort = (ProvidesPortStub) DUtil.getBusinessObject(connection.getEnd());
 		Assert.assertEquals("Connect provides port not correct", DUtil.getBusinessObject((ContainerShape) dataConverterProvidesPort.part().getModel()),
 			providesPort);

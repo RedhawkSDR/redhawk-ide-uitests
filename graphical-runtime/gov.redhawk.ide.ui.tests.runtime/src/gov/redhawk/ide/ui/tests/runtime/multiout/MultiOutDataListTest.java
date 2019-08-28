@@ -24,7 +24,7 @@ public class MultiOutDataListTest extends AbstractMultiOutPortTest {
 
 	@Override
 	@Test
-	public void mulitOutPortMultiTunerTest() {
+	public void multiOutPortMultiTunerTest() {
 		// Allocate the first tuner
 		ScaExplorerTestUtils.allocate(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
 		completeAllocateWizard("firstAllocation", "101.5");

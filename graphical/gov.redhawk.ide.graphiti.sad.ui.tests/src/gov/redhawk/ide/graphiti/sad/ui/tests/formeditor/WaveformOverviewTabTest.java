@@ -179,7 +179,7 @@ public class WaveformOverviewTabTest extends AbstractWaveformTabTest {
 		shell.bot().waitUntil(Conditions.tableHasRows(shell.bot().table(1), 12));
 		Assert.assertFalse(shell.bot().button("Finish").isEnabled());
 
-		shell.bot().table(1).select("dataDouble");
+		shell.bot().table(1).select("dataDouble_in");
 		shell.bot().waitUntil(Conditions.widgetIsEnabled(shell.bot().button("Finish")));
 
 		shell.bot().textWithLabel("Description (Optional):").typeText("my desc");
@@ -191,12 +191,12 @@ public class WaveformOverviewTabTest extends AbstractWaveformTabTest {
 		EditorUtils.assertEditorTabValid(editor, EditorUtils.SAD_EDITOR_OVERVIEW_TAB_ID);
 		Assert.assertEquals(1, table.rowCount());
 		Assert.assertEquals("DataConverter_1", table.getTableItem(0).getText(0));
-		Assert.assertEquals("dataDouble", table.getTableItem(0).getText(1));
+		Assert.assertEquals("dataDouble_in", table.getTableItem(0).getText(1));
 		Assert.assertEquals("", table.getTableItem(0).getText(2));
 		Assert.assertNotNull(sad.getExternalPorts());
 		Assert.assertEquals(1, sad.getExternalPorts().getPort().size());
 		Assert.assertEquals("DataConverter_1", sad.getExternalPorts().getPort().get(0).getComponentInstantiationRef().getInstantiation().getUsageName());
-		Assert.assertEquals("dataDouble", sad.getExternalPorts().getPort().get(0).getProvidesIdentifier());
+		Assert.assertEquals("dataDouble_in", sad.getExternalPorts().getPort().get(0).getProvidesIdentifier());
 		Assert.assertEquals(null, sad.getExternalPorts().getPort().get(0).getExternalName());
 		Assert.assertEquals("my desc", sad.getExternalPorts().getPort().get(0).getDescription());
 

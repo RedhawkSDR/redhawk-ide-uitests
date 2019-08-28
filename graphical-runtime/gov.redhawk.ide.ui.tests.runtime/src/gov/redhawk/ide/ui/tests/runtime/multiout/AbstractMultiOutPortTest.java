@@ -64,7 +64,7 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 	 * Test support for a variety of options using a multi-out port with one allocated tuners
 	 */
 	@Test
-	public void mulitOutPortSingleTunerTest() {
+	public void multiOutPortSingleTunerTest() {
 		// Allocate the first tuner
 		ScaExplorerTestUtils.allocate(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
 		completeAllocateWizard("allocation1", "101.5");
@@ -82,7 +82,7 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 	 * Test support for a variety of options using a multi-out port with multiple allocated tuners
 	 */
 	@Test
-	public void mulitOutPortMultiTunerTest() {
+	public void multiOutPortMultiTunerTest() {
 		// Allocate the first tuner
 		ScaExplorerTestUtils.allocate(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
 		completeAllocateWizard("firstAllocation", "101.5");
