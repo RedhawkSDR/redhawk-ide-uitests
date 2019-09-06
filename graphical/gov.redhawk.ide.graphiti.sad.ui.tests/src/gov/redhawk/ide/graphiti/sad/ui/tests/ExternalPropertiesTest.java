@@ -46,7 +46,7 @@ public class ExternalPropertiesTest extends AbstractGraphitiTest {
 	 */
 	@Test
 	public void externalPropertiesTest() throws IOException {
-		final String hardLimitProp = "limits";
+		final String hardLimitProp = "upper_limit";
 		final String hardLimitExternalId = "new_limit_id";
 
 		String waveformName = "DeleteWithExternalPort";
