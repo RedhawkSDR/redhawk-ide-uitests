@@ -40,31 +40,6 @@ public class SharedLibraryExportTest extends UIRuntimeTest {
 
 	/**
 	 * IDE-1141
-	 * Shared Library projects should be exported to the appropriately named container in the Target SDR
-	 */
-	@Test
-	public void exportSharedLibraryTest() {
-		addSdrDomCleanupPath(new Path("/deps/" + SHARED_LIB_PROJ_NAME));
-
-		// Create and Generate
-		SharedLibraryUtils.createSharedLibraryProject(bot, SHARED_LIB_PROJ_NAME, "C++ Library");
-		SWTBotEditor editor = bot.editorByTitle(SHARED_LIB_PROJ_NAME);
-		StandardTestActions.generateProject(bot, editor);
-		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
-		bot.closeAllEditors();
-
-		// Export to SDR
-		SWTBotTreeItem projectNode = ProjectExplorerUtils.waitUntilNodeAppears(bot, SHARED_LIB_PROJ_NAME);
-		projectNode.contextMenu("Export to SDR").click();
-		bot.waitUntil(JobConditions.exportToSdr(), 15000);
-		bot.waitUntil(new WaitForTargetSdrRootLoad(), WaitForTargetSdrRootLoad.TIMEOUT);
-
-		// Confirm export worked
-		findTreeItemAndDelete(new String[] { "Target SDR", "Shared Libraries" }, SHARED_LIB_PROJ_NAME);
-	}
-
-	/**
-	 * IDE-1141
 	 * Make sure any project type that is dragged onto the Shared Libraries container installs to expected location
 	 */
 	@Test

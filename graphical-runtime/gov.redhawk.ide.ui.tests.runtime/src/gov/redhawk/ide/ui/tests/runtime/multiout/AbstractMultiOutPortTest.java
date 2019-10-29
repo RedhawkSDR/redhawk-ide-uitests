@@ -77,35 +77,6 @@ public abstract class AbstractMultiOutPortTest extends UIRuntimeTest {
 		testActionResults(0);
 	}
 
-	/**
-	 * IDE-2042, 2043, 2049, 2067, 2068, 2069
-	 * Test support for a variety of options using a multi-out port with multiple allocated tuners
-	 */
-	@Test
-	public void multiOutPortMultiTunerTest() {
-		// Allocate the first tuner
-		ScaExplorerTestUtils.allocate(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
-		completeAllocateWizard("firstAllocation", "101.5");
-		waitForTunerAllocation(0);
-
-		// Allocate the second tuner, important that it is alphabetically later than the first tuner
-		ScaExplorerTestUtils.allocate(bot, DEVICE_PARENT_PATH, RX_DIGITIZER_SIM_1);
-		completeAllocateWizard("secondAllocation", "88.5");
-		waitForTunerAllocation(1);
-
-		// Click on the appropriate context menu
-		getUsesPort().contextMenu(getContextMenu()).click();
-
-		// Complete the multi-out connection dialog
-		SWTBotShell multiOutShell = bot.shell(WIZARD_TITLE);
-		multiOutShell.bot().list().select(1);
-		multiOutShell.bot().button("OK").click();
-		bot.waitUntil(Conditions.shellCloses(multiOutShell));
-
-		// Verify that the expected behavior occurred
-		testActionResults(1);
-	}
-
 	protected SWTBotTreeItem getUsesPort() {
 		return ScaExplorerTestUtils.getTreeItemFromScaExplorer(bot, DEVICE_PATH, "dataShort_out");
 	}

@@ -109,18 +109,6 @@ public class EventDataProviderTest extends UITest {
 	}
 
 	/**
-	 * Tests handling of the event for add/remove of device managers
-	 */
-	@Test
-	public void deviceManagers() {
-		launchDevMgr();
-		ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, DEV_MGRS_PATH, DEV_MGR);
-
-		killDevMgr();
-		ScaExplorerTestUtils.waitUntilNodeRemovedFromScaExplorer(bot, DEV_MGRS_PATH, DEV_MGR);
-	}
-
-	/**
 	 * Tests handling of the event for add/remove of an event channel
 	 */
 	@Test
