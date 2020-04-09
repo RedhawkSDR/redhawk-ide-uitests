@@ -107,66 +107,6 @@ public class WaveformTest extends UIRuntimeTest {
 		releaseWaveform(waveformTreeItem);
 	}
 
-	/**
-	 * IDE-1222 Launching a Waveform with overloaded property values, external ports and external properties
-	 * in Sandbox with Advanced Wizard.
-	 */
-	@Test
-	public void launchSandboxWaveformAdvanced() {
-		SWTBotTreeItem waveformTreeItem = launchLocalWaveformAdvanced("SigGenToHardLimitExtPortsPropsWF");
-		String waveformNameInSandbox = waveformTreeItem.getText();
-		String[] nodeParentPath = { "Sandbox", waveformNameInSandbox };
-		waveformTreeItem.expand(); // must expand otherwise will not see sub-items (e.g. Components) underneath this TreeItem)
-		ConsoleUtils.disableAutoShowConsole();
-
-		SWTBotView propView = bot.viewById(ViewUtils.PROPERTIES_VIEW_ID);
-		propView.show();
-
-		// check first Component's (SigGen) properties
-		SWTBotTreeItem compTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodeParentPath, "SigGen_1");
-		compTreeItem.select();
-
-		SWTBotTree propertiesTree = propView.bot().tree();
-		SWTBotTreeItem[] allItems = propertiesTree.getAllItems();
-		int found = 0;
-		for (SWTBotTreeItem item : allItems) {
-			String cellValue = item.cell(1);
-			if ("frequency".equals(item.getText())) {
-				found++;
-				Assert.assertEquals("SAD overridden value for frequency", "400.0 Hz", cellValue);
-			} else if ("magnitude".equals(item.getText())) {
-				found++;
-				Assert.assertEquals("SAD overridden value for magnitude", "120.0", cellValue);
-			} else if ("stream_id".equals(item.getText())) {
-				found++;
-				Assert.assertEquals("SAD overridden value for stream_id", "SigGenStreamFromWF", cellValue);
-			}
-		}
-		Assert.assertEquals(3, found);
-
-		// check second Component's (HardLimit) properties
-		compTreeItem = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, nodeParentPath, "HardLimit_1");
-		compTreeItem.select();
-
-		propertiesTree = propView.bot().tree();
-		allItems = propertiesTree.getAllItems();
-		found = 0;
-		for (SWTBotTreeItem item : allItems) {
-			String cellValue = item.cell(1);
-			if ("lower_limit".equals(item.getText())) {
-				found++;
-				Assert.assertEquals("SAD overridden value for lower_limit", "-30.0", cellValue);
-			} else if ("upper_limit".equals(item.getText())) {
-				found++;
-				Assert.assertEquals("SAD overridden value for upper_limit", "90.0", cellValue);
-			}
-		}
-		Assert.assertEquals(2, found);
-
-		// cleanup
-		releaseWaveform(waveformTreeItem);
-	}
-
 	private void releaseWaveform(SWTBotTreeItem waveformTreeItem) {
 		try {
 			waveformTreeItem.select();

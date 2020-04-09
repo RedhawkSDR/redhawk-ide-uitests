@@ -143,15 +143,6 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 		workspaceLaunchTest("Launch resource in the sandbox", "Run", false);
 	}
 
-	/**
-	 * IDE-1710 - test various ways of launching a shared address space component from the workspace in debug mode
-	 * @param projectName
-	 */
-	@Test
-	public void workspaceDebugLaunchTest() {
-		workspaceLaunchTest("Debug resource in the sandbox", "Debug", true);
-	}
-
 	private void workspaceLaunchTest(final String linkText, final String mode, final boolean isDebug) {
 		final String modeAs = mode + " As";
 
