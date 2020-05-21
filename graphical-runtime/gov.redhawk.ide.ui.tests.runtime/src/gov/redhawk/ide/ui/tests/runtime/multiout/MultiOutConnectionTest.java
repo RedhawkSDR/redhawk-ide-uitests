@@ -57,7 +57,6 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		testActionResults(0);
 	}
 
-	@Override
 	@Test
 	public void multiOutPortMultiTunerTest() {
 		SWTBotTreeItem providesPort = launchComponent();

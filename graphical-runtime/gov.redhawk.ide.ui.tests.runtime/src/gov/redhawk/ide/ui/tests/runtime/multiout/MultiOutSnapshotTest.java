@@ -28,7 +28,6 @@ import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
 public class MultiOutSnapshotTest extends AbstractMultiOutPortTest {
 
-	@Override
 	@Test
 	public void multiOutPortMultiTunerTest() {
 		// Allocate the first tuner
