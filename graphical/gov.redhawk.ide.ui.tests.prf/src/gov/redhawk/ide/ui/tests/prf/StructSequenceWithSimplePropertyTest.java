@@ -154,23 +154,7 @@ public class StructSequenceWithSimplePropertyTest extends SimplePropertyTest {
 		Assert.assertEquals("Name1::Simple", editorBot.textWithLabel(ID_FIELD).getText());
 	}
 
-	@Test
-	public void testStructName() {
-		// Set name to empty - no ID changes
-		editorBot.textWithLabel(NAME_FIELD).setText("");
-		editorBot.sleep(600);
-		Assert.assertEquals("ID", editorBot.textWithLabel(ID_FIELD).getText());
-		selectSimple();
-		Assert.assertEquals("ID::Simple", editorBot.textWithLabel(ID_FIELD).getText());
-		selectStruct();
 
-		// Set name to valid - my ID changes, child ID same
-		editorBot.textWithLabel(NAME_FIELD).setText("Name1");
-		editorBot.sleep(600);
-		Assert.assertEquals("ID::Name1", editorBot.textWithLabel(ID_FIELD).getText());
-		editorBot.tree().getTreeItem("ID").getNode("Name1").select("Simple");
-		Assert.assertEquals("ID::Simple", editorBot.textWithLabel(ID_FIELD).getText());
-	}
 
 	@Test
 	public void testSimpleName() {
@@ -282,39 +266,6 @@ public class StructSequenceWithSimplePropertyTest extends SimplePropertyTest {
 	public void testDescriptionStruct() {
 		selectStruct();
 		super.testDescription();
-	}
-
-	@Test
-	public void testStructValue() {
-		SWTBotTree structValueTable = editorBot.treeWithLabel("StructValue:");
-		editorBot.button("Add...").click();
-		SWTBotTreeItem item = structValueTable.getTreeItem("Struct[0]");
-		item.expand();
-		SWTBotTreeItem subItem = item.getNode("Simple");
-
-		editorBot.button("Add...").click();
-		SWTBotTreeItem item1 = structValueTable.getTreeItem("Struct[1]");
-		item1.expand();
-		SWTBotTreeItem subItem1 = item1.getNode("Simple");
-
-		StandardTestActions.writeToCell(editorBot, subItem1, 2, "hello");
-		assertFormValid();
-
-		item1.select();
-		editorBot.button("Remove", 1).click();
-
-		selectSimple();
-		editorBot.comboBoxWithLabel("Type*:").setSelection("double (64-bit)");
-		assertFormInvalid();
-		selectStructSequence();
-
-		structValueTable = editorBot.treeWithLabel("StructValue:");
-		item = structValueTable.getTreeItem("Struct[0]");
-		item.expand();
-		subItem = item.getNode("Simple");
-
-		StandardTestActions.writeToCell(editorBot, subItem, 2, "1.1");
-		assertFormValid();
 	}
 
 	/**
