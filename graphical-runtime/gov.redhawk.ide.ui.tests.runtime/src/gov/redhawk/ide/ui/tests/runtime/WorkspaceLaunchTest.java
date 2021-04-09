@@ -35,9 +35,7 @@ import gov.redhawk.ide.swtbot.ProjectExplorerUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
-import gov.redhawk.ide.swtbot.condition.WaitForBuild;
-import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
-import gov.redhawk.ide.swtbot.condition.WaitForCppIndexer;
+import gov.redhawk.ide.swtbot.condition.WaitForCodegenAndCppIndexer;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
 import gov.redhawk.ide.swtbot.scaExplorer.ScaExplorerTestUtils;
 
@@ -145,15 +143,6 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 		workspaceLaunchTest("Launch resource in the sandbox", "Run", false);
 	}
 
-	/**
-	 * IDE-1710 - test various ways of launching a shared address space component from the workspace in debug mode
-	 * @param projectName
-	 */
-	@Test
-	public void workspaceDebugLaunchTest() {
-		workspaceLaunchTest("Debug resource in the sandbox", "Debug", true);
-	}
-
 	private void workspaceLaunchTest(final String linkText, final String mode, final boolean isDebug) {
 		final String modeAs = mode + " As";
 
@@ -253,8 +242,7 @@ public class WorkspaceLaunchTest extends UIRuntimeTest {
 
 		// Wait for the build to finish and any error markers to go away, then close editors
 		ViewUtils.getConsoleView(bot).show();
-		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
-		bot.waitUntil(new WaitForCppIndexer(), WaitForCppIndexer.TIMEOUT);
+		bot.waitUntil(new WaitForCodegenAndCppIndexer(), WaitForCodegenAndCppIndexer.TIMEOUT);
 		ViewUtils.getProblemsView(bot).show();
 		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), WaitForSeverityMarkers.TIMEOUT);
 	}

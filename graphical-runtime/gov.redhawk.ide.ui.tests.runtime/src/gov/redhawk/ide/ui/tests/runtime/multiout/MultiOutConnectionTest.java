@@ -41,7 +41,7 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 	 */
 	@Override
 	@Test
-	public void mulitOutPortSingleTunerTest() {
+	public void multiOutPortSingleTunerTest() {
 		SWTBotTreeItem providesPort = launchComponent();
 
 		// Allocate the first tuner
@@ -57,9 +57,8 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		testActionResults(0);
 	}
 
-	@Override
 	@Test
-	public void mulitOutPortMultiTunerTest() {
+	public void multiOutPortMultiTunerTest() {
 		SWTBotTreeItem providesPort = launchComponent();
 
 		// Allocate the first tuner
@@ -297,7 +296,7 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 		SWTBot shellBot = connectShell.bot();
 		// select the correct node in both tables
 		shellBot.tree(0).getTreeItem("dataShort_out").select();
-		shellBot.tree(1).expandNode("Sandbox", "Chalkboard", "DataConverter_1", "dataShort").select();
+		shellBot.tree(1).expandNode("Sandbox", "Chalkboard", "DataConverter_1", "dataShort_in").select();
 		return shellBot;
 	}
 
@@ -308,7 +307,7 @@ public class MultiOutConnectionTest extends AbstractMultiOutPortTest {
 	private SWTBotTreeItem launchComponent() {
 		final String componentName = "rh.DataConverter";
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, componentName, "cpp");
-		return ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", "DataConverter_1" }, "dataShort");
+		return ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", "DataConverter_1" }, "dataShort_in");
 	}
 
 	@Override

@@ -53,9 +53,9 @@ public abstract class AbstractPortsTabTest extends UITest {
 	private static final String SHELL_SELECT_INTERFACE = "Select an interface";
 	private static final String CHECK_SHOW_ALL = "Show all interfaces";
 
-	private static final String IDL_MODULE = "IDETEST";
-	private static final String IDL_INTF = "SampleInterface";
-	private static final String IDL_INTF2 = "SampleInterface2";
+	private static final String IDL_MODULE = "FRONTEND";
+	private static final String IDL_INTF = "AnalogTuner";
+	private static final String IDL_INTF2 = "DigitalTuner";
 	private static final String EXPECTED_IDL_SAMPLE1 = "IDL:" + IDL_MODULE + "/" + IDL_INTF + ":1.0";
 	private static final String EXPECTED_IDL_SAMPLE2 = "IDL:" + IDL_MODULE + "/" + IDL_INTF2 + ":1.0";
 

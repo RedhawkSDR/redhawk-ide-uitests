@@ -50,7 +50,7 @@ public class MultiOutPlottingTest extends AbstractMultiOutPortTest {
 		// Launch a component and connect to it so that the first connection ID is 'IN USE'
 		ScaExplorerTestUtils.launchComponentFromTargetSDR(bot, DATA_CONVERTER, "cpp");
 		SWTBotTreeItem providesPort = ScaExplorerTestUtils.waitUntilNodeAppearsInScaExplorer(bot, new String[] { "Sandbox", "Chalkboard", DATA_CONVERTER_1 },
-			"dataShort");
+			"dataShort_in");
 		SWTBot explorerViewBot = ScaExplorerTestUtils.showScaExplorerView(bot);
 		explorerViewBot.tree().select(getUsesPort(), providesPort).contextMenu("Connect").click();
 

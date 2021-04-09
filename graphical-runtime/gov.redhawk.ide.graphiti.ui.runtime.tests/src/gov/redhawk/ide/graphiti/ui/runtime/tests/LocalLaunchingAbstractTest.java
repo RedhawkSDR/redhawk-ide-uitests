@@ -43,22 +43,6 @@ public abstract class LocalLaunchingAbstractTest extends UIRuntimeTest {
 	private ComponentDescription slowComp = getSlowComponentDescription();
 
 	/**
-	 * IDE-1384 Show resources as disabled/gray while they're launching
-	 * IDE-1894 Show services as disabled/gray too
-	 * Ensure some context menus are not present / disabled while the resource is starting up
-	 */
-	@Test
-	public void contextMenusDisableDuringStartup() {
-		RHBotGefEditor editor = openDiagram();
-
-		DiagramTestUtils.addFromPaletteToDiagram(editor, slowComp.getFullName(), 0, 0);
-		DiagramTestUtils.waitForComponentState(bot, editor, slowComp.getShortName(1), ComponentState.LAUNCHING); // IDE-1384
-		editor.getEditPart(slowComp.getShortName(1)).select();
-
-		contextMenuChecks(editor, slowComp.getShortName(1));
-	}
-
-	/**
 	 * Performs the actual context menu checks for {@link #contextMenusDisableDuringStartup()}.
 	 * @param editor
 	 * @param resourceShortName

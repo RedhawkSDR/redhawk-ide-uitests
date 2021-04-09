@@ -19,7 +19,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <SDRROOT>${basedir}/../sdr</SDRROOT>
+    <SDRROOT>${basedir}/../../sdr</SDRROOT>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <tycho.scmUrl>scm:git:https://github.com/RedhawkSDR/redhawk-ide-uitests.git</tycho.scmUrl>
     <nxm>http://nextmidas.techma.com/p2/nxm/updates/3.6/latest/</nxm>

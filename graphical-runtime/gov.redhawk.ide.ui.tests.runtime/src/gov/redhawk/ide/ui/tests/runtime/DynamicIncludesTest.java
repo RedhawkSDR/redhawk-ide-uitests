@@ -18,15 +18,14 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.junit.Test;
 
-import gov.redhawk.ide.swtbot.ComponentUtils;
 import gov.redhawk.ide.swtbot.DeviceUtils;
 import gov.redhawk.ide.swtbot.SharedLibraryUtils;
 import gov.redhawk.ide.swtbot.StandardTestActions;
 import gov.redhawk.ide.swtbot.UIRuntimeTest;
 import gov.redhawk.ide.swtbot.ViewUtils;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
-import gov.redhawk.ide.swtbot.condition.WaitForCppIndexer;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
+import gov.redhawk.ide.swtbot.condition.WaitForCodegenAndCppIndexer;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 
@@ -37,19 +36,6 @@ import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
 public class DynamicIncludesTest extends UIRuntimeTest {
 
 	private static final String DSP = "rh.dsp";
-
-	@Test
-	public void componentWithSharedLibDep() {
-		String headerToInclude = "RealFIRFilter.h";
-
-		SWTBotEditor editor = null;
-
-		String componentProjectName = "TestComponent";
-		ComponentUtils.createComponentProject(bot, componentProjectName, "C++");
-		editor = bot.editorByTitle(componentProjectName);
-		setSpdDependency(editor.bot(), editor, DSP);
-		generateProjectAndBuild(componentProjectName, headerToInclude);
-	}
 
 	@Test
 	public void deviceWithSharedLibDep() {
@@ -87,8 +73,7 @@ public class DynamicIncludesTest extends UIRuntimeTest {
 
 		// Wait for the initial codegen build and C/C++ indexer to finish
 		ViewUtils.getConsoleView(bot).show();
-		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
-		bot.waitUntil(new WaitForCppIndexer(), WaitForCppIndexer.TIMEOUT);
+		bot.waitUntil(new WaitForCodegenAndCppIndexer(), WaitForCodegenAndCppIndexer.TIMEOUT);
 
 		// Add a #include for a header in the shared library
 		textEditor.toTextEditor().insertText(3, 0, "#include \"" + headerToInclude + "\"");

@@ -46,7 +46,7 @@ import gov.redhawk.ide.swtbot.condition.JobConditions;
 import gov.redhawk.ide.swtbot.condition.NotCondition;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild;
 import gov.redhawk.ide.swtbot.condition.WaitForBuild.BuildType;
-import gov.redhawk.ide.swtbot.condition.WaitForCppIndexer;
+import gov.redhawk.ide.swtbot.condition.WaitForCodegenAndCppIndexer;
 import gov.redhawk.ide.swtbot.condition.WaitForSeverityMarkers;
 import gov.redhawk.ide.swtbot.condition.WaitForTargetSdrRootLoad;
 import gov.redhawk.ide.swtbot.diagram.DiagramTestUtils;
@@ -361,9 +361,10 @@ public class CreateGenerateExportTest extends UIRuntimeTest {
 
 		// Wait for the build and the C/C++ indexer (if applicable) to finish, then for any error markers to go away
 		ViewUtils.getConsoleView(bot).show();
-		bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
 		if (isCpp) {
-			bot.waitUntil(new WaitForCppIndexer(), WaitForCppIndexer.TIMEOUT);
+			bot.waitUntil(new WaitForCodegenAndCppIndexer(), WaitForCodegenAndCppIndexer.TIMEOUT);
+		} else {
+			bot.waitUntil(new WaitForBuild(BuildType.CODEGEN), WaitForBuild.TIMEOUT);
 		}
 		ViewUtils.getProblemsView(bot).show();
 		bot.waitUntil(new WaitForSeverityMarkers(IMarker.SEVERITY_WARNING), WaitForSeverityMarkers.TIMEOUT);

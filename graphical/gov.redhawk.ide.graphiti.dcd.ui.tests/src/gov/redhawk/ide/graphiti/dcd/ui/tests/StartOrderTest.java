@@ -33,8 +33,8 @@ public class StartOrderTest extends AbstractGraphitiTest {
 	private static final String GPP_1 = "GPP_1";
 	private static final String DEVICE_STUB = "DeviceStub";
 	private static final String DEVICE_STUB_1 = "DeviceStub_1";
-	private static final String SERVICE_STUB = "ServiceStub";
-	private static final String SERVICE_STUB_1 = "ServiceStub_1";
+	private static final String SERVICE_STUB = "ResourceServiceStub";
+	private static final String SERVICE_STUB_1 = "ResourceServiceStub_1";
 
 	private static final String DOMAIN = "REDHAWK_DEV";
 

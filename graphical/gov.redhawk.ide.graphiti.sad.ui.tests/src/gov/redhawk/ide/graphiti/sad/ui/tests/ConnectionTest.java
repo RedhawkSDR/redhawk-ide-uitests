@@ -251,7 +251,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 
 		// Get port edit parts
 		SWTBotGefEditPart usesEditPart = DiagramTestUtils.getDiagramUsesPort(editor, SIG_GEN_1);
-		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataOctet");
+		SWTBotGefEditPart providesEditPart = DiagramTestUtils.getDiagramProvidesPort(editor, DATA_CONVERTER_1, "dataOctet_in");
 
 		// Draw incompatible connection and confirm error decorator exists
 		DiagramTestUtils.drawConnectionBetweenPorts(editor, usesEditPart, providesEditPart);
@@ -280,7 +280,7 @@ public class ConnectionTest extends AbstractGraphitiTest {
 	public void highlightTest() {
 		waveformName = "HighlightTestWF";
 		String sigGenPort = "dataFloat_out";
-		String dataConPort = "dataFloat";
+		String dataConPort = "dataFloat_in";
 
 		WaveformUtils.createNewWaveform(gefBot, waveformName, null);
 

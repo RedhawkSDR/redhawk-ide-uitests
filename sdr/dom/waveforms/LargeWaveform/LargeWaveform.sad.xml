@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softwareassembly PUBLIC "-//JTRS//DTD SCA V2.2.2 SAD//EN" "softwareassembly.dtd">
+<softwareassembly id="DCE:cb19c0aa-7d9e-4388-9fc0-b29f73c68f42" name="LargeWaveform" version="1.0.0">
+  <componentfiles>
+    <componentfile id="SigGen_cf857fb6-8d28-467c-ace4-eb07b301276b" type="SPD">
+      <localfile name="/components/rh/SigGen/SigGen.spd.xml"/>
+    </componentfile>
+    <componentfile id="HardLimit_909423ec-cf45-4b07-8256-d0c166368a8d" type="SPD">
+      <localfile name="/components/rh/HardLimit/HardLimit.spd.xml"/>
+    </componentfile>
+    <componentfile id="DataConverter_26279581-ad74-4e00-aafd-4302b56df89d" type="SPD">
+      <localfile name="/components/rh/DataConverter/DataConverter.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="SigGen_cf857fb6-8d28-467c-ace4-eb07b301276b"/>
+      <componentinstantiation id="SigGen_1" startorder="0">
+        <usagename>SigGen_1</usagename>
+        <findcomponent>
+          <namingservice name="SigGen_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="HardLimit_909423ec-cf45-4b07-8256-d0c166368a8d"/>
+      <componentinstantiation id="HardLimit_1" startorder="1">
+        <usagename>HardLimit_1</usagename>
+        <findcomponent>
+          <namingservice name="HardLimit_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="DataConverter_26279581-ad74-4e00-aafd-4302b56df89d"/>
+      <componentinstantiation id="DataConverter_1" startorder="2">
+        <usagename>DataConverter_1</usagename>
+        <findcomponent>
+          <namingservice name="DataConverter_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="SigGen_cf857fb6-8d28-467c-ace4-eb07b301276b"/>
+      <componentinstantiation id="SigGen_2" startorder="3">
+        <usagename>SigGen_2</usagename>
+        <findcomponent>
+          <namingservice name="SigGen_2"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="SigGen_cf857fb6-8d28-467c-ace4-eb07b301276b"/>
+      <componentinstantiation id="SigGen_3" startorder="4">
+        <usagename>SigGen_3</usagename>
+        <findcomponent>
+          <namingservice name="SigGen_3"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="SigGen_cf857fb6-8d28-467c-ace4-eb07b301276b"/>
+      <componentinstantiation id="SigGen_4" startorder="5">
+        <usagename>SigGen_4</usagename>
+        <findcomponent>
+          <namingservice name="SigGen_4"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="DataConverter_26279581-ad74-4e00-aafd-4302b56df89d"/>
+      <componentinstantiation id="DataConverter_2" startorder="6">
+        <usagename>DataConverter_2</usagename>
+        <findcomponent>
+          <namingservice name="DataConverter_2"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="HardLimit_909423ec-cf45-4b07-8256-d0c166368a8d"/>
+      <componentinstantiation id="HardLimit_2" startorder="7">
+        <usagename>HardLimit_2</usagename>
+        <findcomponent>
+          <namingservice name="HardLimit_2"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="DataConverter_26279581-ad74-4e00-aafd-4302b56df89d"/>
+      <componentinstantiation id="DataConverter_3" startorder="8">
+        <usagename>DataConverter_3</usagename>
+        <findcomponent>
+          <namingservice name="DataConverter_3"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="DataConverter_26279581-ad74-4e00-aafd-4302b56df89d"/>
+      <componentinstantiation id="DataConverter_4" startorder="9">
+        <usagename>DataConverter_4</usagename>
+        <findcomponent>
+          <namingservice name="DataConverter_4"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <assemblycontroller>
+    <componentinstantiationref refid="SigGen_1"/>
+  </assemblycontroller>
+  <connections>
+    <connectinterface id="connection_1">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="SigGen_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="DataConverter_1"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_2">
+      <usesport>
+        <usesidentifier>dataShort_out</usesidentifier>
+        <componentinstantiationref refid="SigGen_2"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataShort_in</providesidentifier>
+        <componentinstantiationref refid="DataConverter_1"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_3">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="SigGen_3"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="DataConverter_2"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_4">
+      <usesport>
+        <usesidentifier>dataShort_out</usesidentifier>
+        <componentinstantiationref refid="SigGen_4"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataShort_in</providesidentifier>
+        <componentinstantiationref refid="DataConverter_2"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_5">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="DataConverter_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="HardLimit_1"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_6">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="DataConverter_2"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="HardLimit_2"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_7">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="HardLimit_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="DataConverter_4"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_8">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="HardLimit_2"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="DataConverter_3"/>
+      </providesport>
+    </connectinterface>
+  </connections>
+</softwareassembly>
+

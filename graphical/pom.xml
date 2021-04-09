@@ -196,8 +196,7 @@
           <environmentVariables>
             <DISPLAY>${env.DISPLAY}</DISPLAY>
             <PATH>${env.PATH}</PATH>
-            <SDRROOT>${basedir}/../sdr</SDRROOT>
-            <OSSIEHOME>${basedir}/../ossie</OSSIEHOME>
+            <SDRROOT>${basedir}/../../sdr</SDRROOT>
           </environmentVariables>
           <bundleStartLevel>
             <bundle>
