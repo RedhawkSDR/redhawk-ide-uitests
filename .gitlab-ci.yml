@@ -1,3 +1,5 @@
+image: ${docker_registry}redhawk/centos7-evo:latest
+
 stages:
   - trigger
 
@@ -13,7 +15,6 @@ variables:
 
 # Trigger separate tests pipeline
 .trigger-common: &trigger-common
-  image: ${docker_registry}centos:7
   stage: trigger
   dependencies: []
   variables:
@@ -45,7 +46,6 @@ test-trigger:develop:
     - /^develop.*$/
 
 test:release:
-  image: ${docker_registry}centos:7
   stage: trigger
   dependencies: []
   variables:
